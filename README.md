@@ -39,6 +39,116 @@ Soar-Fin+ is a comprehensive, enterprise-grade accounting and administrative sof
 ### **Clean Architecture Implementation**
 
 ```
+
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                              CLIENT APPLICATIONS                                │
+│                                                                                │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   React SPA  │  │ React Native │  │  Web Portal  │  │  Mobile PWA  │       │
+│  │  (Staff UI)  │  │  (Field App) │  │  (Clients)   │  │  (Clients)   │       │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘       │
+└─────────┼────────────────┼────────────────┼────────────────┼────────────────┘
+          │                │                │                │                  
+          │                │                │                │                  
+┌─────────┼────────────────┼────────────────┼────────────────┼────────────────┐
+│         │   REST APIs    │                │                │                 │
+│         ▼                ▼                ▼                ▼                 │
+│  ┌────────────────────────────────────────────────────────────────────┐     │
+│  │                         API GATEWAY LAYER                           │     │
+│  │                                                                     │     │
+│  │  ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────────┐   │     │
+│  │  │ Authentication  │ │   Rate Limits   │ │ Request Validation  │   │     │
+│  │  └─────────────────┘ └─────────────────┘ └─────────────────────┘   │     │
+│  └──────────────────────────────────┬──────────────────────────────────┘     │
+│                                     │                                        │
+│  ┌──────────────────────────────────┼──────────────────────────────────┐     │
+│  │                       PRESENTATION LAYER (Web API)                   │     │
+│  │                                                                      │     │
+│  │  ┌─────────────┐ ┌────────────┐ ┌────────────┐ ┌─────────────────┐  │     │
+│  │  │ Controllers │ │ Middleware │ │  Filters   │ │ API Versioning  │  │     │
+│  │  └─────────────┘ └────────────┘ └────────────┘ └─────────────────┘  │     │
+│  └──────────────────────────────────┬──────────────────────────────────┘     │
+│                                     │                                        │
+│  ┌──────────────────────────────────┼──────────────────────────────────┐     │
+│  │                      APPLICATION LAYER (CQRS)                        │     │
+│  │                                                                      │     │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐    │     │
+│  │  │  Commands   │ │   Queries   │ │  Behaviors  │ │ Validators  │    │     │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘    │     │
+│  │                                                                      │     │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐    │     │
+│  │  │    DTOs     │ │  Mappings   │ │  Services   │ │ Interfaces  │    │     │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘    │     │
+│  └──────────────────────────────────┬──────────────────────────────────┘     │
+│                                     │                                        │
+│  ┌──────────────────────────────────┼──────────────────────────────────┐     │
+│  │                          DOMAIN LAYER                                │     │
+│  │                                                                      │     │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐    │     │
+│  │  │  Entities   │ │ Aggregates  │ │Value Objects│ │   Enums     │    │     │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘    │     │
+│  │                                                                      │     │
+│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                    │     │
+│  │  │  Events     │ │   Rules     │ │ Exceptions  │                    │     │
+│  │  └─────────────┘ └─────────────┘ └─────────────┘                    │     │
+│  └──────────────────────────────────┬──────────────────────────────────┘     │
+│                                     │                                        │
+│  ┌──────────────────────────────────┼──────────────────────────────────┐     │
+│  │                     INFRASTRUCTURE LAYER                             │     │
+│  │                                                                      │     │
+│  │  ┌─────────────────────────┐  ┌────────────────────────────────┐    │     │
+│  │  │   Data Persistence      │  │       External Services         │    │     │
+│  │  │                         │  │                                │    │     │
+│  │  │ ┌─────────┐ ┌─────────┐ │  │ ┌─────────┐ ┌───────────────┐ │    │     │
+│  │  │ │ Contexts │ │  Repos  │ │  │ │ Email   │ │ SMS Gateway   │ │    │     │
+│  │  │ └─────────┘ └─────────┘ │  │ └─────────┘ └───────────────┘ │    │     │
+│  │  │                         │  │                                │    │     │
+│  │  │ ┌─────────┐ ┌─────────┐ │  │ ┌─────────┐ ┌───────────────┐ │    │     │
+│  │  │ │ Queries │ │ Mappings│ │  │ │ Storage │ │ NIBSS/Payment │ │    │     │
+│  │  │ └─────────┘ └─────────┘ │  │ └─────────┘ └───────────────┘ │    │     │
+│  │  └─────────────────────────┘  └────────────────────────────────┘    │     │
+│  │                                                                      │     │
+│  │  ┌─────────────────────────┐  ┌────────────────────────────────┐    │     │
+│  │  │   Background Services   │  │       Cross-Cutting             │    │     │
+│  │  │                         │  │                                │    │     │
+│  │  │ ┌─────────┐ ┌─────────┐ │  │ ┌─────────┐ ┌───────────────┐ │    │     │
+│  │  │ │ Hangfire │ │ Workers │ │  │ │ Logging │ │ Authentication│ │    │     │
+│  │  │ └─────────┘ └─────────┘ │  │ └─────────┘ └───────────────┘ │    │     │
+│  │  │                         │  │                                │    │     │
+│  │  │ ┌─────────┐ ┌─────────┐ │  │ ┌─────────┐ ┌───────────────┐ │    │     │
+│  │  │ │Scheduler │ │ Queues  │ │  │ │ Caching │ │ Error Handling│ │    │     │
+│  │  │ └─────────┘ └─────────┘ │  │ └─────────┘ └───────────────┘ │    │     │
+│  │  └─────────────────────────┘  └────────────────────────────────┘    │     │
+│  └──────────────────────────────────────────────────────────────────────┘     │
+│                                                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
+                                      │
+┌─────────────────────────────────────┼───────────────────────────────────────┐
+│                                     │                                       │
+│                               DATABASES                                     │
+│                                                                            │
+│  ┌────────────────────┐  ┌────────────────────┐  ┌────────────────────┐    │
+│  │     SQL Server     │  │        Redis       │  │    Blob Storage    │    │
+│  │  (Primary Data)    │  │     (Caching)      │  │  (Files/Documents) │    │
+│  └────────────────────┘  └────────────────────┘  └────────────────────┘    │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+                                      │
+┌─────────────────────────────────────┼───────────────────────────────────────┐
+│                               INTEGRATIONS                                  │
+│                                                                            │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐  ┌───────────┐ │
+│  │     NIBSS      │  │  Credit Bureau │  │ Payment Gateway│  │  Biometric│ │
+│  │  (BVN/NIP)     │  │   (CRC/XDS)    │  │(Paystack/etc.) │  │  Services │ │
+│  └────────────────┘  └────────────────┘  └────────────────┘  └───────────┘ │
+│                                                                            │
+│  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐  ┌───────────┐ │
+│  │     SMS API    │  │   Email API    │  │   FIRS/Tax     │  │  CBN/NDIC │ │
+│  │                │  │                │  │    Services    │  │ Reporting │ │
+│  └────────────────┘  └────────────────┘  └────────────────┘  └───────────┘ │
+│                                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
 ┌─────────────────────────────────────────────────────────────┐
 │                    Presentation Layer                       │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌──────────────┐ │
@@ -68,6 +178,197 @@ Soar-Fin+ is a comprehensive, enterprise-grade accounting and administrative sof
 │  └─────────────────┘  └─────────────────┘  └──────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+Detailed Module Architecture (Core Banking Modules)
+
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                            CORE BANKING MODULES                                   │
+│                                                                                   │
+│  ┌───────────────────┐  ┌────────────────────┐  ┌───────────────────────────┐    │
+│  │                   │  │                    │  │                           │    │
+│  │  Chart of Accounts│  │   General Ledger   │  │   Financial Accounting    │    │
+│  │    & GL Module    │  │       Module       │  │       & Reporting         │    │
+│  │                   │  │                    │  │                           │    │
+│  │ • Account Types   │  │ • Journal Entries  │  │ • Financial Statements    │    │
+│  │ • Account Classes │  │ • GL Transactions  │  │ • Regulatory Reports      │    │
+│  │ • Account Mapping │  │ • Trial Balance    │  │ • Tax Reporting           │    │
+│  │ • Account Rules   │  │ • Period Closing   │  │ • Management Reports      │    │
+│  │                   │  │                    │  │                           │    │
+│  └───────────────────┘  └────────────────────┘  └───────────────────────────┘    │
+│                                                                                   │
+│  ┌───────────────────┐  ┌────────────────────┐  ┌───────────────────────────┐    │
+│  │                   │  │                    │  │                           │    │
+│  │  Customer/Client  │  │ Savings & Deposits │  │     Loan Management       │    │
+│  │     Management    │  │      Management    │  │                           │    │
+│  │                   │  │                    │  │                           │    │
+│  │ • Client Onboarding│  │ • Savings Products│  │ • Loan Products           │    │
+│  │ • KYC/CDD         │  │ • Deposit Accounts │  │ • Loan Application        │    │
+│  │ • Client Profiles │  │ • Transactions     │  │ • Credit Scoring          │    │
+│  │ • Document Mgmt   │  │ • Interest Calc    │  │ • Approval Workflows      │    │
+│  │ • Group Management│  │ • Fees & Charges   │  │ • Disbursement            │    │
+│  │                   │  │                    │  │ • Repayment Management    │    │
+│  └───────────────────┘  └────────────────────┘  └───────────────────────────┘    │
+│                                                                                   │
+│  ┌───────────────────┐  ┌────────────────────┐  ┌───────────────────────────┐    │
+│  │                   │  │                    │  │                           │    │
+│  │  Teller & Cash    │  │  Accounts Payable  │  │    Accounts Receivable    │    │
+│  │    Management     │  │  & Procurement     │  │        & Invoicing        │    │
+│  │                   │  │                    │  │                           │    │
+│  │ • Cash Transactions│  │ • Vendor Management│  │ • Customer AR             │    │
+│  │ • Teller Operations│  │ • Purchase Orders │  │ • Invoicing               │    │
+│  │ • Vault Management│  │ • Invoices         │  │ • Payments                │    │
+│  │ • Denomination    │  │ • Payments         │  │ • Aging Analysis          │    │
+│  │ • EOD Balancing   │  │ • Expense Tracking │  │ • Collections             │    │
+│  │                   │  │                    │  │                           │    │
+│  └───────────────────┘  └────────────────────┘  └───────────────────────────┘    │
+│                                                                                   │
+│  ┌───────────────────┐  ┌────────────────────┐  ┌───────────────────────────┐    │
+│  │                   │  │                    │  │                           │    │
+│  │ Fixed Asset       │  │  Inventory & Stock │  │   Human Resources         │    │
+│  │   Management      │  │    Management      │  │     & Payroll             │    │
+│  │                   │  │                    │  │                           │    │
+│  │ • Asset Register  │  │ • Item Catalog     │  │ • Employee Records        │    │
+│  │ • Depreciation    │  │ • Inventory Control│  │ • Leave Management        │    │
+│  │ • Disposal        │  │ • Stock Valuation  │  │ • Payroll Processing      │    │
+│  │ • Revaluation     │  │ • Warehouse Mgmt   │  │ • Statutory Compliance    │    │
+│  │ • Maintenance     │  │ • Stock Reports    │  │ • Performance Management  │    │
+│  │                   │  │                    │  │                           │    │
+│  └───────────────────┘  └────────────────────┘  └───────────────────────────┘    │
+│                                                                                   │
+└───────────────────────────────────────────────────────────────────────────────────┘
+
+---
+Security & Cross-Cutting Concerns Architecture
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                      SECURITY & CROSS-CUTTING CONCERNS                            │
+│                                                                                   │
+│  ┌───────────────────┐  ┌────────────────────┐  ┌───────────────────────────┐    │
+│  │                   │  │                    │  │                           │    │
+│  │   Authentication  │  │   Authorization    │  │       Audit Trail         │    │
+│  │     & Identity    │  │     & RBAC         │  │                           │    │
+│  │                   │  │                    │  │                           │    │
+│  │ • User Management │  │ • Role Management  │  │ • Activity Logging        │    │
+│  │ • Multi-Factor Auth│  │ • Permission Mgmt │  │ • Change Tracking         │    │
+│  │ • JWT Auth        │  │ • Access Control   │  │ • User Activity           │    │
+│  │ • Password Policies│  │ • Data Visibility │  │ • Security Events         │    │
+│  │ • Session Mgmt    │  │ • Feature Access   │  │ • Compliance Monitoring   │    │
+│  │                   │  │                    │  │                           │    │
+│  └───────────────────┘  └────────────────────┘  └───────────────────────────┘    │
+│                                                                                   │
+│  ┌───────────────────┐  ┌────────────────────┐  ┌───────────────────────────┐    │
+│  │                   │  │                    │  │                           │    │
+│  │  Maker-Checker    │  │  Workflow Engine   │  │    Business Rules Engine  │    │
+│  │    Framework      │  │                    │  │                           │    │
+│  │                   │  │                    │  │                           │    │
+│  │ • Approval Flows  │  │ • Process Definition│  │ • Rule Definition        │    │
+│  │ • Verification    │  │ • Activity Tracking │  │ • Rule Execution         │    │
+│  │ • Authorization   │  │ • Process Templates │  │ • Validation Rules       │    │
+│  │ • Segregation     │  │ • Process Monitoring│  │ • Calculation Rules      │    │
+│  │ • Exception Mgmt  │  │ • State Management │  │ • Decision Trees         │    │
+│  │                   │  │                    │  │                           │    │
+│  └───────────────────┘  └────────────────────┘  └───────────────────────────┘    │
+│                                                                                   │
+│  ┌───────────────────┐  ┌────────────────────┐  ┌───────────────────────────┐    │
+│  │                   │  │                    │  │                           │    │
+│  │  Error Handling   │  │     Caching        │  │      Notification         │    │
+│  │   & Resilience    │  │                    │  │       Framework           │    │
+│  │                   │  │                    │  │                           │    │
+│  │ • Exception Mgmt  │  │ • Distributed Cache│  │ • Email Notifications     │    │
+│  │ • Retry Policies  │  │ • In-Memory Cache  │  │ • SMS Notifications       │    │
+│  │ • Circuit Breakers│  │ • Cache Invalidation│ │ • In-App Notifications    │    │
+│  │ • Fault Tolerance │  │ • Cache Strategies │  │ • Push Notifications      │    │
+│  │ • Graceful Degrd. │  │ • Response Caching │  │ • Scheduled Alerts        │    │
+│  │                   │  │                    │  │                           │    │
+│  └───────────────────┘  └────────────────────┘  └───────────────────────────┘    │
+│                                                                                   │
+└───────────────────────────────────────────────────────────────────────────────────┘
+
+---
+
+---
+Data Model (Simplified Core Banking Entities)
+┌───────────────────────────────────────┐        ┌────────────────────────────────┐
+│             Customer                  │        │          Account                │
+├───────────────────────────────────────┤        ├────────────────────────────────┤
+│ - CustomerId: string (PK)             │        │ - AccountId: string (PK)       │
+│ - CustomerType: enum                  │◄───────┤ - CustomerId: string (FK)      │
+│ - FirstName: string                   │        │ - AccountNumber: string        │
+│ - LastName: string                    │        │ - AccountName: string          │
+│ - MiddleName: string                  │        │ - AccountType: enum            │
+│ - Gender: enum                        │        │ - ProductId: string (FK)       │
+│ - DateOfBirth: datetime               │        │ - Status: enum                 │
+│ - BVN: string                         │        │ - Currency: string             │
+│ - NIN: string                         │        │ - CurrentBalance: decimal      │
+│ - PhoneNumber: string                 │        │ - AvailableBalance: decimal    │
+│ - Email: string                       │        │ - OpenDate: datetime           │
+│ - Address: Address (VO)               │        │ - LastActivityDate: datetime   │
+│ - CustomerStatus: enum                │        │ - ClosedDate: datetime?        │
+│ - KYCLevel: enum                      │        └───────────────┬────────────────┘
+│ - KYCCompletedDate: datetime?         │                        │
+│ - LastUpdated: datetime               │                        │
+│ - CreatedDate: datetime               │                        │
+└─────────────────┬─────────────────────┘                        │
+                  │                                              │
+                  │                                              │
+┌─────────────────▼─────────────────────┐        ┌───────────────▼────────────────┐
+│           CustomerDocument            │        │          Transaction            │
+├───────────────────────────────────────┤        ├────────────────────────────────┤
+│ - DocumentId: string (PK)             │        │ - TransactionId: string (PK)   │
+│ - CustomerId: string (FK)             │        │ - AccountId: string (FK)       │
+│ - DocumentType: enum                  │        │ - TransactionType: enum        │
+│ - DocumentNumber: string              │        │ - Amount: decimal              │
+│ - IssueDate: datetime                 │        │ - Currency: string             │
+│ - ExpiryDate: datetime                │        │ - TransactionDate: datetime    │
+│ - IssuingAuthority: string            │        │ - ValueDate: datetime          │
+│ - DocumentImageUrl: string            │        │ - Narration: string            │
+│ - VerificationStatus: enum            │        │ - Reference: string            │
+│ - VerificationDate: datetime?         │        │ - PostedByUserId: string (FK)  │
+│ - Notes: string                       │        │ - Status: enum                 │
+└───────────────────────────────────────┘        │ - IsReversed: bool             │
+                                                 │ - ReversalReference: string?   │
+                                                 │ - BalanceAfter: decimal        │
+┌───────────────────────────────────────┐        └────────────────────────────────┘
+│             Loan                      │
+├───────────────────────────────────────┤        ┌────────────────────────────────┐
+│ - LoanId: string (PK)                 │        │          LoanProduct           │
+│ - CustomerId: string (FK)             │        ├────────────────────────────────┤
+│ - AccountId: string (FK)              │◄───────┤ - ProductId: string (PK)       │
+│ - LoanProductId: string (FK)          │        │ - ProductName: string          │
+│ - LoanAmount: decimal                 │        │ - InterestRate: decimal        │
+│ - DisbursedAmount: decimal            │        │ - InterestType: enum           │
+│ - OutstandingPrincipal: decimal       │        │ - MinLoanAmount: decimal       │
+│ - OutstandingInterest: decimal        │        │ - MaxLoanAmount: decimal       │
+│ - OutstandingCharges: decimal         │        │ - MinTenor: int                │
+│ - Status: enum                        │        │ - MaxTenor: int                │
+│ - ApplicationDate: datetime           │        │ - RepaymentFrequency: enum     │
+│ - ApprovalDate: datetime?             │        │ - GracePeriod: int             │
+│ - DisbursementDate: datetime?         │        │ - LatePaymentFee: decimal      │
+│ - MaturityDate: datetime?             │        │ - ProcessingFee: decimal       │
+│ - NextRepaymentDate: datetime?        │        │ - CollateralRequired: bool     │
+│ - LastRepaymentDate: datetime?        │        │ - GuarantorsRequired: int      │
+│ - ClosedDate: datetime?               │        │ - Status: enum                 │
+└─────────────────┬─────────────────────┘        └────────────────────────────────┘
+                  │
+                  │
+┌─────────────────▼─────────────────────┐        ┌────────────────────────────────┐
+│          RepaymentSchedule            │        │          GLAccount              │
+├───────────────────────────────────────┤        ├────────────────────────────────┤
+│ - ScheduleId: string (PK)             │        │ - GLAccountId: string (PK)     │
+│ - LoanId: string (FK)                 │        │ - AccountCode: string          │
+│ - InstallmentNumber: int              │        │ - AccountName: string          │
+│ - DueDate: datetime                   │        │ - AccountType: enum            │
+│ - Principal: decimal                  │        │ - Category: string             │
+│ - Interest: decimal                   │        │ - SubCategory: string          │
+│ - Fees: decimal                       │        │ - IsActive: bool               │
+│ - TotalDue: decimal                   │        │ - NormalBalance: enum          │
+│ - PaidAmount: decimal                 │        │ - OpeningBalance: decimal      │
+│ - OutstandingAmount: decimal          │        │ - CurrentBalance: decimal      │
+│ - Status: enum                        │        │ - ParentAccountId: string?     │
+│ - PaidDate: datetime?                 │        │ - Description: string          │
+└───────────────────────────────────────┘        │ - CreatedDate: datetime        │
+                                                 │ - LastUpdated: datetime        │
+                                                 └────────────────────────────────┘
+---
 
 ---
 

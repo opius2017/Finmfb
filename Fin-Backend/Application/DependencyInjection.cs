@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using FinTech.Core.Application.Services.Integrations;
+using FinTech.Application;
 
 namespace FinTech.Core.Application;
 
@@ -24,6 +25,9 @@ public static class DependencyInjection
         
         // Register customer service
         services.AddScoped<ICustomerService, CustomerService>();
+        
+        // Register core accounting services
+        services.AddAccountingServices();
         
         return services;
     }

@@ -27,6 +27,9 @@ namespace FinTech.Infrastructure
             // Add Background Services
             services.AddBackgroundServices(configuration);
             
+            // Add Core Accounting Infrastructure Services
+            services.AddAccountingInfrastructure();
+            
             // Add other infrastructure services here
             
             return services;

@@ -20,7 +20,9 @@ using FinTech.Domain.Entities.MultiCurrency;
 using FinTech.Domain.Entities.FixedAssets;
 using FinTech.Domain.Entities.RegulatoryReporting;
 using FinTech.Domain.Entities.ClientPortal;
+using FinTech.Domain.Entities.Accounting;
 using FinTech.Infrastructure.Data.Configuration;
+using FinTech.Infrastructure.Data.Configurations.Accounting;
 using FinTech.WebAPI.Domain.Entities.Auth;
 
 namespace FinTech.Infrastructure.Data;
@@ -29,11 +31,18 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    // General Ledger
+    // General Ledger - Legacy
     public DbSet<ChartOfAccounts> ChartOfAccounts { get; set; }
     public DbSet<GeneralLedgerEntry> GeneralLedgerEntries { get; set; }
     public DbSet<JournalEntry> JournalEntries { get; set; }
     public DbSet<JournalEntryDetail> JournalEntryDetails { get; set; }
+    
+    // Accounting - New Core Accounting Engine
+    public DbSet<ChartOfAccount> CoreChartOfAccounts { get; set; }
+    public DbSet<FinTech.Domain.Entities.Accounting.JournalEntry> CoreJournalEntries { get; set; }
+    public DbSet<JournalEntryLine> CoreJournalEntryLines { get; set; }
+    public DbSet<FinancialPeriod> FinancialPeriods { get; set; }
+    public DbSet<FiscalYear> FiscalYears { get; set; }
 
     // Identity & Multi-tenancy
     public DbSet<Tenant> Tenants { get; set; }
@@ -164,6 +173,13 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 
         // Apply all configurations from assembly
         builder.ApplyAllConfigurations();
+        
+        // Apply explicitly the new accounting configurations
+        builder.ApplyConfiguration(new ChartOfAccountConfiguration());
+        builder.ApplyConfiguration(new JournalEntryConfiguration());
+        builder.ApplyConfiguration(new JournalEntryLineConfiguration());
+        builder.ApplyConfiguration(new FinancialPeriodConfiguration());
+        builder.ApplyConfiguration(new FiscalYearConfiguration());
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
