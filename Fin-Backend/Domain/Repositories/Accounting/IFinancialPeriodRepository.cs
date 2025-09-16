@@ -31,5 +31,25 @@ namespace FinTech.Domain.Repositories.Accounting
         Task<FinancialPeriod> GetPeriodByDateAsync(
             System.DateTime date, 
             CancellationToken cancellationToken = default);
+            
+        /// <summary>
+        /// Gets the previous financial period based on the current period ID
+        /// </summary>
+        Task<FinancialPeriod> GetPreviousPeriodAsync(
+            string currentPeriodId, 
+            CancellationToken cancellationToken = default);
+            
+        /// <summary>
+        /// Gets the next financial period based on the current period ID
+        /// </summary>
+        Task<FinancialPeriod> GetNextPeriodAsync(
+            string currentPeriodId, 
+            CancellationToken cancellationToken = default);
+            
+        /// <summary>
+        /// Gets the current active financial period
+        /// </summary>
+        Task<FinancialPeriod> GetCurrentActivePeriodAsync(
+            CancellationToken cancellationToken = default);
     }
 }

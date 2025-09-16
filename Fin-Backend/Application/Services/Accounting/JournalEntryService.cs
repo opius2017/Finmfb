@@ -32,17 +32,20 @@ namespace FinTech.Application.Services.Accounting
         private readonly IJournalEntryRepository _journalEntryRepository;
         private readonly IFinancialPeriodRepository _financialPeriodRepository;
         private readonly IChartOfAccountRepository _chartOfAccountRepository;
+        private readonly IGeneralLedgerService _generalLedgerService;
         private readonly IUnitOfWork _unitOfWork;
 
         public JournalEntryService(
             IJournalEntryRepository journalEntryRepository,
             IFinancialPeriodRepository financialPeriodRepository,
             IChartOfAccountRepository chartOfAccountRepository,
+            IGeneralLedgerService generalLedgerService,
             IUnitOfWork unitOfWork)
         {
             _journalEntryRepository = journalEntryRepository ?? throw new ArgumentNullException(nameof(journalEntryRepository));
             _financialPeriodRepository = financialPeriodRepository ?? throw new ArgumentNullException(nameof(financialPeriodRepository));
             _chartOfAccountRepository = chartOfAccountRepository ?? throw new ArgumentNullException(nameof(chartOfAccountRepository));
+            _generalLedgerService = generalLedgerService ?? throw new ArgumentNullException(nameof(generalLedgerService));
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
@@ -284,10 +287,11 @@ namespace FinTech.Application.Services.Accounting
             journalEntry.PostedAt = DateTime.UtcNow;
 
             await _journalEntryRepository.UpdateAsync(journalEntry, cancellationToken);
+            
+            // Update account balances using the GeneralLedgerService
+            await _generalLedgerService.UpdateAccountBalancesAsync(journalEntry, cancellationToken);
+            
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-            // Note: In a real implementation, this would also update account balances
-            // and potentially create entries in a general ledger table
             
             return journalEntry.Id;
         }
