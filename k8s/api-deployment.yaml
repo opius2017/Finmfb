@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finmfb-api
+  namespace: finmfb
+  labels:
+    app: finmfb-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: finmfb-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: finmfb-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "80"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: finmfb-api
+        image: ${DOCKER_REGISTRY}/finmfb-api:${TAG}
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+          requests:
+            cpu: "0.5"
+            memory: "512Mi"
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: finmfb-secrets
+              key: db-connection-string
+        - name: Redis__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: finmfb-secrets
+              key: redis-connection-string
+        - name: RabbitMQ__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: finmfb-secrets
+              key: rabbitmq-connection-string
+        - name: ApplicationInsights__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: finmfb-secrets
+              key: app-insights-connection-string
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 80
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 80
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+          periodSeconds: 10
+      imagePullSecrets:
+      - name: regcred

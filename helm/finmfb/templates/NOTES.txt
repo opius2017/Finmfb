@@ -1,0 +1,37 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To get the application URL, run these commands:
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}
+{{- end }}
+{{- else }}
+  export API_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ .Release.Name }}-api,release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export FRONTEND_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ .Release.Name }}-frontend,release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  
+  echo "Visit http://127.0.0.1:8080 to access the API"
+  kubectl port-forward $API_POD_NAME 8080:80 --namespace {{ .Release.Namespace }}
+  
+  echo "Visit http://127.0.0.1:8081 to access the Frontend"
+  kubectl port-forward $FRONTEND_POD_NAME 8081:80 --namespace {{ .Release.Namespace }}
+{{- end }}
+
+For more information about the FinMFB Banking Application, please visit:
+https://github.com/finmfb/finmfb
+
+To check the status of your deployment:
+  kubectl get all -n {{ .Release.Namespace }}
+  
+For detailed logs:
+  kubectl logs -f deployment/{{ .Release.Name }}-api -n {{ .Release.Namespace }}
+  kubectl logs -f deployment/{{ .Release.Name }}-frontend -n {{ .Release.Namespace }}
+
+For scaling:
+  kubectl scale deployment {{ .Release.Name }}-api --replicas=5 -n {{ .Release.Namespace }}
+  kubectl scale deployment {{ .Release.Name }}-frontend --replicas=5 -n {{ .Release.Namespace }}
+
+For monitoring:
+  Access Grafana at http://localhost:3000 after port-forwarding:
+  kubectl port-forward svc/grafana 3000:80 -n monitoring

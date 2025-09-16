@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: finmfb-api
+  namespace: finmfb
+  labels:
+    app: finmfb-api
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "80"
+    prometheus.io/path: "/metrics"
+spec:
+  selector:
+    app: finmfb-api
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
+  type: ClusterIP

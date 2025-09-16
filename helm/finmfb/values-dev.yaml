@@ -1,0 +1,53 @@
+# Development environment configuration
+
+global:
+  environment: development
+  imageRegistry: ""
+
+api:
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  autoscaling:
+    enabled: false
+  
+frontend:
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 300m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  autoscaling:
+    enabled: false
+    
+gateway:
+  replicaCount: 1
+  
+ingress:
+  enabled: true
+  hosts:
+    - host: dev-api.finmfb.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: gateway
+          port: 80
+    - host: dev-portal.finmfb.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+          port: 80
+  tls:
+    - secretName: finmfb-dev-tls
+      hosts:
+        - dev-api.finmfb.com
+        - dev-portal.finmfb.com

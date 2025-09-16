@@ -1,0 +1,67 @@
+graph TD
+    classDef code fill:#4CAF50,stroke:#333,stroke-width:2px;
+    classDef build fill:#2196F3,stroke:#333,stroke-width:2px;
+    classDef test fill:#FFC107,stroke:#333,stroke-width:2px;
+    classDef security fill:#F44336,stroke:#333,stroke-width:2px;
+    classDef deploy fill:#9C27B0,stroke:#333,stroke-width:2px;
+    classDef release fill:#FF9800,stroke:#333,stroke-width:2px;
+    
+    A[Developer Commits Code]:::code --> B[GitHub Action Triggered]
+    
+    B --> C[Build Backend]:::build
+    B --> D[Build Frontend]:::build
+    
+    C --> E[Run Backend Tests]:::test
+    D --> F[Run Frontend Tests]:::test
+    
+    E --> G[Run Backend Security Scan]:::security
+    F --> H[Run Frontend Security Scan]:::security
+    
+    G --> I[Build Backend Docker Image]:::build
+    H --> J[Build Frontend Docker Image]:::build
+    
+    I --> K[Push Backend Image to Registry]:::build
+    J --> L[Push Frontend Image to Registry]:::build
+    
+    K --> M[Deploy to Kubernetes]:::deploy
+    L --> M
+    
+    M --> N[Update Helm Release]:::deploy
+    
+    N --> O[Run Integration Tests]:::test
+    
+    O -->|Pass| P[Production Deployment]:::release
+    O -->|Fail| Q[Rollback Deployment]:::release
+    
+    P --> R[Monitor Application]
+    Q --> S[Notify Team]
+    
+    subgraph Build Stage
+    C
+    D
+    I
+    J
+    K
+    L
+    end
+    
+    subgraph Test Stage
+    E
+    F
+    O
+    end
+    
+    subgraph Security Stage
+    G
+    H
+    end
+    
+    subgraph Deploy Stage
+    M
+    N
+    end
+    
+    subgraph Release Stage
+    P
+    Q
+    end

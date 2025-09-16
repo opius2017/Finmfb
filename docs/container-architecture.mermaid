@@ -1,0 +1,54 @@
+graph TD
+    classDef frontend fill:#61DAFB,stroke:#333,stroke-width:2px;
+    classDef backend fill:#512BD4,stroke:#333,stroke-width:2px;
+    classDef infrastructure fill:#CC2927,stroke:#333,stroke-width:2px;
+    classDef database fill:#3178C6,stroke:#333,stroke-width:2px;
+    classDef monitoring fill:#059669,stroke:#333,stroke-width:2px;
+    classDef security fill:#F59E0B,stroke:#333,stroke-width:2px;
+    classDef middleware fill:#8B5CF6,stroke:#333,stroke-width:2px;
+
+    A[User] -->|HTTP/HTTPS| B[Ingress Controller]
+    B -->|Route| C[API Gateway]
+    
+    C -->|Route UI Requests| D[Frontend Service]
+    C -->|Route API Requests| E[Backend API]
+    C -->|Route Other Requests| F[Future Microservices]
+    
+    D[Frontend Service - React]:::frontend
+    E[Backend API - .NET 9.0]:::backend
+    F[Future Microservices]:::backend
+    
+    E -->|Use| G[Integration Services]:::backend
+    G -->|Process| H[Domain Events]:::backend
+    H -->|Create| I[Journal Entries]:::backend
+    
+    E -->|Connect to| J[SQL Server]:::database
+    E -->|Cache with| K[Redis]:::database
+    E -->|Message Queue| L[RabbitMQ]:::middleware
+    
+    subgraph Infrastructure
+    J
+    K
+    L
+    end
+    
+    subgraph Monitoring
+    M[Prometheus]:::monitoring
+    N[Grafana]:::monitoring
+    O[Seq Logging]:::monitoring
+    end
+    
+    E -->|Metrics| M
+    D -->|Metrics| M
+    M -->|Visualize| N
+    E -->|Logs| O
+    
+    subgraph Security
+    P[API Authentication]:::security
+    Q[Resource Authorization]:::security
+    R[Rate Limiting]:::security
+    end
+    
+    C -->|Enforce| P
+    C -->|Enforce| R
+    E -->|Enforce| Q

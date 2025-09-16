@@ -1,0 +1,13 @@
+apiVersion: v2
+name: finmfb
+description: A Helm chart for FinMFB Banking Application
+type: application
+version: 0.1.0
+appVersion: 1.0.0
+keywords:
+  - banking
+  - fintech
+  - microservices
+maintainers:
+  - name: FinMFB Team
+    email: devops@finmfb.com

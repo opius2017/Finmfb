@@ -1,0 +1,60 @@
+# Production environment configuration
+
+global:
+  environment: production
+  imageRegistry: ""
+
+api:
+  replicaCount: 3
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+  
+frontend:
+  replicaCount: 3
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    
+gateway:
+  replicaCount: 2
+  
+ingress:
+  enabled: true
+  hosts:
+    - host: api.finmfb.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: gateway
+          port: 80
+    - host: portal.finmfb.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+          port: 80
+  tls:
+    - secretName: finmfb-tls
+      hosts:
+        - api.finmfb.com
+        - portal.finmfb.com
+        
+networkPolicy:
+  enabled: true

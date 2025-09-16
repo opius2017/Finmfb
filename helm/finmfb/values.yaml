@@ -1,0 +1,131 @@
+# Default values for finmfb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  environment: production
+  imageRegistry: ""
+  imagePullSecrets: []
+
+api:
+  replicaCount: 3
+  image:
+    repository: finmfb-api
+    tag: latest
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  livenessProbe:
+    path: /health/live
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+  readinessProbe:
+    path: /health/ready
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+    periodSeconds: 10
+  service:
+    type: ClusterIP
+    port: 80
+    httpsPort: 443
+
+frontend:
+  replicaCount: 3
+  image:
+    repository: finmfb-frontend
+    tag: latest
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  livenessProbe:
+    path: /
+    initialDelaySeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+  readinessProbe:
+    path: /
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+    periodSeconds: 10
+  service:
+    type: ClusterIP
+    port: 80
+
+gateway:
+  replicaCount: 2
+  image:
+    repository: finmfb-gateway
+    tag: latest
+    pullPolicy: Always
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  service:
+    type: ClusterIP
+    port: 80
+    httpsPort: 443
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+  hosts:
+    - host: api.finmfb.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: gateway
+          port: 80
+    - host: portal.finmfb.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: frontend
+          port: 80
+  tls:
+    - secretName: finmfb-tls
+      hosts:
+        - api.finmfb.com
+        - portal.finmfb.com
+
+secrets:
+  create: true
+  dbConnectionString: ""
+  redisConnectionString: ""
+  rabbitmqConnectionString: ""
+  appInsightsConnectionString: ""
+
+networkPolicy:
+  enabled: true

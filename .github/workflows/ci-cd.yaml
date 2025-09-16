@@ -1,0 +1,199 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  NAMESPACE: finmfb
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'Fin-Frontend/package-lock.json'
+
+      - name: Restore backend dependencies
+        run: dotnet restore Finmfb.sln
+
+      - name: Build backend
+        run: dotnet build Finmfb.sln --configuration Release --no-restore
+
+      - name: Run backend tests
+        run: dotnet test Finmfb.sln --configuration Release --no-build --verbosity normal
+
+      - name: Install frontend dependencies
+        run: |
+          cd Fin-Frontend
+          npm ci
+
+      - name: Build frontend
+        run: |
+          cd Fin-Frontend
+          npm run build
+
+      - name: Run frontend tests
+        run: |
+          cd Fin-Frontend
+          npm test
+
+      - name: Set tag
+        id: vars
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=$(echo $GITHUB_SHA | cut -c1-8)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set environment
+        id: env
+        run: |
+          if [[ $GITHUB_REF == refs/heads/main || $GITHUB_REF == refs/tags/* ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=development" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Login to Docker Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push backend Docker image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Fin-Backend/Dockerfile
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/finmfb-api:${{ steps.vars.outputs.tag }}
+          build-args: |
+            ASPNETCORE_ENVIRONMENT=${{ steps.env.outputs.environment }}
+
+      - name: Build and push frontend Docker image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: Fin-Frontend/Dockerfile
+          push: true
+          tags: ${{ env.DOCKER_REGISTRY }}/finmfb-frontend:${{ steps.vars.outputs.tag }}
+          build-args: |
+            NODE_ENV=${{ steps.env.outputs.environment }}
+
+  deploy:
+    needs: build-and-test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'latest'
+
+      - name: Set environment
+        id: env
+        run: |
+          if [[ $GITHUB_REF == refs/heads/main || $GITHUB_REF == refs/tags/* ]]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+            echo "cluster=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+            echo "cluster=development" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set tag
+        id: vars
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=$(echo $GITHUB_SHA | cut -c1-8)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Connect to Kubernetes
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          
+      - name: Create namespace if not exists
+        run: |
+          kubectl get namespace ${{ env.NAMESPACE }} || kubectl create namespace ${{ env.NAMESPACE }}
+
+      - name: Deploy to Kubernetes
+        run: |
+          helm upgrade --install finmfb ./helm/finmfb \
+            --namespace ${{ env.NAMESPACE }} \
+            -f ./helm/finmfb/values-${{ steps.env.outputs.environment }}.yaml \
+            --set global.imageRegistry=${{ env.DOCKER_REGISTRY }} \
+            --set api.image.tag=${{ steps.vars.outputs.tag }} \
+            --set frontend.image.tag=${{ steps.vars.outputs.tag }}
+
+      - name: Verify deployment
+        run: |
+          kubectl get pods -n ${{ env.NAMESPACE }}
+          kubectl get svc -n ${{ env.NAMESPACE }}
+          kubectl get ingress -n ${{ env.NAMESPACE }}
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner on Backend
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'Fin-Backend'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy vulnerability scanner on Frontend
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'Fin-Frontend'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run OWASP ZAP Scan
+        uses: zaproxy/action-baseline@v0.9.0
+        with:
+          target: 'https://dev-api.finmfb.com'

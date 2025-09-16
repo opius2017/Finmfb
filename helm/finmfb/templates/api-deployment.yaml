@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api
+  labels:
+    app: {{ .Release.Name }}-api
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api
+      release: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "80"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-api
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.api.image.repository }}:{{ .Values.api.image.tag }}"
+        imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+        resources:
+          {{- toYaml .Values.api.resources | nindent 12 }}
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: {{ .Values.global.environment }}
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: db-connection-string
+        - name: Redis__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: redis-connection-string
+        - name: RabbitMQ__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: rabbitmq-connection-string
+        - name: ApplicationInsights__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secrets
+              key: app-insights-connection-string
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.api.livenessProbe.path }}
+            port: 80
+          initialDelaySeconds: {{ .Values.api.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.api.livenessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.api.livenessProbe.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.api.readinessProbe.path }}
+            port: 80
+          initialDelaySeconds: {{ .Values.api.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.api.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.api.readinessProbe.periodSeconds }}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
