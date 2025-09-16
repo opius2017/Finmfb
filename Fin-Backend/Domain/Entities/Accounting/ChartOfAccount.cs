@@ -1,114 +1,48 @@
 using System;
 using System.Collections.Generic;
+using FinTech.Domain.Entities.Accounting.Events;
 using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Accounting
 {
-    public enum AccountClassification
-    {
-        Asset = 1,
-        Liability = 2,
-        Equity = 3,
-        Income = 4,
-        Expense = 5
-    }
-    
-    public enum AccountType
-    {
-        // Asset categories
-        Cash = 1,
-        Bank = 2,
-        AccountsReceivable = 3,
-        Loans = 4,
-        LoanLossProvision = 5,
-        FixedAssets = 6,
-        AccumulatedDepreciation = 7,
-        IntangibleAssets = 8,
-        PrepaidExpenses = 9,
-        Inventory = 10,
-        OtherAssets = 19,
-        
-        // Liability categories
-        AccountsPayable = 20,
-        Deposits = 21,
-        SavingsAccounts = 22,
-        CurrentAccounts = 23,
-        FixedDeposits = 24,
-        Borrowings = 25,
-        AccruedExpenses = 26,
-        TaxPayable = 27,
-        DeferredTaxLiability = 28,
-        OtherLiabilities = 39,
-        
-        // Equity categories
-        Capital = 40,
-        ShareCapital = 41,
-        SharePremium = 42,
-        RetainedEarnings = 43,
-        StatutoryReserves = 44,
-        GeneralReserves = 45,
-        OtherReserves = 49,
-        
-        // Income categories
-        InterestIncome = 50,
-        FeeIncome = 51,
-        CommissionIncome = 52,
-        InvestmentIncome = 53,
-        ForeignExchangeGains = 54,
-        OtherIncome = 59,
-        
-        // Expense categories
-        InterestExpense = 60,
-        PersonnelExpense = 61,
-        AdministrativeExpense = 62,
-        DepreciationAndAmortization = 63,
-        LoanLossExpense = 64,
-        OperatingExpenses = 65,
-        MarketingExpense = 66,
-        TaxExpense = 67,
-        OtherExpense = 79
-    }
-    
-    public enum NormalBalanceType
-    {
-        Debit = 1,
-        Credit = 2
-    }
-    
     /// <summary>
     /// Represents an account in the Chart of Accounts
     /// </summary>
     public class ChartOfAccount : AggregateRoot
     {
-        public string AccountCode { get; private set; }
-        public string AccountName { get; private set; }
-        public AccountClassification Classification { get; private set; }
-        public AccountType AccountType { get; private set; }
-        public string Description { get; private set; }
-        public bool IsActive { get; private set; }
-        public NormalBalanceType NormalBalance { get; private set; }
-        public string ParentAccountId { get; private set; }
+        public string AccountNumber { get; set; }
+        public string AccountName { get; set; }
+        public AccountClassification Classification { get; set; }
+        public AccountType AccountType { get; set; }
+        public string Description { get; set; }
+        public AccountStatus Status { get; set; }
+        public NormalBalanceType NormalBalance { get; set; }
+        public string ParentAccountId { get; set; }
         public ChartOfAccount ParentAccount { get; private set; }
         public ICollection<ChartOfAccount> ChildAccounts { get; private set; } = new List<ChartOfAccount>();
-        public string CurrencyCode { get; private set; }
-        public bool AllowManualEntries { get; private set; }
-        public bool RequiresReconciliation { get; private set; }
-        public string CBNReportingCode { get; private set; }
-        public string NDICReportingCode { get; private set; }
-        public string IFRSCategory { get; private set; }
-        public int AccountLevel { get; private set; }
-        public string AccountMnemonic { get; private set; }
-        public bool IsBudgeted { get; private set; }
-        public bool IsRestricted { get; private set; }
-        public int? BranchId { get; private set; }
-        public string Tags { get; private set; }
+        public string CurrencyCode { get; set; }
+        public bool AllowManualEntries { get; set; }
+        public bool RequiresReconciliation { get; set; }
+        public string CBNReportingCode { get; set; }
+        public string NDICReportingCode { get; set; }
+        public string IFRSCategory { get; set; }
+        public int AccountLevel { get; set; }
+        public string AccountMnemonic { get; set; }
+        public bool IsBudgeted { get; set; }
+        public bool IsRestricted { get; set; }
+        public int? BranchId { get; set; }
+        public string Tags { get; set; }
         public Money CurrentBalance { get; private set; }
+        public DateTime CreatedAt { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? LastModifiedAt { get; set; }
+        public string LastModifiedBy { get; set; }
         
         // Required by EF Core
         private ChartOfAccount() { }
         
         public ChartOfAccount(
-            string accountCode,
+            string accountNumber,
             string accountName,
             AccountClassification classification,
             AccountType accountType,
@@ -128,12 +62,13 @@ namespace FinTech.Domain.Entities.Accounting
             int? branchId = null,
             string tags = null)
         {
-            AccountCode = accountCode;
+            Id = Guid.NewGuid().ToString();
+            AccountNumber = accountNumber;
             AccountName = accountName;
             Classification = classification;
             AccountType = accountType;
             Description = description;
-            IsActive = true;
+            Status = AccountStatus.Active;
             NormalBalance = normalBalance;
             ParentAccountId = parentAccountId;
             CurrencyCode = currencyCode;
@@ -149,18 +84,19 @@ namespace FinTech.Domain.Entities.Accounting
             BranchId = branchId;
             Tags = tags;
             CurrentBalance = Money.Zero(currencyCode);
+            CreatedAt = DateTime.UtcNow;
             
             // Add domain event
-            AddDomainEvent(new AccountCreatedEvent(Id, accountCode, accountName));
+            AddDomainEvent(new AccountCreatedEvent(Id, accountNumber, accountName));
         }
         
         public void UpdateAccountDetails(
             string accountName, 
             string description,
-            bool isActive,
             bool allowManualEntries,
             bool requiresReconciliation,
             string cbnReportingCode,
+            string modifiedBy,
             string ndicReportingCode = null,
             string ifrsCategory = null,
             string accountMnemonic = null,
@@ -170,7 +106,6 @@ namespace FinTech.Domain.Entities.Accounting
         {
             AccountName = accountName;
             Description = description;
-            IsActive = isActive;
             AllowManualEntries = allowManualEntries;
             RequiresReconciliation = requiresReconciliation;
             CBNReportingCode = cbnReportingCode;
@@ -180,9 +115,10 @@ namespace FinTech.Domain.Entities.Accounting
             IsBudgeted = isBudgeted;
             IsRestricted = isRestricted;
             Tags = tags;
-            LastModifiedDate = DateTime.UtcNow;
+            LastModifiedAt = DateTime.UtcNow;
+            LastModifiedBy = modifiedBy;
             
-            AddDomainEvent(new AccountUpdatedEvent(Id, AccountCode, accountName));
+            AddDomainEvent(new AccountUpdatedEvent(Id, AccountNumber, accountName));
         }
         
         public void UpdateBalance(Money amount, bool isDebit)
@@ -212,82 +148,31 @@ namespace FinTech.Domain.Entities.Accounting
                 }
             }
             
-            LastModifiedDate = DateTime.UtcNow;
+            LastModifiedAt = DateTime.UtcNow;
         }
         
-        public void Deactivate()
+        public void Deactivate(string modifiedBy)
         {
-            if (!IsActive)
+            if (Status == AccountStatus.Inactive)
                 return;
                 
-            IsActive = false;
-            LastModifiedDate = DateTime.UtcNow;
+            Status = AccountStatus.Inactive;
+            LastModifiedAt = DateTime.UtcNow;
+            LastModifiedBy = modifiedBy;
             
-            AddDomainEvent(new AccountDeactivatedEvent(Id, AccountCode));
+            AddDomainEvent(new AccountDeactivatedEvent(Id, AccountNumber));
         }
         
-        public void Activate()
+        public void Activate(string modifiedBy)
         {
-            if (IsActive)
+            if (Status == AccountStatus.Active)
                 return;
                 
-            IsActive = true;
-            LastModifiedDate = DateTime.UtcNow;
+            Status = AccountStatus.Active;
+            LastModifiedAt = DateTime.UtcNow;
+            LastModifiedBy = modifiedBy;
             
-            AddDomainEvent(new AccountActivatedEvent(Id, AccountCode));
-        }
-    }
-    
-    // Domain Events
-    public class AccountCreatedEvent : DomainEvent
-    {
-        public string AccountId { get; }
-        public string AccountCode { get; }
-        public string AccountName { get; }
-        
-        public AccountCreatedEvent(string accountId, string accountCode, string accountName)
-        {
-            AccountId = accountId;
-            AccountCode = accountCode;
-            AccountName = accountName;
-        }
-    }
-    
-    public class AccountUpdatedEvent : DomainEvent
-    {
-        public string AccountId { get; }
-        public string AccountCode { get; }
-        public string AccountName { get; }
-        
-        public AccountUpdatedEvent(string accountId, string accountCode, string accountName)
-        {
-            AccountId = accountId;
-            AccountCode = accountCode;
-            AccountName = accountName;
-        }
-    }
-    
-    public class AccountDeactivatedEvent : DomainEvent
-    {
-        public string AccountId { get; }
-        public string AccountCode { get; }
-        
-        public AccountDeactivatedEvent(string accountId, string accountCode)
-        {
-            AccountId = accountId;
-            AccountCode = accountCode;
-        }
-    }
-    
-    public class AccountActivatedEvent : DomainEvent
-    {
-        public string AccountId { get; }
-        public string AccountCode { get; }
-        
-        public AccountActivatedEvent(string accountId, string accountCode)
-        {
-            AccountId = accountId;
-            AccountCode = accountCode;
+            AddDomainEvent(new AccountActivatedEvent(Id, AccountNumber));
         }
     }
 }
