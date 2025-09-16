@@ -1,0 +1,41 @@
+{{- if .Values.podDisruptionBudget.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "finmfb.fullname" . }}-api-pdb
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "finmfb.labels" . | nindent 4 }}
+    component: api
+spec:
+  {{- if .Values.podDisruptionBudget.api.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.api.minAvailable }}
+  {{- end }}
+  {{- if .Values.podDisruptionBudget.api.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.api.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "finmfb.selectorLabels" . | nindent 6 }}
+      component: api
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "finmfb.fullname" . }}-frontend-pdb
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "finmfb.labels" . | nindent 4 }}
+    component: frontend
+spec:
+  {{- if .Values.podDisruptionBudget.frontend.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.frontend.minAvailable }}
+  {{- end }}
+  {{- if .Values.podDisruptionBudget.frontend.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.frontend.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "finmfb.selectorLabels" . | nindent 6 }}
+      component: frontend
+{{- end }}

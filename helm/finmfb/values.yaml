@@ -5,6 +5,7 @@
 global:
   environment: production
   imageRegistry: ""
+  imageTag: latest
   imagePullSecrets: []
 
 api:
@@ -13,6 +14,38 @@ api:
     repository: finmfb-api
     tag: latest
     pullPolicy: Always
+  environment: "Production"
+  logging:
+    default: "Information"
+    microsoft: "Warning"
+    lifetime: "Information"
+  caching:
+    enabled: "true"
+    expirationMinutes: "60"
+  metrics:
+    enabled: "true"
+  tracing:
+    enabled: "true"
+  resilience:
+    retryCount: "3"
+    circuitBreakerFailures: "5"
+    circuitBreakerDuration: "30"
+  corsPolicy:
+    allowedOrigins:
+      - "https://portal.finmfb.com"
+      - "https://api.finmfb.com"
+  featureFlags:
+    EnableAdvancedReporting: "true"
+    EnableMobileBanking: "true"
+  settings:
+    EnableResponseCompression: "true"
+    EnableRequestBuffering: "false"
+  performance:
+    EnableResponseCaching: "true"
+    EnableOutputCaching: "true"
+  rateLimiting:
+    Enabled: "true"
+    DefaultLimitPerMinute: "100"
   resources:
     limits:
       cpu: 1
@@ -129,3 +162,108 @@ secrets:
 
 networkPolicy:
   enabled: true
+
+# Database configuration
+database:
+  enabled: true
+  image:
+    repository: mcr.microsoft.com/mssql/server
+    tag: 2022-latest
+    pullPolicy: IfNotPresent
+  edition: "Express"
+  resources:
+    limits:
+      memory: 2Gi
+      cpu: "2"
+    requests:
+      memory: 1Gi
+      cpu: "1"
+  storage:
+    storageClass: "standard"
+    size: 10Gi
+
+# Redis configuration
+redis:
+  enabled: true
+  replicas: 1
+  image:
+    repository: redis
+    tag: alpine
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: "1"
+    requests:
+      memory: 512Mi
+      cpu: "0.5"
+  storage:
+    storageClass: "standard"
+    size: 5Gi
+
+# RabbitMQ configuration
+rabbitmq:
+  enabled: true
+  replicas: 1
+  image:
+    repository: rabbitmq
+    tag: 3-management
+    pullPolicy: IfNotPresent
+  auth:
+    username: "admin"
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: "1"
+    requests:
+      memory: 512Mi
+      cpu: "0.5"
+  storage:
+    storageClass: "standard"
+    size: 5Gi
+
+# Pod Disruption Budget
+podDisruptionBudget:
+  enabled: true
+  api:
+    minAvailable: 2
+  frontend:
+    minAvailable: 1
+
+# Monitoring
+monitoring:
+  enabled: true
+  namespace: finmfb-monitoring
+  prometheus:
+    enabled: true
+    image:
+      repository: prom/prometheus
+      tag: latest
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        memory: 1Gi
+        cpu: "1"
+      requests:
+        memory: 512Mi
+        cpu: "0.5"
+    storage:
+      storageClass: "standard"
+      size: 10Gi
+  grafana:
+    enabled: true
+    image:
+      repository: grafana/grafana
+      tag: latest
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        memory: 1Gi
+        cpu: "1"
+      requests:
+        memory: 512Mi
+        cpu: "0.5"
+    storage:
+      storageClass: "standard"
+      size: 5Gi
+    adminPassword: "GrafanaStrongPassword123!"

@@ -1,0 +1,96 @@
+{{- if .Values.database.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "finmfb.fullname" . }}-db
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "finmfb.labels" . | nindent 4 }}
+    component: db
+spec:
+  selector:
+    matchLabels:
+      {{- include "finmfb.selectorLabels" . | nindent 6 }}
+      component: db
+  serviceName: {{ include "finmfb.fullname" . }}-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        {{- include "finmfb.selectorLabels" . | nindent 8 }}
+        component: db
+    spec:
+      containers:
+      - name: mssql
+        image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+        imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+        ports:
+        - containerPort: 1433
+          name: mssql
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: MSSQL_PID
+          value: {{ .Values.database.edition }}
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "finmfb.fullname" . }}-db-secret
+              key: sa-password
+        resources:
+          {{- toYaml .Values.database.resources | nindent 10 }}
+        volumeMounts:
+        - name: mssql-data
+          mountPath: /var/opt/mssql
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q 'SELECT 1' || exit 1"
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q 'SELECT 1' || exit 1"
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+      securityContext:
+        fsGroup: 10001
+  volumeClaimTemplates:
+  - metadata:
+      name: mssql-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: {{ .Values.database.storage.storageClass }}
+      resources:
+        requests:
+          storage: {{ .Values.database.storage.size }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "finmfb.fullname" . }}-db
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "finmfb.labels" . | nindent 4 }}
+    component: db
+spec:
+  ports:
+  - port: 1433
+    targetPort: 1433
+    name: mssql
+  clusterIP: None
+  selector:
+    {{- include "finmfb.selectorLabels" . | nindent 4 }}
+    component: db
+{{- end }}

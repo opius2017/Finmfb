@@ -1,0 +1,92 @@
+{{- if .Values.rabbitmq.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "finmfb.fullname" . }}-rabbitmq
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "finmfb.labels" . | nindent 4 }}
+    component: rabbitmq
+spec:
+  selector:
+    matchLabels:
+      {{- include "finmfb.selectorLabels" . | nindent 6 }}
+      component: rabbitmq
+  serviceName: {{ include "finmfb.fullname" . }}-rabbitmq
+  replicas: {{ .Values.rabbitmq.replicas }}
+  template:
+    metadata:
+      labels:
+        {{- include "finmfb.selectorLabels" . | nindent 8 }}
+        component: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: "{{ .Values.rabbitmq.image.repository }}:{{ .Values.rabbitmq.image.tag }}"
+        imagePullPolicy: {{ .Values.rabbitmq.image.pullPolicy }}
+        ports:
+        - containerPort: 5672
+          name: amqp
+        - containerPort: 15672
+          name: management
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: {{ .Values.rabbitmq.auth.username }}
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "finmfb.fullname" . }}-rabbitmq-secret
+              key: rabbitmq-password
+        resources:
+          {{- toYaml .Values.rabbitmq.resources | nindent 10 }}
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+        livenessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "status"]
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "check_port_connectivity"]
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+      securityContext:
+        fsGroup: 999
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: {{ .Values.rabbitmq.storage.storageClass }}
+      resources:
+        requests:
+          storage: {{ .Values.rabbitmq.storage.size }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "finmfb.fullname" . }}-rabbitmq
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "finmfb.labels" . | nindent 4 }}
+    component: rabbitmq
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+    name: amqp
+  - port: 15672
+    targetPort: 15672
+    name: management
+  selector:
+    {{- include "finmfb.selectorLabels" . | nindent 4 }}
+    component: rabbitmq
+{{- end }}

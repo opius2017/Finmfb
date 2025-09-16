@@ -3,9 +3,11 @@
 global:
   environment: development
   imageRegistry: ""
+  imageTag: dev
 
 api:
   replicaCount: 1
+  environment: "Development"
   resources:
     limits:
       cpu: 500m
@@ -15,6 +17,9 @@ api:
       memory: 256Mi
   autoscaling:
     enabled: false
+  featureFlags:
+    EnableAdvancedReporting: "false"
+    EnableMobileBanking: "true"
   
 frontend:
   replicaCount: 1
@@ -51,3 +56,72 @@ ingress:
       hosts:
         - dev-api.finmfb.com
         - dev-portal.finmfb.com
+
+# Database configuration for development
+database:
+  enabled: true
+  resources:
+    limits:
+      memory: 1Gi
+      cpu: "1"
+    requests:
+      memory: 512Mi
+      cpu: "0.5"
+  storage:
+    size: 5Gi
+
+# Redis configuration for development
+redis:
+  enabled: true
+  replicas: 1
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: "0.5"
+    requests:
+      memory: 256Mi
+      cpu: "0.25"
+  storage:
+    size: 2Gi
+
+# RabbitMQ configuration for development
+rabbitmq:
+  enabled: true
+  replicas: 1
+  resources:
+    limits:
+      memory: 512Mi
+      cpu: "0.5"
+    requests:
+      memory: 256Mi
+      cpu: "0.25"
+  storage:
+    size: 2Gi
+
+# Pod Disruption Budget for development
+podDisruptionBudget:
+  enabled: false
+
+# Monitoring for development
+monitoring:
+  enabled: true
+  prometheus:
+    resources:
+      limits:
+        memory: 512Mi
+        cpu: "0.5"
+      requests:
+        memory: 256Mi
+        cpu: "0.25"
+    storage:
+      size: 5Gi
+  grafana:
+    resources:
+      limits:
+        memory: 512Mi
+        cpu: "0.5"
+      requests:
+        memory: 256Mi
+        cpu: "0.25"
+    storage:
+      size: 2Gi

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "finmfb.fullname" . }}-api-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "finmfb.labels" . | nindent 4 }}
+    component: api
+data:
+  ASPNETCORE_ENVIRONMENT: {{ .Values.api.environment | quote }}
+  Logging__LogLevel__Default: {{ .Values.api.logging.default | quote }}
+  Logging__LogLevel__Microsoft: {{ .Values.api.logging.microsoft | quote }}
+  Logging__LogLevel__Microsoft.Hosting.Lifetime: {{ .Values.api.logging.lifetime | quote }}
+  AllowedHosts: "*"
+  Caching__Enabled: {{ .Values.api.caching.enabled | quote }}
+  Caching__DefaultExpirationMinutes: {{ .Values.api.caching.expirationMinutes | quote }}
+  Metrics__Enabled: {{ .Values.api.metrics.enabled | quote }}
+  Tracing__Enabled: {{ .Values.api.tracing.enabled | quote }}
+  Resilience__RetryCount: {{ .Values.api.resilience.retryCount | quote }}
+  Resilience__CircuitBreakerFailuresBeforeBreaking: {{ .Values.api.resilience.circuitBreakerFailures | quote }}
+  Resilience__CircuitBreakerDurationOfBreakSeconds: {{ .Values.api.resilience.circuitBreakerDuration | quote }}
+  {{- if .Values.api.corsPolicy.allowedOrigins }}
+  CorsPolicy__AllowedOrigins: {{ .Values.api.corsPolicy.allowedOrigins | join "," | quote }}
+  {{- end }}
+  {{- range $key, $value := .Values.api.featureFlags }}
+  FeatureFlags__{{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- range $key, $value := .Values.api.settings }}
+  ApiSettings__{{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- range $key, $value := .Values.api.performance }}
+  Performance__{{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- range $key, $value := .Values.api.rateLimiting }}
+  RateLimiting__{{ $key }}: {{ $value | quote }}
+  {{- end }}

@@ -3,9 +3,11 @@
 global:
   environment: production
   imageRegistry: ""
+  imageTag: stable
 
 api:
   replicaCount: 3
+  environment: "Production"
   resources:
     limits:
       cpu: 1
@@ -17,6 +19,9 @@ api:
     enabled: true
     minReplicas: 3
     maxReplicas: 10
+  featureFlags:
+    EnableAdvancedReporting: "true"
+    EnableMobileBanking: "true"
   
 frontend:
   replicaCount: 3
@@ -58,3 +63,76 @@ ingress:
         
 networkPolicy:
   enabled: true
+
+# Database configuration for production
+database:
+  enabled: true
+  resources:
+    limits:
+      memory: 4Gi
+      cpu: "4"
+    requests:
+      memory: 2Gi
+      cpu: "2"
+  storage:
+    size: 50Gi
+
+# Redis configuration for production
+redis:
+  enabled: true
+  replicas: 3
+  resources:
+    limits:
+      memory: 2Gi
+      cpu: "2"
+    requests:
+      memory: 1Gi
+      cpu: "1"
+  storage:
+    size: 20Gi
+
+# RabbitMQ configuration for production
+rabbitmq:
+  enabled: true
+  replicas: 3
+  resources:
+    limits:
+      memory: 2Gi
+      cpu: "2"
+    requests:
+      memory: 1Gi
+      cpu: "1"
+  storage:
+    size: 20Gi
+
+# Pod Disruption Budget for production
+podDisruptionBudget:
+  enabled: true
+  api:
+    minAvailable: 2
+  frontend:
+    minAvailable: 2
+
+# Monitoring for production
+monitoring:
+  enabled: true
+  prometheus:
+    resources:
+      limits:
+        memory: 4Gi
+        cpu: "2"
+      requests:
+        memory: 2Gi
+        cpu: "1"
+    storage:
+      size: 100Gi
+  grafana:
+    resources:
+      limits:
+        memory: 2Gi
+        cpu: "1"
+      requests:
+        memory: 1Gi
+        cpu: "0.5"
+    storage:
+      size: 20Gi
