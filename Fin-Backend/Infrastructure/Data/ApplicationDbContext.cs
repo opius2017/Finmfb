@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +30,10 @@ using FinTech.Domain.Entities.ClientPortal;
 using FinTech.Domain.Entities.Accounting;
 using FinTech.Infrastructure.Data.Configuration;
 using FinTech.Infrastructure.Data.Configurations.Accounting;
+using FinTech.Infrastructure.Data.Interceptors;
+using FinTech.Infrastructure.Security.Authorization;
 using FinTech.WebAPI.Domain.Entities.Auth;
+using Microsoft.ApplicationInsights;
 
 namespace FinTech.Infrastructure.Data;
 
@@ -36,15 +41,21 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 {
     private readonly IDomainEventService _domainEventService;
     private readonly ILogger<ApplicationDbContext> _logger;
+    private readonly TelemetryClient _telemetryClient;
+    private readonly ICurrentUserService _currentUserService;
 
     public ApplicationDbContext(
         DbContextOptions<ApplicationDbContext> options, 
         IDomainEventService domainEventService = null,
-        ILogger<ApplicationDbContext> logger = null) 
+        ILogger<ApplicationDbContext> logger = null,
+        TelemetryClient telemetryClient = null,
+        ICurrentUserService currentUserService = null) 
         : base(options) 
     {
         _domainEventService = domainEventService;
         _logger = logger;
+        _telemetryClient = telemetryClient;
+        _currentUserService = currentUserService;
     }
 
     // General Ledger - Legacy
@@ -116,6 +127,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     // Security & Audit
     public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<MakerCheckerTransaction> MakerCheckerTransactions { get; set; }
+    public DbSet<ResourcePermission> ResourcePermissions { get; set; }
+    public DbSet<UserPermission> UserPermissions { get; set; }
+    public DbSet<ResourceOperation> ResourceOperations { get; set; }
+    public DbSet<SecurityPolicy> SecurityPolicies { get; set; }
+    public DbSet<LoginAttempt> LoginAttempts { get; set; }
+    public DbSet<DataAccessLog> DataAccessLogs { get; set; }
+    
+    // Domain Events Tracking
+    public DbSet<DomainEventRecord> DomainEventRecords { get; set; }
+    public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     // Reporting
     public DbSet<FinancialStatement> FinancialStatements { get; set; }
@@ -196,10 +217,63 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
         builder.ApplyConfiguration(new JournalEntryLineConfiguration());
         builder.ApplyConfiguration(new FinancialPeriodConfiguration());
         builder.ApplyConfiguration(new FiscalYearConfiguration());
+        
+        // Apply security and authorization configurations
+        builder.ApplyConfiguration(new ResourcePermissionConfiguration());
+        builder.ApplyConfiguration(new UserPermissionConfiguration());
+        builder.ApplyConfiguration(new SecurityPolicyConfiguration());
+        builder.ApplyConfiguration(new LoginAttemptConfiguration());
+        builder.ApplyConfiguration(new DataAccessLogConfiguration());
+        
+        // Apply event tracking configurations
+        builder.ApplyConfiguration(new DomainEventRecordConfiguration());
+        builder.ApplyConfiguration(new OutboxMessageConfiguration());
+        
+        // Apply global query filters
+        ApplyGlobalFilters(builder);
+    }
+    
+    private void ApplyGlobalFilters(ModelBuilder builder)
+    {
+        // Apply soft delete filter to all entities implementing ISoftDelete
+        foreach (var entityType in builder.Model.GetEntityTypes())
+        {
+            if (typeof(ISoftDelete).IsAssignableFrom(entityType.ClrType))
+            {
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var property = Expression.Property(parameter, nameof(ISoftDelete.IsDeleted));
+                var falseValue = Expression.Constant(false);
+                var expression = Expression.Equal(property, falseValue);
+                var lambda = Expression.Lambda(expression, parameter);
+                
+                builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+            }
+            
+            // Apply multi-tenancy filter if applicable
+            if (typeof(ITenantEntity).IsAssignableFrom(entityType.ClrType) && _currentUserService != null)
+            {
+                var tenantId = _currentUserService.TenantId;
+                if (tenantId.HasValue)
+                {
+                    var parameter = Expression.Parameter(entityType.ClrType, "e");
+                    var property = Expression.Property(parameter, nameof(ITenantEntity.TenantId));
+                    var tenantValue = Expression.Constant(tenantId.Value);
+                    var expression = Expression.Equal(property, tenantValue);
+                    var lambda = Expression.Lambda(expression, parameter);
+                    
+                    builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+                }
+            }
+        }
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        var stopwatch = Stopwatch.StartNew();
+        
+        // Track entities being modified for auditing
+        var auditEntries = OnBeforeSaveChanges();
+        
         // Update audit fields
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
@@ -207,9 +281,30 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             {
                 case EntityState.Added:
                     entry.Entity.CreatedAt = DateTime.UtcNow;
+                    if (_currentUserService != null)
+                    {
+                        entry.Entity.CreatedBy = _currentUserService.UserId;
+                    }
                     break;
                 case EntityState.Modified:
                     entry.Entity.UpdatedAt = DateTime.UtcNow;
+                    if (_currentUserService != null)
+                    {
+                        entry.Entity.UpdatedBy = _currentUserService.UserId;
+                    }
+                    break;
+                case EntityState.Deleted:
+                    // Implement soft delete if entity implements ISoftDelete
+                    if (entry.Entity is ISoftDelete softDeleteEntity)
+                    {
+                        entry.State = EntityState.Modified;
+                        softDeleteEntity.IsDeleted = true;
+                        softDeleteEntity.DeletedAt = DateTime.UtcNow;
+                        if (_currentUserService != null)
+                        {
+                            softDeleteEntity.DeletedBy = _currentUserService.UserId;
+                        }
+                    }
                     break;
             }
         }
@@ -219,14 +314,193 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             .Select(e => e.Entity)
             .Where(e => e.DomainEvents.Any())
             .ToArray();
+            
+        // Store domain events in the outbox for reliable processing
+        AddDomainEventsToOutbox(entitiesWithEvents);
 
-        // Save changes to database first to ensure all IDs are generated
-        var result = await base.SaveChangesAsync(cancellationToken);
+        // Save changes to database
+        int result;
+        try
+        {
+            result = await base.SaveChangesAsync(cancellationToken);
+            
+            // Write audit logs after successful save
+            await OnAfterSaveChanges(auditEntries, cancellationToken);
+            
+            // Track database performance
+            stopwatch.Stop();
+            
+            if (_telemetryClient != null)
+            {
+                _telemetryClient.TrackMetric("Database.SaveChanges.Duration", stopwatch.ElapsedMilliseconds);
+                _telemetryClient.TrackMetric("Database.SaveChanges.EntitiesModified", result);
+            }
+            
+            if (stopwatch.ElapsedMilliseconds > 500)
+            {
+                _logger?.LogWarning("SaveChangesAsync took {ElapsedMs}ms to complete with {EntitiesModified} entities modified",
+                    stopwatch.ElapsedMilliseconds, result);
+            }
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            _logger?.LogError(ex, "Concurrency conflict detected during SaveChanges");
+            if (_telemetryClient != null)
+            {
+                _telemetryClient.TrackException(ex);
+            }
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Error during SaveChanges");
+            if (_telemetryClient != null)
+            {
+                _telemetryClient.TrackException(ex);
+            }
+            throw;
+        }
 
         // Then dispatch domain events
         await DispatchEvents(entitiesWithEvents, cancellationToken);
 
         return result;
+    }
+
+    private List<AuditEntry> OnBeforeSaveChanges()
+    {
+        ChangeTracker.DetectChanges();
+        var auditEntries = new List<AuditEntry>();
+        
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            // Skip entities that are not tracked, not changed, or not auditable
+            if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                continue;
+
+            if (!(entry.Entity is IAuditable))
+                continue;
+
+            var auditEntry = new AuditEntry
+            {
+                EntityName = entry.Entity.GetType().Name,
+                EntityId = GetEntityId(entry),
+                Action = entry.State.ToString(),
+                Timestamp = DateTime.UtcNow,
+                UserId = _currentUserService?.UserId,
+                TenantId = _currentUserService?.TenantId,
+                Changes = new Dictionary<string, object>()
+            };
+
+            foreach (var property in entry.Properties)
+            {
+                // Skip navigation properties and collections
+                if (property.Metadata.IsKey() || property.Metadata.IsForeignKey() || property.Metadata.IsCollection())
+                    continue;
+
+                // Get property name
+                string propertyName = property.Metadata.Name;
+
+                // For created entities, log all property values
+                if (entry.State == EntityState.Added)
+                {
+                    auditEntry.Changes[propertyName] = property.CurrentValue;
+                }
+                // For modified entities, log changed properties
+                else if (entry.State == EntityState.Modified && !property.IsModified)
+                {
+                    // Skip unmodified properties
+                    continue;
+                }
+                else if (entry.State == EntityState.Modified && property.IsModified)
+                {
+                    auditEntry.Changes[propertyName] = new
+                    {
+                        OldValue = property.OriginalValue,
+                        NewValue = property.CurrentValue
+                    };
+                }
+                // For deleted entities, log all property values
+                else if (entry.State == EntityState.Deleted)
+                {
+                    auditEntry.Changes[propertyName] = property.OriginalValue;
+                }
+            }
+
+            auditEntries.Add(auditEntry);
+        }
+
+        return auditEntries;
+    }
+
+    private async Task OnAfterSaveChanges(List<AuditEntry> auditEntries, CancellationToken cancellationToken)
+    {
+        if (auditEntries == null || !auditEntries.Any())
+            return;
+
+        // Add audit logs to the database
+        foreach (var auditEntry in auditEntries)
+        {
+            var auditLog = new AuditLog
+            {
+                EntityName = auditEntry.EntityName,
+                EntityId = auditEntry.EntityId,
+                Action = auditEntry.Action,
+                Timestamp = auditEntry.Timestamp,
+                UserId = auditEntry.UserId,
+                TenantId = auditEntry.TenantId,
+                Changes = Newtonsoft.Json.JsonConvert.SerializeObject(auditEntry.Changes)
+            };
+
+            AuditLogs.Add(auditLog);
+        }
+
+        await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private string GetEntityId(EntityEntry entry)
+    {
+        var keyValues = entry.Metadata.FindPrimaryKey()
+            .Properties
+            .Select(p => entry.Property(p.Name).CurrentValue?.ToString());
+
+        return string.Join(",", keyValues);
+    }
+
+    private void AddDomainEventsToOutbox(BaseEntity[] entitiesWithEvents)
+    {
+        foreach (var entity in entitiesWithEvents)
+        {
+            var events = entity.DomainEvents.ToArray();
+            
+            foreach (var domainEvent in events)
+            {
+                // Create an outbox message for each domain event
+                OutboxMessages.Add(new OutboxMessage
+                {
+                    Id = Guid.NewGuid(),
+                    EventType = domainEvent.GetType().AssemblyQualifiedName,
+                    Content = Newtonsoft.Json.JsonConvert.SerializeObject(domainEvent),
+                    CreatedAt = DateTime.UtcNow,
+                    ProcessedAt = null,
+                    Error = null
+                });
+                
+                // Create a domain event record for auditing
+                DomainEventRecords.Add(new DomainEventRecord
+                {
+                    Id = Guid.NewGuid(),
+                    EventType = domainEvent.GetType().Name,
+                    EntityName = entity.GetType().Name,
+                    EntityId = entity.Id.ToString(),
+                    CreatedAt = DateTime.UtcNow,
+                    Data = Newtonsoft.Json.JsonConvert.SerializeObject(domainEvent)
+                });
+            }
+            
+            // Clear domain events after adding to outbox
+            entity.ClearDomainEvents();
+        }
     }
 
     private async Task DispatchEvents(BaseEntity[] entities, CancellationToken cancellationToken)
@@ -246,15 +520,62 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             {
                 try
                 {
+                    var eventName = domainEvent.GetType().Name;
+                    var entityType = entity.GetType().Name;
+                    
+                    _logger?.LogInformation("Dispatching domain event {EventName} for entity {EntityType} with ID {EntityId}",
+                        eventName, entityType, entity.Id);
+                        
+                    var stopwatch = Stopwatch.StartNew();
+                    
                     await _domainEventService.PublishAsync(domainEvent, cancellationToken);
+                    
+                    stopwatch.Stop();
+                    
+                    // Track event processing performance
+                    if (_telemetryClient != null)
+                    {
+                        _telemetryClient.TrackMetric($"DomainEvent.{eventName}.ProcessingTime", stopwatch.ElapsedMilliseconds);
+                        _telemetryClient.TrackEvent($"DomainEvent.{eventName}.Processed", new Dictionary<string, string>
+                        {
+                            ["EntityType"] = entityType,
+                            ["EntityId"] = entity.Id.ToString()
+                        });
+                    }
+                    
+                    _logger?.LogInformation("Successfully dispatched domain event {EventName} for entity {EntityType} with ID {EntityId} in {ElapsedMs}ms",
+                        eventName, entityType, entity.Id, stopwatch.ElapsedMilliseconds);
                 }
                 catch (Exception ex)
                 {
                     _logger?.LogError(ex, "Error publishing domain event {EventType} for entity {EntityType} with ID {EntityId}",
                         domainEvent.GetType().Name, entity.GetType().Name, entity.Id);
+                        
+                    if (_telemetryClient != null)
+                    {
+                        _telemetryClient.TrackException(ex, new Dictionary<string, string>
+                        {
+                            ["EventType"] = domainEvent.GetType().Name,
+                            ["EntityType"] = entity.GetType().Name,
+                            ["EntityId"] = entity.Id.ToString()
+                        });
+                    }
                     
                     // We don't want to throw here to avoid transaction rollback
                     // Instead, log the error and continue
+                    
+                    // Update the outbox message with error information
+                    var outboxMessage = await OutboxMessages
+                        .FirstOrDefaultAsync(m => 
+                            m.EventType == domainEvent.GetType().AssemblyQualifiedName && 
+                            m.ProcessedAt == null);
+                            
+                    if (outboxMessage != null)
+                    {
+                        outboxMessage.Error = ex.ToString();
+                        outboxMessage.ProcessedAt = DateTime.UtcNow;
+                        await base.SaveChangesAsync(cancellationToken);
+                    }
                 }
             }
         }
