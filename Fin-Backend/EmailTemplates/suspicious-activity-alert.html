@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Alert: Suspicious Activity</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #ef4444;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+        }
+        .button {
+            display: inline-block;
+            background-color: #ef4444;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .warning-box {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚠️ Security Alert: Suspicious Activity</h1>
+        </div>
+        <div class="content">
+            <p>Dear {UserName},</p>
+            
+            <p>We've detected potentially suspicious activity on your FinTech MFB account that requires your immediate attention.</p>
+            
+            <div class="warning-box">
+                <p><strong>Activity Details:</strong></p>
+                <p>
+                    Type of Activity: {ActivityType}<br>
+                    Date & Time: {ActivityTime}<br>
+                    Device: {DeviceInfo}<br>
+                    Location: {Location}<br>
+                    IP Address: {IpAddress}
+                </p>
+            </div>
+            
+            <p><strong>Why are we alerting you?</strong></p>
+            <p>This login attempt was from a new location or device that doesn't match your typical usage patterns.</p>
+            
+            <p><strong>What should you do?</strong></p>
+            <ol>
+                <li>If this was you, please verify your identity by clicking the button below.</li>
+                <li>If you don't recognize this activity, please change your password immediately and contact our support team.</li>
+            </ol>
+            
+            <a href="{SecurityPageUrl}" class="button">Verify It Was Me</a>
+            
+            <p>If you need assistance, please contact our support team immediately at <a href="mailto:support@fintechmfb.com">support@fintechmfb.com</a> or call our 24/7 security hotline at +234 800 123 4567.</p>
+            
+            <p>Protecting your account is our top priority,<br>
+            The FinTech MFB Security Team</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message, please do not reply to this email.</p>
+            <p>&copy; 2025 FinTech MFB. All rights reserved.</p>
+            <p>
+                <a href="{PrivacyPolicyUrl}">Privacy Policy</a> | 
+                <a href="{TermsOfServiceUrl}">Terms of Service</a> | 
+                <a href="{UnsubscribeUrl}">Unsubscribe</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

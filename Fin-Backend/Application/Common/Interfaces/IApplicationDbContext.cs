@@ -11,6 +11,8 @@ using FinTech.Domain.Entities.Payroll;
 using FinTech.Domain.Entities.Security;
 using FinTech.Domain.Entities.Reporting;
 using FinTech.Domain.Entities.MultiCurrency;
+using FinTech.Domain.Entities.FixedAssets;
+using FinTech.Domain.Entities.ClientPortal;
 
 namespace FinTech.Core.Application.Common.Interfaces;
 
@@ -31,6 +33,11 @@ public interface IApplicationDbContext
 
     // Customer Management
     DbSet<Customer> Customers { get; }
+    DbSet<CustomerDocument> CustomerDocuments { get; }
+    DbSet<CustomerNextOfKin> CustomerNextOfKins { get; }
+    DbSet<CustomerInquiry> CustomerInquiries { get; }
+    DbSet<CustomerComplaint> CustomerComplaints { get; }
+    DbSet<CustomerCommunicationLog> CustomerCommunicationLogs { get; }
 
     // Deposit Management
     DbSet<DepositProduct> DepositProducts { get; }
@@ -78,6 +85,33 @@ public interface IApplicationDbContext
     // Multi-Currency
     DbSet<ExchangeRate> ExchangeRates { get; }
     DbSet<CurrencyRevaluation> CurrencyRevaluations { get; }
+    
+    // Fixed Assets
+    DbSet<Asset> Assets { get; }
+    DbSet<AssetCategory> AssetCategories { get; }
+    DbSet<AssetDepreciationSchedule> AssetDepreciationSchedules { get; }
+    DbSet<AssetMaintenance> AssetMaintenances { get; }
+    DbSet<AssetRevaluation> AssetRevaluations { get; }
+    DbSet<AssetTransfer> AssetTransfers { get; }
+    DbSet<AssetInventoryCount> AssetInventoryCounts { get; }
+    DbSet<AssetInventoryCountItem> AssetInventoryCountItems { get; }
+    DbSet<AssetDisposal> AssetDisposals { get; }
+
+    // Client Portal
+    DbSet<ClientPortalProfile> ClientPortalProfiles { get; }
+    DbSet<NotificationPreferences> NotificationPreferences { get; }
+    DbSet<DashboardPreferences> DashboardPreferences { get; }
+    DbSet<ClientPortalSession> ClientPortalSessions { get; }
+    DbSet<ClientPortalActivity> ClientPortalActivities { get; }
+    DbSet<SavedPayee> SavedPayees { get; }
+    DbSet<SavedTransferTemplate> SavedTransferTemplates { get; }
+    DbSet<ClientDocument> ClientDocuments { get; }
+    DbSet<ClientSupportTicket> ClientSupportTickets { get; }
+    DbSet<ClientSupportMessage> ClientSupportMessages { get; }
+    DbSet<ClientSupportAttachment> ClientSupportAttachments { get; }
+    DbSet<SavingsGoal> SavingsGoals { get; }
+    DbSet<SavingsGoalTransaction> SavingsGoalTransactions { get; }
+    DbSet<ClientNotification> ClientNotifications { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

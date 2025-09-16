@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Alert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f44336;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            border-radius: 0 0 5px 5px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+        .alert-message {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>⚠️ Security Alert ⚠️</h2>
+    </div>
+    <div class="content">
+        <p>Hello {{Username}},</p>
+        
+        <p>We're contacting you regarding an important security notification for your account.</p>
+        
+        <div class="alert-message">
+            <p><strong>Alert Details:</strong></p>
+            <p>{{AlertMessage}}</p>
+            <p><strong>Time:</strong> {{AlertDate}}</p>
+        </div>
+        
+        <p>If you recognize this activity, no action is needed. If you did NOT perform this action, please take immediate steps to secure your account:</p>
+        
+        <ol>
+            <li>Change your password immediately</li>
+            <li>Review your recent account activity</li>
+            <li>Enable two-factor authentication if not already enabled</li>
+            <li>Contact our support team for assistance</li>
+        </ol>
+        
+        <a href="#" class="button">Secure Your Account</a>
+        
+        <p>Your security is our top priority. Thank you for your attention to this matter.</p>
+        
+        <p>Best regards,<br>The FinTech Security Team</p>
+    </div>
+    <div class="footer">
+        <p>This is an automated message, please do not reply directly to this email.</p>
+        <p>If you need assistance, please contact our support team.</p>
+    </div>
+</body>
+</html>

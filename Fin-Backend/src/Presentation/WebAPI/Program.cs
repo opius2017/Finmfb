@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsbuilder.Services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
+builder.Services.AddScoped<ITaxCalculationService, TaxCalculationService>();
+builder.Services.AddScoped<IMakerCheckerService, MakerCheckerService>();
+
+// Register client portal services
+builder.Services.AddClientPortalServices();.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,6 +15,7 @@ using FinTech.Infrastructure.Data;
 using FinTech.Domain.Entities.Identity;
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Services;
+using FinTech.WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,7 +93,8 @@ builder.Services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
 builder.Services.AddScoped<ITaxCalculationService, TaxCalculationService>();
 builder.Services.AddScoped<IMakerCheckerService, MakerCheckerService>();
 
-// Add authorization policies
+// Register client portal services
+builder.Services.AddClientPortalServices();
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
