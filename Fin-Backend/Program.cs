@@ -1,5 +1,7 @@
 using FinTech.Core.Application;
 using FinTech.Infrastructure;
+using FinTech.Infrastructure.BackgroundServices;
+using FinTech.Infrastructure.Middleware;
 using FinTech.Infrastructure.Monitoring;
 using FinTech.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,6 +33,13 @@ builder.Services.AddSecurityServices();
 
 // Register monitoring and logging services
 builder.Services.AddMonitoringServices(builder.Configuration);
+
+// Configure rate limiting
+builder.Services.Configure<RateLimitingOptions>(builder.Configuration.GetSection("RateLimiting"));
+builder.Services.AddDistributedMemoryCache(); // For rate limiting
+
+// Register background services
+builder.Services.AddHostedService<OutboxProcessorService>();
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -73,6 +82,9 @@ if (app.Environment.IsDevelopment())
 
 // Add performance monitoring middleware
 app.UseMiddleware<PerformanceMonitoringMiddleware>();
+
+// Add rate limiting middleware
+app.UseRateLimiting();
 
 // Add custom exception handling middleware (omitted for brevity)
 

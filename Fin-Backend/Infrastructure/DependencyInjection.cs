@@ -6,6 +6,9 @@ using FinTech.Core.Application.Services.Integrations;
 using FinTech.Core.Application.Common.Settings;
 using FinTech.Infrastructure.Extensions;
 using FinTech.Application;
+using FinTech.Application.Interfaces.Services;
+using FinTech.Infrastructure.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace FinTech.Infrastructure
 {
@@ -34,6 +37,10 @@ namespace FinTech.Infrastructure
             // Add Event and Integration Services
             services.AddEventServices();
             services.AddIntegrationServices();
+            
+            // Add user context services
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             
             // Add other infrastructure services here
             
