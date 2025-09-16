@@ -21,7 +21,7 @@
 
 ## 🚀 **World-Class Enterprise FinTech Solution**
 
-Soar-Fin+ is a comprehensive, enterprise-grade accounting and administrative software solution designed specifically for Nigerian Microfinance Banks (MFBs) and Small & Medium-sized Enterprises (SMEs). Built with cutting-edge technology and bank-grade security, it provides complete financial management capabilities with full regulatory compliance.
+Soar-Fin+ is a comprehensive, enterprise-grade accounting and administrative software solution designed specifically for Microfinance Banks (MFBs) and Small & Medium-sized Enterprises (SMEs). Built with cutting-edge technology and bank-grade security, it provides complete financial management capabilities with full regulatory compliance.
 
 ### 🎯 **Core Value Proposition**
 

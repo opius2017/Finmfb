@@ -25,6 +25,7 @@ public static class DependencyInjection
         
         // Register customer service
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IFinancialPeriodService, FinancialPeriodService>();
         
         // Register core accounting services
         services.AddAccountingServices();
