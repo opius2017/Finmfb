@@ -1,0 +1,294 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: fintech-prod
+  labels:
+    app: redis
+    environment: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: redis
+        environment: production
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - redis
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: redis
+        image: redis:7.0-alpine
+        command:
+        - redis-server
+        - "/redis-config/redis.conf"
+        ports:
+        - containerPort: 6379
+          name: redis
+        resources:
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+          requests:
+            cpu: "1"
+            memory: "2Gi"
+        livenessProbe:
+          tcpSocket:
+            port: 6379
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        - name: redis-config
+          mountPath: /redis-config
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-data-pvc
+      - name: redis-config
+        configMap:
+          name: redis-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: fintech-prod
+data:
+  redis.conf: |
+    requirepass ${REDIS_PASSWORD}
+    maxmemory 3gb
+    maxmemory-policy allkeys-lru
+    appendonly yes
+    appendfsync everysec
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: fintech-prod
+  labels:
+    app: redis
+    environment: production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+  selector:
+    app: redis
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-data-pvc
+  namespace: fintech-prod
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+  namespace: fintech-prod
+  labels:
+    app: rabbitmq
+    environment: production
+spec:
+  serviceName: rabbitmq-service
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        environment: production
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3.11-management-alpine
+        ports:
+        - containerPort: 5672
+          name: amqp
+        - containerPort: 15672
+          name: management
+        env:
+        - name: RABBITMQ_ERLANG_COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: fintech-prod-secrets
+              key: rabbitmq-erlang-cookie
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: fintech-prod-secrets
+              key: rabbitmq-username
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: fintech-prod-secrets
+              key: rabbitmq-password
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "1"
+            memory: "1Gi"
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+        - name: config-volume
+          mountPath: /etc/rabbitmq/rabbitmq.conf
+          subPath: rabbitmq.conf
+        - name: definitions-volume
+          mountPath: /etc/rabbitmq/definitions.json
+          subPath: definitions.json
+        livenessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "status"]
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 15
+        readinessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "check_port_connectivity"]
+          initialDelaySeconds: 20
+          periodSeconds: 10
+      volumes:
+      - name: config-volume
+        configMap:
+          name: rabbitmq-config
+      - name: definitions-volume
+        configMap:
+          name: rabbitmq-definitions
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: fintech-prod
+data:
+  rabbitmq.conf: |
+    loopback_users.guest = false
+    listeners.tcp.default = 5672
+    management.tcp.port = 15672
+    cluster_formation.peer_discovery_backend = rabbit_peer_discovery_k8s
+    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    cluster_formation.k8s.address_type = hostname
+    cluster_formation.k8s.service_name = rabbitmq-service
+    cluster_formation.k8s.hostname_suffix = .rabbitmq-service.fintech-prod.svc.cluster.local
+    queue_master_locator = min-masters
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-definitions
+  namespace: fintech-prod
+data:
+  definitions.json: |
+    {
+      "vhosts": [
+        {"name": "/"}
+      ],
+      "exchanges": [
+        {"name": "fintech.events", "vhost": "/", "type": "topic", "durable": true, "auto_delete": false, "internal": false, "arguments": {}}
+      ],
+      "queues": [
+        {"name": "notifications", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+        {"name": "payments", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}},
+        {"name": "dead-letter", "vhost": "/", "durable": true, "auto_delete": false, "arguments": {}}
+      ],
+      "bindings": [
+        {"source": "fintech.events", "vhost": "/", "destination": "notifications", "destination_type": "queue", "routing_key": "notification.#", "arguments": {}},
+        {"source": "fintech.events", "vhost": "/", "destination": "payments", "destination_type": "queue", "routing_key": "payment.#", "arguments": {}}
+      ]
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+  namespace: fintech-prod
+  labels:
+    app: rabbitmq
+    environment: production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5672
+    targetPort: 5672
+    name: amqp
+  - port: 15672
+    targetPort: 15672
+    name: management
+  selector:
+    app: rabbitmq
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rabbitmq-mgmt-ingress
+  namespace: fintech-prod
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: rabbitmq-auth
+    nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
+spec:
+  tls:
+  - hosts:
+    - rabbitmq.finmfb.com
+    secretName: rabbitmq-mgmt-tls
+  rules:
+  - host: rabbitmq.finmfb.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rabbitmq-service
+            port:
+              number: 15672

@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fintech-frontend
+  namespace: fintech-dev
+  labels:
+    app: fintech-frontend
+    environment: development
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fintech-frontend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: fintech-frontend
+        environment: development
+    spec:
+      containers:
+      - name: fintech-frontend
+        image: ghcr.io/opius2017/finmfb/fintech-frontend:dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "development"
+        - name: VITE_API_URL
+          value: "https://api-dev.finmfb.com"
+        - name: VITE_APP_ENVIRONMENT
+          value: "development"
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 20
+          periodSeconds: 15
+      imagePullSecrets:
+      - name: github-container-registry
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fintech-frontend
+  namespace: fintech-dev
+  labels:
+    app: fintech-frontend
+    environment: development
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: fintech-frontend
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fintech-frontend-ingress
+  namespace: fintech-dev
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "128k"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Cache-Control "no-store, no-cache, must-revalidate";
+      add_header Pragma "no-cache";
+spec:
+  tls:
+  - hosts:
+    - portal-dev.finmfb.com
+    secretName: fintech-frontend-dev-tls
+  rules:
+  - host: portal-dev.finmfb.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fintech-frontend
+            port:
+              number: 80

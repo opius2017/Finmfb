@@ -1,0 +1,143 @@
+name: Main CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'development'
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+jobs:
+  trigger-backend-workflow:
+    name: Trigger Backend CI/CD
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Trigger backend workflow
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GH_WORKFLOW_TOKEN }}
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'backend-ci-cd.yml',
+            ref: context.ref,
+            inputs: ${{ github.event_name == 'workflow_dispatch' && format('{{ "environment": "{0}" }}', github.event.inputs.environment) || '{}' }}
+          })
+
+  trigger-frontend-workflow:
+    name: Trigger Frontend CI/CD
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Trigger frontend workflow
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GH_WORKFLOW_TOKEN }}
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'frontend-ci-cd.yml',
+            ref: context.ref,
+            inputs: ${{ github.event_name == 'workflow_dispatch' && format('{{ "environment": "{0}" }}', github.event.inputs.environment) || '{}' }}
+          })
+
+  generate-release-notes:
+    name: Generate Release Notes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: Generate Release Notes
+      id: release-notes
+      run: |
+        last_tag=$(git describe --tags --abbrev=0 || echo "")
+        if [ -z "$last_tag" ]; then
+          changes=$(git log --pretty=format:"- %s (%h)" --no-merges)
+        else
+          changes=$(git log $last_tag..HEAD --pretty=format:"- %s (%h)" --no-merges)
+        fi
+        echo "changes<<EOF" >> $GITHUB_OUTPUT
+        echo "$changes" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+    - name: Create Draft Release
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const changes = `${{ steps.release-notes.outputs.changes }}`;
+          if (changes.trim() === "") {
+            console.log('No changes detected, skipping release creation');
+            return;
+          }
+          
+          const today = new Date().toISOString().split('T')[0];
+          const version = `v${today.replace(/-/g, '.')}`;
+          
+          await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: version,
+            name: `Release ${version}`,
+            body: changes,
+            draft: true,
+            prerelease: false
+          });
+
+  notify-deployment-status:
+    name: Notify Deployment Status
+    runs-on: ubuntu-latest
+    needs: [trigger-backend-workflow, trigger-frontend-workflow]
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: Notify on Slack
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_TITLE: 'Deployment Started'
+        SLACK_MESSAGE: 'Deployment to ${{ github.event.inputs.environment }} has been initiated'
+        SLACK_COLOR: good
+        
+    - name: Send Email Notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: ${{ secrets.MAIL_SERVER }}
+        server_port: ${{ secrets.MAIL_PORT }}
+        username: ${{ secrets.MAIL_USERNAME }}
+        password: ${{ secrets.MAIL_PASSWORD }}
+        subject: "Deployment to ${{ github.event.inputs.environment }} Started"
+        body: |
+          Deployment to ${{ github.event.inputs.environment }} environment has been initiated.
+          
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+          Triggered by: ${{ github.actor }}
+          
+          See details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        to: ${{ secrets.NOTIFICATION_EMAIL }}
+        from: GitHub Actions
