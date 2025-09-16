@@ -1,28 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FinTech.Domain.Entities.Accounting;
-using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Core.Application.Interfaces.Services
 {
     /// <summary>
     /// Interface for General Ledger operations supporting double-entry accounting,
-    /// financial reporting, and regulatory compliance for Nigerian Microfinance Banks
+    /// financial reporting, and regulatory compliance for Nigerian Microfinance Banks.
+    /// 
+    /// REFACTORED: This interface has been refactored into a Clean Architecture structure.
+    /// See /Core/Application/Interfaces/Services/IGeneralLedgerService.cs for the new implementation.
     /// </summary>
     public interface IGeneralLedgerService
     {
-        // Journal Entry Management
-        Task<string> CreateJournalEntryAsync(JournalEntryDto journalEntry, string userId);
-        Task<bool> SubmitJournalEntryForApprovalAsync(string journalEntryId, string userId);
-        Task<bool> ApproveJournalEntryAsync(string journalEntryId, string userId);
-        Task<bool> RejectJournalEntryAsync(string journalEntryId, string userId, string reason);
-        Task<bool> PostJournalEntryAsync(string journalEntryId, string userId);
-        Task<string> ReverseJournalEntryAsync(string journalEntryId, string userId, string reason);
-        Task<JournalEntryDto> GetJournalEntryAsync(string journalEntryId);
-        Task<IEnumerable<JournalEntryDto>> GetJournalEntriesByDateRangeAsync(DateTime fromDate, DateTime toDate);
-        Task<IEnumerable<JournalEntryDto>> GetPendingJournalEntriesAsync();
-        Task<bool> ValidateJournalEntryAsync(JournalEntryDto journalEntry);
+        // This interface has been refactored to a cleaner structure
+        // See /Core/Application/Interfaces/Services/IGeneralLedgerService.cs
         
         // Account Management
         Task<bool> UpdateAccountBalanceAsync(string accountId, Money amount, bool isDebit);
