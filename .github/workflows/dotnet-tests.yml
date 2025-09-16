@@ -1,0 +1,52 @@
+name: .NET Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0.x
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --no-restore
+    
+    - name: Run Unit Tests
+      run: dotnet test --filter "Category=Unit" --no-build --verbosity normal
+    
+    - name: Start Docker Test Environment
+      run: docker-compose -f Fin-Backend.Tests/docker-compose.test.yml up -d
+    
+    - name: Run Integration Tests
+      run: dotnet test --filter "Category=Integration" --no-build --verbosity normal
+    
+    - name: Run Functional Tests
+      run: dotnet test --filter "Category=Functional" --no-build --verbosity normal
+    
+    - name: Stop Docker Test Environment
+      run: docker-compose -f Fin-Backend.Tests/docker-compose.test.yml down
+    
+    - name: Generate Test Coverage Report
+      run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./TestResults/Coverage/
+        reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coveragereport" -reporttypes:Html
+    
+    - name: Upload Test Coverage Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-coverage-report
+        path: coveragereport

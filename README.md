@@ -542,13 +542,13 @@ Neutral Colors:
 ```yaml
 Framework: .NET 9.0 with Clean Architecture
 Database: SQL Server 2022 with Entity Framework Core 8.0
-Authentication: ASP.NET Core Identity + JWT + OAuth 2.0
+Authentication: ASP.NET Core Identity + JWT + OAuth 2.0 + MFA
 API Documentation: Swagger/OpenAPI 3.0 with ReDoc
 Logging: Serilog with structured logging (Console, File, Seq, Azure)
 Caching: Redis with distributed caching
 Message Queue: Azure Service Bus / RabbitMQ
 Background Jobs: Hangfire with dashboard
-Testing: xUnit, FluentAssertions, Testcontainers
+Testing: xUnit, FluentAssertions, Testcontainers, Moq, AutoFixture
 ```
 
 ### **Frontend (React 18 Ecosystem)**
@@ -716,6 +716,55 @@ vi deploy.sh
 ```
 
 ---
+
+## 🧪 **Testing Framework**
+
+### **Comprehensive Testing Strategy**
+
+Our application is thoroughly tested using a multi-layered approach:
+
+```yaml
+Testing Layers:
+- Unit Tests: Test individual components in isolation
+- Integration Tests: Test interaction between components
+- Functional Tests: Test complete features end-to-end
+- UI Tests: Test user interface components and flows
+- Performance Tests: Test application performance under load
+- Security Tests: Test application security and vulnerabilities
+```
+
+### **Testing Approach**
+
+- **Test-Driven Development (TDD)**: Tests are written before the code
+- **Behavior-Driven Development (BDD)**: Tests are written in a behavior-focused language
+- **Continuous Integration**: Tests are run automatically on every commit
+- **Code Coverage**: Minimum 80% code coverage is required for all new code
+- **Test Automation**: Tests are automated and run in CI/CD pipeline
+
+### **Testing Tools**
+
+- **xUnit**: Test framework for .NET applications
+- **FluentAssertions**: Fluent assertion library for clearer test assertions
+- **Moq**: Mocking framework for creating test doubles
+- **AutoFixture**: Test data generation framework
+- **Testcontainers**: Docker-based testing environment for integration tests
+- **WireMock.NET**: HTTP mocking for external service dependencies
+- **Playwright**: End-to-end testing for web UI
+
+### **Running Tests**
+
+```bash
+# Run all tests
+./run-tests.sh --all
+
+# Run specific test categories
+./run-tests.sh --unit
+./run-tests.sh --integration
+./run-tests.sh --functional
+
+# Generate coverage report
+./run-tests.sh --all --coverage
+```
 
 ## 🧪 **Sample Data & Demo**
 

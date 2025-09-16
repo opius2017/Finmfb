@@ -59,11 +59,17 @@ builder.Services.AddCachingServices(builder.Configuration);
 // Register Message Broker
 builder.Services.AddMessageBroker(builder.Configuration);
 
+// Register notification services
+builder.Services.AddNotificationServices(builder.Configuration);
+
 // Register workflow examples for demonstration
 builder.Services.AddWorkflowExamples();
 
 // Register security services with fine-grained authorization
 builder.Services.AddSecurityServices();
+
+// Register advanced authentication services
+builder.Services.AddAdvancedAuthServices(builder.Configuration);
 
 // Register monitoring and logging services
 builder.Services.AddMonitoringServices(builder.Configuration);
@@ -78,25 +84,7 @@ builder.Services.AddDistributedMemoryCache(); // For rate limiting
 // Register background services
 builder.Services.AddHostedService<OutboxProcessorService>();
 
-// Configure JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
-    };
-});
+// Note: JWT Authentication is now configured in AdvancedAuthServicesRegistration.cs
 
 // Add CORS policy
 builder.Services.AddCors(options =>
