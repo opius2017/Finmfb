@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using FinTech.Core.Application.Services.Integrations;
 using FinTech.Core.Application.Common.Settings;
 using FinTech.Infrastructure.Extensions;
+using FinTech.Application;
 
 namespace FinTech.Infrastructure
 {
@@ -29,6 +30,10 @@ namespace FinTech.Infrastructure
             
             // Add Core Accounting Infrastructure Services
             services.AddAccountingInfrastructure();
+            
+            // Add Event and Integration Services
+            services.AddEventServices();
+            services.AddIntegrationServices();
             
             // Add other infrastructure services here
             

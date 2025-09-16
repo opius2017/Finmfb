@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FinTech.Application.Interfaces.Services;
+using FinTech.Domain.Common;
 using FinTech.Domain.Entities.Common;
 using FinTech.Domain.Entities.Identity;
 using FinTech.Domain.Entities.GeneralLedger;
@@ -29,7 +34,18 @@ namespace FinTech.Infrastructure.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, FinTech.Core.Application.Common.Interfaces.IApplicationDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    private readonly IDomainEventService _domainEventService;
+    private readonly ILogger<ApplicationDbContext> _logger;
+
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options, 
+        IDomainEventService domainEventService = null,
+        ILogger<ApplicationDbContext> logger = null) 
+        : base(options) 
+    {
+        _domainEventService = domainEventService;
+        _logger = logger;
+    }
 
     // General Ledger - Legacy
     public DbSet<ChartOfAccounts> ChartOfAccounts { get; set; }
@@ -184,6 +200,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        // Update audit fields
         foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
             switch (entry.State)
@@ -197,6 +214,49 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             }
         }
 
-        return await base.SaveChangesAsync(cancellationToken);
+        // Get entities with domain events
+        var entitiesWithEvents = ChangeTracker.Entries<BaseEntity>()
+            .Select(e => e.Entity)
+            .Where(e => e.DomainEvents.Any())
+            .ToArray();
+
+        // Save changes to database first to ensure all IDs are generated
+        var result = await base.SaveChangesAsync(cancellationToken);
+
+        // Then dispatch domain events
+        await DispatchEvents(entitiesWithEvents, cancellationToken);
+
+        return result;
+    }
+
+    private async Task DispatchEvents(BaseEntity[] entities, CancellationToken cancellationToken)
+    {
+        if (_domainEventService == null)
+        {
+            _logger?.LogWarning("Domain event service is not available. Events will not be dispatched.");
+            return;
+        }
+
+        foreach (var entity in entities)
+        {
+            var events = entity.DomainEvents.ToArray();
+            entity.ClearDomainEvents();
+
+            foreach (var domainEvent in events)
+            {
+                try
+                {
+                    await _domainEventService.PublishAsync(domainEvent, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, "Error publishing domain event {EventType} for entity {EntityType} with ID {EntityId}",
+                        domainEvent.GetType().Name, entity.GetType().Name, entity.Id);
+                    
+                    // We don't want to throw here to avoid transaction rollback
+                    // Instead, log the error and continue
+                }
+            }
+        }
     }
 }
