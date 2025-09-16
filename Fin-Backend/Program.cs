@@ -17,6 +17,9 @@ builder.Services.AddApplicationServices();
 // Register Infrastructure Layer Services
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+// Register workflow examples for demonstration
+builder.Services.AddWorkflowExamples();
+
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
