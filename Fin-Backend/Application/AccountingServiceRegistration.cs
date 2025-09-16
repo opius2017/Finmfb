@@ -1,4 +1,5 @@
-using FinTech.Application.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Application

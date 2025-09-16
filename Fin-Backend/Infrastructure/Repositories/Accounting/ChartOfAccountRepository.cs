@@ -24,17 +24,17 @@ namespace FinTech.Infrastructure.Repositories.Accounting
         {
             return await _context.ChartOfAccounts
                 .Where(a => a.Classification == classification)
-                .OrderBy(a => a.AccountCode)
+                .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
         }
         
-        public async Task<IReadOnlyList<ChartOfAccount>> GetByAccountTypeAsync(
+        public async Task<IReadOnlyList<ChartOfAccount>> GetByTypeAsync(
             AccountType accountType, 
             CancellationToken cancellationToken = default)
         {
             return await _context.ChartOfAccounts
                 .Where(a => a.AccountType == accountType)
-                .OrderBy(a => a.AccountCode)
+                .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
         }
         
@@ -44,32 +44,42 @@ namespace FinTech.Infrastructure.Repositories.Accounting
         {
             return await _context.ChartOfAccounts
                 .Where(a => a.ParentAccountId == parentAccountId)
-                .OrderBy(a => a.AccountCode)
+                .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
         }
         
-        public async Task<ChartOfAccount> GetByAccountCodeAsync(
-            string accountCode, 
+        public async Task<ChartOfAccount> GetByAccountNumberAsync(
+            string accountNumber, 
             CancellationToken cancellationToken = default)
         {
             return await _context.ChartOfAccounts
-                .FirstOrDefaultAsync(a => a.AccountCode == accountCode, cancellationToken);
+                .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber, cancellationToken);
         }
         
-        public async Task<bool> ExistsAsync(
-            string accountCode, 
+        public async Task<ChartOfAccount> GetHighestAccountNumberByPrefixAsync(
+            string prefix,
             CancellationToken cancellationToken = default)
         {
             return await _context.ChartOfAccounts
-                .AnyAsync(a => a.AccountCode == accountCode, cancellationToken);
+                .Where(a => a.AccountNumber.StartsWith(prefix))
+                .OrderByDescending(a => a.AccountNumber)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+        
+        public async Task<bool> AccountNumberExistsAsync(
+            string accountNumber, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.ChartOfAccounts
+                .AnyAsync(a => a.AccountNumber == accountNumber, cancellationToken);
         }
         
         public async Task<IReadOnlyList<ChartOfAccount>> GetActiveAccountsAsync(
             CancellationToken cancellationToken = default)
         {
             return await _context.ChartOfAccounts
-                .Where(a => a.IsActive)
-                .OrderBy(a => a.AccountCode)
+                .Where(a => a.Status == AccountStatus.Active)
+                .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
         }
         
@@ -80,10 +90,10 @@ namespace FinTech.Infrastructure.Repositories.Accounting
         {
             var query = _context.ChartOfAccounts
                 .Where(a => 
-                    a.AccountCode.Contains(searchTerm) || 
+                    a.AccountNumber.Contains(searchTerm) || 
                     a.AccountName.Contains(searchTerm) || 
                     a.Description.Contains(searchTerm))
-                .OrderBy(a => a.AccountCode);
+                .OrderBy(a => a.AccountNumber);
                 
             if (maxResults.HasValue)
             {

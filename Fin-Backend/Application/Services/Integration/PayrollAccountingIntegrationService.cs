@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Application.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Domain.Entities.Accounting;
 using FinTech.Domain.Entities.Payroll;
 using FinTech.Domain.Repositories.Accounting;

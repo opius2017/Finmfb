@@ -14,7 +14,7 @@ namespace FinTech.Domain.Repositories.Accounting
             AccountClassification classification, 
             CancellationToken cancellationToken = default);
             
-        Task<IReadOnlyList<ChartOfAccount>> GetByAccountTypeAsync(
+        Task<IReadOnlyList<ChartOfAccount>> GetByTypeAsync(
             AccountType accountType, 
             CancellationToken cancellationToken = default);
             
@@ -22,12 +22,16 @@ namespace FinTech.Domain.Repositories.Accounting
             string parentAccountId, 
             CancellationToken cancellationToken = default);
             
-        Task<ChartOfAccount> GetByAccountCodeAsync(
-            string accountCode, 
+        Task<ChartOfAccount> GetByAccountNumberAsync(
+            string accountNumber, 
             CancellationToken cancellationToken = default);
             
-        Task<bool> ExistsAsync(
-            string accountCode, 
+        Task<ChartOfAccount> GetHighestAccountNumberByPrefixAsync(
+            string prefix,
+            CancellationToken cancellationToken = default);
+            
+        Task<bool> AccountNumberExistsAsync(
+            string accountNumber, 
             CancellationToken cancellationToken = default);
             
         Task<IReadOnlyList<ChartOfAccount>> GetActiveAccountsAsync(
