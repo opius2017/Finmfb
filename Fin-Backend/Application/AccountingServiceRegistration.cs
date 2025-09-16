@@ -19,6 +19,8 @@ namespace FinTech.Application
             services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
             services.AddScoped<ITrialBalanceService, TrialBalanceService>();
             services.AddScoped<IFinancialStatementService, FinancialStatementService>();
+            services.AddScoped<IRegulatoryMappingService, RegulatoryMappingService>();
+            services.AddScoped<IPeriodClosingService, PeriodClosingService>();
             
             return services;
         }

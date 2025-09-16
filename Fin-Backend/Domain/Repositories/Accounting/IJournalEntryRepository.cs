@@ -38,5 +38,20 @@ namespace FinTech.Domain.Repositories.Accounting
         Task<string> GenerateJournalNumberAsync(
             JournalEntryType entryType,
             CancellationToken cancellationToken = default);
+            
+        /// <summary>
+        /// Gets all unposted journal entries for a specific financial period
+        /// </summary>
+        Task<IReadOnlyList<JournalEntry>> GetUnpostedEntriesByPeriodAsync(
+            string financialPeriodId, 
+            CancellationToken cancellationToken = default);
+            
+        /// <summary>
+        /// Gets all journal entries with a specific reference type for a financial period
+        /// </summary>
+        Task<IReadOnlyList<JournalEntry>> GetByReferenceAsync(
+            string financialPeriodId, 
+            string referenceType, 
+            CancellationToken cancellationToken = default);
     }
 }
