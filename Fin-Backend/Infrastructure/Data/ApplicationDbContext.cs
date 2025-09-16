@@ -137,6 +137,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
     // Domain Events Tracking
     public DbSet<DomainEventRecord> DomainEventRecords { get; set; }
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+    
+    // Integration Events Tracking
+    public DbSet<Fin_Backend.Infrastructure.Messaging.IntegrationEventOutboxItem> IntegrationEventOutbox { get; set; }
 
     // Reporting
     public DbSet<FinancialStatement> FinancialStatements { get; set; }

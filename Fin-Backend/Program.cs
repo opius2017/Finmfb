@@ -1,5 +1,6 @@
 using Fin_Backend.Infrastructure;
 using Fin_Backend.Infrastructure.Documentation;
+using Fin_Backend.Infrastructure.Messaging;
 using FinTech.Core.Application;
 using FinTech.Infrastructure;
 using FinTech.Infrastructure.BackgroundServices;
@@ -54,6 +55,9 @@ builder.Services.AddResilienceServices();
 
 // Register Distributed Caching with Redis
 builder.Services.AddCachingServices(builder.Configuration);
+
+// Register Message Broker
+builder.Services.AddMessageBroker(builder.Configuration);
 
 // Register workflow examples for demonstration
 builder.Services.AddWorkflowExamples();
