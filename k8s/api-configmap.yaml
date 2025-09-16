@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: finmfb-api-config
+  namespace: finmfb
+  labels:
+    app: finmfb
+    component: api
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  Logging__LogLevel__Default: "Information"
+  Logging__LogLevel__Microsoft: "Warning"
+  Logging__LogLevel__Microsoft.Hosting.Lifetime: "Information"
+  AllowedHosts: "*"
+  Caching__Enabled: "true"
+  Caching__DefaultExpirationMinutes: "60"
+  Metrics__Enabled: "true"
+  Tracing__Enabled: "true"
+  Resilience__RetryCount: "3"
+  Resilience__CircuitBreakerFailuresBeforeBreaking: "5"
+  Resilience__CircuitBreakerDurationOfBreakSeconds: "30"
+  CorsPolicy__AllowedOrigins: "https://portal.finmfb.com,https://api.finmfb.com"
+  FeatureFlags__EnableAdvancedReporting: "true"
+  FeatureFlags__EnableMobileBanking: "true"
+  ApiSettings__EnableResponseCompression: "true"
+  ApiSettings__EnableRequestBuffering: "false"
+  Performance__EnableResponseCaching: "true"
+  Performance__EnableOutputCaching: "true"
+  RateLimiting__Enabled: "true"
+  RateLimiting__DefaultLimitPerMinute: "100"

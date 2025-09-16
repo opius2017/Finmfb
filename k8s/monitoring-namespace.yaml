@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: finmfb-monitoring
+  labels:
+    app: finmfb
+    component: monitoring

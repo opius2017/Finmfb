@@ -1,0 +1,29 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: finmfb-api-pdb
+  namespace: finmfb
+  labels:
+    app: finmfb
+    component: api
+spec:
+  minAvailable: 2  # Ensure at least 2 pods are available during disruptions
+  selector:
+    matchLabels:
+      app: finmfb
+      component: api
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: finmfb-frontend-pdb
+  namespace: finmfb
+  labels:
+    app: finmfb
+    component: frontend
+spec:
+  minAvailable: 1  # Ensure at least 1 pod is available during disruptions
+  selector:
+    matchLabels:
+      app: finmfb
+      component: frontend
