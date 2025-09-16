@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using FinTech.Application.DTOs.FixedAssets;
 using FinTech.Application.Services;
+using FinTech.Application.Services.Accounting;
 using FinTech.Infrastructure.Security.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FinTech.WebAPI.Controllers
 {
@@ -14,13 +17,16 @@ namespace FinTech.WebAPI.Controllers
     {
         private readonly IFixedAssetService _fixedAssetService;
         private readonly ILogger<FixedAssetsController> _logger;
+        private readonly IFixedAssetService _enhancedFixedAssetService;
 
         public FixedAssetsController(
             IFixedAssetService fixedAssetService,
-            ILogger<FixedAssetsController> logger)
+            ILogger<FixedAssetsController> logger,
+            IFixedAssetService enhancedFixedAssetService = null)
         {
             _fixedAssetService = fixedAssetService;
             _logger = logger;
+            _enhancedFixedAssetService = enhancedFixedAssetService;
         }
 
         [HttpGet]
@@ -173,5 +179,55 @@ namespace FinTech.WebAPI.Controllers
             _logger.LogInformation("Successfully processed depreciation for asset with ID {AssetId}", id);
             return NoContent();
         }
+        
+        #region Enhanced Fixed Asset Management
+        
+        [HttpGet("enhanced/{id}/schedule")]
+        [ResourceAuthorization("FixedAsset", ResourceOperation.Read)]
+        public async Task<IActionResult> GenerateDepreciationSchedule(
+            string id,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (_enhancedFixedAssetService == null)
+                {
+                    return BadRequest(new { message = "Enhanced Fixed Asset Service not available" });
+                }
+                
+                var result = await _enhancedFixedAssetService.GenerateDepreciationScheduleAsync(id, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating depreciation schedule for asset {AssetId}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        
+        [HttpGet("enhanced/report/{financialPeriodId}")]
+        [ResourceAuthorization("FixedAsset", ResourceOperation.Read)]
+        public async Task<IActionResult> GenerateFixedAssetReport(
+            string financialPeriodId,
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                if (_enhancedFixedAssetService == null)
+                {
+                    return BadRequest(new { message = "Enhanced Fixed Asset Service not available" });
+                }
+                
+                var result = await _enhancedFixedAssetService.GenerateFixedAssetReportAsync(financialPeriodId, cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating fixed asset report for period {PeriodId}", financialPeriodId);
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        
+        #endregion
     }
 }

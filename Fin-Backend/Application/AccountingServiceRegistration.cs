@@ -21,6 +21,11 @@ namespace FinTech.Application
             services.AddScoped<IFinancialStatementService, FinancialStatementService>();
             services.AddScoped<IRegulatoryMappingService, RegulatoryMappingService>();
             services.AddScoped<IPeriodClosingService, PeriodClosingService>();
+            services.AddScoped<IFinancialAnalyticsService, FinancialAnalyticsService>();
+            services.AddScoped<IBudgetingService, BudgetingService>();
+            
+            // Register enhanced fixed asset management service
+            services.AddScoped<IFixedAssetService, FixedAssetService>("EnhancedFixedAssetService");
             
             return services;
         }
