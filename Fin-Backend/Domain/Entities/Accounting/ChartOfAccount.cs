@@ -15,26 +15,58 @@ namespace FinTech.Domain.Entities.Accounting
     
     public enum AccountType
     {
+        // Asset categories
         Cash = 1,
         Bank = 2,
         AccountsReceivable = 3,
         Loans = 4,
-        FixedAssets = 5,
-        OtherAssets = 6,
-        AccountsPayable = 7,
-        Deposits = 8,
-        Borrowings = 9,
-        OtherLiabilities = 10,
-        Capital = 11,
-        Reserves = 12,
-        RetainedEarnings = 13,
-        InterestIncome = 14,
-        FeeIncome = 15,
-        OtherIncome = 16,
-        InterestExpense = 17,
-        PersonnelExpense = 18,
-        AdministrativeExpense = 19,
-        OtherExpense = 20
+        LoanLossProvision = 5,
+        FixedAssets = 6,
+        AccumulatedDepreciation = 7,
+        IntangibleAssets = 8,
+        PrepaidExpenses = 9,
+        Inventory = 10,
+        OtherAssets = 19,
+        
+        // Liability categories
+        AccountsPayable = 20,
+        Deposits = 21,
+        SavingsAccounts = 22,
+        CurrentAccounts = 23,
+        FixedDeposits = 24,
+        Borrowings = 25,
+        AccruedExpenses = 26,
+        TaxPayable = 27,
+        DeferredTaxLiability = 28,
+        OtherLiabilities = 39,
+        
+        // Equity categories
+        Capital = 40,
+        ShareCapital = 41,
+        SharePremium = 42,
+        RetainedEarnings = 43,
+        StatutoryReserves = 44,
+        GeneralReserves = 45,
+        OtherReserves = 49,
+        
+        // Income categories
+        InterestIncome = 50,
+        FeeIncome = 51,
+        CommissionIncome = 52,
+        InvestmentIncome = 53,
+        ForeignExchangeGains = 54,
+        OtherIncome = 59,
+        
+        // Expense categories
+        InterestExpense = 60,
+        PersonnelExpense = 61,
+        AdministrativeExpense = 62,
+        DepreciationAndAmortization = 63,
+        LoanLossExpense = 64,
+        OperatingExpenses = 65,
+        MarketingExpense = 66,
+        TaxExpense = 67,
+        OtherExpense = 79
     }
     
     public enum NormalBalanceType
@@ -62,6 +94,14 @@ namespace FinTech.Domain.Entities.Accounting
         public bool AllowManualEntries { get; private set; }
         public bool RequiresReconciliation { get; private set; }
         public string CBNReportingCode { get; private set; }
+        public string NDICReportingCode { get; private set; }
+        public string IFRSCategory { get; private set; }
+        public int AccountLevel { get; private set; }
+        public string AccountMnemonic { get; private set; }
+        public bool IsBudgeted { get; private set; }
+        public bool IsRestricted { get; private set; }
+        public int? BranchId { get; private set; }
+        public string Tags { get; private set; }
         public Money CurrentBalance { get; private set; }
         
         // Required by EF Core
@@ -78,7 +118,15 @@ namespace FinTech.Domain.Entities.Accounting
             string parentAccountId = null,
             bool allowManualEntries = true,
             bool requiresReconciliation = false,
-            string cbnReportingCode = null)
+            string cbnReportingCode = null,
+            string ndicReportingCode = null,
+            string ifrsCategory = null,
+            int accountLevel = 4,
+            string accountMnemonic = null,
+            bool isBudgeted = false,
+            bool isRestricted = false,
+            int? branchId = null,
+            string tags = null)
         {
             AccountCode = accountCode;
             AccountName = accountName;
@@ -92,6 +140,14 @@ namespace FinTech.Domain.Entities.Accounting
             AllowManualEntries = allowManualEntries;
             RequiresReconciliation = requiresReconciliation;
             CBNReportingCode = cbnReportingCode;
+            NDICReportingCode = ndicReportingCode;
+            IFRSCategory = ifrsCategory;
+            AccountLevel = accountLevel;
+            AccountMnemonic = accountMnemonic;
+            IsBudgeted = isBudgeted;
+            IsRestricted = isRestricted;
+            BranchId = branchId;
+            Tags = tags;
             CurrentBalance = Money.Zero(currencyCode);
             
             // Add domain event
@@ -104,7 +160,13 @@ namespace FinTech.Domain.Entities.Accounting
             bool isActive,
             bool allowManualEntries,
             bool requiresReconciliation,
-            string cbnReportingCode)
+            string cbnReportingCode,
+            string ndicReportingCode = null,
+            string ifrsCategory = null,
+            string accountMnemonic = null,
+            bool isBudgeted = false,
+            bool isRestricted = false,
+            string tags = null)
         {
             AccountName = accountName;
             Description = description;
@@ -112,6 +174,12 @@ namespace FinTech.Domain.Entities.Accounting
             AllowManualEntries = allowManualEntries;
             RequiresReconciliation = requiresReconciliation;
             CBNReportingCode = cbnReportingCode;
+            NDICReportingCode = ndicReportingCode;
+            IFRSCategory = ifrsCategory;
+            AccountMnemonic = accountMnemonic;
+            IsBudgeted = isBudgeted;
+            IsRestricted = isRestricted;
+            Tags = tags;
             LastModifiedDate = DateTime.UtcNow;
             
             AddDomainEvent(new AccountUpdatedEvent(Id, AccountCode, accountName));
