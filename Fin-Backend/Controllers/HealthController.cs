@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FinTech.Core.Application.DTOs.Health;
 
 namespace Fin_Backend.Controllers
 {
@@ -156,123 +157,5 @@ namespace Fin_Backend.Controllers
             
             return Success(response);
         }
-    }
-
-    /// <summary>
-    /// Health report data transfer object
-    /// </summary>
-    public class HealthReportDto
-    {
-        /// <summary>
-        /// Overall health status
-        /// </summary>
-        /// <example>Healthy</example>
-        public string Status { get; set; }
-        
-        /// <summary>
-        /// Time taken to generate the health report in milliseconds
-        /// </summary>
-        /// <example>123.45</example>
-        public double TotalDuration { get; set; }
-        
-        /// <summary>
-        /// List of health components
-        /// </summary>
-        public List<HealthComponentDto> Components { get; set; }
-    }
-
-    /// <summary>
-    /// Health component data transfer object
-    /// </summary>
-    public class HealthComponentDto
-    {
-        /// <summary>
-        /// Name of the health component
-        /// </summary>
-        /// <example>database_health_check</example>
-        public string Name { get; set; }
-        
-        /// <summary>
-        /// Status of the health component
-        /// </summary>
-        /// <example>Healthy</example>
-        public string Status { get; set; }
-        
-        /// <summary>
-        /// Description of the health component
-        /// </summary>
-        /// <example>Database connection is healthy</example>
-        public string Description { get; set; }
-        
-        /// <summary>
-        /// Time taken to check the health component in milliseconds
-        /// </summary>
-        /// <example>50.23</example>
-        public double Duration { get; set; }
-        
-        /// <summary>
-        /// Tags associated with the health component
-        /// </summary>
-        /// <example>["database", "sql", "ready"]</example>
-        public List<string> Tags { get; set; }
-        
-        /// <summary>
-        /// Additional data for the health component
-        /// </summary>
-        public Dictionary<string, string> Data { get; set; }
-    }
-
-    /// <summary>
-    /// Readiness status data transfer object
-    /// </summary>
-    public class ReadinessStatusDto
-    {
-        /// <summary>
-        /// Status of the system
-        /// </summary>
-        /// <example>Healthy</example>
-        public string Status { get; set; }
-        
-        /// <summary>
-        /// Whether the system is ready to serve requests
-        /// </summary>
-        /// <example>true</example>
-        public bool IsReady { get; set; }
-        
-        /// <summary>
-        /// Message describing the readiness status
-        /// </summary>
-        /// <example>System is ready to serve requests</example>
-        public string Message { get; set; }
-    }
-
-    /// <summary>
-    /// Liveness status data transfer object
-    /// </summary>
-    public class LivenessStatusDto
-    {
-        /// <summary>
-        /// Status of the system
-        /// </summary>
-        /// <example>Healthy</example>
-        public string Status { get; set; }
-        
-        /// <summary>
-        /// Whether the system is alive
-        /// </summary>
-        /// <example>true</example>
-        public bool IsAlive { get; set; }
-        
-        /// <summary>
-        /// Message describing the liveness status
-        /// </summary>
-        /// <example>System is alive</example>
-        public string Message { get; set; }
-        
-        /// <summary>
-        /// Timestamp of the liveness check
-        /// </summary>
-        /// <example>2025-09-16T10:30:00Z</example>
-        public DateTime Timestamp { get; set; }
     }
 }

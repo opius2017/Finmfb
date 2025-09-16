@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FinTech.Core.Application.DTOs.Social;
 
 namespace FinTech.WebAPI.Controllers
 {
@@ -289,42 +290,5 @@ namespace FinTech.WebAPI.Controllers
                 });
             }
         }
-    }
-
-    /// <summary>
-    /// Social login authorization URL DTO
-    /// </summary>
-    public class SocialLoginUrlDto
-    {
-        /// <summary>
-        /// Gets or sets the provider name
-        /// </summary>
-        public string Provider { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the authorization URL
-        /// </summary>
-        public string AuthorizationUrl { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the state parameter
-        /// </summary>
-        public string State { get; set; }
-    }
-
-    /// <summary>
-    /// Request to link a social account
-    /// </summary>
-    public class SocialLinkRequest
-    {
-        /// <summary>
-        /// Gets or sets the access token
-        /// </summary>
-        public string AccessToken { get; set; }
-        
-        /// <summary>
-        /// Gets or sets the token secret (required for some providers like Twitter)
-        /// </summary>
-        public string TokenSecret { get; set; }
     }
 }
