@@ -1,8 +1,14 @@
 using FinTech.Core.Application;
 using FinTech.Infrastructure;
+using FinTech.Infrastructure.Monitoring;
+using FinTech.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
+using System.Net.Mime;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +25,12 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 
 // Register workflow examples for demonstration
 builder.Services.AddWorkflowExamples();
+
+// Register security services with fine-grained authorization
+builder.Services.AddSecurityServices();
+
+// Register monitoring and logging services
+builder.Services.AddMonitoringServices(builder.Configuration);
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -59,10 +71,40 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Add performance monitoring middleware
+app.UseMiddleware<PerformanceMonitoringMiddleware>();
+
+// Add custom exception handling middleware (omitted for brevity)
+
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Configure health checks endpoint
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        var result = JsonSerializer.Serialize(
+            new
+            {
+                status = report.Status.ToString(),
+                checks = report.Entries.Select(entry => new
+                {
+                    name = entry.Key,
+                    status = entry.Value.Status.ToString(),
+                    description = entry.Value.Description,
+                    duration = entry.Value.Duration.TotalMilliseconds
+                }),
+                totalDuration = report.TotalDuration.TotalMilliseconds
+            });
+            
+        context.Response.ContentType = MediaTypeNames.Application.Json;
+        await context.Response.WriteAsync(result);
+    }
+});
+
 app.MapControllers();
 
 app.Run();

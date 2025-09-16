@@ -1,0 +1,226 @@
+name: Finmfb CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        
+    - name: Restore backend dependencies
+      run: dotnet restore Finmfb.sln
+      
+    - name: Build backend
+      run: dotnet build Finmfb.sln --configuration Release --no-restore
+      
+    - name: Run backend tests
+      run: dotnet test FinTech.Tests --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      
+    - name: Install frontend dependencies
+      working-directory: ./Fin-Frontend
+      run: npm ci
+      
+    - name: Build frontend
+      working-directory: ./Fin-Frontend
+      run: npm run build
+      
+    - name: Run frontend tests
+      working-directory: ./Fin-Frontend
+      run: npm test
+      
+    - name: Upload backend build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend-build
+        path: Fin-Backend/bin/Release/
+
+    - name: Upload frontend build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-build
+        path: Fin-Frontend/dist/
+        
+  sonarcloud:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.projectKey=opius2017_Finmfb
+          -Dsonar.organization=opius2017
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run OWASP ZAP scan
+      uses: zaproxy/action-baseline@v0.7.0
+      with:
+        target: 'https://dev-finmfb.example.com'
+        
+    - name: Run Snyk Security Scan
+      uses: snyk/actions/dotnet@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=high
+
+  deploy-dev:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: [build, sonarcloud, security-scan]
+    if: github.ref == 'refs/heads/develop' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
+    environment: development
+    
+    steps:
+    - name: Download backend build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: backend-build
+        path: backend
+        
+    - name: Download frontend build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend-build
+        path: frontend
+        
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'finmfb-dev'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_DEV }}
+        package: backend
+        
+    - name: Deploy frontend to Azure Storage
+      uses: azure/cli@v1.0.7
+      with:
+        inlineScript: |
+          az storage blob upload-batch --account-name finmfbstoragedev --auth-mode key --account-key ${{ secrets.AZURE_STORAGE_KEY_DEV }} --destination '$web' --source frontend
+          
+    - name: Purge CDN
+      uses: azure/cli@v1.0.7
+      with:
+        inlineScript: |
+          az cdn endpoint purge --resource-group finmfb-dev-rg --name finmfb-dev-cdn --profile-name finmfb-dev-cdn-profile --content-paths '/*'
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build, sonarcloud, security-scan]
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
+    environment: staging
+    
+    steps:
+    - name: Download backend build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: backend-build
+        path: backend
+        
+    - name: Download frontend build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend-build
+        path: frontend
+        
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'finmfb-staging'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_STAGING }}
+        package: backend
+        
+    - name: Deploy frontend to Azure Storage
+      uses: azure/cli@v1.0.7
+      with:
+        inlineScript: |
+          az storage blob upload-batch --account-name finmfbstoragestaging --auth-mode key --account-key ${{ secrets.AZURE_STORAGE_KEY_STAGING }} --destination '$web' --source frontend
+          
+    - name: Purge CDN
+      uses: azure/cli@v1.0.7
+      with:
+        inlineScript: |
+          az cdn endpoint purge --resource-group finmfb-staging-rg --name finmfb-staging-cdn --profile-name finmfb-staging-cdn-profile --content-paths '/*'
+
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'prod'
+    environment: production
+    
+    steps:
+    - name: Download backend build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: backend-build
+        path: backend
+        
+    - name: Download frontend build artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: frontend-build
+        path: frontend
+        
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'finmfb-prod'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PROD }}
+        package: backend
+        
+    - name: Deploy frontend to Azure Storage
+      uses: azure/cli@v1.0.7
+      with:
+        inlineScript: |
+          az storage blob upload-batch --account-name finmfbstorageprod --auth-mode key --account-key ${{ secrets.AZURE_STORAGE_KEY_PROD }} --destination '$web' --source frontend
+          
+    - name: Purge CDN
+      uses: azure/cli@v1.0.7
+      with:
+        inlineScript: |
+          az cdn endpoint purge --resource-group finmfb-prod-rg --name finmfb-prod-cdn --profile-name finmfb-prod-cdn-profile --content-paths '/*'
