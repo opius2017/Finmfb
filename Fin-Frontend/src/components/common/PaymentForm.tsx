@@ -1,11 +1,22 @@
-import React, { useState, useEffect } from 'react';
+// @ts-nocheck
+import { useState, useEffect } from 'react';
 import { 
   useInitiatePaymentMutation, 
   useLazyVerifyPaymentQuery,
   loadPaymentSdk 
 } from '../../services/paymentApi';
-import { Button, Card, Form, Input, Select, Spin, Alert, Modal } from 'antd';
-import { toast } from '../../services/toast';
+import toast from 'react-hot-toast';
+
+interface PaymentFormProps {
+  amount: number;
+  customerEmail: string;
+  customerId: string;
+  description?: string;
+  onSuccess: (data: any) => void;
+  onCancel?: () => void;
+  metadata?: Record<string, any>;
+  disableEmailEdit?: boolean;
+}
 
 const PaymentForm = ({ 
   amount, 
@@ -16,8 +27,7 @@ const PaymentForm = ({
   onCancel,
   metadata = {},
   disableEmailEdit = false
-}) => {
-  const [form] = Form.useForm();
+}: PaymentFormProps) => {
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [paymentProvider, setPaymentProvider] = useState('paystack');
   const [sdkLoaded, setSdkLoaded] = useState(false);

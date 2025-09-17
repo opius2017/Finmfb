@@ -12,7 +12,7 @@ import {
   Printer,
   Loader2
 } from 'lucide-react';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import toast from 'react-hot-toast';
 
 interface MFASetupWizardProps {
@@ -250,12 +250,11 @@ const MFASetupWizard: React.FC<MFASetupWizardProps> = ({
             ) : (
               <>
                 <div className="bg-white p-3 rounded-lg shadow-sm mb-3">
-                  <QRCode 
+                  <QRCodeSVG 
                     value={qrCodeUrl || 'https://example.com'} 
                     size={180} 
                     level="H"
                     includeMargin={true}
-                    renderAs="svg"
                   />
                 </div>
                 <p className="text-sm text-gray-500">Scan with your authenticator app</p>

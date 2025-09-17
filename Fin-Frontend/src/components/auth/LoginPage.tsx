@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Logo from '../common/Logo';
 import { 
@@ -21,8 +21,8 @@ const LoginPage: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const [login, { isLoading }] = useLoginMutation();
-  const [verifyMfa, { isLoading: isVerifyingMfa }] = useVerifyMfaLoginMutation();
-  const [verifyBackupCode, { isLoading: isVerifyingBackupCode }] = useVerifyBackupCodeLoginMutation();
+  const [verifyMfa] = useVerifyMfaLoginMutation();
+  const [verifyBackupCode] = useVerifyBackupCodeLoginMutation();
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
           }));
           
           setShowMfaPrompt(true);
-          toast.info('Please enter your verification code to continue');
+          toast('Please enter your verification code to continue');
           return;
         }
         
