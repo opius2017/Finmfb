@@ -91,8 +91,12 @@ const LoanApplication: React.FC = () => {
     setIsSubmitting(true);
     try {
       const response = await createLoan({
-        ...data,
         customerId: customerId!,
+        productId: "default-loan-product", // You may need to add product selection to the form
+        principalAmount: data.amount,
+        tenorDays: data.term * 30, // Convert months to days (approximate)
+        disbursementDate: new Date().toISOString().split('T')[0], // Today's date
+        purpose: data.purpose,
       }).unwrap();
       toast({
         title: 'Application Submitted',

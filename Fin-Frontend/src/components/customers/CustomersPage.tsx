@@ -28,6 +28,32 @@ const CustomersPage: React.FC = () => {
     limit: ITEMS_PER_PAGE,
   });
 
+  // Helper function to get full name from customer
+  const getCustomerName = (customer: Customer): string => {
+    const nameParts = [customer.firstName, customer.middleName, customer.lastName].filter(Boolean);
+    return nameParts.join(' ') || customer.companyName || 'N/A';
+  };
+
+  // Helper function to convert status number to string
+  const getStatusString = (status: number): string => {
+    switch (status) {
+      case 1: return 'active';
+      case 0: return 'inactive';
+      case 2: return 'suspended';
+      default: return 'unknown';
+    }
+  };
+
+  // Helper function to convert customer type number to string
+  const getCustomerTypeString = (customerType: number): string => {
+    switch (customerType) {
+      case 1: return 'individual';
+      case 2: return 'business';
+      case 3: return 'corporate';
+      default: return 'unknown';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-6">
@@ -46,11 +72,14 @@ const CustomersPage: React.FC = () => {
   }
 
   const filteredCustomers = data?.customers?.filter((customer) => {
-    const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const customerName = getCustomerName(customer);
+    const customerEmail = customer.email || '';
+    const matchesSearch = customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         customerEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.customerNumber.includes(searchTerm);
     
-    const matchesFilter = filterStatus === 'all' || customer.status.toLowerCase() === filterStatus;
+    const customerStatusString = getStatusString(customer.status);
+    const matchesFilter = filterStatus === 'all' || customerStatusString === filterStatus;
     
     return matchesSearch && matchesFilter;
   }) || [];
@@ -177,12 +206,12 @@ const CustomersPage: React.FC = () => {
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center">
                         <span className="text-white font-medium text-sm">
-                          {customer.name.split(' ').map(n => n[0]).join('')}
+                          {getCustomerName(customer).split(' ').map(n => n[0]).join('')}
                         </span>
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {customer.name}
+                          {getCustomerName(customer)}
                         </div>
                         <div className="text-sm text-gray-500">
                           {customer.email}
@@ -195,9 +224,9 @@ const CustomersPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      getCustomerTypeColor(customer.customerType)
+                      getCustomerTypeColor(getCustomerTypeString(customer.customerType))
                     }`}>
-                      {customer.customerType}
+                      {getCustomerTypeString(customer.customerType)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -205,9 +234,9 @@ const CustomersPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      getStatusColor(customer.status)
+                      getStatusColor(getStatusString(customer.status))
                     }`}>
-                      {customer.status}
+                      {getStatusString(customer.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

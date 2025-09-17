@@ -80,6 +80,7 @@ export const initializeFlutterwaveCheckout = (publicKey, email, amount, referenc
       tx_ref: reference,
       amount,
       currency: "NGN",
+      payment_options: "card,banktransfer,ussd",
       customer: {
         email,
         name,
