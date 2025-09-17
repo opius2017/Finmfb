@@ -21,13 +21,6 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
   </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="src/Presentation/WebAPI/appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="src/Presentation/WebAPI/appsettings.Development.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
+    <!-- Removed explicit Content items to avoid duplicate error -->
 
 </Project>
