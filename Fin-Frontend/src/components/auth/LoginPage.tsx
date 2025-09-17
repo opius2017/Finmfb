@@ -77,7 +77,7 @@ const LoginPage: React.FC = () => {
           userId: response.data.userId,
           username: response.data.username,
           email: response.data.email,
-          fullName: response.data.fullName || response.data.username || response.data.email,
+          fullName: response.data.username || response.data.email,
           roles: response.data.roles || []
         }));
         
@@ -109,7 +109,7 @@ const LoginPage: React.FC = () => {
           userId: response.data.userId,
           username: response.data.username,
           email: response.data.email,
-          fullName: response.data.fullName || response.data.username || response.data.email,
+          fullName: response.data.username || response.data.email,
           roles: response.data.roles || []
         }));
         
@@ -146,7 +146,7 @@ const LoginPage: React.FC = () => {
           userId: response.data.userId,
           username: response.data.username,
           email: response.data.email,
-          fullName: response.data.fullName || response.data.username || response.data.email,
+          fullName: response.data.username || response.data.email,
           roles: response.data.roles || []
         }));
         

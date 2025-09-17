@@ -17,6 +17,18 @@ const baseQuery = fetchBaseQuery({
 
 export const api = createApi({
   baseQuery,
-  tagTypes: ['Dashboard'],
+  tagTypes: [
+    'Dashboard', 
+    'Inventory', 
+    'Loan', 
+    'MakerChecker', 
+    'Employee', 
+    'Payroll', 
+    'Role', 
+    'Permission',
+    'Customer',
+    'Account',
+    'Transaction'
+  ],
   endpoints: () => ({}),
 });

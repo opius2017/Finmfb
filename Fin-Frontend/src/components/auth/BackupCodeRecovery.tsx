@@ -28,12 +28,12 @@ const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({
     }
     try {
       const response = await validateBackupCode({
-        userId,
+        mfaToken,
         backupCode: backupCode.trim().toUpperCase(),
       }).unwrap();
-      if (response.success && response.data) {
+      if (response.success) {
         toast.success('Backup code validated successfully');
-        onSuccess(response.data.token || '');
+        onSuccess(response.data?.token || response.token || '');
       } else {
         toast.error('Invalid backup code. Please try again.');
       }
