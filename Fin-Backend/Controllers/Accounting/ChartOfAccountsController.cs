@@ -88,9 +88,8 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                // Set the creator to the current user
-                account.CreatedBy = User.Identity.Name;
-                
+                // Set the creator to the current user, fallback to "system" if null
+                account.CreatedBy = User?.Identity?.Name ?? "system";
                 var accountId = await _chartOfAccountService.CreateAccountAsync(account);
                 return CreatedAtAction(nameof(GetAccountById), new { id = accountId }, accountId);
             }
@@ -106,16 +105,16 @@ namespace FinTech.WebAPI.Controllers.Accounting
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateAccount(string id, ChartOfAccount account)
         {
-            if (id != account.Id)
+            // Use string comparison for Id, fallback to ToString if ambiguous
+            if (id != account.Id?.ToString())
             {
                 return BadRequest("ID mismatch");
             }
 
             try
             {
-                // Set the modifier to the current user
-                account.LastModifiedBy = User.Identity.Name;
-                
+                // Set the modifier to the current user, fallback to "system" if null
+                account.LastModifiedBy = User?.Identity?.Name ?? "system";
                 await _chartOfAccountService.UpdateAccountAsync(account);
                 return NoContent();
             }
@@ -137,7 +136,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                await _chartOfAccountService.ActivateAccountAsync(id, User.Identity.Name);
+                await _chartOfAccountService.ActivateAccountAsync(id, User?.Identity?.Name ?? "system");
                 return NoContent();
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
@@ -158,7 +157,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                await _chartOfAccountService.DeactivateAccountAsync(id, User.Identity.Name);
+                await _chartOfAccountService.DeactivateAccountAsync(id, User?.Identity?.Name ?? "system");
                 return NoContent();
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
@@ -195,6 +194,75 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             var exists = await _chartOfAccountService.AccountNumberExistsAsync(accountNumber);
             return Ok(exists);
+        }
+
+        [HttpPost("template/cbn")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> InitializeCbnTemplate([FromQuery] string tenantId)
+        {
+            try
+            {
+                var templateService = new ChartOfAccountTemplateService();
+                var templateAccounts = templateService.GetCbnTemplate(tenantId);
+                var creator = User?.Identity?.Name ?? "system";
+                foreach (var account in templateAccounts)
+                {
+                    account.CreatedBy = creator;
+                    await _chartOfAccountService.CreateAccountAsync(account);
+                }
+                return Created($"/api/chartofaccounts/template/cbn?tenantId={tenantId}", templateAccounts.Count);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("template/ndic")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> InitializeNdicTemplate([FromQuery] string tenantId)
+        {
+            try
+            {
+                var templateService = new ChartOfAccountTemplateService();
+                var templateAccounts = templateService.GetNdicTemplate(tenantId);
+                var creator = User?.Identity?.Name ?? "system";
+                foreach (var account in templateAccounts)
+                {
+                    account.CreatedBy = creator;
+                    await _chartOfAccountService.CreateAccountAsync(account);
+                }
+                return Created($"/api/chartofaccounts/template/ndic?tenantId={tenantId}", templateAccounts.Count);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("template/ifrs")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> InitializeIfrsTemplate([FromQuery] string tenantId)
+        {
+            try
+            {
+                var templateService = new ChartOfAccountTemplateService();
+                var templateAccounts = templateService.GetIfrsTemplate(tenantId);
+                var creator = User?.Identity?.Name ?? "system";
+                foreach (var account in templateAccounts)
+                {
+                    account.CreatedBy = creator;
+                    await _chartOfAccountService.CreateAccountAsync(account);
+                }
+                return Created($"/api/chartofaccounts/template/ifrs?tenantId={tenantId}", templateAccounts.Count);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -179,6 +179,48 @@ const ChartOfAccounts: React.FC = () => {
         ))}
       </div>
 
+      <div className="flex space-x-2 mt-4">
+        <button
+          onClick={async () => {
+            try {
+              await fetch(`/api/chartofaccounts/template/cbn?tenantId=default`, { method: 'POST' });
+              toast.success('CBN template initialized');
+            } catch (error) {
+              toast.error('Failed to initialize CBN template');
+            }
+          }}
+          className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Initialize CBN Template
+        </button>
+        <button
+          onClick={async () => {
+            try {
+              await fetch(`/api/chartofaccounts/template/ndic?tenantId=default`, { method: 'POST' });
+              toast.success('NDIC template initialized');
+            } catch (error) {
+              toast.error('Failed to initialize NDIC template');
+            }
+          }}
+          className="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+        >
+          Initialize NDIC Template
+        </button>
+        <button
+          onClick={async () => {
+            try {
+              await fetch(`/api/chartofaccounts/template/ifrs?tenantId=default`, { method: 'POST' });
+              toast.success('IFRS template initialized');
+            } catch (error) {
+              toast.error('Failed to initialize IFRS template');
+            }
+          }}
+          className="px-3 py-2 bg-orange-600 text-white rounded hover:bg-orange-700"
+        >
+          Initialize IFRS Template
+        </button>
+      </div>
+
       <AccountModal
         isOpen={showNewAccountModal}
         onClose={() => setShowNewAccountModal(false)}

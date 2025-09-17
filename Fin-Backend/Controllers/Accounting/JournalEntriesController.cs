@@ -120,14 +120,14 @@ namespace FinTech.WebAPI.Controllers.Accounting
                 }
 
                 // Set the creator to the current user
-                journalEntry.CreatedBy = User.Identity.Name;
+                journalEntry.CreatedBy = User?.Identity?.Name ?? "system";
                 
                 // Set the creation date to all lines
                 if (journalEntry.JournalEntryLines != null)
                 {
                     foreach (var line in journalEntry.JournalEntryLines)
                     {
-                        line.CreatedBy = User.Identity.Name;
+                        line.CreatedBy = User?.Identity?.Name ?? "system";
                     }
                 }
 
@@ -146,7 +146,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateJournalEntry(string id, JournalEntry journalEntry)
         {
-            if (id != journalEntry.Id)
+            if (id != journalEntry.Id?.ToString())
             {
                 return BadRequest("ID mismatch");
             }
@@ -154,7 +154,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
             try
             {
                 // Set the modifier to the current user
-                journalEntry.LastModifiedBy = User.Identity.Name;
+                journalEntry.LastModifiedBy = User?.Identity?.Name ?? "system";
                 
                 // Set the modifier to all lines
                 if (journalEntry.JournalEntryLines != null)
@@ -163,11 +163,11 @@ namespace FinTech.WebAPI.Controllers.Accounting
                     {
                         if (string.IsNullOrEmpty(line.CreatedBy))
                         {
-                            line.CreatedBy = User.Identity.Name;
+                            line.CreatedBy = User?.Identity?.Name ?? "system";
                         }
                         else
                         {
-                            line.LastModifiedBy = User.Identity.Name;
+                            line.LastModifiedBy = User?.Identity?.Name ?? "system";
                         }
                     }
                 }
@@ -193,7 +193,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                await _journalEntryService.SubmitForApprovalAsync(id, User.Identity.Name);
+                await _journalEntryService.SubmitForApprovalAsync(id, User?.Identity?.Name ?? "system");
                 return NoContent();
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
@@ -215,7 +215,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                await _journalEntryService.ApproveJournalEntryAsync(id, User.Identity.Name);
+                await _journalEntryService.ApproveJournalEntryAsync(id, User?.Identity?.Name ?? "system");
                 return NoContent();
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
@@ -237,7 +237,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                await _journalEntryService.RejectJournalEntryAsync(id, User.Identity.Name, rejectionReason);
+                await _journalEntryService.RejectJournalEntryAsync(id, User?.Identity?.Name ?? "system", rejectionReason);
                 return NoContent();
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
@@ -259,7 +259,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                await _journalEntryService.PostJournalEntryAsync(id, User.Identity.Name);
+                await _journalEntryService.PostJournalEntryAsync(id, User?.Identity?.Name ?? "system");
                 return NoContent();
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
@@ -281,7 +281,7 @@ namespace FinTech.WebAPI.Controllers.Accounting
         {
             try
             {
-                var reversalId = await _journalEntryService.ReverseJournalEntryAsync(id, User.Identity.Name, reversalReason);
+                var reversalId = await _journalEntryService.ReverseJournalEntryAsync(id, User?.Identity?.Name ?? "system", reversalReason);
                 return Ok(reversalId);
             }
             catch (InvalidOperationException ex) when (ex.Message.Contains("not found"))
@@ -303,6 +303,30 @@ namespace FinTech.WebAPI.Controllers.Accounting
             {
                 var journalNumber = await _journalEntryService.GenerateJournalNumberAsync(entryType);
                 return Ok(journalNumber);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("{id}/upload-document")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadDocument(string id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
+            try
+            {
+                // Save file to storage (implement IFileStorageService as needed)
+                var fileStorageService = HttpContext.RequestServices.GetService(typeof(IFileStorageService)) as IFileStorageService;
+                var filePath = await fileStorageService.SaveFileAsync(file);
+
+                // Link document to journal entry
+                await _journalEntryService.AttachDocumentAsync(id, filePath, User?.Identity?.Name ?? "system");
+                return Ok("Document uploaded and attached");
             }
             catch (Exception ex)
             {
