@@ -15,9 +15,6 @@ namespace FinTech.Domain.Entities.Common
     }
 }
 
-// File removed
-using System;
-
 namespace FinTech.Domain.Entities.Common
 {
     /// <summary>

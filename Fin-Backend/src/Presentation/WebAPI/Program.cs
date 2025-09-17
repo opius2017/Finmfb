@@ -1,11 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsbuilder.Services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
-builder.Services.AddScoped<ITaxCalculationService, TaxCalculationService>();
-builder.Services.AddScoped<IMakerCheckerService, MakerCheckerService>();
-
-// Register client portal services
-builder.Services.AddClientPortalServices();.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
