@@ -21,13 +21,23 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
   </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="src/Presentation/WebAPI/appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="src/Presentation/WebAPI/appsettings.Development.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
+  <!-- Exclude duplicate root-level directories to prevent conflicts with src/ structure -->
+  <ItemGroup>
+    <Compile Remove="Application/**/*.cs" />
+    <Compile Remove="Controllers/**/*.cs" />
+    <Compile Remove="Core/**/*.cs" />
+    <Compile Remove="Domain/**/*.cs" />
+    <Compile Remove="Infrastructure/**/*.cs" />
+    <Compile Remove="Examples/**/*.cs" />
+    <Compile Remove="Program.cs" />
+  </ItemGroup>
+
+  <!-- Remove content items that may cause duplicates -->
+  <ItemGroup>
+    <Content Remove="appsettings.json" />
+    <Content Remove="appsettings.Development.json" />
+  </ItemGroup>
+
+    <!-- Removed explicit Content items to avoid duplicate error -->
 
 </Project>
