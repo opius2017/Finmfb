@@ -74,34 +74,64 @@ namespace FinTech.Application.Services.Loans
             }
         }
 
-        public async Task<LoanCollateralDto> AddCollateralAsync(LoanCollateralDto collateralDto)
+    public async Task<LoanCollateralDto> AddCollateralAsync(string loanId, CreateLoanCollateralDto collateralDto)
         {
             try
             {
-                var loan = await _loanRepository.GetByIdAsync(collateralDto.LoanId);
+                var loan = await _loanRepository.GetByIdAsync(loanId);
                 if (loan == null)
                 {
-                    throw new ApplicationException($"Loan with ID {collateralDto.LoanId} not found");
+                    throw new ApplicationException($"Loan with ID {loanId} not found");
                 }
 
                 var collateral = new LoanCollateral
                 {
-                    Id = collateralDto.Id ?? Guid.NewGuid().ToString(),
-                    LoanId = collateralDto.LoanId,
+                    LoanId = loanId,
                     CollateralType = collateralDto.CollateralType,
                     Description = collateralDto.Description,
                     Value = collateralDto.Value,
+                    ValuationDate = collateralDto.ValuationDate,
+                    ValuationMethod = collateralDto.ValuationMethod,
+                    ValuedBy = collateralDto.ValuedBy,
                     OwnerName = collateralDto.OwnerName,
+                    OwnerRelationship = collateralDto.OwnerRelationship,
                     RegistrationNumber = collateralDto.RegistrationNumber,
-                    RegistrationDate = collateralDto.RegistrationDate,
                     Location = collateralDto.Location,
-                    Status = collateralDto.Status,
-                    CreatedDate = DateTime.UtcNow,
-                    LastModifiedDate = DateTime.UtcNow
+                    IsInsured = collateralDto.IsInsured,
+                    InsuranceCompany = collateralDto.InsuranceCompany,
+                    InsurancePolicyNumber = collateralDto.InsurancePolicyNumber,
+                    InsuranceExpiryDate = collateralDto.InsuranceExpiryDate,
+                    VerificationStatus = collateralDto.VerificationStatus,
+                    VerificationDate = collateralDto.VerificationDate,
+                    VerifiedBy = collateralDto.VerifiedBy,
+                    Notes = collateralDto.Notes
                 };
 
                 var result = await _collateralRepository.AddAsync(collateral);
-                return MapToDto(result);
+                // Map domain entity to DTO
+                return new LoanCollateralDto
+                {
+                    Id = result.Id.ToString(),
+                    LoanId = result.LoanId,
+                    CollateralType = result.CollateralType,
+                    Description = result.Description,
+                    Value = result.Value,
+                    ValuationDate = result.ValuationDate,
+                    ValuationMethod = result.ValuationMethod,
+                    ValuedBy = result.ValuedBy,
+                    OwnerName = result.OwnerName,
+                    OwnerRelationship = result.OwnerRelationship,
+                    RegistrationNumber = result.RegistrationNumber,
+                    Location = result.Location,
+                    IsInsured = result.IsInsured,
+                    InsuranceCompany = result.InsuranceCompany,
+                    InsurancePolicyNumber = result.InsurancePolicyNumber,
+                    InsuranceExpiryDate = result.InsuranceExpiryDate,
+                    VerificationStatus = result.VerificationStatus,
+                    VerificationDate = result.VerificationDate,
+                    VerifiedBy = result.VerifiedBy,
+                    Notes = result.Notes
+                };
             }
             catch (Exception ex)
             {

@@ -47,104 +47,30 @@ const LoanManagementPage: React.FC = () => {
   const [filterClassification, setFilterClassification] = useState('all');
   const [selectedView, setSelectedView] = useState<'list' | 'cards'>('list');
 
-  // Mock data - replace with actual API call
-  const [loans, setLoans] = useState<LoanAccount[]>([]);
-  useEffect(() => {
-    // Replace with actual API endpoint for loans
-    axios.get('/api/loans').then(async (res) => {
-      const loanList: LoanAccount[] = res.data;
-      // Fetch expected credit loss for each loan
-      const updatedLoans = await Promise.all(
-        loanList.map(async (loan) => {
-          try {
-            const provRes = await axios.get(`/api/loans/${loan.id}/provisioning`);
-            return { ...loan, expectedCreditLoss: provRes.data.expectedCreditLoss };
-          } catch {
-            return { ...loan, expectedCreditLoss: 0 };
-          }
-        })
-      );
-      setLoans(updatedLoans);
-    });
-  }, []);
-    {
-      id: '1',
-      accountNumber: 'LN001234567',
-      customerName: 'Adebayo Ogundimu',
-      productName: 'SME Business Loan',
-      principalAmount: 5000000,
-      outstandingPrincipal: 3500000,
-      outstandingInterest: 125000,
-      interestRate: 18.5,
-      disbursementDate: '2024-01-15',
-      maturityDate: '2025-01-15',
-      status: 'Active',
-      classification: 'Performing',
-      daysPastDue: 0,
-      provisionAmount: 35000,
-      createdAt: '2024-01-10',
-    },
-    {
-      id: '2',
-      accountNumber: 'LN001234568',
-      customerName: 'Fatima Aliyu',
-      productName: 'Individual Loan',
-      principalAmount: 2000000,
-      outstandingPrincipal: 800000,
-      outstandingInterest: 45000,
-      interestRate: 22.0,
-      disbursementDate: '2023-08-10',
-      maturityDate: '2024-08-10',
-      status: 'Active',
-      classification: 'Special Mention',
-      daysPastDue: 15,
-      provisionAmount: 24000,
-      createdAt: '2023-08-05',
-    },
-    {
-      id: '3',
-      accountNumber: 'LN001234569',
-      customerName: 'Chinedu Okwu',
-      productName: 'Asset Financing',
-      principalAmount: 8000000,
-      outstandingPrincipal: 6200000,
-      outstandingInterest: 180000,
-      interestRate: 16.5,
-      disbursementDate: '2024-03-01',
-      maturityDate: '2026-03-01',
-      status: 'Active',
-      classification: 'Performing',
-      daysPastDue: 0,
-      provisionAmount: 62000,
-      createdAt: '2024-02-25',
-    },
-    {
-      id: '4',
-      accountNumber: 'LN001234570',
-      customerName: 'Kemi Adebisi',
-      productName: 'Working Capital',
-      principalAmount: 3000000,
-      outstandingPrincipal: 1500000,
-      outstandingInterest: 85000,
-      interestRate: 20.0,
-      disbursementDate: '2023-11-20',
-      maturityDate: '2024-11-20',
-      status: 'Active',
-      classification: 'Substandard',
-      daysPastDue: 45,
-      provisionAmount: 300000,
-      createdAt: '2023-11-15',
-    },
-  ];
+    const [loans, setLoans] = useState<LoanAccount[]>([]); // Initialize loans state
+    useEffect(() => {
+      axios.get('/api/loans').then(async (res) => {
+        const loanList: LoanAccount[] = res.data; // Fetch loan data from API
+        const updatedLoans = await Promise.all(
+          loanList.map(async (loan) => {
+            try {
+              const provRes = await axios.get(`/api/loans/${loan.id}/provisioning`);
+              return { ...loan, expectedCreditLoss: provRes.data.expectedCreditLoss };
+            } catch {
+              return { ...loan, expectedCreditLoss: 0 };
+            }
+          })
+        );
+        setLoans(updatedLoans); // Update loans state with fetched data
+      });
+    }, []);
 
   const filteredLoans = loans.filter((loan) => {
-    const matchesSearch = loan.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         loan.accountNumber.includes(searchTerm) ||
-                         loan.productName.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === 'all' || loan.status.toLowerCase() === filterStatus;
-    const matchesClassification = filterClassification === 'all' || loan.classification.toLowerCase().replace(' ', '') === filterClassification;
-    
+    const matchesSearch = loan.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         loan.accountNumber?.includes(searchTerm) ||
+                         loan.productName?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = filterStatus === 'all' || loan.status?.toLowerCase() === filterStatus;
+    const matchesClassification = filterClassification === 'all' || loan.classification?.toLowerCase().replace(' ', '') === filterClassification;
     return matchesSearch && matchesStatus && matchesClassification;
   });
 

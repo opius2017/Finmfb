@@ -107,7 +107,16 @@ namespace FinTech.WebAPI.Controllers
             [HttpPost("{id}/collaterals")]
             public async Task<ActionResult<LoanCollateralDto>> AddLoanCollateral(string id, [FromBody] CreateLoanCollateralDto collateralDto)
             {
-                var collateral = await _loanService.AddLoanCollateralAsync(id, collateralDto);
+                // Map DTO to domain entity
+                var domainCollateral = new FinTech.Core.Domain.Entities.Loans.LoanCollateral
+                {
+                    LoanId = id,
+                    CollateralType = collateralDto.CollateralType,
+                    Value = collateralDto.Value,
+                    Description = collateralDto.Description,
+                    DateAdded = DateTime.UtcNow
+                };
+                var collateral = await _loanService.AddLoanCollateralAsync(id, domainCollateral);
                 return Ok(_mapper.Map<LoanCollateralDto>(collateral));
             }
 
