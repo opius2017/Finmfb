@@ -7,7 +7,6 @@ import {
   Key,
   Clock,
   ChevronRight,
-  Toggle,
   Smartphone,
   Mail,
   AlertOctagon,
@@ -50,7 +49,6 @@ const SecuritySettingsPage: React.FC<SecuritySettingsPageProps> = ({
   onGetSecurityActivity
 }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [securityActivity, setSecurityActivity] = useState<SecurityActivity[]>([]);
   const [showDeviceManagement, setShowDeviceManagement] = useState(false);
   const [settings, setSettings] = useState({
     emailNotificationsEnabled: user.emailNotificationsEnabled,
@@ -65,8 +63,8 @@ const SecuritySettingsPage: React.FC<SecuritySettingsPageProps> = ({
   const fetchSecurityActivity = async () => {
     setIsLoading(true);
     try {
-      const activity = await onGetSecurityActivity();
-      setSecurityActivity(activity);
+      await onGetSecurityActivity();
+      // Activity loaded successfully
     } catch (error) {
       console.error('Error fetching security activity:', error);
       toast.error('Failed to load security activity');

@@ -7,7 +7,7 @@ import { useValidateBackupCodeMutation } from '../../services/authApi';
 interface BackupCodeRecoveryProps {
   userId: string;
   onReturn: () => void;
-  onSuccess: () => void;
+  onSuccess: (token?: any) => void;
 }
 
 const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({ 

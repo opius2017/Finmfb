@@ -38,7 +38,7 @@ const AppRouter: React.FC = () => {
   const getDefaultRoute = () => {
     if (!userPermissions?.data) return '/dashboard';
     
-    const { defaultModule, defaultDashboard } = userPermissions.data;
+    const { defaultModule } = userPermissions.data;
     
     if (defaultModule === 'executive') return '/dashboard/executive';
     if (defaultModule === 'loans') return '/dashboard/loans';
