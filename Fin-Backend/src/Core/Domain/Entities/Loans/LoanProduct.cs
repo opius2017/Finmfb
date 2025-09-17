@@ -9,11 +9,11 @@ public class LoanProduct : BaseEntity
 {
     [Required]
     [StringLength(100)]
-    public string ProductName { get; set; } = string.Empty;
+    public string? ProductName { get; set; }
     
     [Required]
     [StringLength(20)]
-    public string ProductCode { get; set; } = string.Empty;
+    public string? ProductCode { get; set; }
     
     [Required]
     public LoanProductType ProductType { get; set; }
@@ -68,7 +68,7 @@ public class LoanProduct : BaseEntity
     
     [Required]
     [StringLength(3)]
-    public string CurrencyCode { get; set; } = "NGN";
+    public string? CurrencyCode { get; set; } = "NGN";
     
     [Required]
     public Guid PrincipalGLAccountId { get; set; }

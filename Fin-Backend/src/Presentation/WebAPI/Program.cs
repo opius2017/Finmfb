@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FinTech.Core.Application.DTOs.Common;
+using FinTech.Core.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -9,7 +11,6 @@ using System.Text;
 using Serilog;
 using FinTech.Infrastructure.Data;
 using FinTech.Domain.Entities.Identity;
-using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Services;
 using FinTech.WebAPI.Extensions;
 

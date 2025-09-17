@@ -10,7 +10,7 @@ public class LoanAccount : BaseEntity
 {
     [Required]
     [StringLength(20)]
-    public string AccountNumber { get; set; } = string.Empty;
+    public string? AccountNumber { get; set; }
     
     [Required]
     public Guid CustomerId { get; set; }
@@ -81,7 +81,7 @@ public class LoanAccount : BaseEntity
     
     [Required]
     [StringLength(3)]
-    public string CurrencyCode { get; set; } = "NGN";
+    public string? CurrencyCode { get; set; } = "NGN";
     
     [Required]
     public Guid TenantId { get; set; }

@@ -13,11 +13,11 @@ public class LoanCollateral : BaseEntity
     
     [Required]
     [StringLength(100)]
-    public string CollateralType { get; set; } = string.Empty;
+    public string? CollateralType { get; set; }
     
     [Required]
     [StringLength(200)]
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; }
     
     [Required]
     [Column(TypeName = "decimal(18,2)")]

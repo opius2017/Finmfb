@@ -1,4 +1,5 @@
 using System;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Common
 {
