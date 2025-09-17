@@ -6,6 +6,7 @@ namespace FinTech.Domain.Entities.RegulatoryReporting
     /// <summary>
     /// Represents a scheduled regulatory report
     /// </summary>
+    using FinTech.Domain.Entities.Common;
     public class RegulatoryReportSchedule : AuditableEntity
     {
         /// <summary>

@@ -6,6 +6,7 @@ namespace FinTech.Domain.Entities.Tax
     /// <summary>
     /// Represents a tax rate for a specific tax type
     /// </summary>
+    using FinTech.Domain.Entities.Common;
     public class TaxRate : AuditableEntity
     {
         /// <summary>

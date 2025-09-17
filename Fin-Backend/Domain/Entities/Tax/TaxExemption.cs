@@ -6,6 +6,7 @@ namespace FinTech.Domain.Entities.Tax
     /// <summary>
     /// Represents a tax exemption for a specific party
     /// </summary>
+    using FinTech.Domain.Entities.Common;
     public class TaxExemption : AuditableEntity
     {
         /// <summary>

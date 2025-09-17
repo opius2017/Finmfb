@@ -6,6 +6,7 @@ namespace FinTech.Domain.Entities.Tax
     /// <summary>
     /// Represents a tax transaction in the system
     /// </summary>
+    using FinTech.Domain.Entities.Common;
     public class TaxTransaction : AuditableEntity
     {
         /// <summary>
