@@ -46,30 +46,31 @@ const CustomersPage: React.FC = () => {
   }
 
   const filteredCustomers = data?.customers?.filter((customer) => {
-    const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const customerName = customer.companyName || `${customer.firstName} ${customer.lastName}`.trim();
+    const matchesSearch = customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (customer.email && customer.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
                          customer.customerNumber.includes(searchTerm);
     
-    const matchesFilter = filterStatus === 'all' || customer.status.toLowerCase() === filterStatus;
+    const matchesFilter = filterStatus === 'all' || customer.status.toString() === filterStatus;
     
     return matchesSearch && matchesFilter;
   }) || [];
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'active':
+  const getStatusColor = (status: number) => {
+    switch (status) {
+      case 1: // Active
         return 'bg-green-100 text-green-800';
-      case 'inactive':
+      case 0: // Inactive
         return 'bg-gray-100 text-gray-800';
-      case 'suspended':
+      case 2: // Suspended
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const getCustomerTypeColor = (type: string) => {
-    return type === 'Individual' 
+  const getCustomerTypeColor = (type: number) => {
+    return type === 1 // Individual
       ? 'bg-blue-100 text-blue-800'
       : 'bg-purple-100 text-purple-800';
   };

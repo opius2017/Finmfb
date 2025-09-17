@@ -40,7 +40,7 @@ const DashboardHome: React.FC = () => {
       change: '+12%',
       trend: 'up' as const,
       icon: Users,
-      color: 'emerald',
+      color: 'emerald' as const,
     },
     {
       title: 'Deposit Accounts',
@@ -48,7 +48,7 @@ const DashboardHome: React.FC = () => {
       change: '+8%',
       trend: 'up' as const,
       icon: Wallet,
-      color: 'blue',
+      color: 'blue' as const,
     },
     {
       title: 'Total Deposits',
@@ -56,7 +56,7 @@ const DashboardHome: React.FC = () => {
       change: '+15%',
       trend: 'up' as const,
       icon: TrendingUp,
-      color: 'green',
+      color: 'green' as const,
     },
     {
       title: "Today's Transactions",
@@ -64,7 +64,7 @@ const DashboardHome: React.FC = () => {
       change: '+5%',
       trend: 'up' as const,
       icon: Activity,
-      color: 'purple',
+      color: 'purple' as const,
     },
   ];
 
