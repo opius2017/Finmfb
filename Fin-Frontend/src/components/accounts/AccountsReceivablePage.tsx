@@ -19,6 +19,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { format } from 'date-fns';
+import JournalEntryDocumentUpload from './JournalEntryDocumentUpload';
 
 interface Invoice {
   id: string;
@@ -542,6 +543,15 @@ const AccountsReceivablePage: React.FC = () => {
           </button>
         </div>
       </motion.div>
+
+      {/* Optional: Document Upload for Invoice (Journal Entry) */}
+      {filteredInvoices.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Attach Document to Invoice</h3>
+          {/* Example: Attach to first invoice in list, replace with actual journalEntryId logic */}
+          <JournalEntryDocumentUpload journalEntryId={filteredInvoices[0].id} />
+        </div>
+      )}
     </div>
   );
 };
