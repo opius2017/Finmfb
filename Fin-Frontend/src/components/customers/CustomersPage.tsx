@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, UserPlus, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { format } from 'date-fns';
+import { Search, UserPlus, Filter, ChevronLeft, ChevronRight, Users, Download, Plus, Eye, MoreHorizontal } from 'lucide-react';
 import { useGetCustomersQuery } from '../../services/customersApi';
 import { Customer } from '../../services/customersApi';
 
@@ -18,6 +19,8 @@ const CustomersPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState<CustomerFilters>({});
   const [showFilters, setShowFilters] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
 
   const { data, isLoading, error } = useGetCustomersQuery({
     ...filters,
@@ -42,7 +45,7 @@ const CustomersPage: React.FC = () => {
     );
   }
 
-  const filteredCustomers = customers?.data?.filter((customer) => {
+  const filteredCustomers = data?.customers?.filter((customer) => {
     const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.customerNumber.includes(searchTerm);

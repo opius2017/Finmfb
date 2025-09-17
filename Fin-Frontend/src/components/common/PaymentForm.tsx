@@ -5,7 +5,7 @@ import {
   loadPaymentSdk 
 } from '../../services/paymentApi';
 import { Button, Card, Form, Input, Select, Spin, Alert, Modal } from 'antd';
-import { toast } from '../../services/toast';
+import toast from 'react-hot-toast';
 
 const PaymentForm = ({ 
   amount, 
@@ -138,7 +138,7 @@ const PaymentForm = ({
             });
           }
         } else if (result.data.status === 'pending') {
-          toast.info('Payment is still processing. Please wait a moment and try again.');
+          toast('Payment is still processing. Please wait a moment and try again.');
         } else {
           toast.error(`Payment failed with status: ${result.data.status}`);
           if (onCancel) {
