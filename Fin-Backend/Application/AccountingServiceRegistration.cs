@@ -27,6 +27,9 @@ namespace FinTech.Application
             // Register enhanced fixed asset management service
             services.AddScoped<IFixedAssetService, FixedAssetService>("EnhancedFixedAssetService");
             
+            // Register multi-currency support service
+            services.AddScoped<ICurrencyService, CurrencyService>();
+            
             return services;
         }
     }

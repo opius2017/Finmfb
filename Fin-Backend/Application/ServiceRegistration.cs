@@ -2,6 +2,7 @@ using FinTech.Core.Application.Interfaces.Repositories;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
 using FinTech.Infrastructure.Repositories;
+using FinTech.Application.Interfaces.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Core.Application
@@ -22,6 +23,7 @@ namespace FinTech.Core.Application
             // Register repositories
             services.AddScoped<IFixedAssetRepository, FixedAssetRepository>();
             services.AddScoped<IRegulatoryReportingRepository, RegulatoryReportingRepository>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             
             // Configure AutoMapper
             services.AddAutoMapper(typeof(ServiceRegistration).Assembly);
