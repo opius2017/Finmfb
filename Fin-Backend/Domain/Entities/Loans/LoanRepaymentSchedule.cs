@@ -6,16 +6,16 @@ namespace FinTech.Domain.Entities.Loans
     /// <summary>
     /// Represents a repayment schedule item for a loan
     /// </summary>
-    public class LoanRepaymentSchedule : BaseEntity
+    public class LoanRepaymentSchedule : AuditableEntity
     {
-        public string? Id { get; set; }
+    // Id property inherited from AuditableEntity/BaseEntity
         public string? LoanId { get; set; }
         public int InstallmentNumber { get; set; }
         public DateTime DueDate { get; set; }
         public decimal PrincipalAmount { get; set; }
         public decimal InterestAmount { get; set; }
         public decimal FeesAmount { get; set; }
-    public decimal TotalAmount { get; set; }
+        public decimal TotalAmount { get; set; }
         public decimal PaidPrincipalAmount { get; set; }
         public decimal PaidInterestAmount { get; set; }
         public decimal PaidFeesAmount { get; set; }

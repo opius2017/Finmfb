@@ -7,22 +7,23 @@ namespace FinTech.Domain.Entities.Tax
     /// <summary>
     /// Represents a type of tax in the system
     /// </summary>
-    public class TaxType : BaseEntity
+    using FinTech.Domain.Entities.Common;
+    public class TaxType : AuditableEntity
     {
         /// <summary>
         /// Tax type code (e.g., VAT, WHT, CIT)
         /// </summary>
-        public string Code { get; set; }
+    public string? Code { get; set; }
         
         /// <summary>
         /// Tax type name (e.g., Value Added Tax)
         /// </summary>
-        public string Name { get; set; }
+    public string? Name { get; set; }
         
         /// <summary>
         /// Description of the tax type
         /// </summary>
-        public string Description { get; set; }
+    public string? Description { get; set; }
         
         /// <summary>
         /// Whether the tax type is active
@@ -32,12 +33,12 @@ namespace FinTech.Domain.Entities.Tax
         /// <summary>
         /// The liability account where collected tax is recorded
         /// </summary>
-        public string LiabilityAccountId { get; set; }
+    public string? LiabilityAccountId { get; set; }
         
         /// <summary>
         /// The receivable account where claimable tax is recorded
         /// </summary>
-        public string ReceivableAccountId { get; set; }
+    public string? ReceivableAccountId { get; set; }
         
         /// <summary>
         /// Whether the tax is collected from customers or paid to vendors
@@ -52,33 +53,33 @@ namespace FinTech.Domain.Entities.Tax
         /// <summary>
         /// The regulatory authority for this tax type
         /// </summary>
-        public string RegulatoryAuthority { get; set; }
+    public string? RegulatoryAuthority { get; set; }
         
         /// <summary>
         /// Navigation property for tax rates associated with this tax type
         /// </summary>
-        public virtual ICollection<TaxRate> TaxRates { get; set; }
+    public virtual ICollection<TaxRate>? TaxRates { get; set; }
         
         /// <summary>
         /// Navigation property for tax transactions associated with this tax type
         /// </summary>
-        public virtual ICollection<TaxTransaction> TaxTransactions { get; set; }
+    public virtual ICollection<TaxTransaction>? TaxTransactions { get; set; }
     }
 
     /// <summary>
     /// Represents a tax rate for a specific tax type
     /// </summary>
-    public class TaxRate : BaseEntity
+    public class TaxRate : AuditableEntity
     {
         /// <summary>
         /// Tax type ID this rate belongs to
         /// </summary>
-        public string TaxTypeId { get; set; }
+    public string? TaxTypeId { get; set; }
         
         /// <summary>
         /// Rate name or description
         /// </summary>
-        public string Name { get; set; }
+    public string? Name { get; set; }
         
         /// <summary>
         /// Rate percentage value
@@ -113,53 +114,53 @@ namespace FinTech.Domain.Entities.Tax
         /// <summary>
         /// Category or type of items this rate applies to
         /// </summary>
-        public string ApplicableCategory { get; set; }
+    public string? ApplicableCategory { get; set; }
         
         /// <summary>
         /// Navigation property for the tax type this rate belongs to
         /// </summary>
-        public virtual TaxType TaxType { get; set; }
+    public virtual TaxType? TaxType { get; set; }
         
         /// <summary>
         /// Navigation property for tax transactions using this rate
         /// </summary>
-        public virtual ICollection<TaxTransaction> TaxTransactions { get; set; }
+    public virtual ICollection<TaxTransaction>? TaxTransactions { get; set; }
     }
 
     /// <summary>
     /// Represents a tax exemption for a party (customer or vendor)
     /// </summary>
-    public class TaxExemption : BaseEntity
+    public class TaxExemption : AuditableEntity
     {
         /// <summary>
         /// Tax type ID the exemption applies to (null for all tax types)
         /// </summary>
-        public string TaxTypeId { get; set; }
+    public string? TaxTypeId { get; set; }
         
         /// <summary>
         /// Party ID (customer or vendor) the exemption applies to
         /// </summary>
-        public string PartyId { get; set; }
+    public string? PartyId { get; set; }
         
         /// <summary>
         /// Party type (customer or vendor)
         /// </summary>
-        public string PartyType { get; set; }
+    public string? PartyType { get; set; }
         
         /// <summary>
         /// Party tax identification number
         /// </summary>
-        public string PartyTaxId { get; set; }
+    public string? PartyTaxId { get; set; }
         
         /// <summary>
         /// Reason for the exemption
         /// </summary>
-        public string Reason { get; set; }
+    public string? Reason { get; set; }
         
         /// <summary>
         /// Certificate or reference number for the exemption
         /// </summary>
-        public string CertificateNumber { get; set; }
+    public string? CertificateNumber { get; set; }
         
         /// <summary>
         /// Start date of the exemption validity
@@ -179,33 +180,33 @@ namespace FinTech.Domain.Entities.Tax
         /// <summary>
         /// Approval details for the exemption
         /// </summary>
-        public string ApprovalDetails { get; set; }
+    public string? ApprovalDetails { get; set; }
         
         /// <summary>
         /// Notes or comments about the exemption
         /// </summary>
-        public string Notes { get; set; }
+    public string? Notes { get; set; }
         
         /// <summary>
         /// Navigation property for the tax type this exemption applies to
         /// </summary>
-        public virtual TaxType TaxType { get; set; }
+    public virtual TaxType? TaxType { get; set; }
     }
 
     /// <summary>
     /// Represents a tax transaction in the system
     /// </summary>
-    public class TaxTransaction : BaseEntity
+    public class TaxTransaction : AuditableEntity
     {
         /// <summary>
         /// Tax type ID
         /// </summary>
-        public string TaxTypeId { get; set; }
+    public string? TaxTypeId { get; set; }
         
         /// <summary>
         /// Tax rate ID
         /// </summary>
-        public string TaxRateId { get; set; }
+    public string? TaxRateId { get; set; }
         
         /// <summary>
         /// Applied tax rate

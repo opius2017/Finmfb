@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using FinTech.Application.DTOs.Common;
+using FinTech.Core.Application.DTOs.Common;
 using FinTech.Application.DTOs.ClientPortal;
 using FinTech.Application.Services;
 using Microsoft.Extensions.Logging;
