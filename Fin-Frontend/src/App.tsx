@@ -28,10 +28,6 @@ function App() {
       </BrowserRouter>
     </Provider>
   );
-        </div>
-      </BrowserRouter>
-    </Provider>
-  );
 }
 
 export default App;

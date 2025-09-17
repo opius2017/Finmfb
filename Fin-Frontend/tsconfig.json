@@ -28,15 +28,15 @@
       "@/*": ["./src/*"]
     },
     "allowSyntheticDefaultImports": true,
+    "noImplicitReturns": false,
+    "forceConsistentCasingInFileNames": false,
     "esModuleInterop": true,
     "noErrorTruncation": true,
     "exactOptionalPropertyTypes": false,
     "useUnknownInCatchVariables": false,
     "allowUnreachableCode": true,
     "allowUnusedLabels": true,
-    "downlevelIteration": true,
-    "forceConsistentCasingInFileNames": false,
-    "noImplicitReturns": false
+    "downlevelIteration": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
