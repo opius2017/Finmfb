@@ -4,6 +4,7 @@ interface User {
   userId: string;
   username: string;
   email: string;
+  fullName: string;
   roles: string[];
 }
 
@@ -34,6 +35,7 @@ interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
   user: User | null;
+  tenant: { name: string; code: string } | null;
   expiryDate: string | null;
   mfaRequired: boolean;
   mfaType: string | null;
@@ -48,6 +50,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   token: localStorage.getItem('fintech_token'),
   user: null,
+  tenant: null,
   expiryDate: localStorage.getItem('fintech_expiry'),
   mfaRequired: false,
   mfaType: null,
@@ -67,7 +70,9 @@ const authSlice = createSlice({
       userId: string;
       username: string;
       email: string;
+      fullName: string;
       roles: string[];
+      tenant?: { name: string; code: string };
     }>) => {
       state.isAuthenticated = true;
       state.token = action.payload.token;
@@ -75,8 +80,10 @@ const authSlice = createSlice({
         userId: action.payload.userId,
         username: action.payload.username,
         email: action.payload.email,
+        fullName: action.payload.fullName,
         roles: action.payload.roles
       };
+      state.tenant = action.payload.tenant || null;
       
       // Set expiry to 3 hours from now (matches token expiry set in AuthController)
       const expiryDate = new Date(new Date().getTime() + 3 * 60 * 60 * 1000).toISOString();
@@ -106,6 +113,7 @@ const authSlice = createSlice({
         userId: action.payload.userId,
         username: action.payload.username,
         email: action.payload.email,
+        fullName: action.payload.username, // fallback
         roles: []
       };
       
@@ -124,6 +132,7 @@ const authSlice = createSlice({
       userId: string;
       username: string;
       email: string;
+      fullName: string;
       roles: string[];
     }>) => {
       state.isAuthenticated = true;
@@ -132,6 +141,7 @@ const authSlice = createSlice({
         userId: action.payload.userId,
         username: action.payload.username,
         email: action.payload.email,
+        fullName: action.payload.fullName,
         roles: action.payload.roles
       };
       
@@ -187,6 +197,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
+      state.tenant = null;
       state.expiryDate = null;
       state.mfaRequired = false;
       state.mfaType = null;
@@ -206,6 +217,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
+      state.tenant = null;
       state.expiryDate = null;
       state.mfaRequired = false;
       state.mfaType = null;
@@ -242,6 +254,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.token = null;
         state.user = null;
+        state.tenant = null;
         state.expiryDate = null;
         state.mfaRequired = false;
         state.mfaType = null;
