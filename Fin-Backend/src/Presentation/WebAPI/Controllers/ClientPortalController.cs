@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using FinTech.Application.DTOs.Common;
 using FinTech.Application.DTOs.ClientPortal;
+using FinTech.Core.Application.DTOs.Common;
 using FinTech.Application.Services;
 using FinTech.Domain.Entities.ClientPortal;
 using System.Security.Claims;
@@ -26,6 +27,7 @@ namespace FinTech.WebAPI.Controllers
             IClientPortalService clientPortalService,
             ILogger<ClientPortalController> logger,
             IMapper mapper)
+        // ...existing code...
         {
             _clientPortalService = clientPortalService;
             _logger = logger;
@@ -33,34 +35,22 @@ namespace FinTech.WebAPI.Controllers
         }
 
         [HttpGet("profile")]
-        public async Task<ActionResult<BaseResponse<ClientPortalProfileDto>>> GetProfile()
+    public async Task<ActionResult<BaseResponse<ClientPortalProfileDto>>> GetProfile()
         {
             try
             {
                 var userId = GetCurrentUserId();
-                var profile = await _clientPortalService.GetClientProfileAsync(userId);
+                    var profile = await _clientPortalService.GetProfileAsync();
 
                 if (profile == null)
-                {
-                    return NotFound(new BaseResponse<ClientPortalProfileDto>
-                    {
-                        Success = false,
-                        Message = "Client profile not found"
-                    });
-                }
-
+                    return NotFound(BaseResponse<ClientPortalProfileDto>.ErrorResponse("Profile not found"));
                 var profileDto = _mapper.Map<ClientPortalProfileDto>(profile);
-
-                return Ok(new BaseResponse<ClientPortalProfileDto>
-                {
-                    Success = true,
-                    Data = profileDto
-                });
+                return Ok(BaseResponse<ClientPortalProfileDto>.SuccessResponse(profileDto, "Profile retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving client profile");
-                return StatusCode(500, new BaseResponse<ClientPortalProfileDto>
+                return StatusCode(500, BaseResponse<ClientPortalProfileDto>.ErrorResponse("Internal server error"));
                 {
                     Success = false,
                     Message = "An error occurred while retrieving the client profile"

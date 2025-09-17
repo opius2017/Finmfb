@@ -90,6 +90,9 @@ builder.Services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
 builder.Services.AddScoped<ITaxCalculationService, TaxCalculationService>();
 builder.Services.AddScoped<IMakerCheckerService, MakerCheckerService>();
 
+// Register AutoMapper for DTO/entity mapping
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 // Register client portal services
 builder.Services.AddClientPortalServices();
 builder.Services.AddAuthorization();

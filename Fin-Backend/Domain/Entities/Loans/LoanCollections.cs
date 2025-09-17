@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Common;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Loans
 {
@@ -9,22 +9,22 @@ namespace FinTech.Domain.Entities.Loans
     /// </summary>
     public class LoanCollection : AuditableEntity
     {
-        public string Id { get; set; }
-        public string LoanId { get; set; }
+    public new string? Id { get; set; }
+    public string? LoanId { get; set; }
         public DateTime OverdueDate { get; set; }
         public int DaysOverdue { get; set; }
         public decimal OverdueAmount { get; set; }
         public CollectionStatus Status { get; set; }
-        public string AssignedTo { get; set; }
+    public string? AssignedTo { get; set; }
         public DateTime? ResolutionDate { get; set; }
-        public string ResolutionNotes { get; set; }
+    public string? ResolutionNotes { get; set; }
         public CollectionPriority Priority { get; set; }
-        public string ReasonForDelinquency { get; set; }
-        public string Notes { get; set; }
-        public string ActionPlan { get; set; }
+    public string? ReasonForDelinquency { get; set; }
+    public string? Notes { get; set; }
+    public string? ActionPlan { get; set; }
         
         // Navigation properties
-        public virtual Loan Loan { get; set; }
+    public virtual Loan? Loan { get; set; }
         public virtual ICollection<LoanCollectionAction> CollectionActions { get; set; } = new List<LoanCollectionAction>();
         
         // Business logic methods
@@ -88,20 +88,20 @@ namespace FinTech.Domain.Entities.Loans
     /// </summary>
     public class LoanCollectionAction : AuditableEntity
     {
-        public string Id { get; set; }
-        public string CollectionId { get; set; }
+    public new string? Id { get; set; }
+    public string? CollectionId { get; set; }
         public ActionType ActionType { get; set; }
         public DateTime ActionDate { get; set; }
-        public string PerformedBy { get; set; }
-        public string Description { get; set; }
-        public string Result { get; set; }
+    public string? PerformedBy { get; set; }
+    public string? Description { get; set; }
+    public string? Result { get; set; }
         public DateTime? FollowUpDate { get; set; }
         public bool RequiresFollowUp { get; set; }
-        public string ContactPerson { get; set; }
-        public string ContactDetails { get; set; }
+    public string? ContactPerson { get; set; }
+    public string? ContactDetails { get; set; }
         
         // Navigation property
-        public virtual LoanCollection Collection { get; set; }
+    public virtual LoanCollection? Collection { get; set; }
     }
     
     public enum ActionType

@@ -1,5 +1,5 @@
 using System;
-using FinTech.Domain.Common;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Loans
 {
@@ -8,24 +8,24 @@ namespace FinTech.Domain.Entities.Loans
     /// </summary>
     public class LoanDocument : AuditableEntity
     {
-        public string Id { get; set; }
-        public string LoanId { get; set; }
-        public string DocumentType { get; set; }
-        public string DocumentName { get; set; }
-        public string Description { get; set; }
-        public string FilePath { get; set; }
-        public string FileType { get; set; }
-        public long FileSize { get; set; }
-        public DocumentStatus Status { get; set; }
-        public DateTime UploadDate { get; set; }
-        public string UploadedBy { get; set; }
-        public DateTime? VerificationDate { get; set; }
-        public string VerifiedBy { get; set; }
-        public DateTime? ExpiryDate { get; set; }
-        public string Notes { get; set; }
+    public new string? Id { get; set; }
+    public string? LoanId { get; set; }
+    public string? DocumentType { get; set; }
+    public string? DocumentName { get; set; }
+    public string? Description { get; set; }
+    public string? FilePath { get; set; }
+    public string? FileType { get; set; }
+    public long FileSize { get; set; }
+    public DocumentStatus Status { get; set; }
+    public DateTime UploadDate { get; set; }
+    public string? UploadedBy { get; set; }
+    public DateTime? VerificationDate { get; set; }
+    public string? VerifiedBy { get; set; }
+    public DateTime? ExpiryDate { get; set; }
+    public string? Notes { get; set; }
         
         // Navigation property
-        public virtual Loan Loan { get; set; }
+    public virtual Loan? Loan { get; set; }
     }
     
     public enum DocumentStatus
@@ -44,11 +44,11 @@ namespace FinTech.Domain.Entities.Loans
     /// </summary>
     public class LoanCollateralDocument : AuditableEntity
     {
-        public string Id { get; set; }
-        public string CollateralId { get; set; }
-        public string DocumentType { get; set; }
-        public string DocumentName { get; set; }
-        public string Description { get; set; }
+    public new string? Id { get; set; }
+    public string? CollateralId { get; set; }
+    public string? DocumentType { get; set; }
+    public string? DocumentName { get; set; }
+    public string? Description { get; set; }
         public string FilePath { get; set; }
         public string FileType { get; set; }
         public long FileSize { get; set; }

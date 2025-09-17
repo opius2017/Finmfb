@@ -1,7 +1,3 @@
-using FinTech.Application.DTOs.Loans.CreateLoanApplicationDto;
-using FinTech.Application.DTOs.Loans.CreateLoanCollectionActionDto;
-using FinTech.Application.DTOs.Loans.LoanCollateralDto;
-using FinTech.Application.DTOs.Loans;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -89,9 +85,9 @@ namespace FinTech.WebAPI.Controllers
             /// Adds a collection action to a loan collection
             /// </summary>
             [HttpPost("collections/{collectionId}/actions")] 
-            public async Task<ActionResult<LoanCollectionActionDto>> AddCollectionAction(string collectionId, [FromBody] CreateLoanCollectionActionDto actionDto)
+            public async Task<ActionResult<CreateLoanCollectionActionDto>> AddCollectionAction(string collectionId, [FromBody] CreateLoanCollectionActionDto actionDto)
             {
-                var result = await _loanCollectionService.AddCollectionActionAsync(collectionId, actionDto);
+                var result = await _loanCollectionService.AddCollectionActionAsync(collectionId, _mapper.Map<FinTech.Domain.Entities.Loans.LoanCollectionAction>(actionDto));
                 return Ok(result);
             }
 
@@ -111,17 +107,17 @@ namespace FinTech.WebAPI.Controllers
             [HttpPost("{id}/collaterals")] 
             public async Task<ActionResult<LoanCollateralDto>> AddLoanCollateral(string id, [FromBody] CreateLoanCollateralDto collateralDto)
             {
-                var collateral = await _loanService.AddLoanCollateralAsync(id, collateralDto);
-                return Ok(collateral);
+                var result = await _loanService.AddLoanCollateralAsync(id, collateralDto);
+                return Ok(_mapper.Map<LoanCollateralDto>(result));
             }
 
             /// <summary>
             /// Starts a new loan application (digital origination)
             /// </summary>
             [HttpPost("applications")] 
-            public async Task<ActionResult<LoanApplicationDto>> CreateLoanApplication([FromBody] CreateLoanApplicationDto applicationDto)
+            public async Task<ActionResult<CreateLoanApplicationDto>> CreateLoanApplication([FromBody] CreateLoanApplicationDto applicationDto)
             {
-                var application = await _loanApplicationService.CreateLoanApplicationAsync(applicationDto);
+                var application = await _loanApplicationService.CreateLoanApplicationAsync(_mapper.Map<FinTech.Domain.Entities.Loans.LoanApplication>(applicationDto));
                 return Ok(application);
             }
 
@@ -129,9 +125,11 @@ namespace FinTech.WebAPI.Controllers
             /// Uploads a document for a loan application
             /// </summary>
             [HttpPost("applications/{applicationId}/documents")]
-            public async Task<ActionResult<LoanDocumentDto>> UploadLoanDocument(string applicationId, [FromBody] LoanDocumentDto documentDto)
+            public async Task<ActionResult<LoanDocumentDto>> UploadLoanDocument(string applicationId, [FromBody] CreateLoanDocumentDto documentDto)
             {
-                var document = await _loanDocumentService.UploadLoanDocumentAsync(applicationId, documentDto);
+                var domainDocument = _mapper.Map<FinTech.Domain.Entities.Loans.LoanDocument>(documentDto);
+                byte[] fileData = new byte[0]; // TODO: Replace with actual file data from request
+                var document = await _loanDocumentService.UploadLoanDocumentAsync(domainDocument, fileData);
                 return Ok(_mapper.Map<LoanDocumentDto>(document));
             }
         [HttpGet]
@@ -191,9 +189,9 @@ namespace FinTech.WebAPI.Controllers
                 var loan = await _loanService.DisburseLoanAsync(
                     id,
                     disbursementDto.Amount,
-                    disbursementDto.DisbursedTo,
-                    disbursementDto.Reference,
-                    disbursementDto.Description);
+                    disbursementDto.DisbursedTo ?? string.Empty,
+                    disbursementDto.Reference ?? string.Empty,
+                    disbursementDto.Description ?? string.Empty);
 
                 return Ok(_mapper.Map<LoanDto>(loan));
             }
@@ -232,8 +230,8 @@ namespace FinTech.WebAPI.Controllers
                     repaymentDto.InterestAmount,
                     repaymentDto.FeesAmount,
                     repaymentDto.PenaltyAmount,
-                    repaymentDto.Reference,
-                    repaymentDto.Description);
+                    repaymentDto.Reference ?? string.Empty,
+                    repaymentDto.Description ?? string.Empty);
 
                 return Ok(_mapper.Map<LoanTransactionDto>(transaction));
             }
@@ -267,8 +265,8 @@ namespace FinTech.WebAPI.Controllers
             {
                 var transaction = await _loanService.WriteOffLoanAsync(
                     id,
-                    writeOffDto.Reason,
-                    writeOffDto.ApprovedBy);
+                    writeOffDto.Reason ?? string.Empty,
+                    writeOffDto.ApprovedBy ?? string.Empty);
 
                 return Ok(_mapper.Map<LoanTransactionDto>(transaction));
             }
@@ -303,8 +301,8 @@ namespace FinTech.WebAPI.Controllers
                 var loan = await _loanService.RescheduleLoanAsync(
                     id,
                     rescheduleDto.NewEndDate,
-                    rescheduleDto.Reason,
-                    rescheduleDto.ApprovedBy);
+                    rescheduleDto.Reason ?? string.Empty,
+                    rescheduleDto.ApprovedBy ?? string.Empty);
 
                 return Ok(_mapper.Map<LoanDto>(loan));
             }

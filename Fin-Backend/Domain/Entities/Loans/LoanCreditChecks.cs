@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Common;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Loans
 {
@@ -9,26 +9,26 @@ namespace FinTech.Domain.Entities.Loans
     /// </summary>
     public class LoanCreditCheck : AuditableEntity
     {
-        public string Id { get; set; }
-        public string LoanApplicationId { get; set; }
-        public string CustomerId { get; set; }
+    public new string? Id { get; set; }
+    public string? LoanApplicationId { get; set; }
+    public string? CustomerId { get; set; }
         public DateTime CheckDate { get; set; }
-        public string CreditBureau { get; set; }
-        public string ReferenceNumber { get; set; }
-        public decimal? CreditScore { get; set; }
-        public string CreditRating { get; set; }
-        public decimal? DebtToIncomeRatio { get; set; }
-        public int? NumberOfDelinquencies { get; set; }
-        public int? NumberOfEnquiries { get; set; }
-        public decimal? TotalDebt { get; set; }
-        public string ReportSummary { get; set; }
-        public string ReportFilePath { get; set; }
-        public string PerformedBy { get; set; }
-        public CreditCheckResult Result { get; set; }
-        public string Notes { get; set; }
+    public string? CreditBureau { get; set; }
+    public string? ReferenceNumber { get; set; }
+    public decimal? CreditScore { get; set; }
+    public string? CreditRating { get; set; }
+    public decimal? DebtToIncomeRatio { get; set; }
+    public int? NumberOfDelinquencies { get; set; }
+    public int? NumberOfEnquiries { get; set; }
+    public decimal? TotalDebt { get; set; }
+    public string? ReportSummary { get; set; }
+    public string? ReportFilePath { get; set; }
+    public string? PerformedBy { get; set; }
+    public CreditCheckResult Result { get; set; }
+    public string? Notes { get; set; }
         
         // Navigation property
-        public virtual LoanApplication LoanApplication { get; set; }
+    public virtual LoanApplication? LoanApplication { get; set; }
     }
     
     public enum CreditCheckResult
@@ -47,17 +47,17 @@ namespace FinTech.Domain.Entities.Loans
     /// </summary>
     public class LoanCreditLimit : AuditableEntity
     {
-        public string Id { get; set; }
-        public string CustomerId { get; set; }
+    public new string? Id { get; set; }
+    public string? CustomerId { get; set; }
         public decimal TotalCreditLimit { get; set; }
         public decimal AvailableCreditLimit { get; set; }
         public decimal UtilizedAmount { get; set; }
         public DateTime AssignmentDate { get; set; }
         public DateTime? ExpiryDate { get; set; }
-        public string AssignedBy { get; set; }
-        public string ApprovedBy { get; set; }
-        public string RiskRating { get; set; }
-        public string Notes { get; set; }
+    public string? AssignedBy { get; set; }
+    public string? ApprovedBy { get; set; }
+    public string? RiskRating { get; set; }
+    public string? Notes { get; set; }
         public bool IsActive { get; set; }
         
         // Approval workflow
