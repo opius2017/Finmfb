@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RSFrwmzxeHI=",
+  "dgSpecHash": "5fOmeckEGuY=",
   "success": true,
-  "projectFilePath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj",
+  "projectFilePath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\opius\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",

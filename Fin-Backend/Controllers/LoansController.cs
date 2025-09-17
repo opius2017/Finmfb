@@ -1,3 +1,7 @@
+using FinTech.Application.DTOs.Loans.CreateLoanApplicationDto;
+using FinTech.Application.DTOs.Loans.CreateLoanCollectionActionDto;
+using FinTech.Application.DTOs.Loans.LoanCollateralDto;
+using FinTech.Application.DTOs.Loans;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -43,6 +47,8 @@ namespace FinTech.WebAPI.Controllers
             _loanProvisioningService = loanProvisioningService ?? throw new ArgumentNullException(nameof(loanProvisioningService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
         /// <summary>
         /// Calculates IFRS 9 provisioning (expected credit loss) for a loan
         /// </summary>
@@ -53,7 +59,7 @@ namespace FinTech.WebAPI.Controllers
         {
             var provisioning = await _loanProvisioningService.CalculateProvisioningAsync(id);
             return Ok(provisioning);
-    }
+        }
 
         /// <summary>
         /// Gets all loans
@@ -82,12 +88,11 @@ namespace FinTech.WebAPI.Controllers
             /// <summary>
             /// Adds a collection action to a loan collection
             /// </summary>
-            [HttpPost("collections/{collectionId}/actions")]
+            [HttpPost("collections/{collectionId}/actions")] 
             public async Task<ActionResult<LoanCollectionActionDto>> AddCollectionAction(string collectionId, [FromBody] CreateLoanCollectionActionDto actionDto)
             {
-                var action = _mapper.Map<LoanCollectionAction>(actionDto);
-                var result = await _loanCollectionService.AddCollectionActionAsync(collectionId, action);
-                return Ok(_mapper.Map<LoanCollectionActionDto>(result));
+                var result = await _loanCollectionService.AddCollectionActionAsync(collectionId, actionDto);
+                return Ok(result);
             }
 
             /// <summary>
@@ -103,30 +108,21 @@ namespace FinTech.WebAPI.Controllers
             /// <summary>
             /// Adds a collateral to a loan
             /// </summary>
-            [HttpPost("{id}/collaterals")]
+            [HttpPost("{id}/collaterals")] 
             public async Task<ActionResult<LoanCollateralDto>> AddLoanCollateral(string id, [FromBody] CreateLoanCollateralDto collateralDto)
             {
-                // Map DTO to domain entity
-                var domainCollateral = new FinTech.Core.Domain.Entities.Loans.LoanCollateral
-                {
-                    LoanId = id,
-                    CollateralType = collateralDto.CollateralType,
-                    Value = collateralDto.Value,
-                    Description = collateralDto.Description,
-                    DateAdded = DateTime.UtcNow
-                };
-                var collateral = await _loanService.AddLoanCollateralAsync(id, domainCollateral);
-                return Ok(_mapper.Map<LoanCollateralDto>(collateral));
+                var collateral = await _loanService.AddLoanCollateralAsync(id, collateralDto);
+                return Ok(collateral);
             }
 
             /// <summary>
             /// Starts a new loan application (digital origination)
             /// </summary>
-            [HttpPost("applications")]
+            [HttpPost("applications")] 
             public async Task<ActionResult<LoanApplicationDto>> CreateLoanApplication([FromBody] CreateLoanApplicationDto applicationDto)
             {
                 var application = await _loanApplicationService.CreateLoanApplicationAsync(applicationDto);
-                return Ok(_mapper.Map<LoanApplicationDto>(application));
+                return Ok(application);
             }
 
             /// <summary>
