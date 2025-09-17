@@ -8,7 +8,7 @@ namespace FinTech.Domain.Entities.Common
     /// </summary>
     public abstract class AuditableEntity : BaseEntity
     {
-    public DateTime CreatedOn { get; set; }
-    public DateTime? LastModifiedOn { get; set; }
+        // Inherits all properties from canonical BaseEntity in src/Core/Domain/Entities/Common/BaseEntity.cs
+        // Add any additional audit properties here if needed
     }
 }
