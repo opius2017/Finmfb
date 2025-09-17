@@ -67,7 +67,10 @@ const LoginPage: React.FC = () => {
           }));
           
           setShowMfaPrompt(true);
-          toast.info('Please enter your verification code to continue');
+          toast('Please enter your verification code to continue', {
+            duration: 5000,
+            icon: 'ℹ️',
+          });
           return;
         }
         

@@ -7,7 +7,6 @@ import {
   Key,
   Clock,
   ChevronRight,
-  Toggle,
   Smartphone,
   Mail,
   AlertOctagon,

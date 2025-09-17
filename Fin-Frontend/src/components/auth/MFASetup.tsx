@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -50,7 +50,7 @@ const MFASetup: React.FC<MFASetupProps> = ({ secret, onVerify, onCancel }) => {
 
         {secret && (
           <div className="flex flex-col items-center space-y-4 py-4">
-            <QRCode
+            <QRCodeSVG
               value={`otpauth://totp/SoarFin:${encodeURIComponent(
                 'user@email.com'
               )}?secret=${secret}&issuer=SoarFin`}

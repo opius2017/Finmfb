@@ -51,10 +51,6 @@ namespace FinTech.WebAPI.Controllers
             {
                 _logger.LogError(ex, "Error retrieving client profile");
                 return StatusCode(500, BaseResponse<ClientPortalProfileDto>.ErrorResponse("Internal server error"));
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving the client profile"
-                });
             }
         }
 
