@@ -7,7 +7,7 @@ import { useValidateBackupCodeMutation } from '../../services/authApi';
 interface BackupCodeRecoveryProps {
   userId: string;
   onReturn: () => void;
-  onSuccess: () => void;
+  onSuccess: (token: string) => void;
 }
 
 const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({ 
@@ -31,7 +31,7 @@ const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({
       }).unwrap();
       if (response.success && response.data) {
         toast.success('Backup code validated successfully');
-        onSuccess();
+        onSuccess(response.data.token);
       } else {
         toast.error('Invalid backup code. Please try again.');
       }

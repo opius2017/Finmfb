@@ -1,8 +1,7 @@
 export interface User {
-  id: string;
+  userId: string;
+  username: string;
   email: string;
-  firstName: string;
-  lastName: string;
   fullName: string;
   roles: string[];
 }
@@ -18,7 +17,10 @@ export interface Tenant {
 export interface Customer {
   id: string;
   customerNumber: string;
-  name: string;
+  firstName?: string;
+  lastName?: string;
+  companyName?: string;
+  name: string; // Computed property: firstName + lastName for individuals, companyName for companies
   email: string;
   phoneNumber: string;
   customerType: string;
