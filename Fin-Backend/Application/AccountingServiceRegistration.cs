@@ -1,6 +1,7 @@
 using FinTech.Application.Services.Accounting;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
+using FinTech.Application.Interfaces.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Application
@@ -29,6 +30,9 @@ namespace FinTech.Application
             
             // Register multi-currency support service
             services.AddScoped<ICurrencyService, CurrencyService>();
+            
+            // Register tax calculation service
+            services.AddScoped<ITaxCalculationService, TaxCalculationService>();
             
             return services;
         }
