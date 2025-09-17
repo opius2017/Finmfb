@@ -1,3 +1,4 @@
+using FinTech.Domain.Entities.Loans;
 using FinTech.Domain.Entities.Tax;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,6 +35,21 @@ namespace FinTech.Infrastructure.Persistence
         /// Tax exemptions DbSet
         /// </summary>
         public DbSet<TaxExemption> TaxExemptions { get; set; }
+        
+        /// <summary>
+        /// Loan entities DbSets
+        /// </summary>
+        public DbSet<Loan> Loans { get; set; }
+        public DbSet<LoanProduct> LoanProducts { get; set; }
+        public DbSet<LoanApplication> LoanApplications { get; set; }
+        public DbSet<LoanTransaction> LoanTransactions { get; set; }
+        public DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; set; }
+        public DbSet<LoanDocument> LoanDocuments { get; set; }
+        public DbSet<LoanCollateral> LoanCollaterals { get; set; }
+        public DbSet<LoanGuarantor> LoanGuarantors { get; set; }
+        public DbSet<LoanCollection> LoanCollections { get; set; }
+        public DbSet<LoanFee> LoanFees { get; set; }
+        public DbSet<LoanCreditCheck> LoanCreditChecks { get; set; }
         
         /// <summary>
         /// Configure model relationships and constraints
