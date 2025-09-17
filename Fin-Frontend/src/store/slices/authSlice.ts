@@ -1,9 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Tenant } from '../../types';
 
 interface User {
   userId: string;
   username: string;
   email: string;
+  fullName?: string;
   roles: string[];
 }
 
@@ -34,6 +36,7 @@ interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
   user: User | null;
+  tenant?: Tenant | null;
   expiryDate: string | null;
   mfaRequired: boolean;
   mfaType: string | null;
@@ -48,6 +51,7 @@ const initialState: AuthState = {
   isAuthenticated: false,
   token: localStorage.getItem('fintech_token'),
   user: null,
+  tenant: null,
   expiryDate: localStorage.getItem('fintech_expiry'),
   mfaRequired: false,
   mfaType: null,
