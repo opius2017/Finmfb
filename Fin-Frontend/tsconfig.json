@@ -17,6 +17,12 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
+    "noImplicitThis": false,
+    "strictFunctionTypes": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "strictPropertyInitialization": false,
+    "allowJs": true,
+    "checkJs": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
