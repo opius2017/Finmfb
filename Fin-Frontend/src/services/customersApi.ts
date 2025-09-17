@@ -46,6 +46,47 @@ export interface KycDocument {
   updatedAt: string;
 }
 
+export interface RiskProfile {
+  customerId: string;
+  riskLevel: string;
+  riskScore: number;
+  factors: string[];
+  evaluatedAt: string;
+}
+
+export interface RelationshipMap {
+  customerId: string;
+  nodes: RelationshipNode[];
+  edges: RelationshipEdge[];
+}
+
+export interface RelationshipNode {
+  id: string;
+  name: string;
+  type: string;
+}
+
+export interface RelationshipEdge {
+  sourceId: string;
+  targetId: string;
+  relationshipType: string;
+}
+
+export interface OnboardingWorkflow {
+  workflowId: string;
+  customerId: string;
+  status: string;
+  startedAt: string;
+  steps: string[];
+}
+
+export interface OnboardingRequest {
+  customerId: string;
+  channel?: string;
+  initiatedBy?: string;
+  metadata?: Record<string, string>;
+}
+
 interface CustomerResponse {
   success: boolean;
   data: Customer;
@@ -183,6 +224,19 @@ export const customersApi = api.injectEndpoints({
       }),
       transformResponse: (response: KycDocumentResponse) => response.data,
     }),
+    getRiskProfile: builder.query<RiskProfile, string>({
+      query: (customerId) => `/client/profile/risk-profile?customerId=${customerId}`,
+    }),
+    getRelationshipMap: builder.query<RelationshipMap, string>({
+      query: (customerId) => `/client/profile/relationship-map?customerId=${customerId}`,
+    }),
+    initiateOnboarding: builder.mutation<OnboardingWorkflow, OnboardingRequest>({
+      query: (data) => ({
+        url: `/client/profile/onboarding/initiate`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -195,4 +249,7 @@ export const {
   useGetCustomerDocumentsQuery,
   useUploadKycDocumentMutation,
   useUpdateKycDocumentMutation,
+  useGetRiskProfileQuery,
+  useGetRelationshipMapQuery,
+  useInitiateOnboardingMutation,
 } = customersApi;

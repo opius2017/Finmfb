@@ -13,12 +13,20 @@ import {
   FileText,
   Activity,
 } from 'lucide-react';
-import { useGetCustomerQuery } from '../../services/customersApi';
+import {
+  useGetCustomerQuery,
+  useGetRiskProfileQuery,
+  useGetRelationshipMapQuery,
+  useInitiateOnboardingMutation,
+} from '../../services/customersApi';
 import { format } from 'date-fns';
 
 const CustomerDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { data: customerResponse, isLoading, error } = useGetCustomerQuery(id!);
+  const { data: riskProfile, isLoading: riskLoading } = useGetRiskProfileQuery(id!);
+  const { data: relationshipMap, isLoading: relLoading } = useGetRelationshipMapQuery(id!);
+  const [initiateOnboarding, { isLoading: onboardingLoading, data: onboardingWorkflow }] = useInitiateOnboardingMutation();
 
   if (isLoading) {
     return (
@@ -263,6 +271,73 @@ const CustomerDetailPage: React.FC = () => {
               )}
             </div>
           </motion.div>
+
+          {/* Risk Profile */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Activity className="w-5 h-5 text-emerald-600 mr-2" />
+              Risk Profile
+            </h3>
+            {riskLoading ? (
+              <div className="text-gray-500">Loading risk profile...</div>
+            ) : riskProfile ? (
+              <div>
+                <div className="flex items-center space-x-4 mb-2">
+                  <span className="font-semibold">Level:</span>
+                  <span className="px-2 py-1 rounded bg-gray-100 text-gray-800">{riskProfile.riskLevel}</span>
+                  <span className="font-semibold">Score:</span>
+                  <span className="px-2 py-1 rounded bg-gray-100 text-gray-800">{riskProfile.riskScore}</span>
+                </div>
+                <div>
+                  <span className="font-semibold">Factors:</span>
+                  <ul className="list-disc ml-6 text-gray-700">
+                    {riskProfile.factors.map((f, i) => <li key={i}>{f}</li>)}
+                  </ul>
+                </div>
+                <div className="text-xs text-gray-400 mt-2">Evaluated: {riskProfile.evaluatedAt && new Date(riskProfile.evaluatedAt).toLocaleString()}</div>
+              </div>
+            ) : (
+              <div className="text-gray-500">No risk profile available.</div>
+            )}
+          </motion.div>
+
+          {/* Relationship Map */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Building className="w-5 h-5 text-emerald-600 mr-2" />
+              Relationship Map
+            </h3>
+            {relLoading ? (
+              <div className="text-gray-500">Loading relationship map...</div>
+            ) : relationshipMap ? (
+              <div>
+                <div className="mb-2 font-semibold">Entities:</div>
+                <ul className="list-disc ml-6 text-gray-700">
+                  {relationshipMap.nodes.map((node) => (
+                    <li key={node.id}>{node.name} <span className="text-xs text-gray-500">({node.type})</span></li>
+                  ))}
+                </ul>
+                <div className="mt-2 font-semibold">Relationships:</div>
+                <ul className="list-disc ml-6 text-gray-700">
+                  {relationshipMap.edges.map((edge, i) => (
+                    <li key={i}>{edge.relationshipType}: {edge.sourceId} → {edge.targetId}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div className="text-gray-500">No relationship map available.</div>
+            )}
+          </motion.div>
         </div>
 
         {/* Sidebar */}
@@ -275,6 +350,10 @@ const CustomerDetailPage: React.FC = () => {
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
             <div className="space-y-3">
+              <button className="w-full flex items-center px-4 py-3 bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors" onClick={() => initiateOnboarding({ customerId: id! })} disabled={onboardingLoading}>
+                <Activity className="w-4 h-4 mr-3" />
+                {onboardingLoading ? 'Initiating...' : 'Initiate Onboarding'}
+              </button>
               <button className="w-full flex items-center px-4 py-3 bg-emerald-50 text-emerald-700 rounded-lg hover:bg-emerald-100 transition-colors">
                 <CreditCard className="w-4 h-4 mr-3" />
                 Open Account
@@ -288,6 +367,17 @@ const CustomerDetailPage: React.FC = () => {
                 Generate Report
               </button>
             </div>
+            {onboardingWorkflow && (
+              <div className="mt-4 text-sm text-gray-700">
+                <div className="font-semibold">Onboarding Workflow:</div>
+                <div>Status: {onboardingWorkflow.status}</div>
+                <div>Started: {new Date(onboardingWorkflow.startedAt).toLocaleString()}</div>
+                <div>Steps:</div>
+                <ul className="list-disc ml-6">
+                  {onboardingWorkflow.steps.map((step, i) => <li key={i}>{step}</li>)}
+                </ul>
+              </div>
+            )}
           </motion.div>
 
           {/* Account Summary */}
