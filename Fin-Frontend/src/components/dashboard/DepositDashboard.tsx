@@ -12,12 +12,14 @@ import {
   Plus,
   Eye,
 } from 'lucide-react';
-import { useGetDepositDashboardQuery } from '../../services/dashboardApi';
+import { useGetDepositDashboardQuery, useRunDepositSweepsMutation, useTrackDormancyMutation } from '../../services/dashboardApi';
 import StatsCard from '../common/StatsCard';
 import ChartContainer from '../common/ChartContainer';
 
 const DepositDashboard: React.FC = () => {
   const { data: dashboard, isLoading, error } = useGetDepositDashboardQuery();
+  const [runSweeps, { data: sweepResults, isLoading: sweepsLoading }] = useRunDepositSweepsMutation();
+  const [trackDormancy, { data: dormancyResults, isLoading: dormancyLoading }] = useTrackDormancyMutation();
 
   if (isLoading) {
     return (
@@ -266,15 +268,52 @@ const DepositDashboard: React.FC = () => {
             <DollarSign className="w-6 h-6 text-blue-600 mx-auto mb-2" />
             <span className="text-sm font-medium text-gray-900">Process Transaction</span>
           </button>
-          <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
-            <Calendar className="w-6 h-6 text-green-600 mx-auto mb-2" />
-            <span className="text-sm font-medium text-gray-900">Interest Posting</span>
-          </button>
-          <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+          <button
+            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+            onClick={() => runSweeps()}
+            disabled={sweepsLoading}
+          >
             <BarChart3 className="w-6 h-6 text-purple-600 mx-auto mb-2" />
-            <span className="text-sm font-medium text-gray-900">Generate Report</span>
+            <span className="text-sm font-medium text-gray-900">
+              {sweepsLoading ? 'Running Sweeps...' : 'Run Automated Sweeps'}
+            </span>
+          </button>
+          <button
+            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+            onClick={() => trackDormancy({ dormancyDays: 90 })}
+            disabled={dormancyLoading}
+          >
+            <Calendar className="w-6 h-6 text-green-600 mx-auto mb-2" />
+            <span className="text-sm font-medium text-gray-900">
+              {dormancyLoading ? 'Tracking Dormancy...' : 'Track Dormant Accounts'}
+            </span>
           </button>
         </div>
+        {/* Results display */}
+        {sweepResults && (
+          <div className="mt-6">
+            <h4 className="font-semibold mb-2">Sweep Results</h4>
+            <ul className="list-disc ml-6 text-sm">
+              {sweepResults.map((r, i) => (
+                <li key={i} className={r.status === 'Success' ? 'text-emerald-700' : 'text-red-600'}>
+                  {r.message}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {dormancyResults && (
+          <div className="mt-6">
+            <h4 className="font-semibold mb-2">Dormancy Tracking Results</h4>
+            <ul className="list-disc ml-6 text-sm">
+              {dormancyResults.map((r, i) => (
+                <li key={i} className={r.status === 'Dormant' ? 'text-yellow-700' : 'text-gray-700'}>
+                  {r.message}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </motion.div>
     </div>
   );

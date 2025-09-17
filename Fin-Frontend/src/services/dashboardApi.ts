@@ -94,6 +94,21 @@ interface PayrollDashboard {
   };
 }
 
+export interface DepositSweepResult {
+  accountNumber: string;
+  amountSwept: number;
+  sweepType: string;
+  status: string;
+  message?: string;
+}
+
+export interface DormancyTrackingResult {
+  accountNumber: string;
+  lastTransactionDate?: string;
+  status: string;
+  message?: string;
+}
+
 export const dashboardApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getDashboardOverview: builder.query<DashboardOverview, void>({
@@ -120,6 +135,18 @@ export const dashboardApi = api.injectEndpoints({
       query: () => '/dashboard/payroll',
       providesTags: ['Dashboard'],
     }),
+    runDepositSweeps: builder.mutation<DepositSweepResult[], void>({
+      query: () => ({
+        url: '/deposit-operations/run-sweeps',
+        method: 'POST',
+      }),
+    }),
+    trackDormancy: builder.mutation<DormancyTrackingResult[], { dormancyDays?: number }>({
+      query: ({ dormancyDays = 90 } = {}) => ({
+        url: `/deposit-operations/track-dormancy?dormancyDays=${dormancyDays}`,
+        method: 'POST',
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -130,5 +157,7 @@ export const {
   useGetLoanDashboardQuery,
   useGetDepositDashboardQuery,
   useGetInventoryDashboardQuery,
-  useGetPayrollDashboardQuery
+  useGetPayrollDashboardQuery,
+  useRunDepositSweepsMutation,
+  useTrackDormancyMutation,
 } = dashboardApi;
