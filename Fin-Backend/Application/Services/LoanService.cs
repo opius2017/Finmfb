@@ -56,7 +56,7 @@ public class LoanService : ILoanService
             InsurancePolicyNumber = collateralDto.InsurancePolicyNumber,
             InsuranceExpiryDate = collateralDto.InsuranceExpiryDate,
             Notes = collateralDto.Notes,
-            Status = FinTech.Domain.Entities.Loans.CollateralStatus.Pending,
+            Status = FinTech.Domain.Enums.CollateralStatus.Active,
             Currency = "NGN",
             ExpiryDate = DateTime.UtcNow.AddYears(1)
         };

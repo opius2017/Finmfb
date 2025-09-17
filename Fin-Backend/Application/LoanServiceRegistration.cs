@@ -19,6 +19,7 @@ namespace FinTech.Application
             services.AddScoped<ILoanCollectionService, LoanCollectionService>();
             services.AddScoped<ILoanCollateralService, LoanCollateralService>();
             services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
+            services.AddScoped<ILoanProvisioningService, LoanProvisioningService>();
             
             // Register repositories
             services.AddScoped<ILoanApplicationRepository, LoanApplicationRepository>();
