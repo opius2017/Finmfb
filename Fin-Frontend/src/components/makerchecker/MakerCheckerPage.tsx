@@ -10,7 +10,6 @@ import {
   User,
   Calendar,
   DollarSign,
-  FileText,
   Filter,
   Search,
 } from 'lucide-react';

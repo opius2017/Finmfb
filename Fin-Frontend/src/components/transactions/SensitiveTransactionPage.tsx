@@ -24,7 +24,6 @@ const SensitiveTransactionPage: React.FC = () => {
   // Initialize step-up authentication
   const { 
     showMfaChallenge, 
-    verifyIdentity, 
     verifyChallenge, 
     cancelVerification,
     withStepUpAuth

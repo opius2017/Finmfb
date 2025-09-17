@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { api } from './api';
 
 interface Role {

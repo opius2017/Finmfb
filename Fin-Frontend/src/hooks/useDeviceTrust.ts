@@ -7,7 +7,7 @@ import {
   useRevokeTrustedDeviceMutation, 
   useRevokeAllTrustedDevicesExceptCurrentMutation
 } from '../services/authApi';
-import { setTrustedDevices, addTrustedDevice, removeTrustedDevice } from '../store/slices/authSlice';
+import { setTrustedDevices, removeTrustedDevice } from '../store/slices/authSlice';
 import { toast } from 'react-hot-toast';
 
 interface DeviceInfo {
