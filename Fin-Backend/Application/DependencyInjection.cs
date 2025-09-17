@@ -30,6 +30,12 @@ public static class DependencyInjection
         // Register core accounting services
         services.AddAccountingServices();
         
+        // Register loan management services
+        services.AddLoanServices();
+        
+        // Register integration services
+        services.AddIntegrationServices();
+        
         return services;
     }
 }
