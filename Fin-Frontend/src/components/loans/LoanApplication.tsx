@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Loader2 } from 'lucide-react';
 import { useGetCustomerQuery } from '../../services/customersApi';
-import { useSubmitLoanApplicationMutation } from '../../services/loansApi';
+import { useCreateLoanMutation } from '../../services/loansApi';
 import { toast } from '../../services/toast';
 
 // Loan application schema

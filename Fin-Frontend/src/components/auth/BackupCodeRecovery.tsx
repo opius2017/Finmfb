@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, AlertTriangle, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useValidateMfaBackupCodeMutation } from '../../services/authApi';
+import { useValidateBackupCodeMutation } from '../../services/authApi';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../../store/slices/authSlice';
 
@@ -20,7 +20,7 @@ const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({
   onSuccess 
 }) => {
   const [backupCode, setBackupCode] = useState('');
-  const [validateBackupCode, { isLoading }] = useValidateMfaBackupCodeMutation();
+  const [validateBackupCode, { isLoading }] = useValidateBackupCodeMutation();
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

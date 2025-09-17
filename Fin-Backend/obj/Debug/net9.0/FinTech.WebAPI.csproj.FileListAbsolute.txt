@@ -168,3 +168,15 @@ C:\Users\opius\Desktop\projectSoarFin\Fin-Backend\obj\Debug\net9.0\refint\FinTec
 C:\Users\opius\Desktop\projectSoarFin\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.pdb
 C:\Users\opius\Desktop\projectSoarFin\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.genruntimeconfig.cache
 C:\Users\opius\Desktop\projectSoarFin\Fin-Backend\obj\Debug\net9.0\ref\FinTech.WebAPI.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.csproj.AssemblyReference.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.AssemblyInfoInputs.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.AssemblyInfo.cs
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.csproj.CoreCompileInputs.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.sourcelink.json
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\refint\FinTech.WebAPI.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net9.0\FinTech.WebAPI.pdb
