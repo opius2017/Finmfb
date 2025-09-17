@@ -58,17 +58,23 @@ namespace FinTech.Application.Services
         private readonly ILogger<ClientProfileService> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFileStorageService _fileStorage;
+        private readonly IRiskScoringService _riskScoringService;
+        private readonly IRelationshipMappingService _relationshipMappingService;
 
         public ClientProfileService(
             IApplicationDbContext dbContext,
             ILogger<ClientProfileService> logger,
             UserManager<ApplicationUser> userManager,
-            IFileStorageService fileStorage)
+            IFileStorageService fileStorage,
+            IRiskScoringService riskScoringService,
+            IRelationshipMappingService relationshipMappingService)
         {
             _dbContext = dbContext;
             _logger = logger;
             _userManager = userManager;
             _fileStorage = fileStorage;
+            _riskScoringService = riskScoringService;
+            _relationshipMappingService = relationshipMappingService;
         }
 
         // Profile Management
@@ -872,34 +878,13 @@ namespace FinTech.Application.Services
         // Automated Risk Profiling (stub)
         public async Task<RiskProfileDto> GetAutomatedRiskProfileAsync(Guid customerId)
         {
-            // TODO: Integrate ML model/service for real risk scoring
-            return await Task.FromResult(new RiskProfileDto
-            {
-                CustomerId = customerId,
-                RiskLevel = "Low",
-                RiskScore = 0.15m,
-                Factors = new[] { "KYC Complete", "No adverse history" },
-                EvaluatedAt = DateTime.UtcNow
-            });
+            return await _riskScoringService.ScoreCustomerRiskAsync(customerId);
         }
 
         // Relationship Mapping (stub)
         public async Task<RelationshipMapDto> GetRelationshipMapAsync(Guid customerId)
         {
-            // TODO: Implement real relationship mapping logic
-            return await Task.FromResult(new RelationshipMapDto
-            {
-                CustomerId = customerId,
-                Nodes = new List<RelationshipNodeDto>
-                {
-                    new RelationshipNodeDto { Id = customerId, Name = "Customer", Type = "Individual" },
-                    new RelationshipNodeDto { Id = Guid.NewGuid(), Name = "Acme Corp", Type = "Corporate" }
-                },
-                Edges = new List<RelationshipEdgeDto>
-                {
-                    new RelationshipEdgeDto { SourceId = customerId, TargetId = Guid.NewGuid(), RelationshipType = "Director" }
-                }
-            });
+            return await _relationshipMappingService.GetCustomerRelationshipMapAsync(customerId);
         }
 
         // Onboarding Workflow Initiation (stub)
