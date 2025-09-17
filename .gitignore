@@ -23,3 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# .NET Build Artifacts
+bin/
+obj/
+*.user
+*.userprefs
+.vs/
+
+# Frontend build artifacts
+dist/
+build/
