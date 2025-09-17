@@ -3,6 +3,7 @@ using FinTech.Domain.Entities.Loans;
 using FinTech.Domain.Entities.GeneralLedger;
 using FinTech.Domain.Enums;
 using FinTech.Infrastructure.Data;
+using FinTech.Application.DTOs.Loans;
 
 namespace FinTech.Core.Application.Services;
 
@@ -18,6 +19,7 @@ public interface ILoanService
 
 public class LoanService : ILoanService
 {
+
     private readonly ApplicationDbContext _context;
     private readonly IInterestCalculationService _interestService;
     private readonly IGeneralLedgerService _glService;
@@ -27,6 +29,40 @@ public class LoanService : ILoanService
         _context = context;
         _interestService = interestService;
         _glService = glService;
+    }
+
+    public async Task<IEnumerable<LoanCollateral>> GetLoanCollateralsAsync(string loanId)
+    {
+        return await _context.LoanCollaterals.Where(c => c.LoanId == loanId).ToListAsync();
+    }
+
+    public async Task<LoanCollateral> AddLoanCollateralAsync(string loanId, CreateLoanCollateralDto collateralDto)
+    {
+        var collateral = new FinTech.Domain.Entities.Loans.LoanCollateral
+        {
+            LoanId = loanId,
+            CollateralType = collateralDto.CollateralType,
+            Description = collateralDto.Description,
+            ValueAmount = collateralDto.Value,
+            ValuationDate = collateralDto.ValuationDate,
+            ValuationMethod = collateralDto.ValuationMethod,
+            ValuedBy = collateralDto.ValuedBy,
+            OwnerName = collateralDto.OwnerName,
+            OwnerRelationshipToClient = collateralDto.OwnerRelationship,
+            RegistrationNumber = collateralDto.RegistrationNumber,
+            Location = collateralDto.Location,
+            IsInsured = collateralDto.IsInsured,
+            InsuranceCompany = collateralDto.InsuranceCompany,
+            InsurancePolicyNumber = collateralDto.InsurancePolicyNumber,
+            InsuranceExpiryDate = collateralDto.InsuranceExpiryDate,
+            Notes = collateralDto.Notes,
+            Status = FinTech.Domain.Entities.Loans.CollateralStatus.Pending,
+            Currency = "NGN",
+            ExpiryDate = DateTime.UtcNow.AddYears(1)
+        };
+        _context.LoanCollaterals.Add(collateral);
+        await _context.SaveChangesAsync();
+        return collateral;
     }
 
     public async Task<LoanAccount> CreateLoanAccountAsync(CreateLoanAccountRequest request)

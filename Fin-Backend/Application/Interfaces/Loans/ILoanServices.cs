@@ -37,6 +37,8 @@ namespace FinTech.Application.Interfaces.Loans
         Task<IEnumerable<LoanTransaction>> GetLoanTransactionsAsync(string loanId);
         Task<IEnumerable<LoanRepaymentSchedule>> GetLoanRepaymentScheduleAsync(string loanId);
         Task<LoanStatement> GenerateLoanStatementAsync(string loanId, DateTime fromDate, DateTime toDate);
+    Task<IEnumerable<LoanCollateral>> GetLoanCollateralsAsync(string loanId);
+    Task<LoanCollateral> AddLoanCollateralAsync(string loanId, CreateLoanCollateralDto collateralDto);
     }
     
     /// <summary>

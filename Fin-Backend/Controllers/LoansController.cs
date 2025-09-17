@@ -19,13 +19,25 @@ namespace FinTech.WebAPI.Controllers
         private readonly ILoanService _loanService;
         private readonly IMapper _mapper;
         private readonly ILogger<LoansController> _logger;
+        private readonly ILoanCollectionService _loanCollectionService;
+        private readonly ILoanApplicationService _loanApplicationService;
+        private readonly ILoanDocumentService _loanDocumentService;
+        private readonly ILoanProductService _loanProductService;
 
         public LoansController(
             ILoanService loanService,
+            ILoanCollectionService loanCollectionService,
+            ILoanApplicationService loanApplicationService,
+            ILoanDocumentService loanDocumentService,
+            ILoanProductService loanProductService,
             IMapper mapper,
             ILogger<LoansController> logger)
         {
             _loanService = loanService ?? throw new ArgumentNullException(nameof(loanService));
+            _loanCollectionService = loanCollectionService ?? throw new ArgumentNullException(nameof(loanCollectionService));
+            _loanApplicationService = loanApplicationService ?? throw new ArgumentNullException(nameof(loanApplicationService));
+            _loanDocumentService = loanDocumentService ?? throw new ArgumentNullException(nameof(loanDocumentService));
+            _loanProductService = loanProductService ?? throw new ArgumentNullException(nameof(loanProductService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -34,6 +46,76 @@ namespace FinTech.WebAPI.Controllers
         /// Gets all loans
         /// </summary>
         /// <returns>List of loans</returns>
+            /// <summary>
+            /// Gets all loan collections
+            /// </summary>
+            [HttpGet("collections")]
+            public async Task<ActionResult<IEnumerable<LoanCollectionDto>>> GetAllLoanCollections()
+            {
+                var collections = await _loanCollectionService.GetAllLoanCollectionsAsync();
+                return Ok(_mapper.Map<IEnumerable<LoanCollectionDto>>(collections));
+            }
+
+            /// <summary>
+            /// Gets loan collections by loan ID
+            /// </summary>
+            [HttpGet("{id}/collections")]
+            public async Task<ActionResult<IEnumerable<LoanCollectionDto>>> GetLoanCollectionsByLoanId(string id)
+            {
+                var collections = await _loanCollectionService.GetLoanCollectionsByLoanIdAsync(id);
+                return Ok(_mapper.Map<IEnumerable<LoanCollectionDto>>(collections));
+            }
+
+            /// <summary>
+            /// Adds a collection action to a loan collection
+            /// </summary>
+            [HttpPost("collections/{collectionId}/actions")]
+            public async Task<ActionResult<LoanCollectionActionDto>> AddCollectionAction(string collectionId, [FromBody] CreateLoanCollectionActionDto actionDto)
+            {
+                var action = _mapper.Map<LoanCollectionAction>(actionDto);
+                var result = await _loanCollectionService.AddCollectionActionAsync(collectionId, action);
+                return Ok(_mapper.Map<LoanCollectionActionDto>(result));
+            }
+
+            /// <summary>
+            /// Gets all collaterals for a loan
+            /// </summary>
+            [HttpGet("{id}/collaterals")]
+            public async Task<ActionResult<IEnumerable<LoanCollateralDto>>> GetLoanCollaterals(string id)
+            {
+                var collaterals = await _loanService.GetLoanCollateralsAsync(id);
+                return Ok(_mapper.Map<IEnumerable<LoanCollateralDto>>(collaterals));
+            }
+
+            /// <summary>
+            /// Adds a collateral to a loan
+            /// </summary>
+            [HttpPost("{id}/collaterals")]
+            public async Task<ActionResult<LoanCollateralDto>> AddLoanCollateral(string id, [FromBody] CreateLoanCollateralDto collateralDto)
+            {
+                var collateral = await _loanService.AddLoanCollateralAsync(id, collateralDto);
+                return Ok(_mapper.Map<LoanCollateralDto>(collateral));
+            }
+
+            /// <summary>
+            /// Starts a new loan application (digital origination)
+            /// </summary>
+            [HttpPost("applications")]
+            public async Task<ActionResult<LoanApplicationDto>> CreateLoanApplication([FromBody] CreateLoanApplicationDto applicationDto)
+            {
+                var application = await _loanApplicationService.CreateLoanApplicationAsync(applicationDto);
+                return Ok(_mapper.Map<LoanApplicationDto>(application));
+            }
+
+            /// <summary>
+            /// Uploads a document for a loan application
+            /// </summary>
+            [HttpPost("applications/{applicationId}/documents")]
+            public async Task<ActionResult<LoanDocumentDto>> UploadLoanDocument(string applicationId, [FromBody] LoanDocumentDto documentDto)
+            {
+                var document = await _loanDocumentService.UploadLoanDocumentAsync(applicationId, documentDto);
+                return Ok(_mapper.Map<LoanDocumentDto>(document));
+            }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<LoanDto>>> GetLoans()
@@ -306,33 +388,33 @@ namespace FinTech.WebAPI.Controllers
 
     public class LoanDisbursementDto
     {
-        public decimal Amount { get; set; }
-        public string DisbursedTo { get; set; }
-        public string Reference { get; set; }
-        public string Description { get; set; }
+    public decimal Amount { get; set; }
+    public string? DisbursedTo { get; set; }
+    public string? Reference { get; set; }
+    public string? Description { get; set; }
     }
 
     public class LoanRepaymentDto
     {
-        public decimal TotalAmount { get; set; }
-        public decimal PrincipalAmount { get; set; }
-        public decimal InterestAmount { get; set; }
-        public decimal FeesAmount { get; set; }
-        public decimal PenaltyAmount { get; set; }
-        public string Reference { get; set; }
-        public string Description { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal PrincipalAmount { get; set; }
+    public decimal InterestAmount { get; set; }
+    public decimal FeesAmount { get; set; }
+    public decimal PenaltyAmount { get; set; }
+    public string? Reference { get; set; }
+    public string? Description { get; set; }
     }
 
     public class LoanWriteOffDto
     {
-        public string Reason { get; set; }
-        public string ApprovedBy { get; set; }
+    public string? Reason { get; set; }
+    public string? ApprovedBy { get; set; }
     }
 
     public class LoanRescheduleDto
     {
-        public DateTime NewEndDate { get; set; }
-        public string Reason { get; set; }
-        public string ApprovedBy { get; set; }
+    public DateTime NewEndDate { get; set; }
+    public string? Reason { get; set; }
+    public string? ApprovedBy { get; set; }
     }
 }
