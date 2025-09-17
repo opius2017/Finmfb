@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { Search, UserPlus, Filter, ChevronLeft, ChevronRight, Users, Download, Plus, Eye, MoreHorizontal } from 'lucide-react';
-import { useGetCustomersQuery } from '../../services/customersApi';
-import { Customer } from '../../services/customersApi';
+import { useGetCustomersQuery, Customer } from '../../services/customersApi';
 
 const ITEMS_PER_PAGE = 10;
 

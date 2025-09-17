@@ -1,6 +1,7 @@
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { store } from './store/store';
 import AppRouter from './components/routing/AppRouter';
 import './index.css';
@@ -11,30 +12,22 @@ function App() {
       <BrowserRouter>
         <div className="min-h-screen bg-gray-50">
           <AppRouter />
-          <Toaster
+          <ToastContainer
             position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#363636',
-                color: '#fff',
-              },
-              success: {
-                duration: 3000,
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#fff',
-                },
-              },
-              error: {
-                duration: 5000,
-                iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
-                },
-              },
-            }}
+            autoClose={4000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
           />
+        </div>
+      </BrowserRouter>
+    </Provider>
+  );
         </div>
       </BrowserRouter>
     </Provider>
