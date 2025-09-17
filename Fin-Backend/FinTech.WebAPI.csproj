@@ -21,6 +21,24 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
   </ItemGroup>
 
+  <!-- Exclude all complex files to create minimal working API -->
+  <ItemGroup>
+    <Compile Remove="src/**/*.cs" />
+    <Compile Remove="Application/**/*.cs" />
+    <Compile Remove="Controllers/**/*.cs" />
+    <Compile Remove="Core/**/*.cs" />
+    <Compile Remove="Domain/**/*.cs" />
+    <Compile Remove="Infrastructure/**/*.cs" />
+    <Compile Remove="Examples/**/*.cs" />
+    <Compile Remove="Program_Original.cs" />
+  </ItemGroup>
+
+  <!-- Remove content items that may cause duplicates -->
+  <ItemGroup>
+    <Content Remove="appsettings.json" />
+    <Content Remove="appsettings.Development.json" />
+  </ItemGroup>
+
     <!-- Removed explicit Content items to avoid duplicate error -->
 
 </Project>

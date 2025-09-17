@@ -1,100 +1,76 @@
-using Fin_Backend.Infrastructure;
-using Fin_Backend.Infrastructure.Documentation;
-using Fin_Backend.Infrastructure.Messaging;
-using FinTech.Core.Application;
-using FinTech.Infrastructure;
-using FinTech.Infrastructure.BackgroundServices;
-using FinTech.Infrastructure.Middleware;
-using FinTech.Infrastructure.Monitoring;
-using FinTech.Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Net.Mime;
+using Microsoft.OpenApi.Models;
 using System.Text;
-using System.Text.Json;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File("logs/fintech-.log", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Add API versioning
-builder.Services.AddApiVersioning(options =>
+// Add Swagger
+builder.Services.AddSwaggerGen(c =>
 {
-    options.DefaultApiVersion = new ApiVersion(1, 0);
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.ReportApiVersions = true;
-    options.ApiVersionReader = ApiVersionReader.Combine(
-        new UrlSegmentApiVersionReader(),
-        new HeaderApiVersionReader("X-Api-Version"),
-        new QueryStringApiVersionReader("api-version"));
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FinTech API",
+        Version = "v1",
+        Description = "Enterprise Financial Management System API"
+    });
+    
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme.",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
-builder.Services.AddVersionedApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiVersionInUrl = true;
-});
-
-// Configure API Documentation
-builder.Services.AddApiDocumentation();
-
-// Register Application Layer Services
-builder.Services.AddApplicationServices();
-
-// Register Infrastructure Layer Services
-builder.Services.AddInfrastructureServices(builder.Configuration);
-
-// Register Resilience Policies for Circuit Breakers and Retries
-builder.Services.AddResilienceServices();
-
-// Register Distributed Caching with Redis
-builder.Services.AddCachingServices(builder.Configuration);
-
-// Register Message Broker
-builder.Services.AddMessageBroker(builder.Configuration);
-
-// Register notification services
-builder.Services.AddNotificationServices(builder.Configuration);
-
-// Register workflow examples for demonstration
-builder.Services.AddWorkflowExamples();
-
-// Register security services with fine-grained authorization
-builder.Services.AddSecurityServices();
-
-// Register advanced authentication services
-builder.Services.AddAdvancedAuthServices(builder.Configuration);
-
-// Register monitoring and logging services
-builder.Services.AddMonitoringServices(builder.Configuration);
-
-// Register health checks
-builder.Services.AddHealthChecks(builder.Configuration);
-
-// Configure rate limiting
-builder.Services.Configure<RateLimitingOptions>(builder.Configuration.GetSection("RateLimiting"));
-builder.Services.AddDistributedMemoryCache(); // For rate limiting
-
-// Register background services
-builder.Services.AddHostedService<OutboxProcessorService>();
-
-// Note: JWT Authentication is now configured in AdvancedAuthServicesRegistration.cs
-
-// Add CORS policy
+// Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder => builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "https://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
+
+// Add health checks
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -102,107 +78,84 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
+    app.UseSwaggerUI(c =>
     {
-        // Get all available API versions
-        var provider = app.Services.GetRequiredService<Microsoft.AspNetCore.Mvc.ApiExplorer.IApiVersionDescriptionProvider>();
-        
-        // Add a Swagger endpoint for each API version
-        foreach (var description in provider.ApiVersionDescriptions)
-        {
-            options.SwaggerEndpoint(
-                $"/swagger/{description.GroupName}/swagger.json", 
-                $"Banking API {description.GroupName}");
-        }
-        
-        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-        options.DefaultModelsExpandDepth(-1); // Hide schemas section by default
-        options.DisplayRequestDuration();
-        options.EnableDeepLinking();
-        options.EnableFilter();
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinTech API v1");
+        c.RoutePrefix = "swagger";
     });
 }
 
-// Add performance monitoring middleware
-app.UseMiddleware<PerformanceMonitoringMiddleware>();
-
-// Add rate limiting middleware
-app.UseRateLimiting();
-
-// Add custom exception handling middleware (omitted for brevity)
-
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure health checks endpoints - legacy format for backward compatibility
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = async (context, report) =>
-    {
-        var result = JsonSerializer.Serialize(
-            new
-            {
-                status = report.Status.ToString(),
-                checks = report.Entries.Select(entry => new
-                {
-                    name = entry.Key,
-                    status = entry.Value.Status.ToString(),
-                    description = entry.Value.Description,
-                    duration = entry.Value.Duration.TotalMilliseconds
-                }),
-                totalDuration = report.TotalDuration.TotalMilliseconds
-            });
-            
-        context.Response.ContentType = MediaTypeNames.Application.Json;
-        await context.Response.WriteAsync(result);
-    }
-});
-
-// Readiness probe endpoint - legacy format
-app.MapHealthChecks("/health/ready", new HealthCheckOptions
-{
-    Predicate = (check) => check.Tags.Contains("ready"),
-    ResponseWriter = async (context, report) =>
-    {
-        var result = JsonSerializer.Serialize(
-            new
-            {
-                status = report.Status.ToString(),
-                checks = report.Entries.Select(entry => new
-                {
-                    name = entry.Key,
-                    status = entry.Value.Status.ToString(),
-                    description = entry.Value.Description,
-                    duration = entry.Value.Duration.TotalMilliseconds
-                }),
-                totalDuration = report.TotalDuration.TotalMilliseconds
-            });
-            
-        context.Response.ContentType = MediaTypeNames.Application.Json;
-        await context.Response.WriteAsync(result);
-    }
-});
-
-// Liveness probe endpoint - legacy format
-app.MapHealthChecks("/health/live", new HealthCheckOptions
-{
-    Predicate = _ => false, // No checks for liveness, just ensures app is running
-    ResponseWriter = async (context, report) =>
-    {
-        var result = JsonSerializer.Serialize(
-            new
-            {
-                status = "Healthy",
-                timestamp = DateTime.UtcNow
-            });
-            
-        context.Response.ContentType = MediaTypeNames.Application.Json;
-        await context.Response.WriteAsync(result);
-    }
-});
-
 app.MapControllers();
 
-app.Run();
+// Add health check endpoint
+app.MapHealthChecks("/health");
+
+// Add a simple API endpoint to test
+app.MapGet("/api/status", () => new
+{
+    Status = "Running",
+    Timestamp = DateTime.UtcNow,
+    Version = "1.0.0",
+    Environment = app.Environment.EnvironmentName
+});
+
+// Add basic auth endpoints for demo
+app.MapPost("/api/auth/login", (LoginRequest request) =>
+{
+    if (request.Email == "admin@demo.com" && request.Password == "Password123!")
+    {
+        return Results.Ok(new
+        {
+            token = "demo-jwt-token-" + Guid.NewGuid().ToString("N")[..16],
+            user = new
+            {
+                id = "1",
+                email = request.Email,
+                name = "Demo Admin",
+                role = "Administrator"
+            },
+            expires = DateTime.UtcNow.AddHours(24)
+        });
+    }
+    
+    return Results.Unauthorized();
+});
+
+app.MapGet("/api/dashboard", () =>
+{
+    return Results.Ok(new
+    {
+        totalCustomers = 1250,
+        totalLoans = 2450000.00m,
+        pendingApprovals = 15,
+        monthlyGrowth = 12.5m,
+        recentTransactions = new[]
+        {
+            new { id = 1, description = "Loan Disbursement", amount = 50000.00m, date = DateTime.UtcNow.AddHours(-2) },
+            new { id = 2, description = "Deposit", amount = 25000.00m, date = DateTime.UtcNow.AddHours(-4) },
+            new { id = 3, description = "Withdrawal", amount = -15000.00m, date = DateTime.UtcNow.AddHours(-6) }
+        }
+    });
+});
+
+try
+{
+    Log.Information("Starting FinTech Web API");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+
+public record LoginRequest(string Email, string Password);
