@@ -16,13 +16,14 @@ namespace FinTech.WebAPI.Controllers
     [Route("api/[controller]")]
     public class LoansController : ControllerBase
     {
-        private readonly ILoanService _loanService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<LoansController> _logger;
-        private readonly ILoanCollectionService _loanCollectionService;
-        private readonly ILoanApplicationService _loanApplicationService;
-        private readonly ILoanDocumentService _loanDocumentService;
-        private readonly ILoanProductService _loanProductService;
+    private readonly ILoanService _loanService;
+    private readonly IMapper _mapper;
+    private readonly ILogger<LoansController> _logger;
+    private readonly ILoanCollectionService _loanCollectionService;
+    private readonly ILoanApplicationService _loanApplicationService;
+    private readonly ILoanDocumentService _loanDocumentService;
+    private readonly ILoanProductService _loanProductService;
+    private readonly ILoanProvisioningService _loanProvisioningService;
 
         public LoansController(
             ILoanService loanService,
@@ -30,6 +31,7 @@ namespace FinTech.WebAPI.Controllers
             ILoanApplicationService loanApplicationService,
             ILoanDocumentService loanDocumentService,
             ILoanProductService loanProductService,
+            ILoanProvisioningService loanProvisioningService,
             IMapper mapper,
             ILogger<LoansController> logger)
         {
@@ -38,8 +40,20 @@ namespace FinTech.WebAPI.Controllers
             _loanApplicationService = loanApplicationService ?? throw new ArgumentNullException(nameof(loanApplicationService));
             _loanDocumentService = loanDocumentService ?? throw new ArgumentNullException(nameof(loanDocumentService));
             _loanProductService = loanProductService ?? throw new ArgumentNullException(nameof(loanProductService));
+            _loanProvisioningService = loanProvisioningService ?? throw new ArgumentNullException(nameof(loanProvisioningService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        /// <summary>
+        /// Calculates IFRS 9 provisioning (expected credit loss) for a loan
+        /// </summary>
+        /// <param name="id">Loan ID</param>
+        /// <returns>Provisioning details</returns>
+        [HttpGet("{id}/provisioning")]
+        public async Task<ActionResult<LoanProvisioningDto>> GetLoanProvisioning(string id)
+        {
+            var provisioning = await _loanProvisioningService.CalculateProvisioningAsync(id);
+            return Ok(provisioning);
+        }
         }
 
         /// <summary>

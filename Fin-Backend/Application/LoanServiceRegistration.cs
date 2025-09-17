@@ -1,6 +1,6 @@
 using FinTech.Application.Interfaces.Loans;
 using FinTech.Application.Interfaces.Repositories.Loans;
-using FinTech.Application.Interfaces.Services.Loans;
+// Removed ambiguous/missing namespace
 using FinTech.Application.Services.Loans;
 using FinTech.Infrastructure.Repositories.Loans;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +20,7 @@ namespace FinTech.Application
             services.AddScoped<ILoanCollateralService, LoanCollateralService>();
             services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
             services.AddScoped<ILoanProvisioningService, LoanProvisioningService>();
+            services.AddScoped<ILoanProvisioningService, LoanProvisioningService>();
             
             // Register repositories
             services.AddScoped<ILoanApplicationRepository, LoanApplicationRepository>();
@@ -28,11 +29,12 @@ namespace FinTech.Application
             services.AddScoped<ILoanTransactionRepository, LoanTransactionRepository>();
             services.AddScoped<ILoanRepaymentScheduleRepository, LoanRepaymentScheduleRepository>();
             services.AddScoped<ILoanDocumentRepository, LoanDocumentRepository>();
-            services.AddScoped<ILoanCollateralRepository, LoanCollateralRepository>();
+            // Use repository from Interfaces.Repositories.Loans
+            services.AddScoped<FinTech.Application.Interfaces.Repositories.Loans.ILoanCollateralRepository, LoanCollateralRepository>();
             services.AddScoped<ILoanGuarantorRepository, LoanGuarantorRepository>();
             services.AddScoped<ILoanCollectionRepository, LoanCollectionRepository>();
-            services.AddScoped<ILoanFeeRepository, LoanFeeRepository>();
-            services.AddScoped<ILoanCreditCheckRepository, LoanCreditCheckRepository>();
+            services.AddScoped<ILoanFeeRepository, FinTech.Infrastructure.Repositories.Loans.LoanFeeRepository>();
+            services.AddScoped<ILoanCreditCheckRepository, FinTech.Infrastructure.Repositories.Loans.LoanCreditCheckRepository>();
             
             return services;
         }

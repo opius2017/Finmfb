@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import {
   CreditCard,
@@ -36,6 +37,7 @@ interface LoanAccount {
   classification: string;
   daysPastDue: number;
   provisionAmount: number;
+  expectedCreditLoss?: number;
   createdAt: string;
 }
 
@@ -46,7 +48,25 @@ const LoanManagementPage: React.FC = () => {
   const [selectedView, setSelectedView] = useState<'list' | 'cards'>('list');
 
   // Mock data - replace with actual API call
-  const loans: LoanAccount[] = [
+  const [loans, setLoans] = useState<LoanAccount[]>([]);
+  useEffect(() => {
+    // Replace with actual API endpoint for loans
+    axios.get('/api/loans').then(async (res) => {
+      const loanList: LoanAccount[] = res.data;
+      // Fetch expected credit loss for each loan
+      const updatedLoans = await Promise.all(
+        loanList.map(async (loan) => {
+          try {
+            const provRes = await axios.get(`/api/loans/${loan.id}/provisioning`);
+            return { ...loan, expectedCreditLoss: provRes.data.expectedCreditLoss };
+          } catch {
+            return { ...loan, expectedCreditLoss: 0 };
+          }
+        })
+      );
+      setLoans(updatedLoans);
+    });
+  }, []);
     {
       id: '1',
       accountNumber: 'LN001234567',
@@ -180,7 +200,7 @@ const LoanManagementPage: React.FC = () => {
   const portfolioAtRisk = loans
     .filter(loan => loan.classification !== 'Performing')
     .reduce((sum, loan) => sum + loan.outstandingPrincipal, 0);
-  const totalProvisions = loans.reduce((sum, loan) => sum + loan.provisionAmount, 0);
+  const totalProvisions = loans.reduce((sum, loan) => sum + (loan.expectedCreditLoss ?? loan.provisionAmount ?? 0), 0);
 
   return (
     <div className="space-y-6">
@@ -438,6 +458,9 @@ const LoanManagementPage: React.FC = () => {
                         </div>
                         <div className="text-sm text-gray-500">
                           {loan.productName}
+                        </div>
+                        <div className="text-xs text-blue-600 mt-1">
+                          IFRS 9 ECL: ₦{(loan.expectedCreditLoss ?? loan.provisionAmount ?? 0).toLocaleString()}
                         </div>
                       </div>
                     </td>
