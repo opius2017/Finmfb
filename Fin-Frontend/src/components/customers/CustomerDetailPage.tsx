@@ -7,7 +7,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Calendar,
   Building,
   CreditCard,
   FileText,
@@ -23,7 +22,7 @@ import { format } from 'date-fns';
 
 const CustomerDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: customerResponse, isLoading, error } = useGetCustomerQuery(id!);
+  const { data: customer, isLoading, error } = useGetCustomerQuery(id!);
   const { data: riskProfile, isLoading: riskLoading } = useGetRiskProfileQuery(id!);
   const { data: relationshipMap, isLoading: relLoading } = useGetRelationshipMapQuery(id!);
   const [initiateOnboarding, { isLoading: onboardingLoading, data: onboardingWorkflow }] = useInitiateOnboardingMutation();
@@ -46,7 +45,7 @@ const CustomerDetailPage: React.FC = () => {
     );
   }
 
-  if (error || !customerResponse?.data) {
+  if (error || !customer) {
     return (
       <div className="flex items-center justify-center h-64">
         <p className="text-red-600">Failed to load customer details</p>
@@ -54,7 +53,7 @@ const CustomerDetailPage: React.FC = () => {
     );
   }
 
-  const customer = customerResponse.data;
+  // customer is already defined above
   const isIndividual = customer.customerType === 1; // Individual = 1, Corporate = 2
 
   const getStatusColor = (status: number) => {

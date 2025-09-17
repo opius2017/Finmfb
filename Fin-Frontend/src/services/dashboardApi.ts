@@ -113,27 +113,27 @@ export const dashboardApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getDashboardOverview: builder.query<DashboardOverview, void>({
       query: () => '/dashboard/overview',
-      providesTags: ['Dashboard'],
+  providesTags: [{ type: 'Dashboard' }],
     }),
     getExecutiveDashboard: builder.query<ExecutiveDashboard, void>({
       query: () => '/dashboard/executive',
-      providesTags: ['Dashboard'],
+  providesTags: [{ type: 'Dashboard' }],
     }),
     getLoanDashboard: builder.query<LoanDashboard, void>({
       query: () => '/dashboard/loans',
-      providesTags: ['Dashboard'],
+  providesTags: [{ type: 'Dashboard' }],
     }),
     getDepositDashboard: builder.query<DepositDashboard, void>({
       query: () => '/dashboard/deposits',
-      providesTags: ['Dashboard'],
+  providesTags: [{ type: 'Dashboard' }],
     }),
     getInventoryDashboard: builder.query<InventoryDashboard, void>({
       query: () => '/dashboard/inventory',
-      providesTags: ['Dashboard'],
+  providesTags: [{ type: 'Dashboard' }],
     }),
     getPayrollDashboard: builder.query<PayrollDashboard, void>({
       query: () => '/dashboard/payroll',
-      providesTags: ['Dashboard'],
+  providesTags: [{ type: 'Dashboard' }],
     }),
     runDepositSweeps: builder.mutation<DepositSweepResult[], void>({
       query: () => ({

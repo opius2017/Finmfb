@@ -4,8 +4,14 @@ export interface Customer {
   id: string;
   customerNumber: string;
   firstName: string;
+  middleName?: string;
   lastName: string;
   otherNames?: string;
+  companyName?: string;
+  customerType: number;
+  status: number;
+  rcNumber?: string;
+  address?: string;
   dateOfBirth: string;
   gender: 'male' | 'female' | 'other';
   maritalStatus: 'single' | 'married' | 'divorced' | 'widowed';

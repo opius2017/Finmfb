@@ -74,18 +74,6 @@ const LoanManagementPage: React.FC = () => {
     return matchesSearch && matchesStatus && matchesClassification;
   });
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'closed':
-        return 'bg-gray-100 text-gray-800';
-      case 'written off':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   const getClassificationColor = (classification: string) => {
     switch (classification.toLowerCase()) {

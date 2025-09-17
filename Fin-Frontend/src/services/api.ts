@@ -17,6 +17,6 @@ const baseQuery = fetchBaseQuery({
 
 export const api = createApi({
   baseQuery,
-    baseUrl: 'http://localhost:5000/api', // Using HTTP to avoid HTTPS certificate issues in development
+  tagTypes: ['Dashboard'],
   endpoints: () => ({}),
 });

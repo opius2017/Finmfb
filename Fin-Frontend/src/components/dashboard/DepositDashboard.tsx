@@ -8,9 +8,9 @@ import {
   DollarSign,
   Calendar,
   BarChart3,
-  PieChart,
+  // ...existing code...
   Plus,
-  Eye,
+  // ...existing code...
 } from 'lucide-react';
 import { useGetDepositDashboardQuery, useRunDepositSweepsMutation, useTrackDormancyMutation } from '../../services/dashboardApi';
 import StatsCard from '../common/StatsCard';
