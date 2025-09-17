@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# .NET build artifacts
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
