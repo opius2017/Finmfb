@@ -53,8 +53,7 @@ namespace FinTech.WebAPI.Controllers
         {
             var provisioning = await _loanProvisioningService.CalculateProvisioningAsync(id);
             return Ok(provisioning);
-        }
-        }
+    }
 
         /// <summary>
         /// Gets all loans

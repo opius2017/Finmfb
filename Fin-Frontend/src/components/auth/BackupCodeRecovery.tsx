@@ -3,19 +3,15 @@ import { motion } from 'framer-motion';
 import { Loader2, AlertTriangle, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useValidateBackupCodeMutation } from '../../services/authApi';
-import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../store/slices/authSlice';
 
 interface BackupCodeRecoveryProps {
-  mfaToken: string;
-  email: string;
+  userId: string;
   onReturn: () => void;
-  onSuccess: (token: string) => void;
+  onSuccess: () => void;
 }
 
 const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({ 
-  mfaToken, 
-  email, 
+  userId,
   onReturn,
   onSuccess 
 }) => {
@@ -24,21 +20,18 @@ const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!backupCode.trim()) {
       toast.error('Please enter a backup code');
       return;
     }
-    
     try {
-      const response = await validateBackupCode({ 
-        code: backupCode.trim().toUpperCase(), 
-        mfaToken 
+      const response = await validateBackupCode({
+        userId,
+        backupCode: backupCode.trim().toUpperCase(),
       }).unwrap();
-      
-      if (response.success) {
+      if (response.success && response.data) {
         toast.success('Backup code validated successfully');
-        onSuccess(response.token);
+        onSuccess();
       } else {
         toast.error('Invalid backup code. Please try again.');
       }

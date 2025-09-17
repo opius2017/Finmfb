@@ -84,18 +84,16 @@ const LoanApplication: React.FC = () => {
     return (amount * monthlyRate) / denominator;
   };
 
-  const [submitLoanApplication] = useSubmitLoanApplicationMutation();
+  const [createLoan] = useCreateLoanMutation();
   const navigate = useNavigate();
 
   const onSubmit = async (data: LoanApplicationData) => {
     setIsSubmitting(true);
     try {
-      const response = await submitLoanApplication({
+      const response = await createLoan({
         ...data,
         customerId: customerId!,
       }).unwrap();
-      
-      // Show success message and navigate to loan management
       toast({
         title: 'Application Submitted',
         description: 'Your loan application has been submitted successfully.',
