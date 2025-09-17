@@ -86,50 +86,27 @@ namespace FinTech.Application.Services.Loans
 
                 var collateral = new LoanCollateral
                 {
-                    LoanId = loanId,
                     CollateralType = collateralDto.CollateralType,
                     Description = collateralDto.Description,
-                    Value = collateralDto.Value,
+                    EstimatedValue = collateralDto.Value,
                     ValuationDate = collateralDto.ValuationDate,
-                    ValuationMethod = collateralDto.ValuationMethod,
                     ValuedBy = collateralDto.ValuedBy,
-                    OwnerName = collateralDto.OwnerName,
-                    OwnerRelationship = collateralDto.OwnerRelationship,
-                    RegistrationNumber = collateralDto.RegistrationNumber,
                     Location = collateralDto.Location,
-                    IsInsured = collateralDto.IsInsured,
-                    InsuranceCompany = collateralDto.InsuranceCompany,
-                    InsurancePolicyNumber = collateralDto.InsurancePolicyNumber,
-                    InsuranceExpiryDate = collateralDto.InsuranceExpiryDate,
-                    VerificationStatus = collateralDto.VerificationStatus,
-                    VerificationDate = collateralDto.VerificationDate,
-                    VerifiedBy = collateralDto.VerifiedBy,
-                    Notes = collateralDto.Notes
+                    Notes = collateralDto.Notes ?? string.Empty,
+                    // Set other properties as needed, e.g. TenantId, Status, etc.
                 };
 
                 var result = await _collateralRepository.AddAsync(collateral);
                 // Map domain entity to DTO
                 return new LoanCollateralDto
                 {
-                    Id = result.Id.ToString(),
-                    LoanId = result.LoanId,
+                    Id = collateral.Id.ToString(),
                     CollateralType = result.CollateralType,
                     Description = result.Description,
-                    Value = result.Value,
-                    ValuationDate = result.ValuationDate,
-                    ValuationMethod = result.ValuationMethod,
+                    Value = result.EstimatedValue,
+                    ValuationDate = result.ValuationDate ?? DateTime.MinValue,
                     ValuedBy = result.ValuedBy,
-                    OwnerName = result.OwnerName,
-                    OwnerRelationship = result.OwnerRelationship,
-                    RegistrationNumber = result.RegistrationNumber,
                     Location = result.Location,
-                    IsInsured = result.IsInsured,
-                    InsuranceCompany = result.InsuranceCompany,
-                    InsurancePolicyNumber = result.InsurancePolicyNumber,
-                    InsuranceExpiryDate = result.InsuranceExpiryDate,
-                    VerificationStatus = result.VerificationStatus,
-                    VerificationDate = result.VerificationDate,
-                    VerifiedBy = result.VerifiedBy,
                     Notes = result.Notes
                 };
             }
@@ -152,12 +129,11 @@ namespace FinTech.Application.Services.Loans
 
                 existingCollateral.CollateralType = collateralDto.CollateralType;
                 existingCollateral.Description = collateralDto.Description;
-                existingCollateral.Value = collateralDto.Value;
-                existingCollateral.OwnerName = collateralDto.OwnerName;
-                existingCollateral.RegistrationNumber = collateralDto.RegistrationNumber;
-                existingCollateral.RegistrationDate = collateralDto.RegistrationDate;
+                existingCollateral.EstimatedValue = collateralDto.Value;
+                existingCollateral.ValuationDate = collateralDto.ValuationDate;
+                existingCollateral.ValuedBy = collateralDto.ValuedBy;
                 existingCollateral.Location = collateralDto.Location;
-                existingCollateral.Status = collateralDto.Status;
+                existingCollateral.Notes = collateralDto.Notes;
                 existingCollateral.LastModifiedDate = DateTime.UtcNow;
 
                 var result = await _collateralRepository.UpdateAsync(existingCollateral);
@@ -193,11 +169,9 @@ namespace FinTech.Application.Services.Loans
                     throw new ApplicationException($"Collateral with ID {id} not found");
                 }
 
-                collateral.Status = CollateralStatus.Approved;
-                collateral.ApprovedBy = approverId;
-                collateral.ApprovalDate = DateTime.UtcNow;
-                collateral.ApprovalComments = comments;
-                collateral.LastModifiedDate = DateTime.UtcNow;
+                collateral.Status = FinTech.Domain.Enums.CollateralStatus.Active;
+                collateral.Notes = $"Approved by {approverId}: {comments}";
+                collateral.UpdatedAt = DateTime.UtcNow;
 
                 var result = await _collateralRepository.UpdateAsync(collateral);
                 return MapToDto(result);
@@ -219,11 +193,9 @@ namespace FinTech.Application.Services.Loans
                     throw new ApplicationException($"Collateral with ID {id} not found");
                 }
 
-                collateral.Status = CollateralStatus.Rejected;
-                collateral.RejectedBy = rejecterId;
-                collateral.RejectionDate = DateTime.UtcNow;
-                collateral.RejectionReason = reason;
-                collateral.LastModifiedDate = DateTime.UtcNow;
+                collateral.Status = FinTech.Domain.Enums.CollateralStatus.Impaired;
+                collateral.Notes = $"Rejected by {rejecterId}: {reason}";
+                collateral.UpdatedAt = DateTime.UtcNow;
 
                 var result = await _collateralRepository.UpdateAsync(collateral);
                 return MapToDto(result);
@@ -240,7 +212,7 @@ namespace FinTech.Application.Services.Loans
             try
             {
                 var collaterals = await _collateralRepository.GetByLoanIdAsync(loanId);
-                return collaterals.Sum(c => c.Value);
+                return collaterals.Sum(c => c.EstimatedValue);
             }
             catch (Exception ex)
             {
@@ -253,24 +225,14 @@ namespace FinTech.Application.Services.Loans
         {
             return new LoanCollateralDto
             {
-                Id = collateral.Id,
-                LoanId = collateral.LoanId,
+                Id = collateral.Id.ToString(),
                 CollateralType = collateral.CollateralType,
                 Description = collateral.Description,
-                Value = collateral.Value,
-                OwnerName = collateral.OwnerName,
-                RegistrationNumber = collateral.RegistrationNumber,
-                RegistrationDate = collateral.RegistrationDate,
-                Location = collateral.Location,
-                Status = collateral.Status,
-                ApprovedBy = collateral.ApprovedBy,
-                ApprovalDate = collateral.ApprovalDate,
-                ApprovalComments = collateral.ApprovalComments,
-                RejectedBy = collateral.RejectedBy,
-                RejectionDate = collateral.RejectionDate,
-                RejectionReason = collateral.RejectionReason,
-                CreatedDate = collateral.CreatedDate,
-                LastModifiedDate = collateral.LastModifiedDate
+                Value = collateral.EstimatedValue,
+                ValuationDate = collateral.ValuationDate ?? DateTime.MinValue,
+                ValuedBy = collateral.ValuedBy ?? string.Empty,
+                Location = collateral.Location ?? string.Empty,
+                Notes = collateral.Notes ?? string.Empty
             };
         }
     }
