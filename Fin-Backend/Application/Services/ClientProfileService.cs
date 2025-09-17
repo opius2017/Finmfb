@@ -41,6 +41,15 @@ namespace FinTech.Application.Services
         
         // Activity History
         Task<IEnumerable<ClientPortalActivity>> GetClientActivitiesAsync(ActivityHistoryRequestDto requestDto, Guid customerId);
+
+        // Automated Risk Profiling
+        Task<RiskProfileDto> GetAutomatedRiskProfileAsync(Guid customerId);
+
+        // Relationship Mapping
+        Task<RelationshipMapDto> GetRelationshipMapAsync(Guid customerId);
+
+        // Onboarding Workflow
+        Task<OnboardingWorkflowDto> InitiateOnboardingWorkflowAsync(OnboardingRequestDto requestDto, Guid customerId);
     }
 
     public class ClientProfileService : IClientProfileService
@@ -858,6 +867,53 @@ namespace FinTech.Application.Services
                 _logger.LogError(ex, "Error retrieving activity history for customer {CustomerId}", customerId);
                 throw;
             }
+        }
+
+        // Automated Risk Profiling (stub)
+        public async Task<RiskProfileDto> GetAutomatedRiskProfileAsync(Guid customerId)
+        {
+            // TODO: Integrate ML model/service for real risk scoring
+            return await Task.FromResult(new RiskProfileDto
+            {
+                CustomerId = customerId,
+                RiskLevel = "Low",
+                RiskScore = 0.15m,
+                Factors = new[] { "KYC Complete", "No adverse history" },
+                EvaluatedAt = DateTime.UtcNow
+            });
+        }
+
+        // Relationship Mapping (stub)
+        public async Task<RelationshipMapDto> GetRelationshipMapAsync(Guid customerId)
+        {
+            // TODO: Implement real relationship mapping logic
+            return await Task.FromResult(new RelationshipMapDto
+            {
+                CustomerId = customerId,
+                Nodes = new List<RelationshipNodeDto>
+                {
+                    new RelationshipNodeDto { Id = customerId, Name = "Customer", Type = "Individual" },
+                    new RelationshipNodeDto { Id = Guid.NewGuid(), Name = "Acme Corp", Type = "Corporate" }
+                },
+                Edges = new List<RelationshipEdgeDto>
+                {
+                    new RelationshipEdgeDto { SourceId = customerId, TargetId = Guid.NewGuid(), RelationshipType = "Director" }
+                }
+            });
+        }
+
+        // Onboarding Workflow Initiation (stub)
+        public async Task<OnboardingWorkflowDto> InitiateOnboardingWorkflowAsync(OnboardingRequestDto requestDto, Guid customerId)
+        {
+            // TODO: Implement real onboarding workflow logic
+            return await Task.FromResult(new OnboardingWorkflowDto
+            {
+                WorkflowId = Guid.NewGuid(),
+                CustomerId = customerId,
+                Status = "Initiated",
+                StartedAt = DateTime.UtcNow,
+                Steps = new List<string> { "Profile Created", "KYC Started", "Document Upload" }
+            });
         }
 
         // Helper method to check if profile is complete

@@ -50,6 +50,57 @@ namespace FinTech.WebAPI.Controllers
                 return StatusCode(500, "An error occurred while retrieving your profile");
             }
         }
+            // Automated Risk Profiling (ML)
+            [HttpGet("risk-profile")]
+            public async Task<ActionResult<RiskProfileDto>> GetAutomatedRiskProfile()
+            {
+                try
+                {
+                    var customerId = GetCustomerIdFromClaims();
+                    // TODO: Integrate ML model/service for risk profiling
+                    var riskProfile = await _profileService.GetAutomatedRiskProfileAsync(customerId);
+                    return Ok(riskProfile);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error retrieving risk profile");
+                    return StatusCode(500, "An error occurred while retrieving risk profile");
+                }
+            }
+
+            // Relationship Mapping (Corporate Structures, Beneficial Ownership)
+            [HttpGet("relationship-map")]
+            public async Task<ActionResult<RelationshipMapDto>> GetRelationshipMap()
+            {
+                try
+                {
+                    var customerId = GetCustomerIdFromClaims();
+                    var relationshipMap = await _profileService.GetRelationshipMapAsync(customerId);
+                    return Ok(relationshipMap);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error retrieving relationship map");
+                    return StatusCode(500, "An error occurred while retrieving relationship map");
+                }
+            }
+
+            // Onboarding Workflow Initiation
+            [HttpPost("onboarding/initiate")]
+            public async Task<ActionResult<OnboardingWorkflowDto>> InitiateOnboarding([FromBody] OnboardingRequestDto requestDto)
+            {
+                try
+                {
+                    var customerId = GetCustomerIdFromClaims();
+                    var workflow = await _profileService.InitiateOnboardingWorkflowAsync(requestDto, customerId);
+                    return Ok(workflow);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error initiating onboarding workflow");
+                    return StatusCode(500, "An error occurred while initiating onboarding workflow");
+                }
+            }
 
         [HttpPut]
         public async Task<ActionResult<ClientPortalProfile>> UpdateClientProfile([FromBody] UpdateProfileDto profileDto)
