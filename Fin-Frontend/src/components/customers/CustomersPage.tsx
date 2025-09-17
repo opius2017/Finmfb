@@ -45,12 +45,28 @@ const CustomersPage: React.FC = () => {
     );
   }
 
+  const getCustomerFullName = (customer: Customer) => {
+    if (customer.companyName) return customer.companyName;
+    return `${customer.firstName} ${customer.lastName}`.trim();
+  };
+
+  const getStatusText = (status: number) => {
+    switch (status) {
+      case 1: return 'active';
+      case 2: return 'inactive';
+      case 3: return 'suspended';
+      default: return 'unknown';
+    }
+  };
+
   const filteredCustomers = data?.customers?.filter((customer) => {
-    const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const fullName = getCustomerFullName(customer);
+    const matchesSearch = fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
                          customer.customerNumber.includes(searchTerm);
     
-    const matchesFilter = filterStatus === 'all' || customer.status.toLowerCase() === filterStatus;
+    const statusText = getStatusText(customer.status);
+    const matchesFilter = filterStatus === 'all' || statusText === filterStatus;
     
     return matchesSearch && matchesFilter;
   }) || [];
@@ -68,10 +84,22 @@ const CustomersPage: React.FC = () => {
     }
   };
 
-  const getCustomerTypeColor = (type: string) => {
-    return type === 'Individual' 
-      ? 'bg-blue-100 text-blue-800'
-      : 'bg-purple-100 text-purple-800';
+  const getCustomerTypeColor = (type: number) => {
+    switch (type) {
+      case 1: return 'bg-blue-100 text-blue-800'; // Individual
+      case 2: return 'bg-purple-100 text-purple-800'; // Business
+      case 3: return 'bg-orange-100 text-orange-800'; // Corporate
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getCustomerTypeText = (type: number) => {
+    switch (type) {
+      case 1: return 'Individual';
+      case 2: return 'Business';
+      case 3: return 'Corporate';
+      default: return 'Unknown';
+    }
   };
 
   return (
@@ -177,12 +205,12 @@ const CustomersPage: React.FC = () => {
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center">
                         <span className="text-white font-medium text-sm">
-                          {customer.name.split(' ').map(n => n[0]).join('')}
+                          {getCustomerFullName(customer).split(' ').map(n => n[0]).join('')}
                         </span>
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {customer.name}
+                          {getCustomerFullName(customer)}
                         </div>
                         <div className="text-sm text-gray-500">
                           {customer.email}
@@ -197,7 +225,7 @@ const CustomersPage: React.FC = () => {
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       getCustomerTypeColor(customer.customerType)
                     }`}>
-                      {customer.customerType}
+                      {getCustomerTypeText(customer.customerType)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -205,9 +233,9 @@ const CustomersPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                      getStatusColor(customer.status)
+                      getStatusColor(getStatusText(customer.status))
                     }`}>
-                      {customer.status}
+                      {getStatusText(customer.status)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

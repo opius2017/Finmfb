@@ -5,13 +5,15 @@ import toast from 'react-hot-toast';
 import { useValidateBackupCodeMutation } from '../../services/authApi';
 
 interface BackupCodeRecoveryProps {
-  userId: string;
+  mfaToken: string;
+  email: string;
   onReturn: () => void;
-  onSuccess: () => void;
+  onSuccess: (token: string) => void;
 }
 
 const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({ 
-  userId,
+  mfaToken,
+  email,
   onReturn,
   onSuccess 
 }) => {
@@ -26,12 +28,12 @@ const BackupCodeRecovery: React.FC<BackupCodeRecoveryProps> = ({
     }
     try {
       const response = await validateBackupCode({
-        userId,
+        mfaToken,
         backupCode: backupCode.trim().toUpperCase(),
       }).unwrap();
-      if (response.success && response.data) {
+      if (response.success) {
         toast.success('Backup code validated successfully');
-        onSuccess();
+        onSuccess(response.data?.token || response.token || '');
       } else {
         toast.error('Invalid backup code. Please try again.');
       }
