@@ -1,5 +1,6 @@
 using FinTech.Application.Interfaces.Loans;
 using FinTech.Application.Interfaces.Repositories.Loans;
+using FinTech.Application.Interfaces.Services.Loans;
 using FinTech.Application.Services.Loans;
 using FinTech.Infrastructure.Repositories.Loans;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ namespace FinTech.Application
             services.AddScoped<ILoanService, LoanService>();
             services.AddScoped<ILoanDocumentService, LoanDocumentService>();
             services.AddScoped<ILoanCollectionService, LoanCollectionService>();
+            services.AddScoped<ILoanCollateralService, LoanCollateralService>();
+            services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
             
             // Register repositories
             services.AddScoped<ILoanApplicationRepository, LoanApplicationRepository>();
@@ -27,6 +30,8 @@ namespace FinTech.Application
             services.AddScoped<ILoanCollateralRepository, LoanCollateralRepository>();
             services.AddScoped<ILoanGuarantorRepository, LoanGuarantorRepository>();
             services.AddScoped<ILoanCollectionRepository, LoanCollectionRepository>();
+            services.AddScoped<ILoanFeeRepository, LoanFeeRepository>();
+            services.AddScoped<ILoanCreditCheckRepository, LoanCreditCheckRepository>();
             
             return services;
         }
