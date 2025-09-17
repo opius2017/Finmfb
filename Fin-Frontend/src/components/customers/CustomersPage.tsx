@@ -28,6 +28,33 @@ const CustomersPage: React.FC = () => {
     limit: ITEMS_PER_PAGE,
   });
 
+  // Helper function to get customer full name
+  const getCustomerName = (customer: Customer) => {
+    if (customer.companyName) return customer.companyName;
+    return `${customer.firstName} ${customer.lastName}`.trim();
+  };
+
+  // Helper function to convert customer type number to string
+  const getCustomerTypeString = (customerType: number) => {
+    switch (customerType) {
+      case 1: return 'Individual';
+      case 2: return 'Business';
+      case 3: return 'Corporate';
+      default: return 'Unknown';
+    }
+  };
+
+  // Helper function to convert status number to string
+  const getStatusString = (status: number) => {
+    switch (status) {
+      case 1: return 'Active';
+      case 2: return 'Inactive';
+      case 3: return 'Suspended';
+      case 4: return 'Closed';
+      default: return 'Unknown';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-6">
