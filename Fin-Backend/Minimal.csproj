@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>FinTech</RootNamespace>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="src/**" />
+    <None Remove="Application/**" />
+    <None Remove="Domain/**" />
+    <None Remove="Infrastructure/**" />
+    <None Remove="Core/**" />
+    <None Remove="Examples/**" />
+    <None Remove="Controllers/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="MinimalProgram.cs" />
+  </ItemGroup>
+
+</Project>
