@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/runner/work/Finmfb/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {}
+    "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {}
   },
   "projects": {
-    "/home/runner/work/Finmfb/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {
+    "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/runner/work/Finmfb/Finmfb/Fin-Backend/FinTech.WebAPI.csproj",
+        "projectUniqueName": "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj",
         "projectName": "FinTech.WebAPI",
-        "projectPath": "/home/runner/work/Finmfb/Finmfb/Fin-Backend/FinTech.WebAPI.csproj",
-        "packagesPath": "/home/runner/.nuget/packages/",
-        "outputPath": "/home/runner/work/Finmfb/Finmfb/Fin-Backend/obj/",
+        "projectPath": "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj",
+        "packagesPath": "/home/codespace/.nuget/packages/",
+        "outputPath": "/workspaces/Finmfb/Fin-Backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/runner/.nuget/NuGet/NuGet.Config"
+          "/home/codespace/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -102,7 +107,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.119/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.412/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

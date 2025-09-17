@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FinTech.WebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+06ebb91f0a5440b072e879e1a466fdc9815d5bc4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f324b9ca335bad6506508617d2522b457be33833")]
 [assembly: System.Reflection.AssemblyProductAttribute("FinTech.WebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FinTech.WebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

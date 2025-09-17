@@ -26,7 +26,17 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "noErrorTruncation": true,
+    "exactOptionalPropertyTypes": false,
+    "useUnknownInCatchVariables": false,
+    "allowUnreachableCode": true,
+    "allowUnusedLabels": true,
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": false,
+    "noImplicitReturns": false
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
