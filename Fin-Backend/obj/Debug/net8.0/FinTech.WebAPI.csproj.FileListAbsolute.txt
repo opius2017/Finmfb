@@ -302,3 +302,4 @@
 /workspaces/Finmfb/Fin-Backend/obj/Debug/net8.0/FinTech.WebAPI.pdb
 /workspaces/Finmfb/Fin-Backend/obj/Debug/net8.0/FinTech.WebAPI.genruntimeconfig.cache
 /workspaces/Finmfb/Fin-Backend/obj/Debug/net8.0/ref/FinTech.WebAPI.dll
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/bin/Debug/net8.0/Microsoft.EntityFrameworkCore.InMemory.dll
