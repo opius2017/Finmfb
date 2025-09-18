@@ -147,6 +147,28 @@ app.MapGet("/api/dashboard", () =>
 try
 {
     Log.Information("Starting FinTech Web API");
+    
+    // Seed test users in Development environment
+    if (app.Environment.IsDevelopment())
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<FinTech.Infrastructure.Data.ApplicationDbContext>();
+            
+            try
+            {
+                Log.Information("Seeding Nigerian test users");
+                await FinTech.Infrastructure.Data.NigerianTestUserSeeder.SeedNigerianTestUsersAsync(context);
+                Log.Information("Nigerian test users seeded successfully");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occurred while seeding the database with test users");
+            }
+        }
+    }
+    
     app.Run();
 }
 catch (Exception ex)
