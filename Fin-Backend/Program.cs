@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Serilog;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +28,15 @@ builder.Host.UseSerilog();
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Configure ASP.NET Identity
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 // Add Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -154,12 +170,71 @@ try
         using (var scope = app.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
-            var context = services.GetRequiredService<FinTech.Infrastructure.Data.ApplicationDbContext>();
+            var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             
             try
             {
                 Log.Information("Seeding Nigerian test users");
-                await FinTech.Infrastructure.Data.NigerianTestUserSeeder.SeedNigerianTestUsersAsync(context);
+                
+                // Create roles if they don't exist
+                if (!roleManager.RoleExistsAsync("Admin").Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole("Admin")).Wait();
+                }
+                
+                if (!roleManager.RoleExistsAsync("Staff").Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole("Staff")).Wait();
+                }
+                
+                if (!roleManager.RoleExistsAsync("User").Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole("User")).Wait();
+                }
+                
+                // Create admin user
+                var adminUser = new IdentityUser
+                {
+                    UserName = "admin@finmfb.com.ng",
+                    Email = "admin@finmfb.com.ng",
+                    EmailConfirmed = true
+                };
+                
+                if (userManager.FindByEmailAsync(adminUser.Email).Result == null)
+                {
+                    userManager.CreateAsync(adminUser, "Admin@123").Wait();
+                    userManager.AddToRoleAsync(adminUser, "Admin").Wait();
+                }
+                
+                // Create staff user
+                var staffUser = new IdentityUser
+                {
+                    UserName = "staff@finmfb.com.ng",
+                    Email = "staff@finmfb.com.ng",
+                    EmailConfirmed = true
+                };
+                
+                if (userManager.FindByEmailAsync(staffUser.Email).Result == null)
+                {
+                    userManager.CreateAsync(staffUser, "Staff@123").Wait();
+                    userManager.AddToRoleAsync(staffUser, "Staff").Wait();
+                }
+                
+                // Create regular user
+                var regularUser = new IdentityUser
+                {
+                    UserName = "user@finmfb.com.ng",
+                    Email = "user@finmfb.com.ng",
+                    EmailConfirmed = true
+                };
+                
+                if (userManager.FindByEmailAsync(regularUser.Email).Result == null)
+                {
+                    userManager.CreateAsync(regularUser, "User@123").Wait();
+                    userManager.AddToRoleAsync(regularUser, "User").Wait();
+                }
+                
                 Log.Information("Nigerian test users seeded successfully");
             }
             catch (Exception ex)
@@ -181,3 +256,12 @@ finally
 }
 
 public record LoginRequest(string Email, string Password);
+
+// DbContext for Identity
+public class ApplicationDbContext : IdentityDbContext
+{
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
+}
