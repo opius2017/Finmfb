@@ -17,18 +17,17 @@ namespace Fin_Backend.Infrastructure.Resilience
         public static IServiceCollection AddResiliencePolicies(this IServiceCollection services)
         {
             // Define a retry policy with exponential backoff
-            static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+            static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(ILogger logger, int retryCount = 3)
             {
                 return HttpPolicyExtensions
                     .HandleTransientHttpError() // HttpRequestException, 5XX and 408 status codes
                     .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests) // 429 status code
                     .WaitAndRetryAsync(
-                        retryCount: 3,
+                        retryCount: retryCount,
                         sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                         onRetry: (outcome, timespan, retryAttempt, context) =>
                         {
                             // Log retry attempts
-                            var logger = context.GetLogger();
                             if (logger != null)
                             {
                                 logger.LogWarning("Retrying request {RequestUri} due to {Reason}. Attempt {Attempt}",
@@ -40,17 +39,16 @@ namespace Fin_Backend.Infrastructure.Resilience
             }
 
             // Define a circuit breaker policy
-            static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+            static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy(ILogger logger, int exceptionsAllowedBeforeBreaking = 5)
             {
                 return HttpPolicyExtensions
                     .HandleTransientHttpError() // HttpRequestException, 5XX and 408 status codes
                     .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.TooManyRequests) // 429 status code
                     .CircuitBreakerAsync(
-                        handledEventsAllowedBeforeBreaking: 5,
+                        handledEventsAllowedBeforeBreaking: exceptionsAllowedBeforeBreaking,
                         durationOfBreak: TimeSpan.FromSeconds(30),
                         onBreak: (outcome, timespan, context) =>
                         {
-                            var logger = context.GetLogger();
                             if (logger != null)
                             {
                                 logger.LogWarning("Circuit breaker opened for {Duration}ms due to {Reason}",
@@ -60,7 +58,6 @@ namespace Fin_Backend.Infrastructure.Resilience
                         },
                         onReset: (context) =>
                         {
-                            var logger = context.GetLogger();
                             if (logger != null)
                             {
                                 logger.LogInformation("Circuit breaker reset");
@@ -68,7 +65,6 @@ namespace Fin_Backend.Infrastructure.Resilience
                         },
                         onHalfOpen: (context) =>
                         {
-                            var logger = context.GetLogger();
                             if (logger != null)
                             {
                                 logger.LogInformation("Circuit breaker half-open");

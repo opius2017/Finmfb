@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using FinTech.Application.Interfaces.Services;
 using FinTech.Application.Services.Integration;
 using System.Collections.Generic;
+using FinTech.Application.Interfaces.Integration;
 
 namespace FinTech.Infrastructure.Services.Integration
 {
@@ -277,6 +278,31 @@ namespace FinTech.Infrastructure.Services.Integration
                 _logger.LogError(ex, "Error processing loan fee charge for loan {LoanId}", loanId);
                 throw;
             }
+        }
+
+        Task ILoanAccountingIntegrationService.ProcessLoanDisbursementAsync(LoanAccount loanAccount, LoanTransaction transaction, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ILoanAccountingIntegrationService.ProcessLoanRepaymentAsync(LoanAccount loanAccount, LoanTransaction transaction, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ILoanAccountingIntegrationService.ProcessInterestAccrualAsync(IEnumerable<LoanAccount> loanAccounts, DateTime accrualDate, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ILoanAccountingIntegrationService.ProcessLoanWriteOffAsync(LoanAccount loanAccount, decimal writeOffAmount, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ILoanAccountingIntegrationService.ProcessLoanFeeChargeAsync(LoanAccount loanAccount, decimal feeAmount, string feeType, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,3 +1,4 @@
+using FinTech.Application.Interfaces.Integration;
 using FinTech.Application.Services;
 using FinTech.Domain.Events.FixedAssets;
 using Microsoft.Extensions.Logging;

@@ -1,17 +1,18 @@
+using FinTech.Application.Services;
+using FinTech.Domain.Entities.ClientPortal;
+using FinTech.Application.DTOs.ClientPortal;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
-using FinTech.Application.Services;
-using FinTech.Application.DTOs.ClientPortal;
-using FinTech.Domain.Entities.ClientPortal;
-using FinTech.Domain.Entities.Security;
-using System.Security.Claims;
 using System.Linq;
+using System.Threading.Tasks;
+using FinTech.Domain.Entities.Customers;
+using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using FinTech.Application.DTOs.Common;
 
 namespace FinTech.WebAPI.Controllers
 {

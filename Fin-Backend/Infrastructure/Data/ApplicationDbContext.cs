@@ -130,7 +130,7 @@ namespace FinTech.Infrastructure.Data
         public DbSet<PayrollEntry> PayrollEntries { get; set; }
 
         // Security & Audit
-        public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<FinTech.Domain.Entities.Security.AuditLog> AuditLogs { get; set; }
         public DbSet<MakerCheckerTransaction> MakerCheckerTransactions { get; set; }
         public DbSet<ResourcePermission> ResourcePermissions { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
@@ -140,8 +140,8 @@ namespace FinTech.Infrastructure.Data
         public DbSet<DataAccessLog> DataAccessLogs { get; set; }
         
         // Domain Events Tracking
-        public DbSet<DomainEventRecord> DomainEventRecords { get; set; }
-        public DbSet<OutboxMessage> OutboxMessages { get; set; }
+        public DbSet<FinTech.Infrastructure.Data.Events.DomainEventRecord> DomainEventRecords { get; set; }
+        public DbSet<FinTech.Infrastructure.Data.Messaging.OutboxMessage> OutboxMessages { get; set; }
         
         // Integration Events Tracking
         public DbSet<IntegrationEventOutboxItem> IntegrationEventOutbox { get; set; }
@@ -179,8 +179,8 @@ namespace FinTech.Infrastructure.Data
         public DbSet<MfaBackupCode> MfaBackupCodes { get; set; }
         public DbSet<MfaChallenge> MfaChallenges { get; set; }
         public DbSet<TrustedDevice> TrustedDevices { get; set; }
-        public DbSet<SecurityActivity> SecurityActivities { get; set; }
-        public DbSet<SecurityPreferences> SecurityPreferences { get; set; }
+        public DbSet<FinTech.Domain.Entities.ClientPortal.SecurityActivity> SecurityActivities { get; set; }
+        public DbSet<FinTech.Domain.Entities.ClientPortal.SecurityPreferences> SecurityPreferences { get; set; }
 
         // Client Portal
         public DbSet<ClientPortalProfile> ClientPortalProfiles { get; set; }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using FinTech.Core.Application.Common.Settings;
+using FinTech.Application.Settings;
 
 namespace FinTech.Core.Application.Services.Integrations;
 

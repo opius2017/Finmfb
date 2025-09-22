@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using FinTech.Application.Interfaces.Services;
 using FinTech.Application.Services.Integration;
 using System.Collections.Generic;
+using FinTech.Application.Interfaces.Integration;
 
 namespace FinTech.Infrastructure.Services.Integration
 {
@@ -312,6 +313,21 @@ namespace FinTech.Infrastructure.Services.Integration
                 _logger.LogError(ex, "Error processing payroll expense accrual for {ExpenseType}", expenseType);
                 throw;
             }
+        }
+
+        public Task ProcessPayrollRunAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ProcessPayrollTaxesAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ProcessEmployeeBenefitsAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }
