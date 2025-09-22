@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using FinTech.Application.DTOs.Common;
+using FinTech.Application.Common;
 
 namespace FinTech.WebAPI.Controllers
 {

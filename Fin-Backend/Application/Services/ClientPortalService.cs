@@ -6,6 +6,8 @@ using FinTech.Domain.Entities.ClientPortal;
 using FinTech.Domain.Entities.Customers;
 using FinTech.Domain.Entities.Identity;
 using FinTech.Application.Common.Interfaces;
+using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Application.Common.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

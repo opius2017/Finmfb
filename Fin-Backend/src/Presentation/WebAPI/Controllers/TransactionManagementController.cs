@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;                return StatusCode(500, BaseResponse<TransactionSearchResultDto>.Failure($"An error occurred while searching for transactions. {ex.Message}"));ng Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FinTech.Application.DTOs.Common;
 using FinTech.Application.DTOs.ClientPortal;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using AutoMapper;
 using System.Security.Claims;
 using System.Linq;
+using FinTech.Application.Common;
 
 namespace FinTech.WebAPI.Controllers
 {
@@ -51,11 +51,7 @@ namespace FinTech.WebAPI.Controllers
                     var accounts = await _accountService.GetClientAccountsAsync(customerId);
                     if (!accounts.Any(a => a.AccountNumber == searchDto.AccountNumber))
                     {
-                        return BadRequest(new BaseResponse<TransactionSearchResultDto>
-                        {
-                            Success = false,
-                            Message = "Account not found or does not belong to the customer"
-                        });
+                        return BadRequest(BaseResponse<TransactionSearchResultDto>.Failure("Account not found or does not belong to the customer"));
                     }
                 }
 
@@ -71,19 +67,11 @@ namespace FinTech.WebAPI.Controllers
                     TotalPages = (int)Math.Ceiling(totalCount / (double)searchDto.PageSize)
                 };
 
-                return Ok(new BaseResponse<TransactionSearchResultDto>
-                {
-                    Success = true,
-                    Data = result
-                });
+                return Ok(BaseResponse<TransactionSearchResultDto>.Success(result));
             }
             catch (UnauthorizedAccessException)
             {
-                return BadRequest(new BaseResponse<TransactionSearchResultDto>
-                {
-                    Success = false,
-                    Message = "Account not found or does not belong to the customer"
-                });
+                return BadRequest(BaseResponse<TransactionSearchResultDto>.Failure("Account not found or does not belong to the customer"));
             }
             catch (Exception ex)
             {
