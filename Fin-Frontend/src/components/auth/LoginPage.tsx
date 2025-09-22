@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Building2, Eye, EyeOff, Loader2, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Logo from '../common/Logo';
 import { 
   useLoginMutation, 
-  useVerifyMfaLoginMutation,
-  useVerifyBackupCodeLoginMutation 
+  useVerifyMfaLoginMutation
 } from '../../services/authApi';
 import { loginSuccess, mfaRequired as setMfaRequired } from '../../store/slices/authSlice';
 import MFAChallenge from './MFAChallenge';
@@ -21,8 +20,7 @@ const LoginPage: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const [login, { isLoading }] = useLoginMutation();
-  const [verifyMfa, { isLoading: isVerifyingMfa }] = useVerifyMfaLoginMutation();
-  const [verifyBackupCode, { isLoading: isVerifyingBackupCode }] = useVerifyBackupCodeLoginMutation();
+  const [verifyMfa] = useVerifyMfaLoginMutation();
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,7 +65,7 @@ const LoginPage: React.FC = () => {
           }));
           
           setShowMfaPrompt(true);
-          toast.info('Please enter your verification code to continue');
+          toast('Please enter your verification code to continue');
           return;
         }
         
@@ -127,40 +125,40 @@ const LoginPage: React.FC = () => {
   };
   
   // Handle backup code verification
-  const handleVerifyBackupCode = async (backupCode: string): Promise<boolean> => {
-    if (!mfaInfo) return false;
-    
-    try {
-      const response = await verifyBackupCode({
-        userId: mfaInfo.userId,
-        backupCode,
-        rememberDevice: rememberMe
-      }).unwrap();
-      
-      if (response.success && response.data) {
-        // Store user authentication in Redux
-        dispatch(loginSuccess({
-          token: response.data.token!,
-          userId: response.data.userId,
-          username: response.data.username,
-          email: response.data.email,
-          roles: response.data.roles || []
-        }));
-        
-        // Redirect to dashboard after successful verification
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 1500);
-        
-        return true;
-      }
-      
-      return false;
-    } catch (error) {
-      console.error('Backup code verification error:', error);
-      return false;
-    }
-  };
+  // const handleVerifyBackupCode = async (backupCode: string): Promise<boolean> => {
+  //   if (!mfaInfo) return false;
+  //   
+  //   try {
+  //     const response = await verifyBackupCode({
+  //       userId: mfaInfo.userId,
+  //       backupCode,
+  //       rememberDevice: rememberMe
+  //     }).unwrap();
+  //     
+  //     if (response.success && response.data) {
+  //       // Store user authentication in Redux
+  //       dispatch(loginSuccess({
+  //         token: response.data.token!,
+  //         userId: response.data.userId,
+  //         username: response.data.username,
+  //         email: response.data.email,
+  //         roles: response.data.roles || []
+  //       }));
+  //       
+  //       // Redirect to dashboard after successful verification
+  //       setTimeout(() => {
+  //         navigate('/dashboard');
+  //       }, 1500);
+  //       
+  //       return true;
+  //     }
+  //     
+  //     return false;
+  //   } catch (error) {
+  //     console.error('Backup code verification error:', error);
+  //     return false;
+  //   }
+  // };
   
   // Switch between MFA verification and backup code recovery
   const switchToBackupCode = () => {
@@ -319,8 +317,7 @@ const LoginPage: React.FC = () => {
       {/* Backup Code Recovery Modal */}
       {showBackupCodePrompt && mfaInfo && (
         <BackupCodeRecovery
-          mfaToken={mfaInfo.challengeId}
-          email={mfaInfo.email}
+          userId={mfaInfo.userId}
           onReturn={switchToMfa}
           onSuccess={(token) => {
             dispatch(loginSuccess({

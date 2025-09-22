@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Briefcase,
-  Plus,
   Search,
   Filter,
   Download,

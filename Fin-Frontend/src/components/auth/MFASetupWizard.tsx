@@ -12,7 +12,7 @@ import {
   Printer,
   Loader2
 } from 'lucide-react';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import toast from 'react-hot-toast';
 
 interface MFASetupWizardProps {
@@ -36,7 +36,6 @@ const MFASetupWizard: React.FC<MFASetupWizardProps> = ({
   const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [verificationCode, setVerificationCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [hasVerified, setHasVerified] = useState(false);
   const [hasCopiedSecret, setHasCopiedSecret] = useState(false);
   const [hasSavedBackupCodes, setHasSavedBackupCodes] = useState(false);
   
@@ -79,7 +78,6 @@ const MFASetupWizard: React.FC<MFASetupWizardProps> = ({
     try {
       const isVerified = await onVerifyMfaSetup(verificationCode);
       if (isVerified) {
-        setHasVerified(true);
         setCurrentStep(4);
         toast.success('MFA verification successful');
       } else {
@@ -147,7 +145,7 @@ const MFASetupWizard: React.FC<MFASetupWizardProps> = ({
   const renderStepIndicator = () => {
     return (
       <div className="flex items-center justify-center mb-6">
-        {steps.map((step, index) => (
+        {steps.map((_, index) => (
           <React.Fragment key={index}>
             <div 
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -250,12 +248,11 @@ const MFASetupWizard: React.FC<MFASetupWizardProps> = ({
             ) : (
               <>
                 <div className="bg-white p-3 rounded-lg shadow-sm mb-3">
-                  <QRCode 
+                  <QRCodeSVG 
                     value={qrCodeUrl || 'https://example.com'} 
                     size={180} 
                     level="H"
                     includeMargin={true}
-                    renderAs="svg"
                   />
                 </div>
                 <p className="text-sm text-gray-500">Scan with your authenticator app</p>
