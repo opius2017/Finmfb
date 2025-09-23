@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {}
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {}
   },
   "projects": {
-    "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj",
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj",
         "projectName": "FinTech.Application",
-        "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj",
         "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\obj\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config"

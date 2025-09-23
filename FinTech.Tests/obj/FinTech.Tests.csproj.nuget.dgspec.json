@@ -1,7 +1,7 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj": {}
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj": {}
   },
   "projects": {
     "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj": {
@@ -88,14 +88,14 @@
         }
       }
     },
-    "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj": {
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj",
         "projectName": "FinTech.Tests",
-        "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj",
         "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\obj\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config"

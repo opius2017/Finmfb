@@ -528,7 +528,7 @@ namespace FinTech.Domain.Entities.Authentication
     /// <summary>
     /// Extended the ASP.NET Identity User class to add additional fields
     /// </summary>
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<Guid>
     {
         /// <summary>
         /// Gets or sets the first name
