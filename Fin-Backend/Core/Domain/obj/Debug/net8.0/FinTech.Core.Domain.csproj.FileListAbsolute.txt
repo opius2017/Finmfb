@@ -10,3 +10,4 @@ c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\refint\FinTech.Core.Domain.dll
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.pdb
 C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\ref\FinTech.Core.Domain.dll
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.csproj.AssemblyReference.cache

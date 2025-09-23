@@ -320,6 +320,9 @@
       "FinTech.Core.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.0"
+        },
         "compile": {
           "bin/placeholder/FinTech.Core.Domain.dll": {}
         },
@@ -832,11 +835,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
+      "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
       "projectName": "FinTech.Domain",
-      "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
+      "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
       "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\obj\\",
+      "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config"

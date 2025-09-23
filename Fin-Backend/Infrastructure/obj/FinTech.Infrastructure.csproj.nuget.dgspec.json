@@ -1,7 +1,7 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {}
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {}
   },
   "projects": {
     "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
-                "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
               }
             }
           }
@@ -112,6 +112,12 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -132,14 +138,14 @@
         }
       }
     },
-    "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
         "projectName": "FinTech.Domain",
-        "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj",
         "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\obj\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -201,14 +207,14 @@
         }
       }
     },
-    "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
         "projectName": "FinTech.Infrastructure",
-        "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -229,8 +235,8 @@
               "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
                 "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj"
               },
-              "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
-                "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
               }
             }
           }

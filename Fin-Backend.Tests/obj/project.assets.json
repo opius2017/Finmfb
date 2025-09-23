@@ -14133,11 +14133,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
       "projectName": "Fin-Backend.Tests",
-      "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
+      "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
       "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\obj\\",
+      "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config"
