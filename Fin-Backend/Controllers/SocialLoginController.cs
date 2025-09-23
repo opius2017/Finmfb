@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Social;
 using FinTech.Application.DTOs.Common;
 using FinTech.Application.Interfaces;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.WebAPI.Controllers
 {

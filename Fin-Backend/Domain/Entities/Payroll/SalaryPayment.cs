@@ -1,34 +1,29 @@
 using System;
 using FinTech.Domain.Common;
 using FinTech.Domain.Events.Payroll;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Payroll
 {
-    public class SalaryPayment : BaseEntity
+    public class SalaryPayment : AggregateRoot
     {
-        public int PayrollPeriodId { get; private set; }
-        public int EmployeeId { get; private set; }
-        public decimal GrossAmount { get; private set; }
-        public decimal TaxAmount { get; private set; }
-        public decimal PensionAmount { get; private set; }
-        public decimal OtherDeductions { get; private set; }
-        public decimal NetAmount { get; private set; }
-        public string Reference { get; private set; }
-        public string Status { get; private set; }
-        public DateTime PaymentDate { get; private set; }
-        
-        private SalaryPayment() { } // For EF Core
+        public int EmployeeId { get; set; }
+        public decimal GrossAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal PensionAmount { get; set; }
+        public decimal OtherDeductions { get; set; }
+        public decimal NetAmount { get; set; }
+        public string Reference { get; set; }
+        public string Status { get; set; }
 
-        public SalaryPayment(
-            int payrollPeriodId,
-            int employeeId,
-            decimal grossAmount,
-            decimal taxAmount,
-            decimal pensionAmount,
-            decimal otherDeductions,
-            string reference)
+        private SalaryPayment() 
         {
-            PayrollPeriodId = payrollPeriodId;
+            Reference = string.Empty;
+            Status = string.Empty;
+        } // For EF Core
+
+        public SalaryPayment(int employeeId, decimal grossAmount, decimal taxAmount, decimal pensionAmount, decimal otherDeductions, string reference, string payPeriod)
+        {
             EmployeeId = employeeId;
             GrossAmount = grossAmount;
             TaxAmount = taxAmount;
@@ -36,35 +31,18 @@ namespace FinTech.Domain.Entities.Payroll
             OtherDeductions = otherDeductions;
             NetAmount = grossAmount - taxAmount - pensionAmount - otherDeductions;
             Reference = reference;
-            Status = "PENDING";
-        }
+            Status = "Pending";
 
-        public void Process(string description)
-        {
-            if (Status != "PENDING")
-                throw new InvalidOperationException("Salary payment must be in PENDING status to process");
-
-            Status = "PROCESSED";
-            PaymentDate = DateTime.UtcNow;
-
-            // Raise domain event
             AddDomainEvent(new SalaryPaymentProcessedEvent(
-                EmployeeId,
-                GrossAmount,
-                TaxAmount,
-                PensionAmount,
-                OtherDeductions,
-                "MONTHLY", // Assuming monthly pay period for simplicity
-                Reference,
-                description));
-        }
-
-        public void Cancel()
-        {
-            if (Status != "PENDING")
-                throw new InvalidOperationException("Only pending salary payments can be cancelled");
-
-            Status = "CANCELLED";
+                employeeId,
+                grossAmount,
+                taxAmount,
+                pensionAmount,
+                otherDeductions,
+                payPeriod,
+                reference,
+                "Salary payment processed"
+                ));
         }
     }
 }

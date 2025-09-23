@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using FinTech.Domain.Common;
 using FinTech.Domain.Events.Loans;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Loans
 {
@@ -10,9 +11,9 @@ namespace FinTech.Domain.Entities.Loans
     /// </summary>
     public class LoanApplication : AuditableEntity, IHasDomainEvent
     {
-        public string Id { get; set; }
-        public string LoanProductId { get; set; }
-        public string CustomerId { get; set; }
+        public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
+        public int CustomerId { get; set; }
+        public int LoanProductId { get; set; }
         public string ApplicationNumber { get; set; }
         public decimal RequestedAmount { get; set; }
         public int RequestedTerm { get; set; }

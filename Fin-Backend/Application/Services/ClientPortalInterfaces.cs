@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FinTech.Application.DTOs.ClientPortal;
 using FinTech.Application.DTOs.Common;
 using FinTech.Application.Common;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.Application.Services
 {

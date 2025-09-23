@@ -1,6 +1,7 @@
 using System;
 using FinTech.Domain.Common;
 using FinTech.Domain.Events.Payroll;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Payroll
 {

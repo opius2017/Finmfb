@@ -2,38 +2,47 @@ using System;
 using System.Collections.Generic;
 using FinTech.Domain.Common;
 using FinTech.Domain.Events.Payroll;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Payroll
 {
-    public class PayrollPeriod : BaseEntity
+    public class PayrollPeriod : AggregateRoot
     {
-        public string Period { get; private set; }
-        public DateTime StartDate { get; private set; }
-        public DateTime EndDate { get; private set; }
-        public DateTime ProcessingDate { get; private set; }
-        public string Status { get; private set; }
-        public decimal TotalGross { get; private set; }
-        public decimal TotalTax { get; private set; }
-        public decimal TotalPension { get; private set; }
-        public decimal TotalOtherDeductions { get; private set; }
-        public decimal TotalNet { get; private set; }
-        public virtual ICollection<SalaryPayment> SalaryPayments { get; private set; } = new List<SalaryPayment>();
-        public virtual ICollection<PayrollTransaction> Transactions { get; private set; } = new List<PayrollTransaction>();
+        public string Period { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public bool IsPosted { get; set; }
+        public DateTime? PostedDate { get; set; }
+        public bool IsClosed { get; private set; }
+        public DateTime? ClosedDate { get; private set; }
+        public string Status { get; set; }
+        public decimal TotalGross { get; set; }
+        public decimal TotalTax { get; set; }
+        public decimal TotalPension { get; set; }
+        public decimal TotalOtherDeductions { get; set; }
+        public decimal TotalNet { get; set; }
+        public DateTime ProcessingDate { get; set; }
 
-        private PayrollPeriod() { } // For EF Core
+        private readonly List<SalaryPayment> _salaryPayments = new List<SalaryPayment>();
+        public IReadOnlyCollection<SalaryPayment> SalaryPayments => _salaryPayments.AsReadOnly();
 
-        public PayrollPeriod(string period, DateTime startDate, DateTime endDate, DateTime processingDate)
+        private readonly List<PayrollTransaction> _transactions = new List<PayrollTransaction>();
+        public IReadOnlyCollection<PayrollTransaction> Transactions => _transactions.AsReadOnly();
+
+
+        private PayrollPeriod() 
+        { 
+            Period = string.Empty;
+            Status = string.Empty;
+        } // For EF Core
+
+        public PayrollPeriod(string period, DateTime startDate, DateTime endDate)
         {
             Period = period;
             StartDate = startDate;
             EndDate = endDate;
-            ProcessingDate = processingDate;
-            Status = "PENDING";
-            TotalGross = 0;
-            TotalTax = 0;
-            TotalPension = 0;
-            TotalOtherDeductions = 0;
-            TotalNet = 0;
+            Status = "Open";
+            ProcessingDate = DateTime.Now;
         }
 
         public void ProcessPayroll()
@@ -54,17 +63,41 @@ namespace FinTech.Domain.Entities.Payroll
 
         public void AddSalaryPayment(SalaryPayment payment)
         {
-            if (Status != "PENDING" && Status != "PROCESSING")
-                throw new InvalidOperationException("Cannot add salary payments to a completed payroll");
-
-            SalaryPayments.Add(payment);
-
-            // Update totals
+            _salaryPayments.Add(payment);
             TotalGross += payment.GrossAmount;
             TotalTax += payment.TaxAmount;
             TotalPension += payment.PensionAmount;
             TotalOtherDeductions += payment.OtherDeductions;
             TotalNet += payment.NetAmount;
+        }
+
+        public void AddTransaction(PayrollTransaction transaction)
+        {
+            _transactions.Add(transaction);
+        }
+
+        public void Post()
+        {
+            if (Status != "COMPLETED")
+                throw new InvalidOperationException("Payroll must be COMPLETED to post");
+
+            if (IsPosted)
+                throw new InvalidOperationException("Payroll is already posted");
+
+            IsPosted = true;
+            PostedDate = DateTime.Now;
+        }
+
+        public void Close()
+        {
+            if (Status != "COMPLETED")
+                throw new InvalidOperationException("Payroll must be COMPLETED to close");
+
+            if (IsClosed)
+                throw new InvalidOperationException("Payroll is already closed");
+
+            IsClosed = true;
+            ClosedDate = DateTime.Now;
         }
 
         public void RemitTaxes(decimal amount, string taxType, string reference, string description)

@@ -27,5 +27,12 @@ namespace FinTech.Domain.Repositories.Accounting
         Task<FiscalYear> GetFiscalYearByDateAsync(
             System.DateTime date, 
             CancellationToken cancellationToken = default);
+
+        Task<FiscalYear> GetByCodeAsync(string fiscalYearCode, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<FiscalYear>> GetActiveFiscalYearsAsync(CancellationToken cancellationToken = default);
+        Task<FiscalYear> GetPreviousFiscalYearAsync(string currentFiscalYearId, CancellationToken cancellationToken = default);
+        Task<FiscalYear> GetNextFiscalYearAsync(string currentFiscalYearId, CancellationToken cancellationToken = default);
+        Task<bool> CanCloseFiscalYearAsync(string fiscalYearId, CancellationToken cancellationToken = default);
+        Task<string> GenerateFiscalYearCodeAsync(int year, CancellationToken cancellationToken = default);
     }
 }

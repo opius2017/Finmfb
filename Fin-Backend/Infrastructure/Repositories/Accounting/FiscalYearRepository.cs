@@ -37,6 +37,26 @@ namespace FinTech.Infrastructure.Repositories.Accounting
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
+        public async Task<IReadOnlyList<FiscalYear>> GetOpenFiscalYearsAsync(CancellationToken cancellationToken = default)
+        {
+            return await _context.FiscalYears
+                .Where(f => f.Status == FiscalYearStatus.Open)
+                .OrderByDescending(f => f.StartDate)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<bool> ExistsAsync(int year, CancellationToken cancellationToken = default)
+        {
+            return await _context.FiscalYears.AnyAsync(f => f.Year == year, cancellationToken);
+        }
+
+        public async Task<FiscalYear> GetFiscalYearByDateAsync(System.DateTime date, CancellationToken cancellationToken = default)
+        {
+            return await _context.FiscalYears
+                .Where(f => f.StartDate <= date && f.EndDate >= date)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<FiscalYear> GetByCodeAsync(string fiscalYearCode, CancellationToken cancellationToken = default)
         {
             return await _context.FiscalYears

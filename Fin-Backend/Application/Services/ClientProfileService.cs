@@ -16,6 +16,7 @@ using FinTech.Application.Services;
 using FinTech.WebAPI.Application.Common.Responses;
 using FinTech.WebAPI.Application.Common.Interfaces;
 using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.Application.Services
 {
@@ -103,13 +104,5 @@ namespace FinTech.Application.Services
         {
             throw new NotImplementedException();
         }
-    }
-
-    // Interface for file storage service
-    public interface IFileStorageService
-    {
-        Task<string> UploadFileAsync(byte[] fileContent, string fileName, string containerName);
-        Task<bool> DeleteFileAsync(string fileUrl);
-        Task<byte[]> DownloadFileAsync(string fileUrl);
     }
 }

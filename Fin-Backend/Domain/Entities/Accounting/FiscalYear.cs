@@ -9,9 +9,12 @@ namespace FinTech.Domain.Entities.Accounting
     /// </summary>
     public class FiscalYear : AggregateRoot
     {
+        public string Code { get; set; }
+        public string Name { get; set; }
         public int Year { get; private set; }
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
+        public FiscalYearStatus Status { get; set; }
         public bool IsClosed { get; private set; }
         public DateTime? ClosedDate { get; private set; }
         public string ClosedBy { get; private set; }
@@ -19,9 +22,16 @@ namespace FinTech.Domain.Entities.Accounting
         
         private List<FinancialPeriod> _periods = new List<FinancialPeriod>();
         public IReadOnlyCollection<FinancialPeriod> Periods => _periods.AsReadOnly();
+        public ICollection<FinancialPeriod> FinancialPeriods { get; set; }
         
         // Required by EF Core
-        private FiscalYear() { }
+        private FiscalYear() 
+        {
+            Code = string.Empty;
+            Name = string.Empty;
+            ClosedBy = string.Empty;
+            FinancialPeriods = new List<FinancialPeriod>();
+        }
         
         public FiscalYear(
             int year,
@@ -37,6 +47,10 @@ namespace FinTech.Domain.Entities.Accounting
             EndDate = endDate;
             IsClosed = false;
             IsCurrentYear = isCurrentYear;
+            Code = string.Empty;
+            Name = string.Empty;
+            ClosedBy = string.Empty;
+            FinancialPeriods = new List<FinancialPeriod>();
             
             AddDomainEvent(new FiscalYearCreatedEvent(Id, year, startDate, endDate));
         }
@@ -127,5 +141,12 @@ namespace FinTech.Domain.Entities.Accounting
             FiscalYearId = fiscalYearId;
             Year = year;
         }
+    }
+
+    public enum FiscalYearStatus
+    {
+        Draft,
+        Active,
+        Closed
     }
 }
