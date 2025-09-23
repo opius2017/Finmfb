@@ -10,6 +10,7 @@
     <ProjectReference Include="..\Application\FinTech.Application.csproj" />
     <ProjectReference Include="..\Domain\FinTech.Domain.csproj" />
     <ProjectReference Include="..\Core\Application\FinTech.Core.Application.csproj" />
+    <ProjectReference Include="..\Core\Domain\FinTech.Core.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

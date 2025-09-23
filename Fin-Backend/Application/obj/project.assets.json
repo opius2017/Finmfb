@@ -317,10 +317,21 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
+      "FinTech.Core.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/FinTech.Core.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FinTech.Core.Domain.dll": {}
+        }
+      },
       "FinTech.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "FinTech.Core.Domain": "1.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.0"
         },
         "compile": {
@@ -816,6 +827,11 @@
         "microsoft.extensions.primitives.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "FinTech.Core.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Core/Domain/FinTech.Core.Domain.csproj",
+      "msbuildProject": "../Core/Domain/FinTech.Core.Domain.csproj"
     },
     "FinTech.Domain/1.0.0": {
       "type": "project",

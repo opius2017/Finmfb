@@ -1839,10 +1839,21 @@
           "bin/placeholder/FinTech.Application.dll": {}
         }
       },
+      "FinTech.Core.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/FinTech.Core.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/FinTech.Core.Domain.dll": {}
+        }
+      },
       "FinTech.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "FinTech.Core.Domain": "1.0.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.0"
         },
         "compile": {
@@ -4699,6 +4710,11 @@
       "path": "../Application/FinTech.Application.csproj",
       "msbuildProject": "../Application/FinTech.Application.csproj"
     },
+    "FinTech.Core.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Core/Domain/FinTech.Core.Domain.csproj",
+      "msbuildProject": "../Core/Domain/FinTech.Core.Domain.csproj"
+    },
     "FinTech.Domain/1.0.0": {
       "type": "project",
       "path": "../Domain/FinTech.Domain.csproj",
@@ -4709,6 +4725,7 @@
     "net8.0": [
       "Azure.Storage.Blobs >= 12.19.1",
       "FinTech.Application >= 1.0.0",
+      "FinTech.Core.Domain >= 1.0.0",
       "FinTech.Domain >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 8.0.0",
@@ -4749,6 +4766,9 @@
           "projectReferences": {
             "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {
               "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj"
+            },
+            "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
+              "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj"
             },
             "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
               "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
