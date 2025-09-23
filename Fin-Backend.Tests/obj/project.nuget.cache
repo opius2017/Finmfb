@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PJ/tTofUfD0=",
+  "dgSpecHash": "nCENXEFhEVA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
+  "projectFilePath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\opius\\.nuget\\packages\\anyof\\0.3.0\\anyof.0.3.0.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\autofixture\\4.18.1\\autofixture.4.18.1.nupkg.sha512",

@@ -1,4 +1,4 @@
-using FinTech.Domain.Entities.Loans;
+using FinTech.Core.Domain.Entities.Loan;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
