@@ -36,6 +36,11 @@ using FinTech.Infrastructure.Data.Events;
 using FinTech.Infrastructure.Data.Messaging;
 using FinTech.Infrastructure.Messaging;
 using FinTech.Application.Common.Interfaces;
+using FinTech.Domain.Entities.AccountsPayable;
+using FinTech.Domain.Entities.AccountsReceivable;
+using FinTech.Domain.Entities.Inventory;
+using FinTech.Domain.Entities.Reporting;
+using FinTech.Domain.Entities.GeneralLedger;
 
 namespace FinTech.Infrastructure.Data
 {
@@ -43,20 +48,17 @@ namespace FinTech.Infrastructure.Data
     {
         private readonly IDomainEventService _domainEventService;
         private readonly ILogger<ApplicationDbContext> _logger;
-        private readonly TelemetryClient _telemetryClient;
         private readonly ICurrentUserService _currentUserService;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options, 
             IDomainEventService domainEventService = null,
             ILogger<ApplicationDbContext> logger = null,
-            TelemetryClient telemetryClient = null,
             ICurrentUserService currentUserService = null) 
             : base(options) 
         {
             _domainEventService = domainEventService;
             _logger = logger;
-            _telemetryClient = telemetryClient;
             _currentUserService = currentUserService;
         }
 
@@ -336,11 +338,6 @@ namespace FinTech.Infrastructure.Data
                 // Track database performance
                 stopwatch.Stop();
                 
-                if (_telemetryClient != null)
-                {
-                    _telemetryClient.TrackMetric("Database.SaveChanges.Duration", stopwatch.ElapsedMilliseconds);
-                    _telemetryClient.TrackMetric("Database.SaveChanges.EntitiesModified", result);
-                }
                 
                 if (stopwatch.ElapsedMilliseconds > 500)
                 {
@@ -351,19 +348,11 @@ namespace FinTech.Infrastructure.Data
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger?.LogError(ex, "Concurrency conflict detected during SaveChanges");
-                if (_telemetryClient != null)
-                {
-                    _telemetryClient.TrackException(ex);
-                }
                 throw;
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Error during SaveChanges");
-                if (_telemetryClient != null)
-                {
-                    _telemetryClient.TrackException(ex);
-                }
                 throw;
             }
 
@@ -538,16 +527,6 @@ namespace FinTech.Infrastructure.Data
                         
                         stopwatch.Stop();
                         
-                        // Track event processing performance
-                        if (_telemetryClient != null)
-                        {
-                            _telemetryClient.TrackMetric($"DomainEvent.{eventName}.ProcessingTime", stopwatch.ElapsedMilliseconds);
-                            _telemetryClient.TrackEvent($"DomainEvent.{eventName}.Processed", new Dictionary<string, string>
-                            {
-                                ["EntityType"] = entityType,
-                                ["EntityId"] = entity.Id.ToString()
-                            });
-                        }
                         
                         _logger?.LogInformation("Successfully dispatched domain event {EventName} for entity {EntityType} with ID {EntityId} in {ElapsedMs}ms",
                             eventName, entityType, entity.Id, stopwatch.ElapsedMilliseconds);
@@ -557,15 +536,6 @@ namespace FinTech.Infrastructure.Data
                         _logger?.LogError(ex, "Error publishing domain event {EventType} for entity {EntityType} with ID {EntityId}",
                             domainEvent.GetType().Name, entity.GetType().Name, entity.Id);
                             
-                        if (_telemetryClient != null)
-                        {
-                            _telemetryClient.TrackException(ex, new Dictionary<string, string>
-                            {
-                                ["EventType"] = domainEvent.GetType().Name,
-                                ["EntityType"] = entity.GetType().Name,
-                                ["EntityId"] = entity.Id.ToString()
-                            });
-                        }
                         
                         // We don't want to throw here to avoid transaction rollback
                         // Instead, log the error and continue

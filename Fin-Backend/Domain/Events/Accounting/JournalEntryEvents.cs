@@ -1,4 +1,4 @@
-using FinTech.Domain.Entities.Common;
+using FinTech.Domain.Common;
 using FinTech.Domain.Entities.Accounting;
 
 namespace YourNamespace
