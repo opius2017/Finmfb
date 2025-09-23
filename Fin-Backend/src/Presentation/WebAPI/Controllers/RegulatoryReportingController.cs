@@ -1,4 +1,5 @@
 using AutoMapper;
+using FinTech.Application.Common.Models;
 using FinTech.Core.Application.DTOs.Common;
 using FinTech.Core.Application.DTOs.RegulatoryReporting;
 using FinTech.Core.Application.Interfaces.Services;

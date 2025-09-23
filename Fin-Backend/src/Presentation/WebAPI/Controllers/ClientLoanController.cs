@@ -9,6 +9,7 @@ using FinTech.Application.DTOs.ClientPortal;
 using FinTech.Domain.Entities.Loans;
 using System.Security.Claims;
 using System.Linq;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.WebAPI.Controllers
 {

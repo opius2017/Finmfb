@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using FinTech.Domain.Common;
 using FinTech.Domain.Entities.Users;
 using FinTech.Domain.Entities.Identity;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.RegulatoryReporting
 {

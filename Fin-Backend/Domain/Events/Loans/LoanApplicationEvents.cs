@@ -1,5 +1,6 @@
 using System;
 using FinTech.Domain.Common;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Events.Loans
 {

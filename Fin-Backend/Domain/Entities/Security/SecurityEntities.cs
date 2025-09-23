@@ -1,6 +1,7 @@
 using System;
 using FinTech.Domain.Common;
 using FinTech.Infrastructure.Security.Authorization;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Security
 {

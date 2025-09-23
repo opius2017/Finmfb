@@ -1,5 +1,6 @@
 using System;
 using FinTech.Domain.Common;
+using FinTech.Domain.Entities.Common;
 using FinTech.Domain.Entities.Users;
 
 namespace FinTech.Domain.Entities.RegulatoryReporting

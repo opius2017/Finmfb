@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FinTech.Domain.Entities.Accounting;
+using FinTech.Domain.Entities.Common;
 using FinTech.Domain.Repositories;
 using FinTech.Domain.Repositories.Accounting;
 
@@ -71,7 +72,7 @@ namespace FinTech.Application.Services.Accounting
                     if (currentIsDebit == line.IsDebit)
                     {
                         accountUpdates[line.AccountId] = (account, 
-                            new Money(currentAmount.Amount + line.Amount.Amount, currentAmount.CurrencyCode), 
+                            Money.Create(currentAmount.Amount + line.Amount.Amount, currentAmount.Currency), 
                             currentIsDebit);
                     }
                     else
@@ -81,21 +82,21 @@ namespace FinTech.Application.Services.Accounting
                         {
                             // Current amount is larger, so direction stays the same but amount is reduced
                             accountUpdates[line.AccountId] = (account, 
-                                new Money(currentAmount.Amount - line.Amount.Amount, currentAmount.CurrencyCode), 
+                                Money.Create(currentAmount.Amount - line.Amount.Amount, currentAmount.Currency), 
                                 currentIsDebit);
                         }
                         else if (currentAmount.Amount < line.Amount.Amount)
                         {
                             // New amount is larger, so direction flips and amount is the difference
                             accountUpdates[line.AccountId] = (account, 
-                                new Money(line.Amount.Amount - currentAmount.Amount, currentAmount.CurrencyCode), 
+                                Money.Create(line.Amount.Amount - currentAmount.Amount, currentAmount.Currency), 
                                 line.IsDebit);
                         }
                         else
                         {
                             // Equal amounts in opposite directions - they cancel out
                             accountUpdates[line.AccountId] = (account, 
-                                new Money(0, currentAmount.CurrencyCode), 
+                                Money.Create(0, currentAmount.Currency), 
                                 currentIsDebit);
                         }
                     }
@@ -256,12 +257,12 @@ namespace FinTech.Application.Services.Accounting
                         {
                             Id = line.Id,
                             AccountId = line.AccountId,
-                            AccountNumber = line.Account?.AccountNumber,
-                            AccountName = line.Account?.AccountName,
+                            AccountNumber = line.Account?.AccountNumber ?? string.Empty,
+                            AccountName = line.Account?.AccountName ?? string.Empty,
                             Description = line.Description,
                             DebitAmount = line.IsDebit ? line.Amount.Amount : 0,
                             CreditAmount = !line.IsDebit ? line.Amount.Amount : 0,
-                            CurrencyCode = line.Amount.CurrencyCode
+                            CurrencyCode = line.Amount.Currency
                         })
                         .ToList()
                 };
@@ -276,39 +277,39 @@ namespace FinTech.Application.Services.Accounting
     // DTOs
     public class AccountBalanceDto
     {
-        public string AccountId { get; set; }
-        public string AccountNumber { get; set; }
-        public string AccountName { get; set; }
+        public string AccountId { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
+        public string AccountName { get; set; } = string.Empty;
         public decimal Balance { get; set; }
-        public string CurrencyCode { get; set; }
-        public string Classification { get; set; }
-        public string AccountType { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
+        public string Classification { get; set; } = string.Empty;
+        public string AccountType { get; set; } = string.Empty;
         public DateTime AsOfDate { get; set; }
     }
 
     public class JournalEntryDto
     {
-        public string Id { get; set; }
-        public string JournalEntryNumber { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string JournalEntryNumber { get; set; } = string.Empty;
         public DateTime EntryDate { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-        public string EntryType { get; set; }
-        public string Reference { get; set; }
-        public string SourceDocument { get; set; }
-        public string FinancialPeriodId { get; set; }
-        public List<JournalEntryLineDto> Lines { get; set; }
+        public string Description { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string EntryType { get; set; } = string.Empty;
+        public string Reference { get; set; } = string.Empty;
+        public string SourceDocument { get; set; } = string.Empty;
+        public string FinancialPeriodId { get; set; } = string.Empty;
+        public List<JournalEntryLineDto> Lines { get; set; } = new List<JournalEntryLineDto>();
     }
 
     public class JournalEntryLineDto
     {
-        public string Id { get; set; }
-        public string AccountId { get; set; }
-        public string AccountNumber { get; set; }
-        public string AccountName { get; set; }
-        public string Description { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string AccountId { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
+        public string AccountName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public decimal DebitAmount { get; set; }
         public decimal CreditAmount { get; set; }
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
     }
 }

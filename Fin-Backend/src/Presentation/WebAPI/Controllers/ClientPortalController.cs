@@ -11,6 +11,7 @@ using FinTech.Domain.Entities.ClientPortal;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.WebAPI.Controllers
 {
@@ -27,7 +28,6 @@ namespace FinTech.WebAPI.Controllers
             IClientPortalService clientPortalService,
             ILogger<ClientPortalController> logger,
             IMapper mapper)
-        // ...existing code...
         {
             _clientPortalService = clientPortalService;
             _logger = logger;
@@ -531,7 +531,7 @@ namespace FinTech.WebAPI.Controllers
             try
             {
                 var userId = GetCurrentUserId();
-                var profile = await _clientPortalService.GetClientProfileAsync(userId);
+                var profile = await _clientPortalService.GetClientPortalProfileAsync(userId);
 
                 if (profile == null)
                 {

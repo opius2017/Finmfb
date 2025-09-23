@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using SecurityActivityDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityActivityDto;
 using SecurityPreferencesDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityPreferencesDto;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.WebAPI.Controllers
 {

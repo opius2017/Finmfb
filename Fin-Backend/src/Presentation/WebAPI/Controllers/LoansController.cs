@@ -6,6 +6,7 @@ using FinTech.Core.Application.Services;
 using FinTech.Domain.Entities.Loans;
 using FinTech.Domain.Enums;
 using FinTech.Infrastructure.Data;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.Presentation.WebAPI.Controllers;
 

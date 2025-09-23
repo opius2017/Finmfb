@@ -1,4 +1,5 @@
 using System;
+using FinTech.Domain.Entities.Common;
 using FinTech.Domain.Common;
 
 namespace FinTech.Domain.Entities.Loans

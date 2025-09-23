@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using FinTech.Application.DTOs.Auth;
 using FinTech.Application.DTOs.Common;
 using FinTech.Application.Services;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.WebAPI.Controllers
 {
