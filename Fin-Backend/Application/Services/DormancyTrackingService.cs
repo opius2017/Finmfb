@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Domain.Entities.Deposits;
-using FinTech.Application.Common.Interfaces;
+using FinTech.Core.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTech.Application.Services

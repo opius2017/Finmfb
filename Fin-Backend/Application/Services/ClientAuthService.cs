@@ -83,7 +83,7 @@ namespace FinTech.Application.Services
 
                 if (clientProfile == null)
                 {
-                    clientProfile = new ClientPortalProfile { CustomerId = customerId, CreatedAt = DateTime.UtcNow };
+                    clientProfile = new ClientPortalProfile { CustomerId = customerId };
                     _context.ClientPortalProfiles.Add(clientProfile);
                     await _context.SaveChangesAsync(CancellationToken.None);
                 }
@@ -147,12 +147,12 @@ namespace FinTech.Application.Services
                 bool requiresTwoFactor = clientProfile.TwoFactorEnabled;
                 if (requiresTwoFactor)
                 {
-                    await SendTwoFactorCodeAsync(user.Id, clientProfile.TwoFactorMethod);
+                    await SendTwoFactorCodeAsync(Guid.Parse(user.Id), clientProfile.TwoFactorMethod);
                 }
 
                 var userDto = new UserDto
                 {
-                    Id = user.Id,
+                    Id = Guid.Parse(user.Id),
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -222,7 +222,7 @@ namespace FinTech.Application.Services
                     return BaseResponse<string>.Failure("Invalid or expired refresh token");
                 }
 
-                var user = await _userManager.FindByIdAsync(session.ClientPortalProfile.Customer.Id.ToString());
+                var user = await _userManager.FindByIdAsync(session.ClientPortalProfile.Customer.Id);
                 if (user == null)
                 {
                     return BaseResponse<string>.Failure("User not found");
@@ -357,7 +357,7 @@ namespace FinTech.Application.Services
         }
         public async Task<BaseResponse<bool>> VerifyTwoFactorCodeAsync(Guid customerId, string code)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.CustomerId == customerId.ToString());
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == customerId.ToString());
             if (user == null)
             {
                 return BaseResponse<bool>.Failure("User not found.");
@@ -381,7 +381,7 @@ namespace FinTech.Application.Services
 
         public async Task<BaseResponse<bool>> SendTwoFactorCodeAsync(Guid customerId, string method)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.CustomerId == customerId.ToString());
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == customerId.ToString());
             if (user == null)
             {
                 return BaseResponse<bool>.Failure("User not found.");

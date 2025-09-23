@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using FinTech.Domain.Entities.Deposits;
 using FinTech.Application.DTOs.ClientPortal;
-using FinTech.Application.Common.Interfaces;
+using FinTech.Core.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

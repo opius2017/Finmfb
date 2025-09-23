@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using FinTech.Application.Services;
 using FinTech.WebAPI.Application.Common.Responses;
 using FinTech.WebAPI.Application.Common.Interfaces;
+using FinTech.Core.Application.Common.Interfaces;
 
 namespace FinTech.Application.Services
 {

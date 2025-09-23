@@ -9,6 +9,7 @@ using FinTech.Application.DTOs.ClientPortal;
 using FinTech.Domain.Entities.ClientPortal;
 using FinTech.Domain.Enums;
 using System.Text.Json;
+using FinTech.Core.Application.Common.Interfaces;
 
 namespace FinTech.Application.Services
 {

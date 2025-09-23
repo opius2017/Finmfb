@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using FinTech.Application.Common.Interfaces;
 using FinTech.Application.DTOs.ClientPortal;
 using FinTech.Domain.Entities.ClientPortal;
+using FinTech.Core.Application.Common.Interfaces;
 
 namespace FinTech.Application.Services
 {

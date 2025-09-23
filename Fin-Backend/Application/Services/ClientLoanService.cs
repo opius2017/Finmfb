@@ -5,7 +5,7 @@ using System.Linq;
 using FinTech.Domain.Entities.Loans;
 using FinTech.Domain.Entities.Customers;
 using FinTech.Application.DTOs.ClientPortal;
-using FinTech.Application.Common.Interfaces;
+using FinTech.Core.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

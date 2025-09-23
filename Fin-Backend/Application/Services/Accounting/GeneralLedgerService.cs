@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FinTech.Domain.Entities.Accounting;
+using FinTech.Domain.Repositories;
 using FinTech.Domain.Repositories.Accounting;
 
 namespace FinTech.Application.Services.Accounting
