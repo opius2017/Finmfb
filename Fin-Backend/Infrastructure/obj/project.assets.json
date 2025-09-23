@@ -4662,6 +4662,7 @@
     "net8.0": [
       "Azure.Storage.Blobs >= 12.19.1",
       "FinTech.Application >= 1.0.0",
+      "FinTech.Domain >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 8.0.0",
       "Microsoft.EntityFrameworkCore >= 8.0.0",
@@ -4679,11 +4680,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
+      "projectUniqueName": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
       "projectName": "FinTech.Infrastructure",
-      "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
+      "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\obj\\",
+      "outputPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -4700,6 +4701,9 @@
           "projectReferences": {
             "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {
               "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj"
+            },
+            "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
+              "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
             }
           }
         }

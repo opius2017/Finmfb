@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application\FinTech.Application.csproj" />
+    <ProjectReference Include="..\Domain\FinTech.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
