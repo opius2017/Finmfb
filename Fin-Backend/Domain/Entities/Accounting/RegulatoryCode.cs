@@ -6,7 +6,7 @@ namespace FinTech.Domain.Entities.Accounting
     /// <summary>
     /// Represents a regulatory reporting code for Central Bank of Nigeria (CBN)
     /// </summary>
-    public class RegulatoryCode : EntityBase
+    public class RegulatoryCode : BaseEntity
     {
         /// <summary>
         /// The unique code assigned by the regulatory authority (e.g., CBN)
@@ -26,7 +26,7 @@ namespace FinTech.Domain.Entities.Accounting
         /// <summary>
         /// The sub-category of the regulatory code
         /// </summary>
-        public string SubCategory { get; private set; }
+        public string? SubCategory { get; private set; }
         
         /// <summary>
         /// The reporting authority that defined this code (e.g., CBN, NDIC, etc.)
@@ -46,7 +46,7 @@ namespace FinTech.Domain.Entities.Accounting
         /// <summary>
         /// The version of the regulatory reporting framework this code belongs to
         /// </summary>
-        public string Version { get; private set; }
+        public string? Version { get; private set; }
         
         /// <summary>
         /// The date this regulatory code became effective
@@ -56,11 +56,16 @@ namespace FinTech.Domain.Entities.Accounting
         /// <summary>
         /// Notes or additional information about this regulatory code
         /// </summary>
-        public string Notes { get; private set; }
+        public string? Notes { get; private set; }
         
         // Private constructor for EF
         private RegulatoryCode()
         {
+            Code = string.Empty;
+            Description = string.Empty;
+            Category = string.Empty;
+            Authority = string.Empty;
+            ReportingForm = string.Empty;
         }
         
         /// <summary>
@@ -73,9 +78,9 @@ namespace FinTech.Domain.Entities.Accounting
             string authority,
             string reportingForm,
             DateTime effectiveDate,
-            string subCategory = null,
-            string version = "1.0",
-            string notes = null)
+            string? subCategory = null,
+            string? version = "1.0",
+            string? notes = null)
         {
             if (string.IsNullOrWhiteSpace(code))
                 throw new ArgumentException("Regulatory code cannot be empty", nameof(code));
@@ -112,9 +117,9 @@ namespace FinTech.Domain.Entities.Accounting
             string category,
             string authority,
             string reportingForm,
-            string subCategory = null,
-            string version = null,
-            string notes = null)
+            string? subCategory = null,
+            string? version = null,
+            string? notes = null)
         {
             if (!string.IsNullOrWhiteSpace(description))
                 Description = description;

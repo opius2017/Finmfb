@@ -1,4 +1,5 @@
 using FinTech.Domain.Common;
+using FinTech.Domain.Entities.Common;
 using FinTech.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;

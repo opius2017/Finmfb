@@ -2,18 +2,19 @@ using System;
 using System.Collections.Generic;
 using FinTech.Domain.Common;
 using FinTech.Domain.Events.Banking;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Banking
 {
     public class BankAccount : BaseEntity
     {
-        public string AccountNumber { get; private set; }
-        public string AccountName { get; private set; }
+        public string AccountNumber { get; private set; } = null!;
+        public string AccountName { get; private set; } = null!;
         public decimal Balance { get; private set; }
-        public string AccountType { get; private set; }
+        public string AccountType { get; private set; } = null!;
         public bool IsActive { get; private set; }
         public int CustomerId { get; private set; }
-        public string Currency { get; private set; }
+        public string Currency { get; private set; } = null!;
         public virtual ICollection<Transaction> Transactions { get; private set; } = new List<Transaction>();
 
         private BankAccount() { } // For EF Core

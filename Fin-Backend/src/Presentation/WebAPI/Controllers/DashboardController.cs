@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using FinTech.Domain.Enums;
 using FinTech.Core.Application.DTOs.Common;
 using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.Presentation.WebAPI.Controllers;
 

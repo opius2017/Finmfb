@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using FinTech.Domain.Common;
 using FinTech.Domain.Events.Loans;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Loans
 {

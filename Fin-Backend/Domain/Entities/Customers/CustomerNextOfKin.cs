@@ -1,4 +1,5 @@
 using FinTech.Domain.Common;
+using FinTech.Domain.Entities.Common;
 
 namespace FinTech.Domain.Entities.Customers
 {

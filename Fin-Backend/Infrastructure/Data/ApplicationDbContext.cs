@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 using System;
@@ -66,7 +67,7 @@ namespace FinTech.Infrastructure.Data
         // General Ledger - Legacy
         public DbSet<ChartOfAccounts> ChartOfAccounts { get; set; }
         public DbSet<GeneralLedgerEntry> GeneralLedgerEntries { get; set; }
-        public DbSet<JournalEntry> JournalEntries { get; set; }
+        public DbSet<FinTech.Domain.Entities.GeneralLedger.JournalEntry> JournalEntries { get; set; }
         public DbSet<JournalEntryDetail> JournalEntryDetails { get; set; }
         
         // Accounting - New Core Accounting Engine
@@ -376,10 +377,10 @@ namespace FinTech.Infrastructure.Data
             return result;
         }
 
-        private List<AuditEntry> OnBeforeSaveChanges()
+        private List<FinTech.Infrastructure.Data.Auditing.AuditEntry> OnBeforeSaveChanges()
         {
             ChangeTracker.DetectChanges();
-            var auditEntries = new List<AuditEntry>();
+            var auditEntries = new List<FinTech.Infrastructure.Data.Auditing.AuditEntry>();
             
             foreach (var entry in ChangeTracker.Entries())
             {
@@ -390,7 +391,7 @@ namespace FinTech.Infrastructure.Data
                 if (!(entry.Entity is IAuditable))
                     continue;
 
-                var auditEntry = new AuditEntry
+                var auditEntry = new FinTech.Infrastructure.Data.Auditing.AuditEntry
                 {
                     EntityName = entry.Entity.GetType().Name,
                     EntityId = GetEntityId(entry),
@@ -442,11 +443,11 @@ namespace FinTech.Infrastructure.Data
             return auditEntries;
         }
 
-        private async Task OnAfterSaveChanges(List<AuditEntry> auditEntries, CancellationToken cancellationToken)
+        private async Task OnAfterSaveChanges(List<FinTech.Infrastructure.Data.Auditing.AuditEntry> auditEntries, CancellationToken cancellationToken)
         {
             if (auditEntries == null || !auditEntries.Any())
                 return;
-
+            
             // Add audit logs to the database
             foreach (var auditEntry in auditEntries)
             {

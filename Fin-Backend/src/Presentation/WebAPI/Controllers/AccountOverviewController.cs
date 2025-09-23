@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using AutoMapper;
 using System.Security.Claims;
 using System.Linq;
+using FinTech.Application.Common.Models;
 
 namespace FinTech.WebAPI.Controllers
 {
