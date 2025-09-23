@@ -3,3 +3,4 @@ c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\Fin
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.AssemblyInfo.cs
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.csproj.CoreCompileInputs.cache
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.sourcelink.json
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.csproj.AssemblyReference.cache

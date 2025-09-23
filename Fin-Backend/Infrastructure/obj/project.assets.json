@@ -1829,6 +1829,9 @@
       "FinTech.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.0"
+        },
         "compile": {
           "bin/placeholder/FinTech.Domain.dll": {}
         },
@@ -4703,8 +4706,8 @@
             "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj": {
               "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Application\\FinTech.Application.csproj"
             },
-            "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
-              "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
+            "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj": {
+              "projectPath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Domain\\FinTech.Domain.csproj"
             }
           }
         }

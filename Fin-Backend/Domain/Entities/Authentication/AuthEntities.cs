@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fin_Backend.Domain.Entities.Authentication
+namespace FinTech.Domain.Entities.Authentication
 {
     /// <summary>
     /// Refresh token entity

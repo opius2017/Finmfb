@@ -31,18 +31,6 @@ namespace FinTech.Domain.Entities.Security
         public Guid? LastModifiedBy { get; set; }
     }
     
-    public class LoginAttempt : BaseEntity
-    {
-        public string Username { get; set; }
-        public string IPAddress { get; set; }
-        public string UserAgent { get; set; }
-        public DateTime AttemptTime { get; set; }
-        public bool WasSuccessful { get; set; }
-        public string FailureReason { get; set; }
-        public string Location { get; set; }
-        public bool IsSuspicious { get; set; }
-    }
-    
     public class DataAccessLog : BaseEntity
     {
         public Guid UserId { get; set; }
@@ -53,5 +41,23 @@ namespace FinTech.Domain.Entities.Security
         public string IPAddress { get; set; }
         public string Reason { get; set; }
         public bool IsAuthorized { get; set; }
+    }
+}
+namespace FinTech.Domain.Entities.Authentication
+{
+    public class LoginAttempt
+    {
+        [Key]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string UserId { get; set; }
+        public string Username { get; set; }
+        public bool Success { get; set; }
+        public string FailureReason { get; set; }
+        public string IpAddress { get; set; }
+        public string UserAgent { get; set; }
+        public DateTime AttemptTime { get; set; }
+        public string Country { get; set; }
+        public string City { get; set; }
+        public string LoginMethod { get; set; }
     }
 }

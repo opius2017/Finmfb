@@ -34,16 +34,17 @@ using FinTech.Infrastructure.Data.Configuration;
 using FinTech.Infrastructure.Data.Configurations.Accounting;
 using FinTech.Infrastructure.Data.Interceptors;
 using FinTech.Infrastructure.Security.Authorization;
-using FinTech.WebAPI.Domain.Entities.Auth;
+using FinTech.Domain.Entities.Authentication;
 using Microsoft.ApplicationInsights;
 using FinTech.Infrastructure.Data.Auditing;
 using FinTech.Infrastructure.Data.Events;
 using FinTech.Infrastructure.Data.Messaging;
 using FinTech.Infrastructure.Messaging;
+using FinTech.Application.Common.Interfaces;
 
 namespace FinTech.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, FinTech.Core.Application.Common.Interfaces.IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
     {
         private readonly IDomainEventService _domainEventService;
         private readonly ILogger<ApplicationDbContext> _logger;
