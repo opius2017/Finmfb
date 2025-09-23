@@ -14,7 +14,7 @@ using FinTech.Domain.Entities.MultiCurrency;
 using FinTech.Domain.Entities.FixedAssets;
 using FinTech.Domain.Entities.ClientPortal;
 
-namespace FinTech.Core.Application.Common.Interfaces;
+namespace FinTech.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
