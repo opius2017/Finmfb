@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;                return StatusCode(500, BaseResponse<TransactionSearchResultDto>.Failure($"An error occurred while searching for transactions. {ex.Message}"));ng Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using FinTech.Application.DTOs.Common;
-using FinTech.Application.DTOs.ClientPortal;
-using FinTech.Application.Services;
-using Microsoft.Extensions.Logging;
-using AutoMapper;
-using System.Security.Claims;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using AutoMapper;
 using FinTech.Application.Common;
+using FinTech.Application.DTOs.ClientPortal;
+using FinTech.Application.DTOs.Common;
+using FinTech.Application.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace FinTech.WebAPI.Controllers
 {
@@ -76,11 +77,7 @@ namespace FinTech.WebAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error searching transactions");
-                return StatusCode(500, new BaseResponse<TransactionSearchResultDto>
-                {
-                    Success = false,
-                    Message = "An error occurred while searching transactions"
-                });
+                return StatusCode(500, BaseResponse<TransactionSearchResultDto>.Failure("An error occurred while searching transactions"));
             }
         }
 
@@ -95,29 +92,17 @@ namespace FinTech.WebAPI.Controllers
                 var accounts = await _accountService.GetClientAccountsAsync(customerId);
                 if (!accounts.Any(a => a.AccountNumber == accountNumber))
                 {
-                    return BadRequest(new BaseResponse<List<string>>
-                    {
-                        Success = false,
-                        Message = "Account not found or does not belong to the customer"
-                    });
+                    return BadRequest(BaseResponse<List<string>>.Failure("Account not found or does not belong to the customer"));
                 }
 
                 var categories = await _transactionService.GetTransactionCategoriesAsync(accountNumber);
 
-                return Ok(new BaseResponse<List<string>>
-                {
-                    Success = true,
-                    Data = categories.ToList()
-                });
+                return Ok(BaseResponse<List<string>>.Success(categories.ToList()));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving transaction categories for account {AccountNumber}", accountNumber);
-                return StatusCode(500, new BaseResponse<List<string>>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving transaction categories"
-                });
+                return StatusCode(500, BaseResponse<List<string>>.Failure("An error occurred while retrieving transaction categories"));
             }
         }
 
@@ -132,29 +117,17 @@ namespace FinTech.WebAPI.Controllers
                 var accounts = await _accountService.GetClientAccountsAsync(customerId);
                 if (!accounts.Any(a => a.AccountNumber == accountNumber))
                 {
-                    return BadRequest(new BaseResponse<List<string>>
-                    {
-                        Success = false,
-                        Message = "Account not found or does not belong to the customer"
-                    });
+                    return BadRequest(BaseResponse<List<string>>.Failure("Account not found or does not belong to the customer"));
                 }
 
                 var channels = await _transactionService.GetTransactionChannelsAsync(accountNumber);
 
-                return Ok(new BaseResponse<List<string>>
-                {
-                    Success = true,
-                    Data = channels.ToList()
-                });
+                return Ok(BaseResponse<List<string>>.Success(channels.ToList()));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving transaction channels for account {AccountNumber}", accountNumber);
-                return StatusCode(500, new BaseResponse<List<string>>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving transaction channels"
-                });
+                return StatusCode(500, BaseResponse<List<string>>.Failure("An error occurred while retrieving transaction channels"));
             }
         }
 
@@ -169,11 +142,7 @@ namespace FinTech.WebAPI.Controllers
                 var accounts = await _accountService.GetClientAccountsAsync(customerId);
                 if (!accounts.Any(a => a.AccountNumber == exportDto.AccountNumber))
                 {
-                    return BadRequest(new BaseResponse<string>
-                    {
-                        Success = false,
-                        Message = "Account not found or does not belong to the customer"
-                    });
+                    return BadRequest(BaseResponse<string>.Failure("Account not found or does not belong to the customer"));
                 }
 
                 // Validate format
@@ -181,11 +150,7 @@ namespace FinTech.WebAPI.Controllers
                     exportDto.Format.ToLower() != "excel" && 
                     exportDto.Format.ToLower() != "pdf")
                 {
-                    return BadRequest(new BaseResponse<string>
-                    {
-                        Success = false,
-                        Message = "Invalid format. Supported formats are 'csv', 'excel', and 'pdf'."
-                    });
+                    return BadRequest(BaseResponse<string>.Failure("Invalid format. Supported formats are 'csv', 'excel', and 'pdf'."));
                 }
 
                 var fileData = await _transactionService.ExportTransactionsAsync(exportDto, customerId);
@@ -216,11 +181,7 @@ namespace FinTech.WebAPI.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error exporting transactions for account {AccountNumber}", exportDto.AccountNumber);
-                return StatusCode(500, new BaseResponse<string>
-                {
-                    Success = false,
-                    Message = "An error occurred while exporting transactions"
-                });
+                return StatusCode(500, BaseResponse<string>.Failure("An error occurred while exporting transactions"));
             }
         }
 
@@ -238,11 +199,7 @@ namespace FinTech.WebAPI.Controllers
                 var accounts = await _accountService.GetClientAccountsAsync(customerId);
                 if (!accounts.Any(a => a.AccountNumber == accountNumber))
                 {
-                    return BadRequest(new BaseResponse<Dictionary<string, decimal>>
-                    {
-                        Success = false,
-                        Message = "Account not found or does not belong to the customer"
-                    });
+                    return BadRequest(BaseResponse<Dictionary<string, decimal>>.Failure("Account not found or does not belong to the customer"));
                 }
 
                 // Default to last 30 days if dates not provided
@@ -251,20 +208,12 @@ namespace FinTech.WebAPI.Controllers
 
                 var breakdown = await _transactionService.GetCategoryBreakdownAsync(accountNumber, start, end);
 
-                return Ok(new BaseResponse<Dictionary<string, decimal>>
-                {
-                    Success = true,
-                    Data = breakdown
-                });
+                return Ok(BaseResponse<Dictionary<string, decimal>>.Success(breakdown));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving category breakdown for account {AccountNumber}", accountNumber);
-                return StatusCode(500, new BaseResponse<Dictionary<string, decimal>>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving category breakdown"
-                });
+                return StatusCode(500, BaseResponse<Dictionary<string, decimal>>.Failure("An error occurred while retrieving category breakdown"));
             }
         }
 
@@ -277,20 +226,12 @@ namespace FinTech.WebAPI.Controllers
                 var transactions = await _transactionService.GetLargestTransactionsAsync(customerId, count);
                 var transactionDtos = _mapper.Map<List<TransactionDto>>(transactions);
 
-                return Ok(new BaseResponse<List<TransactionDto>>
-                {
-                    Success = true,
-                    Data = transactionDtos
-                });
+                return Ok(BaseResponse<List<TransactionDto>>.Success(transactionDtos));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving largest transactions");
-                return StatusCode(500, new BaseResponse<List<TransactionDto>>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving largest transactions"
-                });
+                return StatusCode(500, BaseResponse<List<TransactionDto>>.Failure("An error occurred while retrieving largest transactions"));
             }
         }
 
@@ -307,29 +248,17 @@ namespace FinTech.WebAPI.Controllers
                 var accounts = await _accountService.GetClientAccountsAsync(customerId);
                 if (!accounts.Any(a => a.AccountNumber == accountNumber))
                 {
-                    return BadRequest(new BaseResponse<Dictionary<string, decimal>>
-                    {
-                        Success = false,
-                        Message = "Account not found or does not belong to the customer"
-                    });
+                    return BadRequest(BaseResponse<Dictionary<string, decimal>>.Failure("Account not found or does not belong to the customer"));
                 }
 
                 var spending = await _transactionService.GetMonthlySpendingAsync(accountNumber, months);
 
-                return Ok(new BaseResponse<Dictionary<string, decimal>>
-                {
-                    Success = true,
-                    Data = spending
-                });
+                return Ok(BaseResponse<Dictionary<string, decimal>>.Success(spending));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving monthly spending for account {AccountNumber}", accountNumber);
-                return StatusCode(500, new BaseResponse<Dictionary<string, decimal>>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving monthly spending"
-                });
+                return StatusCode(500, BaseResponse<Dictionary<string, decimal>>.Failure("An error occurred while retrieving monthly spending"));
             }
         }
 

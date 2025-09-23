@@ -164,6 +164,67 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <param name="userId">The user ID</param>
         /// <returns>The list of trusted devices</returns>
         Task<List<TrustedDeviceInfo>> GetTrustedDevicesAsync(string userId);
+
+        /// <summary>
+        /// Gets the security dashboard for a user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <returns>The security dashboard</returns>
+        Task<SecurityDashboardDto> GetSecurityDashboardAsync(string userId);
+
+        /// <summary>
+        /// Gets the active sessions for a user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <returns>The list of active sessions</returns>
+        Task<List<ClientSessionDto>> GetActiveSessionsAsync(string userId);
+
+        /// <summary>
+        /// Revokes all sessions for a user except the current one
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <param name="currentSessionId">The current session ID</param>
+        /// <returns>True if the sessions were revoked successfully, otherwise false</returns>
+        Task<bool> RevokeAllSessionsExceptCurrentAsync(string userId, string currentSessionId);
+
+        /// <summary>
+        /// Revokes a session for a user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <param name="sessionId">The session ID</param>
+        /// <returns>True if the session was revoked successfully, otherwise false</returns>
+        Task<bool> RevokeSessionAsync(string userId, string sessionId);
+
+        /// <summary>
+        /// Changes the password for a user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <param name="currentPassword">The current password</param>
+        /// <param name="newPassword">The new password</param>
+        /// <returns>The identity result</returns>
+        Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+
+        /// <summary>
+        /// Requests a data export for a user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <returns>True if the data export was requested successfully, otherwise false</returns>
+        Task<bool> RequestDataExportAsync(string userId);
+
+        /// <summary>
+        /// Gets the security preferences for a user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <returns>The security preferences</returns>
+        Task<SecurityPreferencesDto> GetSecurityPreferencesAsync(string userId);
+
+        /// <summary>
+        /// Updates the security preferences for a user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <param name="preferences">The security preferences</param>
+        /// <returns>True if the preferences were updated successfully, otherwise false</returns>
+        Task<bool> UpdateSecurityPreferencesAsync(string userId, SecurityPreferencesDto preferences);
     }
     
     /// <summary>
@@ -176,19 +237,19 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// </summary>
         /// <example>john.doe@example.com</example>
         [Required]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the password
         /// </summary>
         /// <example>P@ssw0rd123!</example>
         [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the device information
         /// </summary>
-        public DeviceInfo DeviceInfo { get; set; }
+        public DeviceInfo? DeviceInfo { get; set; }
         
         /// <summary>
         /// Gets or sets a value indicating whether to remember the device
@@ -210,12 +271,12 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the access token
         /// </summary>
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
         
         /// <summary>
         /// Gets or sets the refresh token
         /// </summary>
-        public string RefreshToken { get; set; }
+        public string? RefreshToken { get; set; }
         
         /// <summary>
         /// Gets or sets the expiration time
@@ -225,22 +286,22 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the user ID
         /// </summary>
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         
         /// <summary>
         /// Gets or sets the username
         /// </summary>
-        public string Username { get; set; }
+        public string? Username { get; set; }
         
         /// <summary>
         /// Gets or sets the user's email
         /// </summary>
-        public string Email { get; set; }
+        public string? Email { get; set; }
         
         /// <summary>
         /// Gets or sets the user's roles
         /// </summary>
-        public List<string> Roles { get; set; }
+        public List<string>? Roles { get; set; }
         
         /// <summary>
         /// Gets or sets a value indicating whether MFA is required
@@ -250,17 +311,17 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the MFA challenge ID
         /// </summary>
-        public string MfaChallengeId { get; set; }
+        public string? MfaChallengeId { get; set; }
         
         /// <summary>
         /// Gets or sets the error message
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
         
         /// <summary>
         /// Gets or sets the trusted device ID
         /// </summary>
-        public string TrustedDeviceId { get; set; }
+        public string? TrustedDeviceId { get; set; }
     }
     
     /// <summary>
@@ -272,12 +333,12 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// Gets or sets the refresh token
         /// </summary>
         [Required]
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the device information
         /// </summary>
-        public DeviceInfo DeviceInfo { get; set; }
+        public DeviceInfo? DeviceInfo { get; set; }
     }
     
     /// <summary>
@@ -289,12 +350,12 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// Gets or sets the refresh token
         /// </summary>
         [Required]
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the user ID
         /// </summary>
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
     }
     
     /// <summary>
@@ -308,14 +369,14 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <example>john.doe@example.com</example>
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the username
         /// </summary>
         /// <example>johndoe</example>
         [Required]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the password
@@ -323,27 +384,27 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <example>P@ssw0rd123!</example>
         [Required]
         [MinLength(8)]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the first name
         /// </summary>
         /// <example>John</example>
         [Required]
-        public string FirstName { get; set; }
+        public string FirstName { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the last name
         /// </summary>
         /// <example>Doe</example>
         [Required]
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the phone number
         /// </summary>
         /// <example>+1234567890</example>
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
     }
     
     /// <summary>
@@ -359,12 +420,12 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the user ID
         /// </summary>
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the error messages
         /// </summary>
-        public List<string> Errors { get; set; }
+        public List<string>? Errors { get; set; }
         
         /// <summary>
         /// Gets or sets a value indicating whether email confirmation is required
@@ -375,7 +436,7 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// Gets or sets the email confirmation token
         /// </summary>
         [JsonIgnore]
-        public string EmailConfirmationToken { get; set; }
+        public string? EmailConfirmationToken { get; set; }
     }
     
     /// <summary>
@@ -412,23 +473,23 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the shared key for app-based MFA
         /// </summary>
-        public string SharedKey { get; set; }
+        public string? SharedKey { get; set; }
         
         /// <summary>
         /// Gets or sets the QR code URL for app-based MFA
         /// </summary>
-        public string QrCodeUrl { get; set; }
+        public string? QrCodeUrl { get; set; }
         
         /// <summary>
         /// Gets or sets the verification code for email or SMS-based MFA
         /// </summary>
         [JsonIgnore]
-        public string VerificationCode { get; set; }
+        public string? VerificationCode { get; set; }
         
         /// <summary>
         /// Gets or sets the error message
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
     }
     
     /// <summary>
@@ -444,7 +505,7 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the challenge ID
         /// </summary>
-        public string ChallengeId { get; set; }
+        public string? ChallengeId { get; set; }
         
         /// <summary>
         /// Gets or sets the MFA method
@@ -454,18 +515,18 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the masked delivery destination (e.g., m***@example.com)
         /// </summary>
-        public string MaskedDeliveryDestination { get; set; }
+        public string? MaskedDeliveryDestination { get; set; }
         
         /// <summary>
         /// Gets or sets the verification code for email or SMS-based MFA
         /// </summary>
         [JsonIgnore]
-        public string VerificationCode { get; set; }
+        public string? VerificationCode { get; set; }
         
         /// <summary>
         /// Gets or sets the error message
         /// </summary>
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
     }
     
     /// <summary>
@@ -478,20 +539,20 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// </summary>
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the password reset token
         /// </summary>
         [Required]
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the new password
         /// </summary>
         [Required]
         [MinLength(8)]
-        public string NewPassword { get; set; }
+        public string NewPassword { get; set; } = string.Empty;
     }
     
     /// <summary>
@@ -502,12 +563,12 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the ID
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the user ID
         /// </summary>
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the login time
@@ -517,12 +578,12 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the IP address
         /// </summary>
-        public string IpAddress { get; set; }
+        public string? IpAddress { get; set; }
         
         /// <summary>
         /// Gets or sets the user agent
         /// </summary>
-        public string UserAgent { get; set; }
+        public string? UserAgent { get; set; }
         
         /// <summary>
         /// Gets or sets a value indicating whether the login was successful
@@ -532,17 +593,17 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the login method
         /// </summary>
-        public string LoginMethod { get; set; }
+        public string? LoginMethod { get; set; }
         
         /// <summary>
         /// Gets or sets the location information
         /// </summary>
-        public LocationInfo Location { get; set; }
+        public LocationInfo? Location { get; set; }
         
         /// <summary>
         /// Gets or sets the device information
         /// </summary>
-        public DeviceInfo Device { get; set; }
+        public DeviceInfo? Device { get; set; }
     }
     
     /// <summary>
@@ -553,17 +614,17 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the country
         /// </summary>
-        public string Country { get; set; }
+        public string? Country { get; set; }
         
         /// <summary>
         /// Gets or sets the city
         /// </summary>
-        public string City { get; set; }
+        public string? City { get; set; }
         
         /// <summary>
         /// Gets or sets the region
         /// </summary>
-        public string Region { get; set; }
+        public string? Region { get; set; }
         
         /// <summary>
         /// Gets or sets the latitude
@@ -584,37 +645,37 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the device type
         /// </summary>
-        public string DeviceType { get; set; }
+        public string? DeviceType { get; set; }
         
         /// <summary>
         /// Gets or sets the device name
         /// </summary>
-        public string DeviceName { get; set; }
+        public string? DeviceName { get; set; }
         
         /// <summary>
         /// Gets or sets the operating system
         /// </summary>
-        public string OperatingSystem { get; set; }
+        public string? OperatingSystem { get; set; }
         
         /// <summary>
         /// Gets or sets the browser
         /// </summary>
-        public string Browser { get; set; }
+        public string? Browser { get; set; }
         
         /// <summary>
         /// Gets or sets the browser version
         /// </summary>
-        public string BrowserVersion { get; set; }
+        public string? BrowserVersion { get; set; }
         
         /// <summary>
         /// Gets or sets the client IP address
         /// </summary>
-        public string ClientIp { get; set; }
+        public string? ClientIp { get; set; }
         
         /// <summary>
         /// Gets or sets the unique device identifier
         /// </summary>
-        public string DeviceId { get; set; }
+        public string? DeviceId { get; set; }
     }
     
     /// <summary>
@@ -625,12 +686,12 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the authorization URL
         /// </summary>
-        public string AuthorizationUrl { get; set; }
+        public string? AuthorizationUrl { get; set; }
         
         /// <summary>
         /// Gets or sets the state parameter
         /// </summary>
-        public string State { get; set; }
+        public string? State { get; set; }
     }
     
     /// <summary>
@@ -641,27 +702,27 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the device ID
         /// </summary>
-        public string DeviceId { get; set; }
+        public string DeviceId { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the device name
         /// </summary>
-        public string DeviceName { get; set; }
+        public string? DeviceName { get; set; }
         
         /// <summary>
         /// Gets or sets the device type
         /// </summary>
-        public string DeviceType { get; set; }
+        public string? DeviceType { get; set; }
         
         /// <summary>
         /// Gets or sets the operating system
         /// </summary>
-        public string OperatingSystem { get; set; }
+        public string? OperatingSystem { get; set; }
         
         /// <summary>
         /// Gets or sets the browser
         /// </summary>
-        public string Browser { get; set; }
+        public string? Browser { get; set; }
         
         /// <summary>
         /// Gets or sets the last used date
@@ -676,11 +737,125 @@ namespace Fin_Backend.Infrastructure.Security.Authentication
         /// <summary>
         /// Gets or sets the IP address
         /// </summary>
-        public string IpAddress { get; set; }
+        public string? IpAddress { get; set; }
         
         /// <summary>
         /// Gets or sets the location information
         /// </summary>
-        public LocationInfo Location { get; set; }
+        public LocationInfo? Location { get; set; }
+    }
+
+    /// <summary>
+    /// Security dashboard data transfer object
+    /// </summary>
+    public class SecurityDashboardDto
+    {
+        /// <summary>
+        /// Gets or sets the user ID
+        /// </summary>
+        public string UserId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the last login date
+        /// </summary>
+        public DateTime LastLogin { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of active sessions
+        /// </summary>
+        public int ActiveSessions { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether MFA is enabled
+        /// </summary>
+        public bool MfaEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets the recent activity
+        /// </summary>
+        public List<SecurityActivityDto> RecentActivity { get; set; } = new List<SecurityActivityDto>();
+    }
+
+    /// <summary>
+    /// Security activity data transfer object
+    /// </summary>
+    public class SecurityActivityDto
+    {
+        /// <summary>
+        /// Gets or sets the activity type
+        /// </summary>
+        public string ActivityType { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the date of the activity
+        /// </summary>
+        public DateTime Date { get; set; }
+
+        /// <summary>
+        /// Gets or sets the IP address of the activity
+        /// </summary>
+        public string IpAddress { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the location of the activity
+        /// </summary>
+        public string Location { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the details of the activity
+        /// </summary>
+        public string Details { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// Client session data transfer object
+    /// </summary>
+    public class ClientSessionDto
+    {
+        /// <summary>
+        /// Gets or sets the session ID
+        /// </summary>
+        public string SessionId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the device ID
+        /// </summary>
+        public string DeviceId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the IP address
+        /// </summary>
+        public string IpAddress { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the user agent
+        /// </summary>
+        public string UserAgent { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the last accessed date
+        /// </summary>
+        public DateTime LastAccessed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the created date
+        /// </summary>
+        public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this is the current session
+        /// </summary>
+        public bool IsCurrent { get; set; }
+    }
+
+    /// <summary>
+    /// Security preferences data transfer object
+    /// </summary>
+    public class SecurityPreferencesDto
+    {
+        public bool MfaEnabled { get; set; }
+        public bool BiometricLoginEnabled { get; set; }
+        public bool SuspiciousActivityAlerts { get; set; }
+        public string[]? MfaMethods { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using FinTech.Application.Common;
 using FinTech.WebAPI.Application.DTOs.Auth;
 using FinTech.WebAPI.Application.DTOs.Common;
 using FinTech.WebAPI.Application.Interfaces;
@@ -9,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using FinTech.Application.DTOs.Common;
 
 namespace FinTech.WebAPI.Controllers
 {
@@ -41,31 +41,18 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<MfaSetupResponseDto>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<MfaSetupResponseDto>.Failure("User not authenticated"));
                 }
                 
                 // Generate MFA setup
                 var response = await _mfaService.GenerateMfaSetupAsync(userId);
                 
-                return Ok(new BaseResponse<MfaSetupResponseDto>
-                {
-                    Success = true,
-                    Message = "MFA setup generated successfully",
-                    Data = response
-                });
+                return Ok(BaseResponse<MfaSetupResponseDto>.Success(response, "MFA setup generated successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error generating MFA setup");
-                return StatusCode(500, new BaseResponse<MfaSetupResponseDto>
-                {
-                    Success = false,
-                    Message = "An error occurred while generating MFA setup"
-                });
+                return StatusCode(500, BaseResponse<MfaSetupResponseDto>.Failure("An error occurred while generating MFA setup"));
             }
         }
 
@@ -76,22 +63,14 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid request"));
                 }
                 
                 // Get current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 // Verify the code
@@ -102,29 +81,15 @@ namespace FinTech.WebAPI.Controllers
                     // Enable MFA
                     await _mfaService.EnableMfaAsync(userId, request.Secret);
                     
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "MFA setup verified and enabled successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "MFA setup verified and enabled successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Invalid verification code",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Invalid verification code"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error verifying MFA setup");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while verifying MFA setup"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while verifying MFA setup"));
             }
         }
 
@@ -135,22 +100,14 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid request"));
                 }
                 
                 // Get current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 // Disable MFA
@@ -158,29 +115,15 @@ namespace FinTech.WebAPI.Controllers
                 
                 if (result)
                 {
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "MFA disabled successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "MFA disabled successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Invalid verification code",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Invalid verification code"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error disabling MFA");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while disabling MFA"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while disabling MFA"));
             }
         }
 
@@ -192,11 +135,7 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid request"));
                 }
                 
                 // Create device info for login notification
@@ -214,29 +153,15 @@ namespace FinTech.WebAPI.Controllers
                 
                 if (isValid)
                 {
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "MFA code validated successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "MFA code validated successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Invalid verification code",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Invalid verification code"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error validating MFA code");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while validating MFA code"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while validating MFA code"));
             }
         }
 
@@ -248,11 +173,7 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid request"));
                 }
                 
                 // Validate backup code
@@ -274,29 +195,15 @@ namespace FinTech.WebAPI.Controllers
                         Status = "success"
                     });
                     
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "Backup code validated successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "Backup code validated successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Invalid backup code",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Invalid backup code"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error validating backup code");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while validating backup code"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while validating backup code"));
             }
         }
 
@@ -307,42 +214,25 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<List<string>>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<List<string>>.Failure("Invalid request"));
                 }
                 
                 // Get current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<List<string>>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<List<string>>.Failure("User not authenticated"));
                 }
                 
                 // Regenerate backup codes
                 var backupCodes = await _mfaService.RegenerateBackupCodesAsync(userId, request.Code);
                 
-                return Ok(new BaseResponse<List<string>>
-                {
-                    Success = true,
-                    Message = "Backup codes regenerated successfully",
-                    Data = backupCodes
-                });
+                return Ok(BaseResponse<List<string>>.Success(backupCodes, "Backup codes regenerated successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error regenerating backup codes");
-                return StatusCode(500, new BaseResponse<List<string>>
-                {
-                    Success = false,
-                    Message = "An error occurred while regenerating backup codes"
-                });
+                return StatusCode(500, BaseResponse<List<string>>.Failure("An error occurred while regenerating backup codes"));
             }
         }
 
@@ -353,42 +243,25 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<MfaChallengeResponseDto>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<MfaChallengeResponseDto>.Failure("Invalid request"));
                 }
                 
                 // Get current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<MfaChallengeResponseDto>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<MfaChallengeResponseDto>.Failure("User not authenticated"));
                 }
                 
                 // Create challenge
                 var response = await _mfaService.CreateMfaChallengeAsync(userId, request.Operation);
                 
-                return Ok(new BaseResponse<MfaChallengeResponseDto>
-                {
-                    Success = true,
-                    Message = "MFA challenge created successfully",
-                    Data = response
-                });
+                return Ok(BaseResponse<MfaChallengeResponseDto>.Success(response, "MFA challenge created successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating MFA challenge");
-                return StatusCode(500, new BaseResponse<MfaChallengeResponseDto>
-                {
-                    Success = false,
-                    Message = "An error occurred while creating MFA challenge"
-                });
+                return StatusCode(500, BaseResponse<MfaChallengeResponseDto>.Failure("An error occurred while creating MFA challenge"));
             }
         }
 
@@ -400,11 +273,7 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid request"));
                 }
                 
                 // Verify challenge
@@ -412,29 +281,15 @@ namespace FinTech.WebAPI.Controllers
                 
                 if (isValid)
                 {
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "Challenge verified successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "Challenge verified successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Invalid verification code or expired challenge",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Invalid verification code or expired challenge"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error verifying MFA challenge");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while verifying MFA challenge"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while verifying MFA challenge"));
             }
         }
 
@@ -445,42 +300,25 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<string>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<string>.Failure("Invalid request"));
                 }
                 
                 // Get current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<string>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<string>.Failure("User not authenticated"));
                 }
                 
                 // Add trusted device
                 var deviceId = await _mfaService.AddTrustedDeviceAsync(userId, request);
                 
-                return Ok(new BaseResponse<string>
-                {
-                    Success = true,
-                    Message = "Trusted device added successfully",
-                    Data = deviceId
-                });
+                return Ok(BaseResponse<string>.Success(deviceId, "Trusted device added successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error adding trusted device");
-                return StatusCode(500, new BaseResponse<string>
-                {
-                    Success = false,
-                    Message = "An error occurred while adding trusted device"
-                });
+                return StatusCode(500, BaseResponse<string>.Failure("An error occurred while adding trusted device"));
             }
         }
 
@@ -493,11 +331,7 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<List<TrustedDeviceDto>>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<List<TrustedDeviceDto>>.Failure("User not authenticated"));
                 }
                 
                 // Get trusted devices
@@ -515,21 +349,12 @@ namespace FinTech.WebAPI.Controllers
                     }
                 }
                 
-                return Ok(new BaseResponse<List<TrustedDeviceDto>>
-                {
-                    Success = true,
-                    Message = "Trusted devices retrieved successfully",
-                    Data = devices
-                });
+                return Ok(BaseResponse<List<TrustedDeviceDto>>.Success(devices, "Trusted devices retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting trusted devices");
-                return StatusCode(500, new BaseResponse<List<TrustedDeviceDto>>
-                {
-                    Success = false,
-                    Message = "An error occurred while getting trusted devices"
-                });
+                return StatusCode(500, BaseResponse<List<TrustedDeviceDto>>.Failure("An error occurred while getting trusted devices"));
             }
         }
 
@@ -542,11 +367,7 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 // Revoke trusted device
@@ -554,29 +375,15 @@ namespace FinTech.WebAPI.Controllers
                 
                 if (result)
                 {
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "Trusted device revoked successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "Trusted device revoked successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Failed to revoke trusted device",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Failed to revoke trusted device"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error revoking trusted device");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while revoking trusted device"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while revoking trusted device"));
             }
         }
 
@@ -589,11 +396,7 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 // Revoke all trusted devices except current
@@ -601,29 +404,15 @@ namespace FinTech.WebAPI.Controllers
                 
                 if (result)
                 {
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "All trusted devices except current revoked successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "All trusted devices except current revoked successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Failed to revoke trusted devices",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Failed to revoke trusted devices"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error revoking all trusted devices");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while revoking trusted devices"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while revoking trusted devices"));
             }
         }
 
@@ -636,31 +425,18 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<List<SecurityActivityDto>>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<List<SecurityActivityDto>>.Failure("User not authenticated"));
                 }
                 
                 // Get security activity
                 var activities = await _mfaService.GetSecurityActivityAsync(userId, limit);
                 
-                return Ok(new BaseResponse<List<SecurityActivityDto>>
-                {
-                    Success = true,
-                    Message = "Security activity retrieved successfully",
-                    Data = activities
-                });
+                return Ok(BaseResponse<List<SecurityActivityDto>>.Success(activities, "Security activity retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting security activity");
-                return StatusCode(500, new BaseResponse<List<SecurityActivityDto>>
-                {
-                    Success = false,
-                    Message = "An error occurred while getting security activity"
-                });
+                return StatusCode(500, BaseResponse<List<SecurityActivityDto>>.Failure("An error occurred while getting security activity"));
             }
         }
 
@@ -673,31 +449,18 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<SecurityPreferencesDto>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<SecurityPreferencesDto>.Failure("User not authenticated"));
                 }
                 
                 // Get security preferences
                 var preferences = await _mfaService.GetSecurityPreferencesAsync(userId);
                 
-                return Ok(new BaseResponse<SecurityPreferencesDto>
-                {
-                    Success = true,
-                    Message = "Security preferences retrieved successfully",
-                    Data = preferences
-                });
+                return Ok(BaseResponse<SecurityPreferencesDto>.Success(preferences, "Security preferences retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting security preferences");
-                return StatusCode(500, new BaseResponse<SecurityPreferencesDto>
-                {
-                    Success = false,
-                    Message = "An error occurred while getting security preferences"
-                });
+                return StatusCode(500, BaseResponse<SecurityPreferencesDto>.Failure("An error occurred while getting security preferences"));
             }
         }
 
@@ -708,22 +471,14 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid request"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid request"));
                 }
                 
                 // Get current user
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 // Update security preferences
@@ -731,29 +486,15 @@ namespace FinTech.WebAPI.Controllers
                 
                 if (result)
                 {
-                    return Ok(new BaseResponse<bool>
-                    {
-                        Success = true,
-                        Message = "Security preferences updated successfully",
-                        Data = true
-                    });
+                    return Ok(BaseResponse<bool>.Success(true, "Security preferences updated successfully"));
                 }
                 
-                return BadRequest(new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "Failed to update security preferences",
-                    Data = false
-                });
+                return BadRequest(BaseResponse<bool>.Failure("Failed to update security preferences"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating security preferences");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while updating security preferences"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while updating security preferences"));
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Application.DTOs.ClientPortal;
 using FinTech.Application.DTOs.Common;
+using FinTech.Application.Common;
 
 namespace FinTech.Application.Services
 {

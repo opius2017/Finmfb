@@ -1,13 +1,18 @@
+using FinTech.Application.Interfaces;
+using FinTech.Application.Common;
+using FinTech.Core.Application.DTOs.Security;
 using FinTech.WebAPI.Application.DTOs.Auth;
-using FinTech.WebAPI.Application.DTOs.Common;
+using FinTech.WebAPI.Application.Common.DTOs;
 using FinTech.WebAPI.Application.Interfaces;
+using Fin_Backend.Infrastructure.Security.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using FinTech.Core.Application.DTOs.Security;
+using SecurityActivityDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityActivityDto;
+using SecurityPreferencesDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityPreferencesDto;
 
 namespace FinTech.WebAPI.Controllers
 {
@@ -43,30 +48,17 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<SecurityDashboardDto>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<SecurityDashboardDto>.Failure("User not authenticated"));
                 }
                 
                 var dashboard = await _authService.GetSecurityDashboardAsync(userId);
                 
-                return Ok(new BaseResponse<SecurityDashboardDto>
-                {
-                    Success = true,
-                    Message = "Security dashboard retrieved successfully",
-                    Data = dashboard
-                });
+                return Ok(BaseResponse<SecurityDashboardDto>.Success(dashboard, "Security dashboard retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving security dashboard");
-                return StatusCode(500, new BaseResponse<SecurityDashboardDto>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving security dashboard"
-                });
+                return StatusCode(500, BaseResponse<SecurityDashboardDto>.Failure("An error occurred while retrieving security dashboard"));
             }
         }
 
@@ -84,30 +76,17 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<List<SecurityActivityDto>>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<List<SecurityActivityDto>>.Failure("User not authenticated"));
                 }
                 
                 var history = await _mfaService.GetSecurityActivityAsync(userId, limit);
                 
-                return Ok(new BaseResponse<List<SecurityActivityDto>>
-                {
-                    Success = true,
-                    Message = "Security audit history retrieved successfully",
-                    Data = history
-                });
+                return Ok(BaseResponse<List<SecurityActivityDto>>.Success(history, "Security audit history retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving security audit history");
-                return StatusCode(500, new BaseResponse<List<SecurityActivityDto>>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving security audit history"
-                });
+                return StatusCode(500, BaseResponse<List<SecurityActivityDto>>.Failure("An error occurred while retrieving security audit history"));
             }
         }
 
@@ -124,30 +103,17 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<List<ActiveSessionDto>>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<List<ActiveSessionDto>>.Failure("User not authenticated"));
                 }
                 
                 var sessions = await _authService.GetActiveSessionsAsync(userId);
                 
-                return Ok(new BaseResponse<List<ActiveSessionDto>>
-                {
-                    Success = true,
-                    Message = "Active sessions retrieved successfully",
-                    Data = sessions
-                });
+                return Ok(BaseResponse<List<ActiveSessionDto>>.Success(sessions, "Active sessions retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving active sessions");
-                return StatusCode(500, new BaseResponse<List<ActiveSessionDto>>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving active sessions"
-                });
+                return StatusCode(500, BaseResponse<List<ActiveSessionDto>>.Failure("An error occurred while retrieving active sessions"));
             }
         }
 
@@ -164,51 +130,29 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 // Get current session ID
                 var currentSessionId = User.FindFirstValue("sid");
                 if (string.IsNullOrEmpty(currentSessionId))
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Current session ID not found"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Current session ID not found"));
                 }
                 
                 var result = await _authService.RevokeAllSessionsExceptCurrentAsync(userId, currentSessionId);
                 
                 if (!result)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Failed to revoke sessions",
-                        Data = false
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Failed to revoke sessions"));
                 }
                 
-                return Ok(new BaseResponse<bool>
-                {
-                    Success = true,
-                    Message = "All sessions except current revoked successfully",
-                    Data = true
-                });
+                return Ok(BaseResponse<bool>.Success(true, "All sessions except current revoked successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error revoking all sessions except current");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while revoking sessions"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while revoking sessions"));
             }
         }
 
@@ -226,61 +170,34 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 // Check if trying to revoke current session
                 var currentSessionId = User.FindFirstValue("sid");
                 if (string.IsNullOrEmpty(currentSessionId))
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Current session ID not found"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Current session ID not found"));
                 }
                 
                 if (currentSessionId == sessionId)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Cannot revoke current session",
-                        Data = false
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Cannot revoke current session"));
                 }
                 
                 var result = await _authService.RevokeSessionAsync(userId, sessionId);
                 
                 if (!result)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Failed to revoke session",
-                        Data = false
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Failed to revoke session"));
                 }
                 
-                return Ok(new BaseResponse<bool>
-                {
-                    Success = true,
-                    Message = "Session revoked successfully",
-                    Data = true
-                });
+                return Ok(BaseResponse<bool>.Success(true, "Session revoked successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error revoking session {SessionId}", sessionId);
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while revoking session"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while revoking session"));
             }
         }
 
@@ -297,30 +214,17 @@ namespace FinTech.WebAPI.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<SecurityPreferencesDto>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<SecurityPreferencesDto>.Failure("User not authenticated"));
                 }
                 
                 var preferences = await _mfaService.GetSecurityPreferencesAsync(userId);
                 
-                return Ok(new BaseResponse<SecurityPreferencesDto>
-                {
-                    Success = true,
-                    Message = "Security preferences retrieved successfully",
-                    Data = preferences
-                });
+                return Ok(BaseResponse<SecurityPreferencesDto>.Success(preferences, "Security preferences retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving security preferences");
-                return StatusCode(500, new BaseResponse<SecurityPreferencesDto>
-                {
-                    Success = false,
-                    Message = "An error occurred while retrieving security preferences"
-                });
+                return StatusCode(500, BaseResponse<SecurityPreferencesDto>.Failure("An error occurred while retrieving security preferences"));
             }
         }
 
@@ -336,51 +240,29 @@ namespace FinTech.WebAPI.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid security preferences"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid security preferences"));
                 }
                 
                 // Get current user ID
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 var result = await _mfaService.UpdateSecurityPreferencesAsync(userId, preferences);
                 
                 if (!result)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Failed to update security preferences",
-                        Data = false
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Failed to update security preferences"));
                 }
                 
-                return Ok(new BaseResponse<bool>
-                {
-                    Success = true,
-                    Message = "Security preferences updated successfully",
-                    Data = true
-                });
+                return Ok(BaseResponse<bool>.Success(true, "Security preferences updated successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error updating security preferences");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while updating security preferences"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while updating security preferences"));
             }
         }
 
@@ -390,57 +272,35 @@ namespace FinTech.WebAPI.Controllers
         /// <param name="request">The password change request</param>
         /// <returns>Success or failure</returns>
         [HttpPost("change-password")]
-        public async Task<ActionResult<BaseResponse<bool>>> ChangePassword([FromBody] ChangePasswordRequestDto request)
+        public async Task<ActionResult<BaseResponse<bool>>> ChangePassword([FromBody] UpdatePasswordDto request)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "Invalid password change request"
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure("Invalid password change request"));
                 }
                 
                 // Get current user ID
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = "User not authenticated"
-                    });
+                    return Unauthorized(BaseResponse<bool>.Failure("User not authenticated"));
                 }
                 
                 var result = await _authService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
                 
                 if (!result.Succeeded)
                 {
-                    return BadRequest(new BaseResponse<bool>
-                    {
-                        Success = false,
-                        Message = string.Join(", ", result.Errors),
-                        Data = false
-                    });
+                    return BadRequest(BaseResponse<bool>.Failure(string.Join(", ", result.Errors)));
                 }
                 
-                return Ok(new BaseResponse<bool>
-                {
-                    Success = true,
-                    Message = "Password changed successfully",
-                    Data = true
-                });
+                return Ok(BaseResponse<bool>.Success(true, "Password changed successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error changing password");
-                return StatusCode(500, new BaseResponse<bool>
-                {
-                    Success = false,
-                    Message = "An error occurred while changing password"
-                });
+                return StatusCode(500, BaseResponse<bool>.Failure("An error occurred while changing password"));
             }
         }
 

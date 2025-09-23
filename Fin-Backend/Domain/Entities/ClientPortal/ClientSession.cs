@@ -6,11 +6,12 @@ namespace FinTech.Domain.Entities.ClientPortal
 {
     public class ClientSession : BaseEntity
     {
-        public int ClientId { get; set; }
-        public string SessionToken { get; set; }
-        public DateTime ExpiryDate { get; set; }
-        public string IpAddress { get; set; }
-        public string UserAgent { get; set; }
+        public Guid ClientPortalProfileId { get; set; }
+        public ClientPortalProfile? ClientPortalProfile { get; set; }
+        public string? Token { get; set; }
+        public DateTime ExpiresAt { get; set; }
+        public string? IpAddress { get; set; }
+        public string? UserAgent { get; set; }
     }
 
     public class ClientDevice : BaseEntity
