@@ -1,0 +1,5 @@
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.AssemblyInfoInputs.cache
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.AssemblyInfo.cs
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.csproj.CoreCompileInputs.cache
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Domain\obj\Debug\net8.0\FinTech.Domain.sourcelink.json
