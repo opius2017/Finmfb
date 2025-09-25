@@ -1,4 +1,4 @@
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 using FinTech.Infrastructure.Data;
 using Microsoft.ApplicationInsights;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces.Services;
 
 namespace FinTech.Infrastructure.BackgroundServices
 {

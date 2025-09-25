@@ -1,6 +1,6 @@
 using System;
 
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     /// <summary>
     /// Classification for accounting accounts in the chart of accounts

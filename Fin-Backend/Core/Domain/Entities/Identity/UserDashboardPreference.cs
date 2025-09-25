@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Identity;
+namespace FinTech.Core.Domain.Entities.Identity;
 
 public class UserDashboardPreference : BaseEntity
 {

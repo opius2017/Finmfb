@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using FinTech.Domain.Entities.FixedAssets;
+using FinTech.Core.Domain.Entities.FixedAssets;
 
 namespace FinTech.Infrastructure.Data.Configuration.FixedAssets;
 

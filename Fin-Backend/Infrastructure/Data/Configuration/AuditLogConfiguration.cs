@@ -1,4 +1,4 @@
-using FinTech.Infrastructure.Data.Auditing;
+using FinTech.Core.Domain.Entities.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

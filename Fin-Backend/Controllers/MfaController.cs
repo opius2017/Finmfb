@@ -1,4 +1,4 @@
-using FinTech.Application.Common;
+using FinTech.Core.Application.Common;
 using FinTech.WebAPI.Application.DTOs.Auth;
 using FinTech.WebAPI.Application.DTOs.Common;
 using FinTech.WebAPI.Application.Interfaces;

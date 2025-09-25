@@ -1,5 +1,5 @@
-using FinTech.Domain.Entities.Loans;
-using FinTech.Domain.Entities.Tax;
+using FinTech.Core.Domain.Entities.Loans;
+using FinTech.Core.Domain.Entities.Tax;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTech.Infrastructure.Persistence

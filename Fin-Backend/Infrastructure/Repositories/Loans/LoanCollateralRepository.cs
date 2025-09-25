@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FinTech.Application.Interfaces.Repositories.Loans;
+using FinTech.Core.Application.Interfaces.Repositories.Loans;
 using FinTech.Core.Domain.Entities.Loans;
 using Microsoft.Extensions.Logging;
 

@@ -1,6 +1,8 @@
+using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Core.Domain.Entities.Security;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -12,19 +14,19 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Application.Interfaces.Services;
-using FinTech.Domain.Common;
-using FinTech.Domain.Entities.Authentication;
-using FinTech.Domain.Entities.Accounting;
-using FinTech.Domain.Entities.Customers;
-using FinTech.Domain.Entities.Banking;
-using FinTech.Domain.Entities.Loans;
-using FinTech.Domain.Entities.Payroll;
-using FinTech.Domain.Entities.Security;
-using FinTech.Domain.Entities.Currency;
-using FinTech.Domain.Entities.FixedAssets;
-using FinTech.Domain.Entities.RegulatoryReporting;
-using FinTech.Domain.Entities.ClientPortal;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Authentication;
+using FinTech.Core.Domain.Entities.Accounting;
+using FinTech.Core.Domain.Entities.Customers;
+using FinTech.Core.Domain.Entities.Banking;
+using FinTech.Core.Domain.Entities.Loans;
+using FinTech.Core.Domain.Entities.Payroll;
+using FinTech.Core.Domain.Entities.Currency;
+using FinTech.Core.Domain.Entities.FixedAssets;
+using FinTech.Core.Domain.Entities.RegulatoryReporting;
+using FinTech.Core.Domain.Entities.ClientPortal;
+using FinTech.Core.Domain.Entities;
 using FinTech.Infrastructure.Data.Configuration;
 using FinTech.Infrastructure.Data.Configurations.Accounting;
 using FinTech.Infrastructure.Data.Interceptors;
@@ -34,13 +36,11 @@ using FinTech.Infrastructure.Data.Auditing;
 using FinTech.Infrastructure.Data.Events;
 using FinTech.Infrastructure.Data.Messaging;
 using FinTech.Infrastructure.Messaging;
-using FinTech.Application.Common.Interfaces;
-using FinTech.Domain.Entities;
 using Newtonsoft.Json;
 
 namespace FinTech.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<FinTech.Domain.Entities.Authentication.ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
     {
         private readonly IDomainEventService _domainEventService;
         private readonly ILogger<ApplicationDbContext> _logger;
@@ -59,80 +59,80 @@ namespace FinTech.Infrastructure.Data
         }
 
         // General Ledger - Legacy
-        public DbSet<FinTech.Domain.Entities.Accounting.ChartOfAccounts> ChartOfAccounts { get; set; }
-        public DbSet<FinTech.Domain.Entities.Accounting.GeneralLedgerEntry> GeneralLedgerEntries { get; set; }
-        public DbSet<FinTech.Domain.Entities.Accounting.JournalEntry> JournalEntries { get; set; }
-        public DbSet<FinTech.Domain.Entities.Accounting.JournalEntryDetail> JournalEntryDetails { get; set; }
+        public DbSet<ChartOfAccounts> ChartOfAccounts { get; set; }
+        public DbSet<GeneralLedgerEntry> GeneralLedgerEntries { get; set; }
+        public DbSet<JournalEntry> JournalEntries { get; set; }
+        public DbSet<JournalEntryDetail> JournalEntryDetails { get; set; }
         
         // Accounting - New Core Accounting Engine
-        public DbSet<FinTech.Domain.Entities.Accounting.ChartOfAccount> CoreChartOfAccounts { get; set; }
-        public DbSet<FinTech.Domain.Entities.Accounting.JournalEntry> CoreJournalEntries { get; set; }
-        public DbSet<FinTech.Domain.Entities.Accounting.JournalEntryLine> CoreJournalEntryLines { get; set; }
-        public DbSet<FinTech.Domain.Entities.Accounting.FinancialPeriod> FinancialPeriods { get; set; }
-        public DbSet<FinTech.Domain.Entities.Accounting.FiscalYear> FiscalYears { get; set; }
+        public DbSet<ChartOfAccount> CoreChartOfAccounts { get; set; }
+        public DbSet<JournalEntry> CoreJournalEntries { get; set; }
+        public DbSet<JournalEntryLine> CoreJournalEntryLines { get; set; }
+        public DbSet<FinancialPeriod> FinancialPeriods { get; set; }
+        public DbSet<FiscalYear> FiscalYears { get; set; }
 
         // Identity & Multi-tenancy
-        public DbSet<FinTech.Domain.Entities.Authentication.Tenant> Tenants { get; set; }
-        public DbSet<FinTech.Domain.Entities.Authentication.TenantModule> TenantModules { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<TenantModule> TenantModules { get; set; }
         public new DbSet<IdentityRole<Guid>> Roles { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.Permission> Permissions { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.RolePermission> RolePermissions { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ModuleDashboard> ModuleDashboards { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.UserDashboardPreference> UserDashboardPreferences { get; set; }
-        public new DbSet<FinTech.Domain.Entities.Authentication.UserRole> UserRoles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<ModuleDashboard> ModuleDashboards { get; set; }
+        public DbSet<UserDashboardPreference> UserDashboardPreferences { get; set; }
+        public new DbSet<UserRole> UserRoles { get; set; }
         
         // Customer Management
-        public DbSet<FinTech.Domain.Entities.Customers.Customer> Customers { get; set; }
-        public DbSet<FinTech.Domain.Entities.Customers.CustomerDocument> CustomerDocuments { get; set; }
-        public DbSet<FinTech.Domain.Entities.Customers.CustomerNextOfKin> CustomerNextOfKins { get; set; }
-        public DbSet<FinTech.Domain.Entities.Customers.CustomerInquiry> CustomerInquiries { get; set; }
-        public DbSet<FinTech.Domain.Entities.Customers.CustomerComplaint> CustomerComplaints { get; set; }
-        public DbSet<FinTech.Domain.Entities.Customers.CustomerCommunicationLog> CustomerCommunicationLogs { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerDocument> CustomerDocuments { get; set; }
+        public DbSet<CustomerNextOfKin> CustomerNextOfKins { get; set; }
+        public DbSet<CustomerInquiry> CustomerInquiries { get; set; }
+        public DbSet<CustomerComplaint> CustomerComplaints { get; set; }
+        public DbSet<CustomerCommunicationLog> CustomerCommunicationLogs { get; set; }
 
         // Deposit Management
-        public DbSet<FinTech.Domain.Entities.Banking.DepositProduct> DepositProducts { get; set; }
-        public DbSet<FinTech.Domain.Entities.Banking.DepositAccount> DepositAccounts { get; set; }
-        public DbSet<FinTech.Domain.Entities.Banking.DepositTransaction> DepositTransactions { get; set; }
+        public DbSet<DepositProduct> DepositProducts { get; set; }
+        public DbSet<DepositAccount> DepositAccounts { get; set; }
+        public DbSet<DepositTransaction> DepositTransactions { get; set; }
 
         // Loan Management
-        public DbSet<FinTech.Domain.Entities.Loans.LoanProduct> LoanProducts { get; set; }
-        public DbSet<FinTech.Domain.Entities.Loans.LoanAccount> LoanAccounts { get; set; }
-        public DbSet<FinTech.Domain.Entities.Loans.LoanTransaction> LoanTransactions { get; set; }
-        public DbSet<FinTech.Domain.Entities.Loans.LoanRepaymentSchedule> LoanRepaymentSchedules { get; set; }
-        public DbSet<FinTech.Domain.Entities.Loans.LoanCollateral> LoanCollaterals { get; set; }
-        public DbSet<FinTech.Domain.Entities.Loans.LoanGuarantor> LoanGuarantors { get; set; }
+        public DbSet<LoanProduct> LoanProducts { get; set; }
+        public DbSet<LoanAccount> LoanAccounts { get; set; }
+        public DbSet<LoanTransaction> LoanTransactions { get; set; }
+        public DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; set; }
+        public DbSet<LoanCollateral> LoanCollaterals { get; set; }
+        public DbSet<LoanGuarantor> LoanGuarantors { get; set; }
 
         // Accounts Payable
-        public DbSet<FinTech.Domain.Entities.AccountsPayable.Vendor> Vendors { get; set; }
-        public DbSet<FinTech.Domain.Entities.AccountsPayable.PurchaseOrder> PurchaseOrders { get; set; }
-        public DbSet<FinTech.Domain.Entities.AccountsPayable.PurchaseOrderItem> PurchaseOrderItems { get; set; }
-        public DbSet<FinTech.Domain.Entities.AccountsPayable.VendorBill> VendorBills { get; set; }
-        public DbSet<FinTech.Domain.Entities.AccountsPayable.VendorBillItem> VendorBillItems { get; set; }
-        public DbSet<FinTech.Domain.Entities.AccountsPayable.VendorPayment> VendorPayments { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.Vendor> Vendors { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.VendorBill> VendorBills { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.VendorBillItem> VendorBillItems { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.VendorPayment> VendorPayments { get; set; }
 
         // Accounts Receivable
-        public DbSet<FinTech.Domain.Entities.AccountsReceivable.Invoice> Invoices { get; set; }
-        public DbSet<FinTech.Domain.Entities.AccountsReceivable.InvoiceItem> InvoiceItems { get; set; }
-        public DbSet<FinTech.Domain.Entities.AccountsReceivable.CustomerPayment> CustomerPayments { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsReceivable.Invoice> Invoices { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsReceivable.InvoiceItem> InvoiceItems { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.AccountsReceivable.CustomerPayment> CustomerPayments { get; set; }
 
         // Inventory Management
-        public DbSet<FinTech.Domain.Entities.Inventory.InventoryItem> InventoryItems { get; set; }
-        public DbSet<FinTech.Domain.Entities.Inventory.InventoryTransaction> InventoryTransactions { get; set; }
-        public DbSet<FinTech.Domain.Entities.Inventory.StockAdjustment> StockAdjustments { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Inventory.InventoryItem> InventoryItems { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Inventory.InventoryTransaction> InventoryTransactions { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Inventory.StockAdjustment> StockAdjustments { get; set; }
 
         // Payroll & HR
-        public DbSet<FinTech.Domain.Entities.Payroll.Employee> Employees { get; set; }
-        public DbSet<FinTech.Domain.Entities.Payroll.PayrollEntry> PayrollEntries { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<PayrollEntry> PayrollEntries { get; set; }
 
         // Security & Audit
-        public DbSet<FinTech.Domain.Entities.Security.AuditLog> AuditLogs { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.MakerCheckerTransaction> MakerCheckerTransactions { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.ResourcePermission> ResourcePermissions { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.UserPermission> UserPermissions { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.ResourceOperation> ResourceOperations { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.SecurityPolicy> SecurityPolicies { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.LoginAttempt> LoginAttempts { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.DataAccessLog> DataAccessLogs { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Security.AuditLog> AuditLogs { get; set; }
+        public DbSet<MakerCheckerTransaction> MakerCheckerTransactions { get; set; }
+        public DbSet<ResourcePermission> ResourcePermissions { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
+        public DbSet<ResourceOperation> ResourceOperations { get; set; }
+        public DbSet<SecurityPolicy> SecurityPolicies { get; set; }
+        public DbSet<LoginAttempt> LoginAttempts { get; set; }
+        public DbSet<DataAccessLog> DataAccessLogs { get; set; }
         
         // Domain Events Tracking
         public DbSet<FinTech.Infrastructure.Data.Events.DomainEventRecord> DomainEventRecords { get; set; }
@@ -142,70 +142,70 @@ namespace FinTech.Infrastructure.Data
         public DbSet<FinTech.Infrastructure.Messaging.IntegrationEventOutboxItem> IntegrationEventOutbox { get; set; }
 
         // Reporting
-        public DbSet<FinTech.Domain.Entities.Reporting.FinancialStatement> FinancialStatements { get; set; }
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReport> RegulatoryReports { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Reporting.FinancialStatement> FinancialStatements { get; set; }
+        public DbSet<RegulatoryReport> RegulatoryReports { get; set; }
 
         // Multi-Currency
-        public DbSet<FinTech.Domain.Entities.Currency.ExchangeRate> ExchangeRates { get; set; }
-        public DbSet<FinTech.Domain.Entities.Currency.CurrencyRevaluation> CurrencyRevaluations { get; set; }
+        public DbSet<ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<CurrencyRevaluation> CurrencyRevaluations { get; set; }
         
         // Fixed Assets
-        public DbSet<FinTech.Domain.Entities.FixedAssets.Asset> Assets { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetCategory> AssetCategories { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetDepreciationSchedule> AssetDepreciationSchedules { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetMaintenance> AssetMaintenances { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetRevaluation> AssetRevaluations { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetTransfer> AssetTransfers { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetInventoryCount> AssetInventoryCounts { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetInventoryCountItem> AssetInventoryCountItems { get; set; }
-        public DbSet<FinTech.Domain.Entities.FixedAssets.AssetDisposal> AssetDisposals { get; set; }
+        public DbSet<Asset> Assets { get; set; }
+        public DbSet<AssetCategory> AssetCategories { get; set; }
+        public DbSet<AssetDepreciationSchedule> AssetDepreciationSchedules { get; set; }
+        public DbSet<AssetMaintenance> AssetMaintenances { get; set; }
+        public DbSet<AssetRevaluation> AssetRevaluations { get; set; }
+        public DbSet<AssetTransfer> AssetTransfers { get; set; }
+        public DbSet<AssetInventoryCount> AssetInventoryCounts { get; set; }
+        public DbSet<AssetInventoryCountItem> AssetInventoryCountItems { get; set; }
+        public DbSet<AssetDisposal> AssetDisposals { get; set; }
 
         // Regulatory Reporting
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReportTemplate> RegulatoryReportTemplates { get; set; }
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReportSection> RegulatoryReportSections { get; set; }
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReportField> RegulatoryReportFields { get; set; }
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReportSubmission> RegulatoryReportSubmissions { get; set; }
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReportData> RegulatoryReportData { get; set; }
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReportValidation> RegulatoryReportValidations { get; set; }
-        public DbSet<FinTech.Domain.Entities.RegulatoryReporting.RegulatoryReportSchedule> RegulatoryReportSchedules { get; set; }
+        public DbSet<RegulatoryReportTemplate> RegulatoryReportTemplates { get; set; }
+        public DbSet<RegulatoryReportSection> RegulatoryReportSections { get; set; }
+        public DbSet<RegulatoryReportField> RegulatoryReportFields { get; set; }
+        public DbSet<RegulatoryReportSubmission> RegulatoryReportSubmissions { get; set; }
+        public DbSet<RegulatoryReportData> RegulatoryReportData { get; set; }
+        public DbSet<RegulatoryReportValidation> RegulatoryReportValidations { get; set; }
+        public DbSet<RegulatoryReportSchedule> RegulatoryReportSchedules { get; set; }
 
         // MFA and Security
-        public DbSet<FinTech.Domain.Entities.Security.UserMfaSettings> UserMfaSettings { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.MfaBackupCode> MfaBackupCodes { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.MfaChallenge> MfaChallenges { get; set; }
-        public DbSet<FinTech.Domain.Entities.Security.TrustedDevice> TrustedDevices { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.SecurityActivity> SecurityActivities { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.SecurityPreferences> SecurityPreferences { get; set; }
+        public DbSet<UserMfaSettings> UserMfaSettings { get; set; }
+        public DbSet<MfaBackupCode> MfaBackupCodes { get; set; }
+        public DbSet<MfaChallenge> MfaChallenges { get; set; }
+        public DbSet<TrustedDevice> TrustedDevices { get; set; }
+        public DbSet<SecurityActivity> SecurityActivities { get; set; }
+        public DbSet<SecurityPreferences> SecurityPreferences { get; set; }
 
         // Client Portal
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientPortalProfile> ClientPortalProfiles { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.NotificationPreferences> NotificationPreferences { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.DashboardPreferences> DashboardPreferences { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientPortalSession> ClientPortalSessions { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientPortalActivity> ClientPortalActivities { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.SavedPayee> SavedPayees { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.SavedTransferTemplate> SavedTransferTemplates { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientDocument> ClientDocuments { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientSupportTicket> ClientSupportTickets { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientSupportMessage> ClientSupportMessages { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientSupportAttachment> ClientSupportAttachments { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.KnowledgeBaseCategory> KnowledgeBaseCategories { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.KnowledgeBaseArticle> KnowledgeBaseArticles { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.SavingsGoal> SavingsGoals { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.SavingsGoalTransaction> SavingsGoalTransactions { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientNotification> ClientNotifications { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.NotificationTemplate> NotificationTemplates { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.NotificationDeliveryRecord> NotificationDeliveryRecords { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientSession> ClientSessions { get; set; }
-        public DbSet<FinTech.Domain.Entities.ClientPortal.ClientDevice> ClientDevices { get; set; }
+        public DbSet<ClientPortalProfile> ClientPortalProfiles { get; set; }
+        public DbSet<NotificationPreferences> NotificationPreferences { get; set; }
+        public DbSet<DashboardPreferences> DashboardPreferences { get; set; }
+        public DbSet<ClientPortalSession> ClientPortalSessions { get; set; }
+        public DbSet<ClientPortalActivity> ClientPortalActivities { get; set; }
+        public DbSet<SavedPayee> SavedPayees { get; set; }
+        public DbSet<SavedTransferTemplate> SavedTransferTemplates { get; set; }
+        public DbSet<ClientDocument> ClientDocuments { get; set; }
+        public DbSet<ClientSupportTicket> ClientSupportTickets { get; set; }
+        public DbSet<ClientSupportMessage> ClientSupportMessages { get; set; }
+        public DbSet<ClientSupportAttachment> ClientSupportAttachments { get; set; }
+        public DbSet<KnowledgeBaseCategory> KnowledgeBaseCategories { get; set; }
+        public DbSet<KnowledgeBaseArticle> KnowledgeBaseArticles { get; set; }
+        public DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; set; }
+        public DbSet<SavingsGoal> SavingsGoals { get; set; }
+        public DbSet<SavingsGoalTransaction> SavingsGoalTransactions { get; set; }
+        public DbSet<ClientNotification> ClientNotifications { get; set; }
+        public DbSet<NotificationTemplate> NotificationTemplates { get; set; }
+        public DbSet<NotificationDeliveryRecord> NotificationDeliveryRecords { get; set; }
+        public DbSet<ClientSession> ClientSessions { get; set; }
+        public DbSet<ClientDevice> ClientDevices { get; set; }
         
         // Payments and Transfers
-        public DbSet<FinTech.Domain.Entities.Banking.Biller> Billers { get; set; }
-        public DbSet<FinTech.Domain.Entities.Banking.BillPayment> BillPayments { get; set; }
-        public DbSet<FinTech.Domain.Entities.Banking.ExternalTransfer> ExternalTransfers { get; set; }
-        public DbSet<FinTech.Domain.Entities.Banking.RecurringPayment> RecurringPayments { get; set; }
-        public DbSet<FinTech.Domain.Entities.Banking.RecurringPaymentHistory> RecurringPaymentHistory { get; set; }
+        public DbSet<Biller> Billers { get; set; }
+        public DbSet<BillPayment> BillPayments { get; set; }
+        public DbSet<ExternalTransfer> ExternalTransfers { get; set; }
+        public DbSet<RecurringPayment> RecurringPayments { get; set; }
+        public DbSet<RecurringPaymentHistory> RecurringPaymentHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -242,10 +242,10 @@ namespace FinTech.Infrastructure.Data
             // Apply soft delete filter to all entities implementing ISoftDelete
             foreach (var entityType in builder.Model.GetEntityTypes())
             {
-                if (typeof(FinTech.Domain.Common.ISoftDelete).IsAssignableFrom(entityType.ClrType))
+                if (typeof(FinTech.Core.Domain.Common.ISoftDelete).IsAssignableFrom(entityType.ClrType))
                 {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
-                    var property = Expression.Property(parameter, nameof(FinTech.Domain.Common.ISoftDelete.IsDeleted));
+                    var property = Expression.Property(parameter, nameof(FinTech.Core.Domain.Common.ISoftDelete.IsDeleted));
                     var falseValue = Expression.Constant(false);
                     var expression = Expression.Equal(property, falseValue);
                     var lambda = Expression.Lambda(expression, parameter);
@@ -254,13 +254,13 @@ namespace FinTech.Infrastructure.Data
                 }
                 
                 // Apply multi-tenancy filter if applicable
-                if (typeof(FinTech.Domain.Common.ITenantEntity).IsAssignableFrom(entityType.ClrType) && _currentUserService != null)
+                if (typeof(FinTech.Core.Domain.Common.ITenantEntity).IsAssignableFrom(entityType.ClrType) && _currentUserService != null)
                 {
                     var tenantId = _currentUserService.TenantId;
                     if (tenantId.HasValue)
                     {
                         var parameter = Expression.Parameter(entityType.ClrType, "e");
-                        var property = Expression.Property(parameter, nameof(FinTech.Domain.Common.ITenantEntity.TenantId));
+                        var property = Expression.Property(parameter, nameof(FinTech.Core.Domain.Common.ITenantEntity.TenantId));
                         var tenantValue = Expression.Constant(tenantId.Value);
                         var expression = Expression.Equal(property, tenantValue);
                         var lambda = Expression.Lambda(expression, parameter);
@@ -279,7 +279,7 @@ namespace FinTech.Infrastructure.Data
             var auditEntries = OnBeforeSaveChanges();
             
             // Update audit fields
-            foreach (var entry in ChangeTracker.Entries<FinTech.Domain.Common.BaseEntity>())
+            foreach (var entry in ChangeTracker.Entries<FinTech.Core.Domain.Common.BaseEntity>())
             {
                 switch (entry.State)
                 {
@@ -299,7 +299,7 @@ namespace FinTech.Infrastructure.Data
                         break;
                     case EntityState.Deleted:
                         // Implement soft delete if entity implements ISoftDelete
-                        if (entry.Entity is FinTech.Domain.Common.ISoftDelete softDeleteEntity)
+                        if (entry.Entity is FinTech.Core.Domain.Common.ISoftDelete softDeleteEntity)
                         {
                             entry.State = EntityState.Modified;
                             softDeleteEntity.IsDeleted = true;
@@ -314,7 +314,7 @@ namespace FinTech.Infrastructure.Data
             }
 
             // Get entities with domain events
-            var entitiesWithEvents = ChangeTracker.Entries<FinTech.Domain.Common.BaseEntity>()
+            var entitiesWithEvents = ChangeTracker.Entries<FinTech.Core.Domain.Common.BaseEntity>()
                 .Select(e => e.Entity)
                 .Where(e => e.DomainEvents.Any())
                 .ToArray();
@@ -369,7 +369,7 @@ namespace FinTech.Infrastructure.Data
                 if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
                     continue;
 
-                if (!(entry.Entity is FinTech.Domain.Common.IAuditable))
+                if (!(entry.Entity is FinTech.Core.Domain.Common.IAuditable))
                     continue;
 
                 var auditEntry = new FinTech.Infrastructure.Data.Auditing.AuditEntry
@@ -432,7 +432,7 @@ namespace FinTech.Infrastructure.Data
             // Add audit logs to the database
             foreach (var auditEntry in auditEntries)
             {
-                var auditLog = new FinTech.Domain.Entities.Security.AuditLog
+                var auditLog = new FinTech.Core.Domain.Entities.Security.AuditLog
                 {
                     EntityName = auditEntry.EntityName,
                     EntityId = auditEntry.EntityId,
@@ -458,7 +458,7 @@ namespace FinTech.Infrastructure.Data
             return string.Join(",", keyValues);
         }
 
-        private void AddDomainEventsToOutbox(FinTech.Domain.Common.BaseEntity[] entitiesWithEvents)
+        private void AddDomainEventsToOutbox(FinTech.Core.Domain.Common.BaseEntity[] entitiesWithEvents)
         {
             foreach (var entity in entitiesWithEvents)
             {
@@ -494,7 +494,7 @@ namespace FinTech.Infrastructure.Data
             }
         }
 
-        private async Task DispatchEvents(FinTech.Domain.Common.BaseEntity[] entities, CancellationToken cancellationToken)
+        private async Task DispatchEvents(FinTech.Core.Domain.Common.BaseEntity[] entities, CancellationToken cancellationToken)
         {
             if (_domainEventService == null)
             {

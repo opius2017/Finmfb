@@ -1,6 +1,6 @@
 using System;
 
-namespace FinTech.Domain.Entities.Common
+namespace FinTech.Core.Domain.Entities.Common
 {
     public class DomainEventRecord
     {

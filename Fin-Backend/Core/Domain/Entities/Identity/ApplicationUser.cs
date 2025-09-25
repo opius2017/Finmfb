@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace FinTech.Domain.Entities.Identity;
+namespace FinTech.Core.Domain.Entities.Identity;
 
 public class ApplicationUser : IdentityUser<Guid>
 {

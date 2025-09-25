@@ -1,13 +1,13 @@
 using System;
-using FinTech.Application.DTOs.Tax;
-using FinTech.Domain.Common;
+using FinTech.Core.Application.DTOs.Tax;
+using FinTech.Core.Domain.Common;
 
-namespace FinTech.Domain.Entities.Tax
+namespace FinTech.Core.Domain.Entities.Tax
 {
     /// <summary>
     /// Represents a tax type in the system
     /// </summary>
-    using FinTech.Domain.Entities.Common;
+    using FinTech.Core.Domain.Entities.Common;
     public class TaxType : AuditableEntity
     {
         /// <summary>

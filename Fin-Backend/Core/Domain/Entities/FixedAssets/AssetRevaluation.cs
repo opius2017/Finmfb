@@ -1,7 +1,7 @@
 using System;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.FixedAssets;
+namespace FinTech.Core.Domain.Entities.FixedAssets;
 
 /// <summary>
 /// Represents a revaluation of an asset

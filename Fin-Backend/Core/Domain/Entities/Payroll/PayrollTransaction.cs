@@ -1,8 +1,8 @@
 using System;
-using FinTech.Domain.Common;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Payroll
+namespace FinTech.Core.Domain.Entities.Payroll
 {
     public class PayrollTransaction : BaseEntity
     {

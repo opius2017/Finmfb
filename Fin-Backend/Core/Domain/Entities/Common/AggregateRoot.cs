@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FinTech.Domain.Entities.Common
+namespace FinTech.Core.Domain.Entities.Common
 {
     /// <summary>
     /// Base class for aggregate roots in the domain, includes domain events collection

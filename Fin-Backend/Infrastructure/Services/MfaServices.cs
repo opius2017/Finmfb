@@ -1,5 +1,5 @@
 using Fin_Backend.Application.Interfaces;
-using FinTech.Application.Interfaces.Shared;
+using FinTech.Core.Application.Interfaces.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,7 +1,7 @@
-using FinTech.Domain.Common;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Customers
+namespace FinTech.Core.Domain.Entities.Customers
 {
     public class CustomerDocument : BaseEntity
     {

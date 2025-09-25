@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Entities.Customers;
-using FinTech.Domain.Entities.Deposits;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Customers;
+using FinTech.Core.Domain.Entities.Deposits;
 
-namespace FinTech.Domain.Entities.ClientPortal
+namespace FinTech.Core.Domain.Entities.ClientPortal
 {
     // These entities complement the existing ones in ApplicationDbContext
     

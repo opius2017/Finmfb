@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Domain.Repositories;
+using FinTech.Core.Domain.Repositories;
 using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;

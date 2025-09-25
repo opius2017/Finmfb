@@ -1,5 +1,5 @@
-using FinTech.Application.Interfaces;
-using FinTech.Application.Common;
+using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Application.Common;
 using FinTech.Core.Application.DTOs.Security;
 using FinTech.WebAPI.Application.DTOs.Auth;
 using FinTech.WebAPI.Application.Common.DTOs;
@@ -13,7 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using SecurityActivityDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityActivityDto;
 using SecurityPreferencesDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityPreferencesDto;
-using FinTech.Application.Common.Models;
+using FinTech.Core.Application.Common.Models;
 
 namespace FinTech.WebAPI.Controllers
 {

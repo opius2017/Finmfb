@@ -1,4 +1,4 @@
-namespace FinTech.Domain.Enums.FixedAssets;
+namespace FinTech.Core.Domain.Enums.FixedAssets;
 
 /// <summary>
 /// Represents the method used for disposing an asset

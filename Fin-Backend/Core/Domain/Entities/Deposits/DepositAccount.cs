@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Entities.Customers;
-using FinTech.Domain.Enums;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Customers;
+using FinTech.Core.Domain.Enums;
 
-namespace FinTech.Domain.Entities.Deposits;
+namespace FinTech.Core.Domain.Entities.Deposits;
 
 public class DepositAccount : BaseEntity
 {

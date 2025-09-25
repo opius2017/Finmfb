@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using FinTech.Application.Common.Interfaces;
+using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Infrastructure.Extensions;
 
 namespace FinTech.Infrastructure.Services.Background

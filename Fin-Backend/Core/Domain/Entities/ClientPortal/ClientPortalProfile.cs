@@ -1,10 +1,10 @@
-using FinTech.Domain.Common;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Entities.Identity;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
 
-namespace FinTech.Domain.Entities.ClientPortal
+namespace FinTech.Core.Domain.Entities.ClientPortal
 {
     public class ClientPortalProfile : BaseEntity
     {

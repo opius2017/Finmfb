@@ -1,7 +1,7 @@
 using System;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a document associated with a loan
@@ -37,7 +37,7 @@ namespace FinTech.Domain.Entities.Loans
     }
 }
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a document associated with a loan collateral
@@ -65,7 +65,7 @@ namespace FinTech.Domain.Entities.Loans
     }
 }
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a document associated with a loan guarantor
@@ -93,7 +93,7 @@ namespace FinTech.Domain.Entities.Loans
     }
 }
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a required document for a loan product

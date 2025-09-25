@@ -1,8 +1,8 @@
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
 
-namespace FinTech.Domain.Entities.RegulatoryReporting
+namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
     /// <summary>
     /// Represents a regulatory report template for various regulatory bodies (CBN, NDIC, FIRS)

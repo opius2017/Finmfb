@@ -1,6 +1,6 @@
 using System;
 
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     /// <summary>
     /// Types of accounts in the accounting system

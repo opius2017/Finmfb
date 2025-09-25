@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Common;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a fee charged to a loan
@@ -34,7 +34,7 @@ namespace FinTech.Domain.Entities.Loans
     }
 }
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a fee configuration for a loan product

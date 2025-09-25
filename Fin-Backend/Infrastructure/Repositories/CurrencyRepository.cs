@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Application.Interfaces.Repositories;
+using FinTech.Core.Application.Interfaces.Repositories;
 using FinTech.Core.Infrastructure.Persistence;
-using FinTech.Domain.Entities.Currency;
+using FinTech.Core.Domain.Entities.Currency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

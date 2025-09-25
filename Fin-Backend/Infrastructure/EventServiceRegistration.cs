@@ -1,8 +1,8 @@
-using FinTech.Application.Interfaces.Services;
-using FinTech.Domain.Events.Banking;
-using FinTech.Domain.Events.FixedAssets;
-using FinTech.Domain.Events.Loans;
-using FinTech.Domain.Events.Payroll;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Domain.Events.Banking;
+using FinTech.Core.Domain.Events.FixedAssets;
+using FinTech.Core.Domain.Events.Loans;
+using FinTech.Core.Domain.Events.Payroll;
 using FinTech.Infrastructure.Services;
 using FinTech.Infrastructure.Services.EventHandlers.Banking;
 using FinTech.Infrastructure.Services.EventHandlers.FixedAssets;

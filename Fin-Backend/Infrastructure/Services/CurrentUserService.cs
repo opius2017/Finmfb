@@ -1,4 +1,4 @@
-using FinTech.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;

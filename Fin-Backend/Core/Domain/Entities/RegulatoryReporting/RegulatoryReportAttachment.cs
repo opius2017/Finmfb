@@ -1,9 +1,9 @@
 using System;
-using FinTech.Domain.Common;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Entities.Users;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Users;
 
-namespace FinTech.Domain.Entities.RegulatoryReporting
+namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
     /// <summary>
     /// Represents an attachment for a regulatory report submission

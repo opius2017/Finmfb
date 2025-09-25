@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Enums.FixedAssets;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Enums.FixedAssets;
 
-namespace FinTech.Domain.Entities.FixedAssets;
+namespace FinTech.Core.Domain.Entities.FixedAssets;
 
 /// <summary>
 /// Represents a fixed asset in the system

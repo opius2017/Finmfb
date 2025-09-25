@@ -1,4 +1,4 @@
-using FinTech.Domain.Entities.Accounting;
+using FinTech.Core.Domain.Entities.Accounting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

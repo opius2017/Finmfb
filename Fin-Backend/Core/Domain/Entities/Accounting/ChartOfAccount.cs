@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Accounting.Events;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Accounting.Events;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     /// <summary>
     /// Represents an account in the Chart of Accounts

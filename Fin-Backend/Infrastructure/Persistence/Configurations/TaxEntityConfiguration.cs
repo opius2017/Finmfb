@@ -1,4 +1,4 @@
-using FinTech.Domain.Entities.Tax;
+using FinTech.Core.Domain.Entities.Tax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

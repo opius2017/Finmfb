@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Brhta6bvXWA=",
+  "dgSpecHash": "ORW0e2g+I9g=",
   "success": true,
-  "projectFilePath": "c:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj",
+  "projectFilePath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.0\\microsoft.aspnetcore.cryptography.internal.8.0.0.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\8.0.0\\microsoft.aspnetcore.cryptography.keyderivation.8.0.0.nupkg.sha512",

@@ -1,7 +1,7 @@
 using System;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     /// <summary>
     /// Represents the status of the period closing process

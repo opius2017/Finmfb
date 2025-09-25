@@ -1,5 +1,5 @@
-using FinTech.Domain.Entities.Accounting;
-using FinTech.Domain.Repositories.Accounting;
+using FinTech.Core.Domain.Entities.Accounting;
+using FinTech.Core.Domain.Repositories.Accounting;
 using FinTech.Infrastructure.Data;
 using FinTech.Infrastructure.Repositories.Accounting;
 using Microsoft.EntityFrameworkCore;

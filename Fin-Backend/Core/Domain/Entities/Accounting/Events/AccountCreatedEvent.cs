@@ -1,7 +1,7 @@
 using System;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Accounting.Events
+namespace FinTech.Core.Domain.Entities.Accounting.Events
 {
     /// <summary>
     /// Domain event raised when an account is created

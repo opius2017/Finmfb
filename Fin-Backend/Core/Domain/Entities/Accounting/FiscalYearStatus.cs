@@ -1,4 +1,4 @@
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     public enum FiscalYearStatus
     {

@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using FinTech.Application.DTOs.Loans;
-using FinTech.Application.Interfaces.Loans;
+using FinTech.Core.Application.DTOs.Loans;
+using FinTech.Core.Application.Interfaces.Loans;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -87,7 +87,7 @@ namespace FinTech.WebAPI.Controllers
             [HttpPost("collections/{collectionId}/actions")] 
             public async Task<ActionResult<CreateLoanCollectionActionDto>> AddCollectionAction(string collectionId, [FromBody] CreateLoanCollectionActionDto actionDto)
             {
-                var result = await _loanCollectionService.AddCollectionActionAsync(collectionId, _mapper.Map<FinTech.Domain.Entities.Loans.LoanCollectionAction>(actionDto));
+                var result = await _loanCollectionService.AddCollectionActionAsync(collectionId, _mapper.Map<FinTech.Core.Domain.Entities.Loans.LoanCollectionAction>(actionDto));
                 return Ok(result);
             }
 
@@ -117,7 +117,7 @@ namespace FinTech.WebAPI.Controllers
             [HttpPost("applications")] 
             public async Task<ActionResult<CreateLoanApplicationDto>> CreateLoanApplication([FromBody] CreateLoanApplicationDto applicationDto)
             {
-                var application = await _loanApplicationService.CreateLoanApplicationAsync(_mapper.Map<FinTech.Domain.Entities.Loans.LoanApplication>(applicationDto));
+                var application = await _loanApplicationService.CreateLoanApplicationAsync(_mapper.Map<FinTech.Core.Domain.Entities.Loans.LoanApplication>(applicationDto));
                 return Ok(application);
             }
 
@@ -127,7 +127,7 @@ namespace FinTech.WebAPI.Controllers
             [HttpPost("applications/{applicationId}/documents")]
             public async Task<ActionResult<LoanDocumentDto>> UploadLoanDocument(string applicationId, [FromBody] CreateLoanDocumentDto documentDto)
             {
-                var domainDocument = _mapper.Map<FinTech.Domain.Entities.Loans.LoanDocument>(documentDto);
+                var domainDocument = _mapper.Map<FinTech.Core.Domain.Entities.Loans.LoanDocument>(documentDto);
                 byte[] fileData = new byte[0]; // TODO: Replace with actual file data from request
                 var document = await _loanDocumentService.UploadLoanDocumentAsync(domainDocument, fileData);
                 return Ok(_mapper.Map<LoanDocumentDto>(document));

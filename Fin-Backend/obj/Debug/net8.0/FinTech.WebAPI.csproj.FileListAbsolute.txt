@@ -6,3 +6,12 @@
 /home/runner/work/Finmfb/Finmfb/Fin-Backend/obj/Debug/net8.0/FinTech.WebAPI.MvcApplicationPartsAssemblyInfo.cs
 /home/runner/work/Finmfb/Finmfb/Fin-Backend/obj/Debug/net8.0/FinTech.WebAPI.MvcApplicationPartsAssemblyInfo.cache
 /home/runner/work/Finmfb/Finmfb/Fin-Backend/obj/Debug/net8.0/FinTech.WebAPI.sourcelink.json
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.csproj.AssemblyReference.cache
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\rpswa.dswa.cache.json
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.AssemblyInfoInputs.cache
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.AssemblyInfo.cs
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.csproj.CoreCompileInputs.cache
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.MvcApplicationPartsAssemblyInfo.cs
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.MvcApplicationPartsAssemblyInfo.cache
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\FinTech.WebAPI.sourcelink.json

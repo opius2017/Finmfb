@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Azure.Storage.Blobs;
 using System.IO;
-using FinTech.Application.Services;
+using FinTech.Core.Application.Services;
 
 namespace FinTech.Infrastructure.Services
 {

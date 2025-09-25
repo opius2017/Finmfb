@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Interfaces.Repositories;
-using FinTech.Domain.Entities.FixedAssets;
-using FinTech.Domain.Enums.FixedAssets;
+using FinTech.Core.Domain.Entities.FixedAssets;
+using FinTech.Core.Domain.Enums.FixedAssets;
 
 namespace FinTech.Infrastructure.Repositories
 {

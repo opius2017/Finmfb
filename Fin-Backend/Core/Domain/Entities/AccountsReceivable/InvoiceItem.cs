@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.AccountsReceivable;
+namespace FinTech.Core.Domain.Entities.AccountsReceivable;
 
 public class InvoiceItem : BaseEntity
 {

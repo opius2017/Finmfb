@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Enums;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Enums;
 
-namespace FinTech.Domain.Entities.AccountsPayable;
+namespace FinTech.Core.Domain.Entities.AccountsPayable;
 
 public class VendorBill : BaseEntity
 {

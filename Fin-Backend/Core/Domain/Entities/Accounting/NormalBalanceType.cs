@@ -1,6 +1,6 @@
 using System;
 
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     /// <summary>
     /// Indicates whether an account's normal balance is debit or credit

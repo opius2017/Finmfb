@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a credit check performed for a loan application
@@ -40,7 +40,7 @@ namespace FinTech.Domain.Entities.Loans
     }
 }
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a credit limit assigned to a customer

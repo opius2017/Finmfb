@@ -1,4 +1,4 @@
-namespace FinTech.Domain.Entities.Common;
+namespace FinTech.Core.Domain.Entities.Common;
 
 public interface IAuditableEntity
 {

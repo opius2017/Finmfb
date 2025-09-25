@@ -1,0 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FinTech.Core.Application.DTOs.Loans;
+
+namespace FinTech.Core.Application.Interfaces.Loans
+{
+    public interface ILoanProvisioningService
+    {
+        Task<LoanProvisioningDto> CalculateProvisioningAsync(string loanId);
+        Task<IEnumerable<LoanProvisioningDto>> GetAllProvisioningsAsync();
+        Task<LoanProvisioningDto> GetProvisioningByLoanIdAsync(string loanId);
+    }
+}

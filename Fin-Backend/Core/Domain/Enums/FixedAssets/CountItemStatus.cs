@@ -1,4 +1,4 @@
-namespace FinTech.Domain.Enums.FixedAssets;
+namespace FinTech.Core.Domain.Enums.FixedAssets;
 
 /// <summary>
 /// Represents the status of an item in an inventory count

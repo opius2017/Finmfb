@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Application.Interfaces.Services;
-using FinTech.Application.Services.Integration;
-using FinTech.Domain.Events.FixedAssets;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Services.Integration;
+using FinTech.Core.Domain.Events.FixedAssets;
 using Microsoft.Extensions.Logging;
 
 namespace FinTech.Infrastructure.Services.EventHandlers.FixedAssets

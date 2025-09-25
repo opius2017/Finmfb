@@ -1,12 +1,12 @@
 using System;
-using FinTech.Domain.Common;
+using FinTech.Core.Domain.Common;
 
-namespace FinTech.Domain.Entities.RegulatoryReporting
+namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
     /// <summary>
     /// Represents a scheduled regulatory report
     /// </summary>
-    using FinTech.Domain.Entities.Common;
+    using FinTech.Core.Domain.Entities.Common;
     public class RegulatoryReportSchedule : AuditableEntity
     {
         /// <summary>

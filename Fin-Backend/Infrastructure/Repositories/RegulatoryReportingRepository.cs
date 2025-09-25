@@ -1,6 +1,6 @@
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Interfaces.Repositories;
-using FinTech.Domain.Entities.RegulatoryReporting;
+using FinTech.Core.Domain.Entities.RegulatoryReporting;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

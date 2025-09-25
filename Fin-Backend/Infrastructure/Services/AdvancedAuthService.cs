@@ -13,7 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
-using FinTech.Application.Interfaces.Shared;
+using FinTech.Core.Application.Interfaces.Shared;
 
 namespace Fin_Backend.Infrastructure.Services
 {

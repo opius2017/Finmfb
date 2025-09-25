@@ -1,4 +1,4 @@
-using FinTech.Domain.Entities.ClientPortal;
+using FinTech.Core.Domain.Entities.ClientPortal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

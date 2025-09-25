@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.RegulatoryReporting;
 using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Domain.Entities.RegulatoryReporting;
+using FinTech.Core.Domain.Entities.RegulatoryReporting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using System.IO;

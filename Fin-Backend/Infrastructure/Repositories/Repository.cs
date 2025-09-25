@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Repositories;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Repositories;
 using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 

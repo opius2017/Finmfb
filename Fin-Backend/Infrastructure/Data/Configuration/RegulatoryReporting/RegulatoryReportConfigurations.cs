@@ -1,4 +1,4 @@
-using FinTech.Domain.Entities.RegulatoryReporting;
+using FinTech.Core.Domain.Entities.RegulatoryReporting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

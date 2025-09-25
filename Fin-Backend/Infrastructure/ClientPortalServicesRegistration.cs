@@ -1,5 +1,5 @@
-using FinTech.Application.Common.Interfaces;
-using FinTech.Application.Services;
+using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Core.Application.Services;
 using FinTech.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 

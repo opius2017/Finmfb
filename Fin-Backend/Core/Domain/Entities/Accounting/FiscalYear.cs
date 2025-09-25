@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     /// <summary>
     /// Represents a financial year for accounting purposes

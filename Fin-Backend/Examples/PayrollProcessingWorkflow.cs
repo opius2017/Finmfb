@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FinTech.Domain.Entities.Payroll;
+using FinTech.Core.Domain.Entities.Payroll;
 using FinTech.Infrastructure.Data;
-using FinTech.Application.Services.Integration;
+using FinTech.Core.Application.Services.Integration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

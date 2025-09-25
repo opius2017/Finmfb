@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using FinTech.Domain.Entities.Identity;
+using FinTech.Core.Domain.Entities.Identity;
 
 namespace FinTech.Infrastructure.Data.Configuration.Identity;
 

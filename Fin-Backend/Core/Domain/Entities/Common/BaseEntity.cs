@@ -1,6 +1,6 @@
 using System;
 
-namespace FinTech.Domain.Entities.Common
+namespace FinTech.Core.Domain.Entities.Common
 {
     /// <summary>
     /// Base entity for all domain entities with common properties

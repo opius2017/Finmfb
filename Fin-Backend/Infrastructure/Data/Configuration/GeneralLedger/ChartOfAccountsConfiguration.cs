@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using FinTech.Domain.Entities.GeneralLedger;
+using FinTech.Core.Domain.Entities.GeneralLedger;
 
 namespace FinTech.Infrastructure.Data.Configuration.GeneralLedger;
 

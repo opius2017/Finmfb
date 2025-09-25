@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Entities.Customers;
-using FinTech.Domain.Entities.Identity;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Customers;
+using FinTech.Core.Domain.Entities.Identity;
 
-namespace FinTech.Domain.Entities.ClientPortal
+namespace FinTech.Core.Domain.Entities.ClientPortal
 {
     /// <summary>
     /// Represents a client portal user profile with additional settings beyond the base user

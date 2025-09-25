@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Application.Interfaces.Repositories;
-using FinTech.Domain.Entities.Accounting;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Accounting;
+using FinTech.Core.Domain.Entities.Common;
 using FinTech.Infrastructure.Data;
 
 namespace FinTech.Infrastructure.Repositories

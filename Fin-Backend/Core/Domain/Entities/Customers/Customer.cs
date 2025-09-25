@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Enums;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Enums;
 
-namespace FinTech.Domain.Entities.Customers;
+namespace FinTech.Core.Domain.Entities.Customers;
 
 public class Customer : BaseEntity
 {

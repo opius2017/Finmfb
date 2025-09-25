@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System;
-using FinTech.Application.Services;
+using FinTech.Core.Application.Services;
 using FinTech.Infrastructure.Services;
 using FinTech.Infrastructure.Services.Notifications;
 

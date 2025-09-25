@@ -5,8 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using FinTech.Core.Application.Services.Integrations;
 using FinTech.Core.Application.Common.Settings;
 using FinTech.Infrastructure.Extensions;
-using FinTech.Application;
-using FinTech.Application.Interfaces.Services;
+using FinTech.Core.Application;
+using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 

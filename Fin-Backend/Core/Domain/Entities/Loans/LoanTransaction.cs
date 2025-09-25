@@ -1,8 +1,8 @@
 using System;
-using FinTech.Domain.Entities.Common;
-using FinTech.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     public class LoanTransaction : BaseEntity
     {

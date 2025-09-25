@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Common;
-using FinTech.Domain.Events.Banking;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Events.Banking;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Banking
+namespace FinTech.Core.Domain.Entities.Banking
 {
     public class BankAccount : BaseEntity
     {

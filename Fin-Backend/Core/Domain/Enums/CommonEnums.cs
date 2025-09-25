@@ -1,4 +1,4 @@
-namespace FinTech.Domain.Enums;
+namespace FinTech.Core.Domain.Enums;
 
 public enum AccountType
 {

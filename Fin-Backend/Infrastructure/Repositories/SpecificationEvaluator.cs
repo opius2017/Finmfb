@@ -1,5 +1,5 @@
 using System.Linq;
-using FinTech.Domain.Repositories;
+using FinTech.Core.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinTech.Infrastructure.Repositories

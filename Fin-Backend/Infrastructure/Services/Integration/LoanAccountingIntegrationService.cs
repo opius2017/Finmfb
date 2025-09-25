@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using FinTech.Application.Interfaces.Services;
-using FinTech.Application.Services.Integration;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Services.Integration;
 using System.Collections.Generic;
-using FinTech.Application.Interfaces.Integration;
+using FinTech.Core.Application.Interfaces.Integration;
 
 namespace FinTech.Infrastructure.Services.Integration
 {

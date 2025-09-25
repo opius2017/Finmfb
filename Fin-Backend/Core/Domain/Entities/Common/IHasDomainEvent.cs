@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Common
+namespace FinTech.Core.Domain.Entities.Common
 {
     public interface IHasDomainEvent
     {

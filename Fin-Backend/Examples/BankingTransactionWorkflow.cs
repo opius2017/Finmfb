@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using FinTech.Domain.Entities.Banking;
+using FinTech.Core.Domain.Entities.Banking;
 using FinTech.Infrastructure.Data;
-using FinTech.Application.Services.Integration;
+using FinTech.Core.Application.Services.Integration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

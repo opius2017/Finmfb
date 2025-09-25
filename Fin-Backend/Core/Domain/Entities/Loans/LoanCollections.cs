@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Domain.Entities.Common;
+using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents a delinquent loan that needs collection actions
@@ -81,7 +81,7 @@ namespace FinTech.Domain.Entities.Loans
     }
 }
 
-namespace FinTech.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans
 {
     /// <summary>
     /// Represents an action taken to collect a delinquent loan

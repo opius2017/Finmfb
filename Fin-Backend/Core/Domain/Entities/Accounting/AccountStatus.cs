@@ -1,6 +1,6 @@
 using System;
 
-namespace FinTech.Domain.Entities.Accounting
+namespace FinTech.Core.Domain.Entities.Accounting
 {
     /// <summary>
     /// Indicates the status of an account in the chart of accounts
