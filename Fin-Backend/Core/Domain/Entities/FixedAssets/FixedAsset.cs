@@ -6,7 +6,7 @@ using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.FixedAssets
 {
-    public class FixedAsset : BaseEntity
+    public class FixedAsset : AggregateRoot
     {
         public string AssetCode { get; private set; }
         public string AssetName { get; private set; }

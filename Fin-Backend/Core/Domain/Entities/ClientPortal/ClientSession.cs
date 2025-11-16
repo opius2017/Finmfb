@@ -14,13 +14,4 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public string? IpAddress { get; set; }
         public string? UserAgent { get; set; }
     }
-
-    public class ClientDevice : BaseEntity
-    {
-        public int ClientId { get; set; }
-        public string DeviceId { get; set; }
-        public string DeviceType { get; set; }
-        public string PushNotificationToken { get; set; }
-        public bool IsActive { get; set; }
-    }
 }

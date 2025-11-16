@@ -6,12 +6,12 @@ namespace FinTech.Core.Domain.Events.Loans
 {
     public class LoanDisbursedEvent : DomainEvent
     {
-        public int LoanId { get; }
+        public string LoanId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public LoanDisbursedEvent(int loanId, decimal amount, string reference, string description)
+        public LoanDisbursedEvent(string loanId, decimal amount, string reference, string description)
         {
             LoanId = loanId;
             Amount = amount;
@@ -22,13 +22,13 @@ namespace FinTech.Core.Domain.Events.Loans
 
     public class LoanRepaymentReceivedEvent : DomainEvent
     {
-        public int LoanId { get; }
+        public string LoanId { get; }
         public decimal PrincipalAmount { get; }
         public decimal InterestAmount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public LoanRepaymentReceivedEvent(int loanId, decimal principalAmount, decimal interestAmount, string reference, string description)
+        public LoanRepaymentReceivedEvent(string loanId, decimal principalAmount, decimal interestAmount, string reference, string description)
         {
             LoanId = loanId;
             PrincipalAmount = principalAmount;
@@ -40,12 +40,12 @@ namespace FinTech.Core.Domain.Events.Loans
 
     public class LoanWrittenOffEvent : DomainEvent
     {
-        public int LoanId { get; }
+        public string LoanId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public LoanWrittenOffEvent(int loanId, decimal amount, string reference, string description)
+        public LoanWrittenOffEvent(string loanId, decimal amount, string reference, string description)
         {
             LoanId = loanId;
             Amount = amount;
@@ -56,12 +56,12 @@ namespace FinTech.Core.Domain.Events.Loans
 
     public class LoanInterestAccruedEvent : DomainEvent
     {
-        public int LoanId { get; }
+        public string LoanId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public LoanInterestAccruedEvent(int loanId, decimal amount, string reference, string description)
+        public LoanInterestAccruedEvent(string loanId, decimal amount, string reference, string description)
         {
             LoanId = loanId;
             Amount = amount;
@@ -72,13 +72,13 @@ namespace FinTech.Core.Domain.Events.Loans
 
     public class LoanFeeChargedEvent : DomainEvent
     {
-        public int LoanId { get; }
+        public string LoanId { get; }
         public decimal Amount { get; }
         public string FeeType { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public LoanFeeChargedEvent(int loanId, decimal amount, string feeType, string reference, string description)
+        public LoanFeeChargedEvent(string loanId, decimal amount, string feeType, string reference, string description)
         {
             LoanId = loanId;
             Amount = amount;

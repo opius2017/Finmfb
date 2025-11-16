@@ -6,12 +6,12 @@ namespace FinTech.Core.Domain.Events.Banking
 {
     public class DepositCompletedEvent : DomainEvent
     {
-        public int AccountId { get; }
+        public string AccountId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public DepositCompletedEvent(int accountId, decimal amount, string reference, string description)
+        public DepositCompletedEvent(string accountId, decimal amount, string reference, string description)
         {
             AccountId = accountId;
             Amount = amount;
@@ -22,12 +22,12 @@ namespace FinTech.Core.Domain.Events.Banking
 
     public class WithdrawalCompletedEvent : DomainEvent
     {
-        public int AccountId { get; }
+        public string AccountId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public WithdrawalCompletedEvent(int accountId, decimal amount, string reference, string description)
+        public WithdrawalCompletedEvent(string accountId, decimal amount, string reference, string description)
         {
             AccountId = accountId;
             Amount = amount;
@@ -38,13 +38,13 @@ namespace FinTech.Core.Domain.Events.Banking
 
     public class TransferCompletedEvent : DomainEvent
     {
-        public int FromAccountId { get; }
-        public int ToAccountId { get; }
+        public string FromAccountId { get; }
+        public string ToAccountId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public TransferCompletedEvent(int fromAccountId, int toAccountId, decimal amount, string reference, string description)
+        public TransferCompletedEvent(string fromAccountId, string toAccountId, decimal amount, string reference, string description)
         {
             FromAccountId = fromAccountId;
             ToAccountId = toAccountId;
@@ -56,13 +56,13 @@ namespace FinTech.Core.Domain.Events.Banking
 
     public class FeeChargedEvent : DomainEvent
     {
-        public int AccountId { get; }
+        public string AccountId { get; }
         public decimal Amount { get; }
         public string FeeType { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public FeeChargedEvent(int accountId, decimal amount, string feeType, string reference, string description)
+        public FeeChargedEvent(string accountId, decimal amount, string feeType, string reference, string description)
         {
             AccountId = accountId;
             Amount = amount;
@@ -74,12 +74,12 @@ namespace FinTech.Core.Domain.Events.Banking
 
     public class InterestPaidEvent : DomainEvent
     {
-        public int AccountId { get; }
+        public string AccountId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public InterestPaidEvent(int accountId, decimal amount, string reference, string description)
+        public InterestPaidEvent(string accountId, decimal amount, string reference, string description)
         {
             AccountId = accountId;
             Amount = amount;

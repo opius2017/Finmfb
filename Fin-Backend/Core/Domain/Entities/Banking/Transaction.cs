@@ -6,7 +6,7 @@ namespace FinTech.Core.Domain.Entities.Banking
 {
     public class Transaction : BaseEntity
     {
-        public int BankAccountId { get; private set; }
+        public string BankAccountId { get; private set; }
         public string TransactionType { get; private set; }
         public decimal Amount { get; private set; }
         public string Reference { get; private set; }
@@ -18,7 +18,7 @@ namespace FinTech.Core.Domain.Entities.Banking
         private Transaction() { } // For EF Core
 
         public Transaction(
-            int bankAccountId,
+            string bankAccountId,
             string transactionType,
             decimal amount,
             string reference,

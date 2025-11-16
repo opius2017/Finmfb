@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using FinTech.Core.Domain.Common;
-using FinTech.Core.Domain.Entities.Users;
+using FinTech.Core.Domain.Entities.Identity;
 using FinTech.Core.Domain.Entities.Identity;
 using FinTech.Core.Domain.Entities.Common;
 

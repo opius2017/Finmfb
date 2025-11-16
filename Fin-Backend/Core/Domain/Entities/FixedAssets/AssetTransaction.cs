@@ -6,7 +6,7 @@ namespace FinTech.Core.Domain.Entities.FixedAssets
 {
     public class AssetTransaction : BaseEntity
     {
-        public int FixedAssetId { get; private set; }
+        public string FixedAssetId { get; private set; }
         public string TransactionType { get; private set; }
         public decimal Amount { get; private set; }
         public string Reference { get; private set; }
@@ -16,7 +16,7 @@ namespace FinTech.Core.Domain.Entities.FixedAssets
         private AssetTransaction() { } // For EF Core
 
         public AssetTransaction(
-            int fixedAssetId,
+            string fixedAssetId,
             string transactionType,
             decimal amount,
             string reference,

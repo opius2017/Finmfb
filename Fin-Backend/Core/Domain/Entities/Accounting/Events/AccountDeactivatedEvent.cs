@@ -1,5 +1,5 @@
 using System;
-using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
 
 namespace FinTech.Core.Domain.Entities.Accounting.Events
 {

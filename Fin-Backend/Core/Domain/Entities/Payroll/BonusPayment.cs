@@ -5,7 +5,7 @@ using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Payroll
 {
-    public class BonusPayment : BaseEntity
+    public class BonusPayment : AggregateRoot
     {
         public int EmployeeId { get; private set; }
         public decimal Amount { get; private set; }
@@ -39,7 +39,7 @@ namespace FinTech.Core.Domain.Entities.Payroll
 
             // Raise domain event
             AddDomainEvent(new BonusPaymentProcessedEvent(
-                EmployeeId,
+                EmployeeId.ToString(),
                 Amount,
                 Reference,
                 description));

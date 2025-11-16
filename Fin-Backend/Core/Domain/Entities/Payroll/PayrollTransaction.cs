@@ -6,7 +6,7 @@ namespace FinTech.Core.Domain.Entities.Payroll
 {
     public class PayrollTransaction : BaseEntity
     {
-        public int PayrollPeriodId { get; private set; }
+        public string PayrollPeriodId { get; private set; }
         public string TransactionType { get; private set; }
         public decimal Amount { get; private set; }
         public string RelatedEntity { get; private set; }
@@ -17,7 +17,7 @@ namespace FinTech.Core.Domain.Entities.Payroll
         private PayrollTransaction() { } // For EF Core
 
         public PayrollTransaction(
-            int payrollPeriodId,
+            string payrollPeriodId,
             string transactionType,
             decimal amount,
             string relatedEntity,

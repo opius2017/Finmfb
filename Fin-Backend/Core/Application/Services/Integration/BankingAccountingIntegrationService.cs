@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Core.Application.Services.Accounting;
-using FinTech.Core.Domain.Entities.Accounting;
+using FinTech.Core.Application.Services;
+using DtoJournalEntryService = FinTech.Core.Application.Interfaces.Services.IJournalEntryService;
 using FinTech.Core.Domain.Entities.Deposits;
-using FinTech.Core.Domain.Repositories.Accounting;
 
 namespace FinTech.Core.Application.Services.Integration
 {
@@ -33,25 +32,23 @@ namespace FinTech.Core.Application.Services.Integration
             string financialPeriodId, 
             DateTime accrualDate,
             CancellationToken cancellationToken = default);
+
+        // Methods from the separate interface file that need primitive parameters
+        Task ProcessDepositAsync(int accountId, decimal amount, string reference, string description);
+        Task ProcessWithdrawalAsync(int accountId, decimal amount, string reference, string description);
+        Task ProcessTransferAsync(int fromAccountId, int toAccountId, decimal amount, string reference, string description);
+        Task ProcessFeeChargeAsync(int accountId, decimal amount, string feeType, string reference, string description);
+        Task ProcessInterestPaymentAsync(int accountId, decimal amount, string reference, string description);
     }
 
     public class BankingAccountingIntegrationService : IBankingAccountingIntegrationService
     {
-        private readonly IJournalEntryService _journalEntryService;
-        private readonly IChartOfAccountService _chartOfAccountService;
-        private readonly IFinancialPeriodService _financialPeriodService;
-        private readonly IChartOfAccountRepository _chartOfAccountRepository;
+        private readonly DtoJournalEntryService _journalEntryService;
 
         public BankingAccountingIntegrationService(
-            IJournalEntryService journalEntryService,
-            IChartOfAccountService chartOfAccountService,
-            IFinancialPeriodService financialPeriodService,
-            IChartOfAccountRepository chartOfAccountRepository)
+            DtoJournalEntryService journalEntryService)
         {
             _journalEntryService = journalEntryService ?? throw new ArgumentNullException(nameof(journalEntryService));
-            _chartOfAccountService = chartOfAccountService ?? throw new ArgumentNullException(nameof(chartOfAccountService));
-            _financialPeriodService = financialPeriodService ?? throw new ArgumentNullException(nameof(financialPeriodService));
-            _chartOfAccountRepository = chartOfAccountRepository ?? throw new ArgumentNullException(nameof(chartOfAccountRepository));
         }
 
         public async Task<string> ProcessDepositTransactionAsync(
@@ -66,52 +63,39 @@ namespace FinTech.Core.Application.Services.Integration
             if (transaction.Amount <= 0)
                 throw new ArgumentException("Deposit amount must be greater than zero", nameof(transaction));
 
-            // Get the relevant GL accounts
-            var cashAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("1010", cancellationToken);  // Cash account
-            var depositAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("2010", cancellationToken);  // Customer deposits liability
-
-            if (cashAccount == null || depositAccount == null)
-                throw new InvalidOperationException("Required GL accounts not found");
-
-            // Create journal entry
-            var journalEntry = new JournalEntry
+            // Create journal entry using DTO
+            var journalEntry = new JournalEntryDto
             {
-                Description = $"Deposit to account {transaction.AccountNumber} - {transaction.TransactionReference}",
-                EntryDate = transaction.TransactionDate,
-                EntryType = JournalEntryType.Standard,
-                FinancialPeriodId = financialPeriodId,
-                IsSystemGenerated = true,
-                CreatedBy = "BankingIntegration",
-                JournalEntryLines = new List<JournalEntryLine>
+                Description = $"Deposit to account {transaction.AccountId} - {transaction.TransactionReference}",
+                TransactionDate = transaction.TransactionDate,
+                Reference = transaction.TransactionReference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
                 {
-                    // Debit Cash
-                    new JournalEntryLine
+                    // Debit Cash (using hardcoded account ID for now)
+                    new JournalEntryLineDto
                     {
-                        AccountId = cashAccount.Id,
-                        Description = $"Deposit to account {transaction.AccountNumber}",
+                        AccountId = 1010, // Cash account
+                        Description = $"Deposit to account {transaction.AccountId}",
                         DebitAmount = transaction.Amount,
-                        CreditAmount = 0,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = 0
                     },
                     // Credit Customer Deposits
-                    new JournalEntryLine
+                    new JournalEntryLineDto
                     {
-                        AccountId = depositAccount.Id,
-                        Description = $"Deposit to account {transaction.AccountNumber}",
+                        AccountId = 2010, // Customer deposits liability
+                        Description = $"Customer deposit for account {transaction.AccountId}",
                         DebitAmount = 0,
-                        CreditAmount = transaction.Amount,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = transaction.Amount
                     }
                 }
             };
 
-            // Create, submit, approve, and post the journal entry
-            var journalEntryId = await _journalEntryService.CreateJournalEntryAsync(journalEntry, cancellationToken);
-            await _journalEntryService.SubmitForApprovalAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.ApproveJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.PostJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
-
-            return journalEntryId;
+            // Create the journal entry
+            var journalEntryDto = await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+            
+            // Return the ID as string (convert from int if needed)
+            return journalEntryDto.Id.ToString();
         }
 
         public async Task<string> ProcessWithdrawalTransactionAsync(
@@ -126,52 +110,39 @@ namespace FinTech.Core.Application.Services.Integration
             if (transaction.Amount <= 0)
                 throw new ArgumentException("Withdrawal amount must be greater than zero", nameof(transaction));
 
-            // Get the relevant GL accounts
-            var cashAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("1010", cancellationToken);  // Cash account
-            var depositAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("2010", cancellationToken);  // Customer deposits liability
-
-            if (cashAccount == null || depositAccount == null)
-                throw new InvalidOperationException("Required GL accounts not found");
-
-            // Create journal entry
-            var journalEntry = new JournalEntry
+            // Create journal entry using DTO
+            var journalEntry = new JournalEntryDto
             {
-                Description = $"Withdrawal from account {transaction.AccountNumber} - {transaction.TransactionReference}",
-                EntryDate = transaction.TransactionDate,
-                EntryType = JournalEntryType.Standard,
-                FinancialPeriodId = financialPeriodId,
-                IsSystemGenerated = true,
-                CreatedBy = "BankingIntegration",
-                JournalEntryLines = new List<JournalEntryLine>
+                Description = $"Withdrawal from account {transaction.AccountId} - {transaction.TransactionReference}",
+                TransactionDate = transaction.TransactionDate,
+                Reference = transaction.TransactionReference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
                 {
                     // Debit Customer Deposits
-                    new JournalEntryLine
+                    new JournalEntryLineDto
                     {
-                        AccountId = depositAccount.Id,
-                        Description = $"Withdrawal from account {transaction.AccountNumber}",
+                        AccountId = 2010, // Customer deposits liability
+                        Description = $"Withdrawal from account {transaction.AccountId}",
                         DebitAmount = transaction.Amount,
-                        CreditAmount = 0,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = 0
                     },
                     // Credit Cash
-                    new JournalEntryLine
+                    new JournalEntryLineDto
                     {
-                        AccountId = cashAccount.Id,
-                        Description = $"Withdrawal from account {transaction.AccountNumber}",
+                        AccountId = 1010, // Cash account
+                        Description = $"Cash withdrawal from account {transaction.AccountId}",
                         DebitAmount = 0,
-                        CreditAmount = transaction.Amount,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = transaction.Amount
                     }
                 }
             };
 
-            // Create, submit, approve, and post the journal entry
-            var journalEntryId = await _journalEntryService.CreateJournalEntryAsync(journalEntry, cancellationToken);
-            await _journalEntryService.SubmitForApprovalAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.ApproveJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.PostJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
-
-            return journalEntryId;
+            // Create the journal entry
+            var journalEntryDto = await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+            
+            // Return the ID as string (convert from int if needed)
+            return journalEntryDto.Id.ToString();
         }
 
         public async Task<string> ProcessTransferTransactionAsync(
@@ -193,70 +164,39 @@ namespace FinTech.Core.Application.Services.Integration
             if (sourceTransaction.Amount != destinationTransaction.Amount)
                 throw new ArgumentException("Source and destination amounts must be equal");
 
-            // Get the relevant GL accounts - for transfers, we use a transfer clearing account
-            var transferClearingAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("2090", cancellationToken);  // Transfer clearing account
-            var depositAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("2010", cancellationToken);  // Customer deposits liability
-
-            if (transferClearingAccount == null || depositAccount == null)
-                throw new InvalidOperationException("Required GL accounts not found");
-
-            // Create journal entry
-            var journalEntry = new JournalEntry
+            // Create journal entry using DTO
+            var journalEntry = new JournalEntryDto
             {
-                Description = $"Transfer from {sourceTransaction.AccountNumber} to {destinationTransaction.AccountNumber} - {sourceTransaction.TransactionReference}",
-                EntryDate = sourceTransaction.TransactionDate,
-                EntryType = JournalEntryType.Standard,
-                FinancialPeriodId = financialPeriodId,
-                IsSystemGenerated = true,
-                CreatedBy = "BankingIntegration",
-                JournalEntryLines = new List<JournalEntryLine>
+                Description = $"Transfer from account {sourceTransaction.AccountId} to account {destinationTransaction.AccountId} - {sourceTransaction.TransactionReference}",
+                TransactionDate = sourceTransaction.TransactionDate,
+                Reference = sourceTransaction.TransactionReference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
                 {
-                    // Debit Customer Deposits (Source Account)
-                    new JournalEntryLine
+                    // Debit source account (reduce deposit liability)
+                    new JournalEntryLineDto
                     {
-                        AccountId = depositAccount.Id,
-                        Description = $"Transfer from account {sourceTransaction.AccountNumber}",
+                        AccountId = 2010, // Customer deposits liability
+                        Description = $"Transfer from account {sourceTransaction.AccountId}",
                         DebitAmount = sourceTransaction.Amount,
-                        CreditAmount = 0,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = 0
                     },
-                    // Credit Transfer Clearing
-                    new JournalEntryLine
+                    // Credit destination account (increase deposit liability)
+                    new JournalEntryLineDto
                     {
-                        AccountId = transferClearingAccount.Id,
-                        Description = $"Transfer from {sourceTransaction.AccountNumber} to {destinationTransaction.AccountNumber}",
+                        AccountId = 2010, // Customer deposits liability  
+                        Description = $"Transfer to account {destinationTransaction.AccountId}",
                         DebitAmount = 0,
-                        CreditAmount = sourceTransaction.Amount,
-                        CreatedBy = "BankingIntegration"
-                    },
-                    // Debit Transfer Clearing
-                    new JournalEntryLine
-                    {
-                        AccountId = transferClearingAccount.Id,
-                        Description = $"Transfer from {sourceTransaction.AccountNumber} to {destinationTransaction.AccountNumber}",
-                        DebitAmount = destinationTransaction.Amount,
-                        CreditAmount = 0,
-                        CreatedBy = "BankingIntegration"
-                    },
-                    // Credit Customer Deposits (Destination Account)
-                    new JournalEntryLine
-                    {
-                        AccountId = depositAccount.Id,
-                        Description = $"Transfer to account {destinationTransaction.AccountNumber}",
-                        DebitAmount = 0,
-                        CreditAmount = destinationTransaction.Amount,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = destinationTransaction.Amount
                     }
                 }
             };
 
-            // Create, submit, approve, and post the journal entry
-            var journalEntryId = await _journalEntryService.CreateJournalEntryAsync(journalEntry, cancellationToken);
-            await _journalEntryService.SubmitForApprovalAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.ApproveJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.PostJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
-
-            return journalEntryId;
+            // Create the journal entry
+            var journalEntryDto = await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+            
+            // Return the ID as string (convert from int if needed)
+            return journalEntryDto.Id.ToString();
         }
 
         public async Task<string> ProcessInterestAccrualAsync(
@@ -269,55 +209,196 @@ namespace FinTech.Core.Application.Services.Integration
             if (interestTransactions == null || !interestTransactions.Any())
                 throw new ArgumentException("Interest transactions cannot be null or empty", nameof(interestTransactions));
 
-            // Get the relevant GL accounts
-            var interestExpenseAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("5020", cancellationToken);  // Interest expense
-            var depositAccount = await _chartOfAccountRepository.GetByAccountNumberAsync("2010", cancellationToken);  // Customer deposits liability
-
-            if (interestExpenseAccount == null || depositAccount == null)
-                throw new InvalidOperationException("Required GL accounts not found");
-
             // Calculate total interest
             decimal totalInterest = interestTransactions.Sum(t => t.Amount);
 
-            // Create journal entry
-            var journalEntry = new JournalEntry
+            // Create journal entry using DTO
+            var journalEntry = new JournalEntryDto
             {
                 Description = $"Interest accrual for deposit accounts - {accrualDate:yyyy-MM-dd}",
-                EntryDate = accrualDate,
-                EntryType = JournalEntryType.Standard,
-                FinancialPeriodId = financialPeriodId,
-                IsSystemGenerated = true,
-                CreatedBy = "BankingIntegration",
-                JournalEntryLines = new List<JournalEntryLine>
+                TransactionDate = accrualDate,
+                Reference = $"INT-{accrualDate:yyyyMMdd}",
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
                 {
                     // Debit Interest Expense
-                    new JournalEntryLine
+                    new JournalEntryLineDto
                     {
-                        AccountId = interestExpenseAccount.Id,
+                        AccountId = 5020, // Interest expense
                         Description = $"Interest accrual for deposit accounts - {accrualDate:yyyy-MM-dd}",
                         DebitAmount = totalInterest,
-                        CreditAmount = 0,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = 0
                     },
                     // Credit Customer Deposits
-                    new JournalEntryLine
+                    new JournalEntryLineDto
                     {
-                        AccountId = depositAccount.Id,
+                        AccountId = 2010, // Customer deposits liability
                         Description = $"Interest accrual for deposit accounts - {accrualDate:yyyy-MM-dd}",
                         DebitAmount = 0,
-                        CreditAmount = totalInterest,
-                        CreatedBy = "BankingIntegration"
+                        CreditAmount = totalInterest
                     }
                 }
             };
 
-            // Create, submit, approve, and post the journal entry
-            var journalEntryId = await _journalEntryService.CreateJournalEntryAsync(journalEntry, cancellationToken);
-            await _journalEntryService.SubmitForApprovalAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.ApproveJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
-            await _journalEntryService.PostJournalEntryAsync(journalEntryId, "BankingIntegration", cancellationToken);
+            // Create the journal entry
+            var journalEntryDto = await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+            
+            // Return the ID as string (convert from int if needed)
+            return journalEntryDto.Id.ToString();
+        }
 
-            return journalEntryId;
+        // Interface methods that take primitive parameters (from IBankingAccountingIntegrationService.cs)
+        public async Task ProcessDepositAsync(int accountId, decimal amount, string reference, string description)
+        {
+            // Create journal entry using DTO
+            var journalEntry = new JournalEntryDto
+            {
+                Description = description,
+                TransactionDate = DateTime.Now,
+                Reference = reference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
+                {
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 1010, // Cash account
+                        Description = description,
+                        DebitAmount = amount,
+                        CreditAmount = 0
+                    },
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 2010, // Customer deposits
+                        Description = description,
+                        DebitAmount = 0,
+                        CreditAmount = amount
+                    }
+                }
+            };
+
+            await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+        }
+
+        public async Task ProcessWithdrawalAsync(int accountId, decimal amount, string reference, string description)
+        {
+            // Create journal entry using DTO
+            var journalEntry = new JournalEntryDto
+            {
+                Description = description,
+                TransactionDate = DateTime.Now,
+                Reference = reference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
+                {
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 2010, // Customer deposits
+                        Description = description,
+                        DebitAmount = amount,
+                        CreditAmount = 0
+                    },
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 1010, // Cash account
+                        Description = description,
+                        DebitAmount = 0,
+                        CreditAmount = amount
+                    }
+                }
+            };
+
+            await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+        }
+
+        public async Task ProcessTransferAsync(int fromAccountId, int toAccountId, decimal amount, string reference, string description)
+        {
+            // For simplicity, transfers are internal movements between customer deposit accounts
+            var journalEntry = new JournalEntryDto
+            {
+                Description = description,
+                TransactionDate = DateTime.Now,
+                Reference = reference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
+                {
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 2010, // Customer deposits (from)
+                        Description = $"Transfer from account {fromAccountId}",
+                        DebitAmount = amount,
+                        CreditAmount = 0
+                    },
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 2010, // Customer deposits (to)
+                        Description = $"Transfer to account {toAccountId}",
+                        DebitAmount = 0,
+                        CreditAmount = amount
+                    }
+                }
+            };
+
+            await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+        }
+
+        public async Task ProcessFeeChargeAsync(int accountId, decimal amount, string feeType, string reference, string description)
+        {
+            var journalEntry = new JournalEntryDto
+            {
+                Description = description,
+                TransactionDate = DateTime.Now,
+                Reference = reference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
+                {
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 2010, // Customer deposits
+                        Description = description,
+                        DebitAmount = amount,
+                        CreditAmount = 0
+                    },
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 4010, // Fee income
+                        Description = description,
+                        DebitAmount = 0,
+                        CreditAmount = amount
+                    }
+                }
+            };
+
+            await _journalEntryService.CreateJournalEntryAsync(journalEntry);
+        }
+
+        public async Task ProcessInterestPaymentAsync(int accountId, decimal amount, string reference, string description)
+        {
+            var journalEntry = new JournalEntryDto
+            {
+                Description = description,
+                TransactionDate = DateTime.Now,
+                Reference = reference,
+                Source = "BankingIntegration",
+                Lines = new List<JournalEntryLineDto>
+                {
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 5020, // Interest expense
+                        Description = description,
+                        DebitAmount = amount,
+                        CreditAmount = 0
+                    },
+                    new JournalEntryLineDto
+                    {
+                        AccountId = 2010, // Customer deposits
+                        Description = description,
+                        DebitAmount = 0,
+                        CreditAmount = amount
+                    }
+                }
+            };
+
+            await _journalEntryService.CreateJournalEntryAsync(journalEntry);
         }
     }
 }

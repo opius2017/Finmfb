@@ -510,3 +510,14 @@ public enum DashboardType
     RiskManagement = 4,
     Custom = 5
 }
+
+public enum FixedAssetStatus
+{
+    Active = 1,
+    Inactive = 2,
+    Disposed = 3,
+    UnderMaintenance = 4,
+    Lost = 5,
+    Stolen = 6,
+    Depreciated = 7
+}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using FinTech.Core.Domain.Entities.Customers;
 
 namespace FinTech.Core.Domain.Entities.ClientPortal
 {

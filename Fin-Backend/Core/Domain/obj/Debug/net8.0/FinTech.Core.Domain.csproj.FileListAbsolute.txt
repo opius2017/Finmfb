@@ -4,3 +4,10 @@ c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.AssemblyInfo.cs
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.csproj.CoreCompileInputs.cache
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.sourcelink.json
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\bin\Debug\net8.0\FinTech.Core.Domain.deps.json
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\bin\Debug\net8.0\FinTech.Core.Domain.dll
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\bin\Debug\net8.0\FinTech.Core.Domain.pdb
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.dll
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\refint\FinTech.Core.Domain.dll
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.pdb
+c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\ref\FinTech.Core.Domain.dll

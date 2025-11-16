@@ -6,7 +6,7 @@ namespace FinTech.Core.Domain.Events.Payroll
 {
     public class SalaryPaymentProcessedEvent : DomainEvent
     {
-        public int EmployeeId { get; }
+        public string EmployeeId { get; }
         public decimal GrossAmount { get; }
         public decimal TaxAmount { get; }
         public decimal PensionAmount { get; }
@@ -15,7 +15,7 @@ namespace FinTech.Core.Domain.Events.Payroll
         public string Reference { get; }
         public string Description { get; }
 
-        public SalaryPaymentProcessedEvent(int employeeId, decimal grossAmount, decimal taxAmount, 
+        public SalaryPaymentProcessedEvent(string employeeId, decimal grossAmount, decimal taxAmount, 
             decimal pensionAmount, decimal otherDeductions, string payPeriod, string reference, string description)
         {
             EmployeeId = employeeId;
@@ -67,12 +67,12 @@ namespace FinTech.Core.Domain.Events.Payroll
 
     public class BonusPaymentProcessedEvent : DomainEvent
     {
-        public int EmployeeId { get; }
+        public string EmployeeId { get; }
         public decimal Amount { get; }
         public string Reference { get; }
         public string Description { get; }
 
-        public BonusPaymentProcessedEvent(int employeeId, decimal amount, string reference, string description)
+        public BonusPaymentProcessedEvent(string employeeId, decimal amount, string reference, string description)
         {
             EmployeeId = employeeId;
             Amount = amount;

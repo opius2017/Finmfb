@@ -1,11 +1,31 @@
 using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Entities.Security;
-using Microsoft.EntityFrameworkCore;
+using FinTech.Core.Domain.Entities.Identity;
+using FinTech.Core.Domain.Entities.Authentication;
+using FinTech.Core.Domain.Entities.Accounting;
+using FinTech.Core.Domain.Entities.GeneralLedger;
+using FinTech.Core.Domain.Entities.Deposits;
+using FinTech.Core.Domain.Entities.Loans;
+using FinTech.Core.Domain.Entities.FixedAssets;
+using FinTech.Core.Domain.Entities.ClientPortal;
+using FinTech.Core.Domain.Entities.RegulatoryReporting;
+using FinTech.Core.Domain.Entities.Customers;
+using FinTech.Core.Domain.Entities.Banking;
+using FinTech.Core.Domain.Entities.Payroll;
+using FinTech.Core.Domain.Entities.Currency;
+using FinTech.Infrastructure.Data.Configuration;
+using FinTech.Infrastructure.Data.Configurations.Accounting;
+using FinTech.Infrastructure.Data.Interceptors;
+using FinTech.Infrastructure.Security.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,23 +34,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Core.Domain.Common;
-using FinTech.Core.Domain.Entities.Authentication;
-using FinTech.Core.Domain.Entities.Accounting;
-using FinTech.Core.Domain.Entities.Customers;
-using FinTech.Core.Domain.Entities.Banking;
-using FinTech.Core.Domain.Entities.Loans;
-using FinTech.Core.Domain.Entities.Payroll;
-using FinTech.Core.Domain.Entities.Currency;
-using FinTech.Core.Domain.Entities.FixedAssets;
-using FinTech.Core.Domain.Entities.RegulatoryReporting;
-using FinTech.Core.Domain.Entities.ClientPortal;
-using FinTech.Core.Domain.Entities;
-using FinTech.Infrastructure.Data.Configuration;
-using FinTech.Infrastructure.Data.Configurations.Accounting;
-using FinTech.Infrastructure.Data.Interceptors;
-using FinTech.Infrastructure.Security.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using FinTech.Infrastructure.Data.Auditing;
 using FinTech.Infrastructure.Data.Events;
@@ -40,17 +43,17 @@ using Newtonsoft.Json;
 
 namespace FinTech.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<FinTech.Core.Domain.Entities.Authentication.ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
     {
-        private readonly IDomainEventService _domainEventService;
-        private readonly ILogger<ApplicationDbContext> _logger;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly IDomainEventService? _domainEventService;
+        private readonly ILogger<ApplicationDbContext>? _logger;
+        private readonly ICurrentUserService? _currentUserService;
 
         public ApplicationDbContext(
             DbContextOptions<ApplicationDbContext> options, 
-            IDomainEventService domainEventService = null,
-            ILogger<ApplicationDbContext> logger = null,
-            ICurrentUserService currentUserService = null) 
+            IDomainEventService? domainEventService = null,
+            ILogger<ApplicationDbContext>? logger = null,
+            ICurrentUserService? currentUserService = null) 
             : base(options) 
         {
             _domainEventService = domainEventService;
@@ -61,12 +64,12 @@ namespace FinTech.Infrastructure.Data
         // General Ledger - Legacy
         public DbSet<ChartOfAccounts> ChartOfAccounts { get; set; }
         public DbSet<GeneralLedgerEntry> GeneralLedgerEntries { get; set; }
-        public DbSet<JournalEntry> JournalEntries { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.GeneralLedger.JournalEntry> JournalEntries { get; set; }
         public DbSet<JournalEntryDetail> JournalEntryDetails { get; set; }
         
         // Accounting - New Core Accounting Engine
         public DbSet<ChartOfAccount> CoreChartOfAccounts { get; set; }
-        public DbSet<JournalEntry> CoreJournalEntries { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Accounting.JournalEntry> CoreJournalEntries { get; set; }
         public DbSet<JournalEntryLine> CoreJournalEntryLines { get; set; }
         public DbSet<FinancialPeriod> FinancialPeriods { get; set; }
         public DbSet<FiscalYear> FiscalYears { get; set; }
@@ -75,6 +78,7 @@ namespace FinTech.Infrastructure.Data
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<TenantModule> TenantModules { get; set; }
         public new DbSet<IdentityRole<Guid>> Roles { get; set; }
+        public new DbSet<FinTech.Core.Domain.Entities.Identity.ApplicationUser> Users { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<ModuleDashboard> ModuleDashboards { get; set; }
@@ -101,6 +105,8 @@ namespace FinTech.Infrastructure.Data
         public DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; set; }
         public DbSet<LoanCollateral> LoanCollaterals { get; set; }
         public DbSet<LoanGuarantor> LoanGuarantors { get; set; }
+        public DbSet<LoanApplicationRequest> LoanApplicationRequests { get; set; }
+        public DbSet<LoanApplicationDocument> LoanApplicationDocuments { get; set; }
 
         // Accounts Payable
         public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.Vendor> Vendors { get; set; }
@@ -129,7 +135,6 @@ namespace FinTech.Infrastructure.Data
         public DbSet<MakerCheckerTransaction> MakerCheckerTransactions { get; set; }
         public DbSet<ResourcePermission> ResourcePermissions { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
-        public DbSet<ResourceOperation> ResourceOperations { get; set; }
         public DbSet<SecurityPolicy> SecurityPolicies { get; set; }
         public DbSet<LoginAttempt> LoginAttempts { get; set; }
         public DbSet<DataAccessLog> DataAccessLogs { get; set; }
@@ -143,11 +148,11 @@ namespace FinTech.Infrastructure.Data
 
         // Reporting
         public DbSet<FinTech.Core.Domain.Entities.Reporting.FinancialStatement> FinancialStatements { get; set; }
-        public DbSet<RegulatoryReport> RegulatoryReports { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Reporting.RegulatoryReport> RegulatoryReports { get; set; }
 
         // Multi-Currency
-        public DbSet<ExchangeRate> ExchangeRates { get; set; }
-        public DbSet<CurrencyRevaluation> CurrencyRevaluations { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.MultiCurrency.ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.MultiCurrency.CurrencyRevaluation> CurrencyRevaluations { get; set; }
         
         // Fixed Assets
         public DbSet<Asset> Assets { get; set; }
@@ -170,8 +175,8 @@ namespace FinTech.Infrastructure.Data
         public DbSet<RegulatoryReportSchedule> RegulatoryReportSchedules { get; set; }
 
         // MFA and Security
-        public DbSet<UserMfaSettings> UserMfaSettings { get; set; }
-        public DbSet<MfaBackupCode> MfaBackupCodes { get; set; }
+        public DbSet<MfaSettings> UserMfaSettings { get; set; }
+        public DbSet<BackupCode> MfaBackupCodes { get; set; }
         public DbSet<MfaChallenge> MfaChallenges { get; set; }
         public DbSet<TrustedDevice> TrustedDevices { get; set; }
         public DbSet<SecurityActivity> SecurityActivities { get; set; }
@@ -215,23 +220,26 @@ namespace FinTech.Infrastructure.Data
             builder.ApplyAllConfigurations();
             
             // Apply explicitly the new accounting configurations
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.ChartOfAccountConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.JournalEntryConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.JournalEntryLineConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.FinancialPeriodConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.FiscalYearConfiguration());
+            // TODO: Add configuration classes when they exist
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.ChartOfAccountConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.JournalEntryConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.JournalEntryLineConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.FinancialPeriodConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Configurations.Accounting.FiscalYearConfiguration());
             
             // Apply security and authorization configurations
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.ResourcePermissionConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.UserPermissionConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.SecurityPolicyConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.LoginAttemptConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.DataAccessLogConfiguration());
+            // TODO: Add security configuration classes when they exist
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.ResourcePermissionConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.UserPermissionConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.SecurityPolicyConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.LoginAttemptConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Security.Authorization.DataAccessLogConfiguration());
             
             // Apply event tracking configurations
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Events.DomainEventRecordConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Messaging.OutboxMessageConfiguration());
-            builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Auditing.AuditLogConfiguration());
+            // TODO: Add event configuration classes when they exist
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Events.DomainEventRecordConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Messaging.OutboxMessageConfiguration());
+            // builder.ApplyConfiguration(new FinTech.Infrastructure.Data.Auditing.AuditLogConfiguration());
             
             // Apply global query filters
             ApplyGlobalFilters(builder);
@@ -256,7 +264,7 @@ namespace FinTech.Infrastructure.Data
                 // Apply multi-tenancy filter if applicable
                 if (typeof(FinTech.Core.Domain.Common.ITenantEntity).IsAssignableFrom(entityType.ClrType) && _currentUserService != null)
                 {
-                    var tenantId = _currentUserService.TenantId;
+                    var tenantId = _currentUserService?.TenantId;
                     if (tenantId.HasValue)
                     {
                         var parameter = Expression.Parameter(entityType.ClrType, "e");
@@ -279,22 +287,22 @@ namespace FinTech.Infrastructure.Data
             var auditEntries = OnBeforeSaveChanges();
             
             // Update audit fields
-            foreach (var entry in ChangeTracker.Entries<FinTech.Core.Domain.Common.BaseEntity>())
+            foreach (var entry in ChangeTracker.Entries<FinTech.Core.Domain.Entities.Common.BaseEntity>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedAt = DateTime.UtcNow;
+                        entry.Entity.CreatedDate = DateTime.UtcNow;
                         if (_currentUserService != null)
                         {
-                            entry.Entity.CreatedBy = _currentUserService.UserId.ToString();
+                            entry.Entity.CreatedBy = _currentUserService?.UserId?.ToString() ?? "System";
                         }
                         break;
                     case EntityState.Modified:
-                        entry.Entity.UpdatedAt = DateTime.UtcNow;
+                        entry.Entity.LastModifiedDate = DateTime.UtcNow;
                         if (_currentUserService != null)
                         {
-                            entry.Entity.UpdatedBy = _currentUserService.UserId.ToString();
+                            entry.Entity.LastModifiedBy = _currentUserService.UserId.ToString();
                         }
                         break;
                     case EntityState.Deleted:
@@ -306,7 +314,7 @@ namespace FinTech.Infrastructure.Data
                             softDeleteEntity.DeletedAt = DateTime.UtcNow;
                             if (_currentUserService != null)
                             {
-                                softDeleteEntity.DeletedBy = _currentUserService.UserId.ToString();
+                                softDeleteEntity.DeletedBy = _currentUserService.UserId;
                             }
                         }
                         break;
@@ -314,7 +322,7 @@ namespace FinTech.Infrastructure.Data
             }
 
             // Get entities with domain events
-            var entitiesWithEvents = ChangeTracker.Entries<FinTech.Core.Domain.Common.BaseEntity>()
+            var entitiesWithEvents = ChangeTracker.Entries<FinTech.Core.Domain.Entities.Common.AggregateRoot>()
                 .Select(e => e.Entity)
                 .Where(e => e.DomainEvents.Any())
                 .ToArray();
@@ -386,7 +394,7 @@ namespace FinTech.Infrastructure.Data
                 foreach (var property in entry.Properties)
                 {
                     // Skip navigation properties and collections
-                    if (property.Metadata.IsKey() || property.Metadata.IsForeignKey() || property.GetCollectionAccessor() != null)
+                    if (property.Metadata.IsKey() || property.Metadata.IsForeignKey())
                         continue;
 
                     // Get property name
@@ -435,12 +443,16 @@ namespace FinTech.Infrastructure.Data
                 var auditLog = new FinTech.Core.Domain.Entities.Security.AuditLog
                 {
                     EntityName = auditEntry.EntityName,
-                    EntityId = auditEntry.EntityId,
+                    EntityId = Guid.TryParse(auditEntry.EntityId, out var entityGuid) ? entityGuid : Guid.Empty,
                     Action = auditEntry.Action,
                     Timestamp = auditEntry.Timestamp,
-                    UserId = auditEntry.UserId,
-                    TenantId = auditEntry.TenantId,
-                    Changes = JsonConvert.SerializeObject(auditEntry.Changes)
+                    UserId = Guid.TryParse(auditEntry.UserId, out var userGuid) ? userGuid : Guid.Empty,
+                    TenantId = auditEntry.TenantId ?? Guid.Empty,
+                    UserName = auditEntry.UserId, // Store the string representation
+                    IPAddress = "0.0.0.0", // Default value
+                    AuditAction = FinTech.Core.Domain.Enums.AuditAction.Update, // Default value
+                    OldValues = auditEntry.Action == "Modified" ? JsonConvert.SerializeObject(auditEntry.Changes) : null,
+                    NewValues = auditEntry.Action == "Added" ? JsonConvert.SerializeObject(auditEntry.Changes) : null
                 };
 
                 AuditLogs.Add(auditLog);
@@ -451,14 +463,14 @@ namespace FinTech.Infrastructure.Data
 
         private string GetEntityId(EntityEntry entry)
         {
-            var keyValues = entry.Metadata.FindPrimaryKey()
+            var keyValues = entry.Metadata.FindPrimaryKey()?
                 .Properties
-                .Select(p => entry.Property(p.Name).CurrentValue?.ToString());
+                .Select(p => entry.Property(p.Name).CurrentValue?.ToString() ?? "");
 
-            return string.Join(",", keyValues);
+            return string.Join(",", keyValues ?? new[] { "" });
         }
 
-        private void AddDomainEventsToOutbox(FinTech.Core.Domain.Common.BaseEntity[] entitiesWithEvents)
+        private void AddDomainEventsToOutbox(FinTech.Core.Domain.Entities.Common.AggregateRoot[] entitiesWithEvents)
         {
             foreach (var entity in entitiesWithEvents)
             {
@@ -470,11 +482,11 @@ namespace FinTech.Infrastructure.Data
                     OutboxMessages.Add(new FinTech.Infrastructure.Data.Messaging.OutboxMessage
                     {
                         Id = Guid.NewGuid(),
-                        EventType = domainEvent.GetType().AssemblyQualifiedName,
+                        EventType = domainEvent.GetType().AssemblyQualifiedName ?? "",
                         Content = JsonConvert.SerializeObject(domainEvent),
                         CreatedAt = DateTime.UtcNow,
                         ProcessedAt = null,
-                        Error = null
+                        Error = ""
                     });
                     
                     // Create a domain event record for auditing
@@ -494,7 +506,7 @@ namespace FinTech.Infrastructure.Data
             }
         }
 
-        private async Task DispatchEvents(FinTech.Core.Domain.Common.BaseEntity[] entities, CancellationToken cancellationToken)
+        private async Task DispatchEvents(FinTech.Core.Domain.Entities.Common.AggregateRoot[] entities, CancellationToken cancellationToken)
         {
             if (_domainEventService == null)
             {

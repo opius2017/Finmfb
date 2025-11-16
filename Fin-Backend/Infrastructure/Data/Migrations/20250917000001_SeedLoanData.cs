@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FinTech.Infrastructure.Data.Migrations
 {
-    public partial class LoanManagementSystem : Migration
+    public partial class SeedLoanData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

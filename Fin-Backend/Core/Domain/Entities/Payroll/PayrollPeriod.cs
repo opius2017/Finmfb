@@ -116,7 +116,7 @@ namespace FinTech.Core.Domain.Entities.Payroll
                 reference,
                 description);
 
-            Transactions.Add(transaction);
+            _transactions.Add(transaction);
 
             // Raise domain event
             AddDomainEvent(new PayrollTaxRemittedEvent(
@@ -143,7 +143,7 @@ namespace FinTech.Core.Domain.Entities.Payroll
                 reference,
                 description);
 
-            Transactions.Add(transaction);
+            _transactions.Add(transaction);
 
             // Raise domain event
             AddDomainEvent(new PensionRemittedEvent(
@@ -170,7 +170,7 @@ namespace FinTech.Core.Domain.Entities.Payroll
                 reference,
                 description);
 
-            Transactions.Add(transaction);
+            _transactions.Add(transaction);
 
             // Raise domain event
             AddDomainEvent(new PayrollExpenseAccruedEvent(

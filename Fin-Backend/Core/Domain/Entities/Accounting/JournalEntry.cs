@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
 
 namespace FinTech.Core.Domain.Entities.Accounting
 {

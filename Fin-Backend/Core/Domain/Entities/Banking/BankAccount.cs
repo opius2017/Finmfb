@@ -6,7 +6,7 @@ using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Banking
 {
-    public class BankAccount : BaseEntity
+    public class BankAccount : AggregateRoot
     {
         public string AccountNumber { get; private set; } = null!;
         public string AccountName { get; private set; } = null!;

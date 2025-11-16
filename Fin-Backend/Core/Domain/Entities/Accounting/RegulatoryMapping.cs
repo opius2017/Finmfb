@@ -7,7 +7,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
     /// Represents a mapping between a Chart of Account and a Regulatory Code
     /// for regulatory reporting purposes
     /// </summary>
-    public class RegulatoryMapping : EntityBase
+    public class RegulatoryMapping : BaseEntity
     {
         /// <summary>
         /// The ID of the chart of account

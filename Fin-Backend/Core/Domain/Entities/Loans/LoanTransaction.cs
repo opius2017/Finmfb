@@ -6,7 +6,7 @@ namespace FinTech.Core.Domain.Entities.Loans
 {
     public class LoanTransaction : BaseEntity
     {
-        public int LoanId { get; private set; }
+        public string LoanId { get; private set; }
         public string TransactionType { get; private set; }
         public decimal PrincipalAmount { get; private set; }
         public decimal InterestAmount { get; private set; }
@@ -18,7 +18,7 @@ namespace FinTech.Core.Domain.Entities.Loans
         private LoanTransaction() { } // For EF Core
 
         public LoanTransaction(
-            int loanId,
+            string loanId,
             string transactionType,
             decimal principalAmount,
             decimal interestAmount,

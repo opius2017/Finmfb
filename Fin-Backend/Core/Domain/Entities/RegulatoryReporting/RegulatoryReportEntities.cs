@@ -1,180 +1,153 @@
+using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Entities.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
     /// <summary>
-    /// Represents a regulatory report template for various regulatory bodies (CBN, NDIC, FIRS)
+    /// Represents a regulatory report submitted to regulatory authorities
     /// </summary>
-    public class RegulatoryReportTemplate : BaseEntity
+    public class RegulatoryReport : BaseEntity, IAuditable
     {
-        public string TemplateName { get; set; }
-        public string TemplateCode { get; set; }
-        public string Description { get; set; }
-        public RegulatoryBody RegulatoryBody { get; set; }
-        public ReportingFrequency Frequency { get; set; }
-        public string FileFormat { get; set; } // XML, Excel, PDF, etc.
-        public bool IsActive { get; set; }
-        public DateTime? LastUpdated { get; set; }
-        public string SchemaVersion { get; set; }
-        public string TemplateStructure { get; set; } // JSON structure of the template
+        [Required]
+        [MaxLength(100)]
+        public string ReportCode { get; set; } = string.Empty;
         
-        // Navigation properties
-        public virtual ICollection<RegulatoryReportSection> Sections { get; set; }
-        public virtual ICollection<RegulatoryReportSubmission> Submissions { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a section within a regulatory report template
-    /// </summary>
-    public class RegulatoryReportSection : BaseEntity
-    {
-        public Guid ReportTemplateId { get; set; }
-        public string SectionName { get; set; }
-        public string SectionCode { get; set; }
-        public string Description { get; set; }
-        public int DisplayOrder { get; set; }
-        public bool IsRequired { get; set; }
-        public string ValidationRules { get; set; } // JSON validation rules
+        [Required]
+        [MaxLength(200)]
+        public string ReportName { get; set; } = string.Empty;
         
-        // Navigation properties
-        public virtual RegulatoryReportTemplate ReportTemplate { get; set; }
-        public virtual ICollection<RegulatoryReportField> Fields { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a field within a regulatory report section
-    /// </summary>
-    public class RegulatoryReportField : BaseEntity
-    {
-        public Guid SectionId { get; set; }
-        public string FieldName { get; set; }
-        public string FieldCode { get; set; }
-        public string Description { get; set; }
-        public string DataType { get; set; } // String, Numeric, Date, Boolean, etc.
-        public bool IsRequired { get; set; }
-        public string ValidationRules { get; set; } // JSON validation rules
-        public int DisplayOrder { get; set; }
-        public string DefaultValue { get; set; }
-        public string Formula { get; set; } // For calculated fields
-        public string MappingQuery { get; set; } // SQL or LINQ query to map from system data
+        [MaxLength(1000)]
+        public string? Description { get; set; }
         
-        // Navigation properties
-        public virtual RegulatoryReportSection Section { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a submission of a regulatory report
-    /// </summary>
-    public class RegulatoryReportSubmission : BaseEntity
-    {
-        public Guid ReportTemplateId { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string RegulatoryAuthority { get; set; } = string.Empty;
+        
+        [Required]
+        [MaxLength(50)]
+        public string ReportType { get; set; } = string.Empty; // Monthly, Quarterly, Annual, Ad-hoc
+        
+        [Required]
         public DateTime ReportingPeriodStart { get; set; }
+        
+        [Required]
         public DateTime ReportingPeriodEnd { get; set; }
-        public DateTime SubmissionDate { get; set; }
-        public DateTime? ApprovalDate { get; set; }
-        public Guid SubmittedById { get; set; }
-        public Guid? ApprovedById { get; set; }
-        public SubmissionStatus Status { get; set; }
-        public string Comments { get; set; }
-        public string SubmissionReference { get; set; } // Reference number from regulatory body
-        public string FilePath { get; set; } // Path to the generated report file
+        
+        [Required]
+        public DateTime DueDate { get; set; }
+        
+        public DateTime? SubmittedDate { get; set; }
+        
+        [MaxLength(50)]
+        public string Status { get; set; } = "Draft"; // Draft, InReview, Approved, Submitted, Accepted, Rejected
+        
+        [MaxLength(20)]
+        public string Version { get; set; } = "1.0";
+        
+        public Guid? PreparedBy { get; set; }
+        
+        public Guid? ReviewedBy { get; set; }
+        
+        public Guid? ApprovedBy { get; set; }
+        
+        public DateTime? ReviewedDate { get; set; }
+        
+        public DateTime? ApprovedDate { get; set; }
+        
+        [MaxLength(255)]
+        public string? FilePath { get; set; }
+        
+        [MaxLength(100)]
+        public string? FileFormat { get; set; } // PDF, XML, CSV, Excel
+        
+        public long? FileSizeBytes { get; set; }
+        
+        [MaxLength(64)]
+        public string? FileHash { get; set; }
+        
+        [MaxLength(100)]
+        public string? SubmissionReference { get; set; }
+        
+        [MaxLength(100)]
+        public string? RegulatoryReference { get; set; }
+        
+        [MaxLength(1000)]
+        public string? Comments { get; set; }
+        
+        [MaxLength(1000)]
+        public string? RejectionReason { get; set; }
+        
+        public bool IsAmendment { get; set; }
+        
+        public Guid? OriginalReportId { get; set; }
+        public RegulatoryReport? OriginalReport { get; set; }
+        
+        [MaxLength(50)]
+        public string Priority { get; set; } = "Normal"; // Low, Normal, High, Critical
+        
+        public bool IsAutoGenerated { get; set; }
+        
+        [MaxLength(100)]
+        public string? GenerationSource { get; set; }
+        
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal? TotalAmount { get; set; }
+        
+        public int? RecordCount { get; set; }
+        
+        [MaxLength(50)]
+        public string? Currency { get; set; }
+        
+        [MaxLength(1000)]
+        public string? ValidationErrors { get; set; }
+        
+        public DateTime? ValidationDate { get; set; }
+        
+        public bool IsValidated { get; set; }
+        
+        [MaxLength(2000)]
+        public string? AdditionalData { get; set; } // JSON for additional metadata
         
         // Navigation properties
-        public virtual RegulatoryReportTemplate ReportTemplate { get; set; }
-        public virtual ICollection<RegulatoryReportData> ReportData { get; set; }
+        public virtual ICollection<RegulatoryReportSubmission> Submissions { get; set; } = new List<RegulatoryReportSubmission>();
+        public virtual ICollection<RegulatoryReportAttachment> Attachments { get; set; } = new List<RegulatoryReportAttachment>();
+        public virtual ICollection<RegulatoryReportValidation> Validations { get; set; } = new List<RegulatoryReportValidation>();
+        public virtual ICollection<RegulatoryReportData> ReportData { get; set; } = new List<RegulatoryReportData>();
     }
 
     /// <summary>
-    /// Represents data values for a specific submission
+    /// Represents regulatory report submission history
     /// </summary>
-    public class RegulatoryReportData : BaseEntity
+    public class RegulatoryReportSubmissionHistory : BaseEntity, IAuditable
     {
-        public Guid SubmissionId { get; set; }
-        public Guid FieldId { get; set; }
-        public string Value { get; set; }
-        public bool IsCalculated { get; set; }
-        public string Comments { get; set; }
-        public bool HasException { get; set; }
-        public string ExceptionReason { get; set; }
+        [Required]
+        public Guid RegulatoryReportId { get; set; }
+        public RegulatoryReport? RegulatoryReport { get; set; }
         
-        // Navigation properties
-        public virtual RegulatoryReportSubmission Submission { get; set; }
-        public virtual RegulatoryReportField Field { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a validation error for a report submission
-    /// </summary>
-    public class RegulatoryReportValidation : BaseEntity
-    {
-        public Guid SubmissionId { get; set; }
-        public Guid? FieldId { get; set; }
-        public string ErrorMessage { get; set; }
-        public string ErrorCode { get; set; }
-        public ValidationSeverity Severity { get; set; }
-        public bool IsResolved { get; set; }
-        public string ResolutionComments { get; set; }
+        [Required]
+        [MaxLength(50)]
+        public string Action { get; set; } = string.Empty; // Created, Modified, Submitted, Approved, Rejected
         
-        // Navigation properties
-        public virtual RegulatoryReportSubmission Submission { get; set; }
-        public virtual RegulatoryReportField Field { get; set; }
-    }
-
-    /// <summary>
-    /// Represents a schedule for generating and submitting reports
-    /// </summary>
-    public class RegulatoryReportSchedule : BaseEntity
-    {
-        public Guid ReportTemplateId { get; set; }
-        public DateTime NextGenerationDate { get; set; }
-        public DateTime NextSubmissionDeadline { get; set; }
-        public bool IsAutoGenerate { get; set; }
-        public bool IsAutoSubmit { get; set; }
-        public string NotificationEmails { get; set; }
-        public int ReminderDays { get; set; } // Days before deadline to send reminder
+        [Required]
+        public DateTime ActionDate { get; set; }
         
-        // Navigation properties
-        public virtual RegulatoryReportTemplate ReportTemplate { get; set; }
-    }
-
-    public enum RegulatoryBody
-    {
-        CBN, // Central Bank of Nigeria
-        NDIC, // Nigeria Deposit Insurance Corporation
-        FIRS, // Federal Inland Revenue Service
-        SEC, // Securities and Exchange Commission
-        CAC, // Corporate Affairs Commission
-        Other
-    }
-
-    public enum ReportingFrequency
-    {
-        Daily,
-        Weekly,
-        Monthly,
-        Quarterly,
-        BiAnnually,
-        Annually,
-        OnDemand
-    }
-
-    public enum SubmissionStatus
-    {
-        Draft,
-        PendingApproval,
-        Approved,
-        Submitted,
-        Accepted,
-        Rejected,
-        ReSubmissionRequired
-    }
-
-    public enum ValidationSeverity
-    {
-        Error,
-        Warning,
-        Info
+        [Required]
+        public Guid PerformedBy { get; set; }
+        
+        [MaxLength(1000)]
+        public string? Comments { get; set; }
+        
+        [MaxLength(50)]
+        public string? PreviousStatus { get; set; }
+        
+        [MaxLength(50)]
+        public string? NewStatus { get; set; }
+        
+        [MaxLength(2000)]
+        public string? AdditionalData { get; set; } // JSON for additional context
     }
 }

@@ -1,6 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Common;
 
 namespace FinTech.Core.Application.Interfaces.Services
 {

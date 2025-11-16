@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FinTech.Core.Domain.Common;
 
 namespace FinTech.Core.Domain.Entities.Common
 {

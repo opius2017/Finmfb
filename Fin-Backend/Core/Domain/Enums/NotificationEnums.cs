@@ -1,42 +1,11 @@
+// This file has been replaced by individual enum files in the Notifications namespace
+// Please use:
+// - FinTech.Core.Domain.Enums.Notifications.NotificationType
+// - FinTech.Core.Domain.Enums.Notifications.NotificationPriority  
+// - FinTech.Core.Domain.Enums.Notifications.NotificationChannel
+// - FinTech.Core.Domain.Enums.Notifications.NotificationDeliveryStatus
+
 namespace FinTech.Core.Domain.Enums
 {
-    public enum NotificationType
-    {
-        AccountAlert,
-        TransactionAlert,
-        SecurityAlert,
-        LoanAlert,
-        PaymentReminder,
-        BillPaymentAlert,
-        SystemMessage,
-        MarketingOffer,
-        AccountStatusChange,
-        SessionActivity,
-        FeatureAnnouncement
-    }
-
-    public enum NotificationPriority
-    {
-        Low = 1,
-        Medium = 2,
-        High = 3,
-        Critical = 4
-    }
-
-    public enum NotificationChannel
-    {
-        InApp,
-        Email,
-        SMS,
-        Push
-    }
-
-    public enum NotificationDeliveryStatus
-    {
-        Pending,
-        Sent,
-        Delivered,
-        Failed,
-        Expired
-    }
+    // This namespace is being deprecated in favor of feature-specific enum namespaces
 }

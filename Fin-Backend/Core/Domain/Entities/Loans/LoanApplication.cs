@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Events.Loans;
 using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Features.Loans.Enums;
+using LoanStatus = FinTech.Core.Domain.Features.Loans.Enums.LoanStatus;
 
 namespace FinTech.Core.Domain.Entities.Loans
 {
@@ -11,7 +13,6 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanApplication : AuditableEntity
     {
-        public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();
         public int CustomerId { get; set; }
         public int LoanProductId { get; set; }
         public string ApplicationNumber { get; set; }
@@ -49,7 +50,7 @@ namespace FinTech.Core.Domain.Entities.Loans
                 throw new InvalidOperationException("Only draft applications can be submitted");
             
             Status = LoanApplicationStatus.Submitted;
-            DomainEvents.Add(new LoanApplicationSubmittedEvent(Id));
+            AddDomainEvent(new LoanApplicationSubmittedEvent(Id));
         }
         
         public void Approve(string approvedBy, decimal? approvedAmount = null, int? approvedTerm = null)
@@ -63,7 +64,7 @@ namespace FinTech.Core.Domain.Entities.Loans
             ApprovedAmount = approvedAmount ?? RequestedAmount;
             ApprovedTerm = approvedTerm ?? RequestedTerm;
             
-            DomainEvents.Add(new LoanApplicationApprovedEvent(Id));
+            AddDomainEvent(new LoanApplicationApprovedEvent(Id));
         }
         
         public void Reject(string reason)
@@ -74,7 +75,7 @@ namespace FinTech.Core.Domain.Entities.Loans
             Status = LoanApplicationStatus.Rejected;
             RejectionReason = reason;
             
-            DomainEvents.Add(new LoanApplicationRejectedEvent(Id, reason));
+            AddDomainEvent(new LoanApplicationRejectedEvent(Id, reason));
         }
         
         public Loan CreateLoan()
@@ -82,50 +83,32 @@ namespace FinTech.Core.Domain.Entities.Loans
             if (Status != LoanApplicationStatus.Approved)
                 throw new InvalidOperationException("Cannot create loan from unapproved application");
             
-            var loan = new Loan
-            {
-                LoanApplicationId = Id,
-                CustomerId = CustomerId,
-                LoanProductId = LoanProductId,
-                PrincipalAmount = ApprovedAmount.Value,
-                DisbursedAmount = 0,
-                InterestRate = InterestRate,
-                Term = ApprovedTerm.Value,
-                Status = LoanStatus.Approved
-            };
+            if (!ApprovedAmount.HasValue)
+                throw new InvalidOperationException("Approved amount is required to create loan");
+                
+            if (!ApprovedTerm.HasValue)
+                throw new InvalidOperationException("Approved term is required to create loan");
+            
+            // Generate loan number - this should be done through a proper service
+            string loanNumber = $"LN{DateTime.Now:yyyyMMdd}{Id:D6}";
+            
+            var loan = new Loan(
+                loanNumber,
+                CustomerId,
+                ApprovedAmount.Value,
+                InterestRate,
+                ApprovedTerm.Value,
+                DateTime.UtcNow,
+                LoanProduct?.Name ?? "Standard",
+                "MONTHLY",
+                "NGN");
             
             Status = LoanApplicationStatus.Disbursed;
             Loan = loan;
             
-            DomainEvents.Add(new LoanCreatedFromApplicationEvent(Id, loan.Id));
+            AddDomainEvent(new LoanCreatedFromApplicationEvent(Id, loan.Id));
             
             return loan;
         }
-    }
-    
-    public enum LoanApplicationStatus
-    {
-        Draft,
-        Submitted,
-        InReview,
-        PendingDocuments,
-        Approved,
-        Rejected,
-        Disbursed,
-        Cancelled
-    }
-    
-    public enum LoanPurpose
-    {
-        Business,
-        Education,
-        HomeImprovement,
-        MedicalExpenses,
-        DebtConsolidation,
-        Vehicle,
-        Agriculture,
-        Construction,
-        PersonalUse,
-        Other
     }
 }

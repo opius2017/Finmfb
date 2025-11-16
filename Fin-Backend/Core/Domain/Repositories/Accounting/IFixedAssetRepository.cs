@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Core.Application.Services.Accounting;
+// using FinTech.Core.Application.Services.Accounting;
+using FinTech.Core.Domain.Entities.FixedAssets;
+using FinTech.Core.Domain.Enums;
 
 namespace FinTech.Core.Domain.Repositories.Accounting
 {

@@ -1,7 +1,7 @@
 using System;
 using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Entities.Common;
-using FinTech.Core.Domain.Entities.Users;
+using FinTech.Core.Domain.Entities.Identity;
 
 namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {

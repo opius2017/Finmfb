@@ -1,13 +1,22 @@
 using System;
-using FinTech.Core.Application.DTOs.Tax;
+// using FinTech.Core.Application.DTOs.Tax;
 using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Tax
 {
     /// <summary>
+    /// Direction of tax application
+    /// </summary>
+    public enum TaxDirection
+    {
+        Input = 1,    // Tax paid on purchases
+        Output = 2    // Tax charged on sales
+    }
+
+    /// <summary>
     /// Represents a tax type in the system
     /// </summary>
-    using FinTech.Core.Domain.Entities.Common;
     public class TaxType : AuditableEntity
     {
         /// <summary>

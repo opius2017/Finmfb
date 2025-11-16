@@ -6,7 +6,7 @@ using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Loans
 {
-    public class Loan : BaseEntity
+    public class Loan : AggregateRoot
     {
         public string LoanNumber { get; private set; }
         public int CustomerId { get; private set; }

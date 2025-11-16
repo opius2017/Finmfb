@@ -7,7 +7,7 @@ namespace FinTech.Core.Domain.Entities.Payroll
 {
     public class SalaryPayment : AggregateRoot
     {
-        public int EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
         public decimal GrossAmount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal PensionAmount { get; set; }
@@ -18,11 +18,12 @@ namespace FinTech.Core.Domain.Entities.Payroll
 
         private SalaryPayment() 
         {
+            EmployeeId = string.Empty;
             Reference = string.Empty;
             Status = string.Empty;
         } // For EF Core
 
-        public SalaryPayment(int employeeId, decimal grossAmount, decimal taxAmount, decimal pensionAmount, decimal otherDeductions, string reference, string payPeriod)
+        public SalaryPayment(string employeeId, decimal grossAmount, decimal taxAmount, decimal pensionAmount, decimal otherDeductions, string reference, string payPeriod)
         {
             EmployeeId = employeeId;
             GrossAmount = grossAmount;
