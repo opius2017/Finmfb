@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Core.Domain.Entities.Loans;
+using FinTech.Core.Application.DTOs.Loans;
 
 namespace FinTech.Core.Application.Interfaces.Loans
 {

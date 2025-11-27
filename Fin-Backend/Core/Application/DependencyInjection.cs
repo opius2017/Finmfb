@@ -49,6 +49,9 @@ public static class DependencyInjection
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IFinancialPeriodService, FinancialPeriodService>();
         
+        // Register utility services
+        services.AddSingleton<IDateTimeService, DateTimeService>();
+        
         // Register core accounting services
         // services.AddAccountingServices(); // This method is not defined in this project
         

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
 using FinTech.Core.Domain.Entities.FixedAssets;
 using FinTech.Core.Domain.Entities.GeneralLedger;
