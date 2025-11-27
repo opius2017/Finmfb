@@ -16,7 +16,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
-namespace Fin_Backend.Tests.Unit
+namespace FinTech.Tests.Unit
 {
     public class JwtTokenServiceTests
     {

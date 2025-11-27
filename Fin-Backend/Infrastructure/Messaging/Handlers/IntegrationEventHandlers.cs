@@ -1,9 +1,9 @@
-using Fin_Backend.Infrastructure.Messaging.Events;
+using FinTech.Infrastructure.Messaging.Events;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Infrastructure.Messaging.Handlers
+namespace FinTech.Infrastructure.Messaging.Handlers
 {
     /// <summary>
     /// Handler for the payment processed integration event

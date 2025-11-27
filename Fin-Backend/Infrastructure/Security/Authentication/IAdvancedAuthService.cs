@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Infrastructure.Security.Authentication
+namespace FinTech.Infrastructure.Security.Authentication
 {
     /// <summary>
     /// Advanced authentication service interface

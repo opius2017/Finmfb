@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Domain.Entities.Customers;
 using FinTech.Core.Domain.Enums;
-using FinTech.Infrastructure.Data;
+using FinTech.Core.Application.Common.Interfaces;
 
 namespace FinTech.Core.Application.Services;
 
@@ -29,9 +29,9 @@ public interface ICustomerService
 
 public class CustomerService : ICustomerService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public CustomerService(ApplicationDbContext context)
+    public CustomerService(IApplicationDbContext context)
     {
         _context = context;
     }

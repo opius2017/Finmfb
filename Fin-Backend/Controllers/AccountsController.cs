@@ -1,4 +1,4 @@
-using Fin_Backend.Infrastructure.Documentation;
+using FinTech.Infrastructure.Documentation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +10,7 @@ using FinTech.Core.Application.DTOs.Account;
 using FinTech.Core.Application.DTOs.Transaction;
 using FinTech.Core.Application.DTOs.Common;
 
-namespace Fin_Backend.Controllers
+namespace FinTech.Controllers
 {
     /// <summary>
     /// API controller for managing customer accounts

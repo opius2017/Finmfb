@@ -1,4 +1,4 @@
-using Fin_Backend.Infrastructure.Services;
+using FinTech.Infrastructure.Services;
 using FinTech.WebAPI.Application.Common.Settings;
 using FinTech.WebAPI.Application.Interfaces;
 using FinTech.WebAPI.Application.Interfaces.Repositories;

@@ -3,13 +3,13 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Fin_Backend.Tests.Common;
+using FinTech.Tests.Common;
 using FinTech.WebAPI.Application.DTOs.Auth;
 using FinTech.WebAPI.Application.DTOs.Common;
 using FluentAssertions;
 using Xunit;
 
-namespace Fin_Backend.Tests.Functional
+namespace FinTech.Tests.Functional
 {
     public class MfaControllerTests : IClassFixture<TestWebApplicationFactory<Program>>
     {

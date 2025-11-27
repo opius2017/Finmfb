@@ -8,7 +8,7 @@ using Testcontainers.Redis;
 using Testcontainers.RabbitMq;
 using Xunit;
 
-namespace Fin_Backend.Tests.Common
+namespace FinTech.Tests.Common
 {
     public class TestContainerFixture : IAsyncLifetime
     {

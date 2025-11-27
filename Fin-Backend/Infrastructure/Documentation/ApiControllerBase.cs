@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Net;
 
-namespace Fin_Backend.Infrastructure.Documentation
+namespace FinTech.Infrastructure.Documentation
 {
     /// <summary>
     /// Base API controller with standard response handling and documentation

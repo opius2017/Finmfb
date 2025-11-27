@@ -1,4 +1,4 @@
-using Fin_Backend.Application.Interfaces;
+using FinTech.Application.Interfaces;
 using FinTech.Core.Application.Interfaces.Shared;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Infrastructure.Services
+namespace FinTech.Infrastructure.Services
 {
     /// <summary>
     /// App-based MFA service

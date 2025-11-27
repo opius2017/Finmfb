@@ -46,44 +46,33 @@ namespace FinTech.Core.Application.Features.Loans.Commands.CreateLoan
             }
 
             // Validate loan amount against product limits
-            if (request.LoanAmount < loanProduct.MinLoanAmount || request.LoanAmount > loanProduct.MaxLoanAmount)
+            if (request.LoanAmount < loanProduct.MinAmount || request.LoanAmount > loanProduct.MaxAmount)
             {
                 return Result.Failure<CreateLoanResponse>(
                     Error.Validation("Loan.InvalidAmount", 
-                    $"Loan amount must be between {loanProduct.MinLoanAmount} and {loanProduct.MaxLoanAmount}"));
+                    $"Loan amount must be between {loanProduct.MinAmount} and {loanProduct.MaxAmount}"));
             }
 
-            // Create loan entity with complete initialization
+            // Create loan entity with initialization using domain constructor
             var loanNumber = await GenerateLoanNumber();
-            var interestRate = loanProduct.InterestRate;
+            // Choose a default interest rate from the product (use MinInterestRate as default)
+            var interestRate = loanProduct.MinInterestRate;
             var monthlyPayment = CalculateMonthlyPayment(request.LoanAmount, interestRate, request.TenorInMonths);
-            var totalInterest = (monthlyPayment * request.TenorInMonths) - request.LoanAmount;
-            var totalRepayment = request.LoanAmount + totalInterest;
 
-            var loan = new Loan
-            {
-                Id = Guid.NewGuid().ToString(),
-                LoanNumber = loanNumber,
-                CustomerId = request.CustomerId,
-                CustomerName = customer.FullName,
-                LoanProductId = request.LoanProductId,
-                LoanProductName = loanProduct.ProductName,
-                PrincipalAmount = request.LoanAmount,
-                LoanAmount = request.LoanAmount,
-                InterestRate = interestRate,
-                TenorInMonths = request.TenorInMonths,
-                MonthlyPayment = monthlyPayment,
-                TotalInterest = totalInterest,
-                TotalRepayment = totalRepayment,
-                OutstandingBalance = request.LoanAmount,
-                Purpose = request.Purpose,
-                ApplicationDate = DateTime.UtcNow,
-                Status = LoanStatus.Pending,
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = "System", // Get from current user context
-                UpdatedAt = DateTime.UtcNow,
-                UpdatedBy = "System"
-            };
+            var loan = new Loan(
+                loanNumber: loanNumber,
+                customerId: customer.Id,
+                loanProductId: loanProduct.Id,
+                principalAmount: request.LoanAmount,
+                interestRate: interestRate,
+                loanTermMonths: request.TenorInMonths,
+                startDate: DateTime.UtcNow,
+                loanType: loanProduct.Name,
+                repaymentFrequency: loanProduct.RepaymentFrequency.ToString(),
+                currency: "NGN",
+                loanApplicationId: string.Empty,
+                purpose: request.Purpose
+            );
 
             await _loanRepository.AddAsync(loan, cancellationToken);
 

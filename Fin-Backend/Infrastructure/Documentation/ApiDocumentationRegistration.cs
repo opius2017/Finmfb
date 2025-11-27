@@ -10,7 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Fin_Backend.Infrastructure.Documentation
+namespace FinTech.Infrastructure.Documentation
 {
     public static class ApiDocumentationRegistration
     {

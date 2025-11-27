@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Fin_Backend.Application.Common.Settings
+namespace FinTech.Application.Common.Settings
 {
     /// <summary>
     /// Social login settings

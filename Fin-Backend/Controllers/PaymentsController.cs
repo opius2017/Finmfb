@@ -1,6 +1,6 @@
-using Fin_Backend.Infrastructure.Documentation;
-using Fin_Backend.Infrastructure.Messaging;
-using Fin_Backend.Infrastructure.Messaging.Events;
+using FinTech.Infrastructure.Documentation;
+using FinTech.Infrastructure.Messaging;
+using FinTech.Infrastructure.Messaging.Events;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Payment;
 using FinTech.Core.Application.DTOs.Account;
 
-namespace Fin_Backend.Controllers
+namespace FinTech.Controllers
 {
     /// <summary>
     /// Controller for handling payment operations

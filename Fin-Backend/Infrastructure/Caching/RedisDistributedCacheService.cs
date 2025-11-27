@@ -5,7 +5,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Infrastructure.Caching
+namespace FinTech.Infrastructure.Caching
 {
     public interface IDistributedCacheService
     {

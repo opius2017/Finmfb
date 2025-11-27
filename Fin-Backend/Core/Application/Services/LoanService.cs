@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Entities.GeneralLedger;
 using FinTech.Core.Domain.Enums;
-using FinTech.Infrastructure.Data;
+using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.DTOs.Loans;
 
 namespace FinTech.Core.Application.Services;
@@ -20,11 +20,11 @@ public interface ILoanService
 public class LoanService : ILoanService
 {
 
-    private readonly ApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
     private readonly IInterestCalculationService _interestService;
     private readonly IGeneralLedgerService _glService;
 
-    public LoanService(ApplicationDbContext context, IInterestCalculationService interestService, IGeneralLedgerService glService)
+    public LoanService(IApplicationDbContext context, IInterestCalculationService interestService, IGeneralLedgerService glService)
     {
         _context = context;
         _interestService = interestService;

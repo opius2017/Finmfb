@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net9.0": {
+    "net8.0": {
       "AutoMapper/13.0.1": {
         "type": "package",
         "dependencies": {
@@ -1167,12 +1167,12 @@
           "Swashbuckle.AspNetCore.SwaggerGen": "9.0.4"
         },
         "compile": {
-          "lib/net9.0/Swashbuckle.AspNetCore.Annotations.dll": {
+          "lib/net8.0/Swashbuckle.AspNetCore.Annotations.dll": {
             "related": ".pdb;.xml"
           }
         },
         "runtime": {
-          "lib/net9.0/Swashbuckle.AspNetCore.Annotations.dll": {
+          "lib/net8.0/Swashbuckle.AspNetCore.Annotations.dll": {
             "related": ".pdb;.xml"
           }
         }
@@ -1183,12 +1183,12 @@
           "Microsoft.OpenApi": "1.6.25"
         },
         "compile": {
-          "lib/net9.0/Swashbuckle.AspNetCore.Swagger.dll": {
+          "lib/net8.0/Swashbuckle.AspNetCore.Swagger.dll": {
             "related": ".pdb;.xml"
           }
         },
         "runtime": {
-          "lib/net9.0/Swashbuckle.AspNetCore.Swagger.dll": {
+          "lib/net8.0/Swashbuckle.AspNetCore.Swagger.dll": {
             "related": ".pdb;.xml"
           }
         },
@@ -1202,12 +1202,12 @@
           "Swashbuckle.AspNetCore.Swagger": "9.0.4"
         },
         "compile": {
-          "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
+          "lib/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
             "related": ".pdb;.xml"
           }
         },
         "runtime": {
-          "lib/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
+          "lib/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll": {
             "related": ".pdb;.xml"
           }
         }
@@ -4857,7 +4857,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net9.0": [
+    "net8.0": [
       "FinTech.WebAPI >= 1.0.0",
       "Microsoft.NET.Test.Sdk >= 17.9.0",
       "Moq >= 4.20.70",
@@ -4867,39 +4867,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\opius\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/home/codespace/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj",
+      "projectUniqueName": "/workspaces/Finmfb/FinTech.Tests/FinTech.Tests.csproj",
       "projectName": "FinTech.Tests",
-      "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\FinTech.Tests.csproj",
-      "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\FinTech.Tests\\obj\\",
+      "projectPath": "/workspaces/Finmfb/FinTech.Tests/FinTech.Tests.csproj",
+      "packagesPath": "/home/codespace/.nuget/packages/",
+      "outputPath": "/workspaces/Finmfb/FinTech.Tests/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/codespace/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net9.0"
+        "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj": {
-              "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj"
+            "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {
+              "projectPath": "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj"
             }
           }
         }
@@ -4913,12 +4906,11 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      },
-      "SdkAnalysisLevel": "9.0.300"
+      }
     },
     "frameworks": {
-      "net9.0": {
-        "targetAlias": "net9.0",
+      "net8.0": {
+        "targetAlias": "net8.0",
         "dependencies": {
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
@@ -4961,7 +4953,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
@@ -4973,7 +4965,7 @@
       "message": "Detected package version outside of dependency constraint: MediatR.Extensions.Microsoft.DependencyInjection 11.1.0 requires MediatR (>= 11.0.0 && < 12.0.0) but version MediatR 12.4.0 was resolved.",
       "libraryId": "MediatR",
       "targetGraphs": [
-        "net9.0"
+        "net8.0"
       ]
     }
   ]

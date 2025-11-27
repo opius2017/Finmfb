@@ -8,7 +8,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 
-namespace Fin_Backend.Infrastructure.Messaging
+namespace FinTech.Infrastructure.Messaging
 {
     /// <summary>
     /// Implementation of a persistent connection to RabbitMQ

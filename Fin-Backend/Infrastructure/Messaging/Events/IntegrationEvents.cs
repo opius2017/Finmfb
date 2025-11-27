@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Fin_Backend.Infrastructure.Messaging.Events
+namespace FinTech.Infrastructure.Messaging.Events
 {
     /// <summary>
     /// Integration event for when a payment is processed

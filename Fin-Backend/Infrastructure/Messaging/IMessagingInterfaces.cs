@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Infrastructure.Messaging
+namespace FinTech.Infrastructure.Messaging
 {
     /// <summary>
     /// Interface for integration events

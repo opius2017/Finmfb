@@ -3,7 +3,7 @@ using FinTech.Core.Domain.Entities.GeneralLedger;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Entities.Deposits;
 using FinTech.Core.Domain.Enums;
-using FinTech.Infrastructure.Data;
+using FinTech.Core.Application.Common.Interfaces;
 
 namespace FinTech.Core.Application.Services;
 
@@ -20,9 +20,9 @@ public interface IGeneralLedgerService
 
 public class GeneralLedgerService : IGeneralLedgerService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
 
-    public GeneralLedgerService(ApplicationDbContext context)
+    public GeneralLedgerService(IApplicationDbContext context)
     {
         _context = context;
     }

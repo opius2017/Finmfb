@@ -1,6 +1,6 @@
-using Fin_Backend.Infrastructure;
-using Fin_Backend.Infrastructure.Documentation;
-using Fin_Backend.Infrastructure.Messaging;
+using FinTech.Infrastructure;
+using FinTech.Infrastructure.Documentation;
+using FinTech.Infrastructure.Messaging;
 using FinTech.Core.Application;
 using FinTech.Infrastructure;
 using FinTech.Infrastructure.BackgroundServices;

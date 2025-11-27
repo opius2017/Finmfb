@@ -1,4 +1,4 @@
-namespace Fin_Backend.Application.Common.Settings
+namespace FinTech.Application.Common.Settings
 {
     /// <summary>
     /// JWT settings

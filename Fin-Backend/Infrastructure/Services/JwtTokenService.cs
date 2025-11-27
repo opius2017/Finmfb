@@ -1,5 +1,5 @@
-using Fin_Backend.Application.Common.Settings;
-using Fin_Backend.Domain.Entities.Authentication;
+using FinTech.Application.Common.Settings;
+using FinTech.Domain.Entities.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Infrastructure.Services
+namespace FinTech.Infrastructure.Services
 {
     /// <summary>
     /// JWT token service

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Domain.Entities.Security;
 using FinTech.Core.Domain.Enums;
-using FinTech.Infrastructure.Data;
+using FinTech.Core.Application.Common.Interfaces;
 using System.Text.Json;
 
 namespace FinTech.Core.Application.Services;
@@ -17,10 +17,10 @@ public interface IMakerCheckerService
 
 public class MakerCheckerService : IMakerCheckerService
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IApplicationDbContext _context;
     private readonly IServiceProvider _serviceProvider;
 
-    public MakerCheckerService(ApplicationDbContext context, IServiceProvider serviceProvider)
+    public MakerCheckerService(IApplicationDbContext context, IServiceProvider serviceProvider)
     {
         _context = context;
         _serviceProvider = serviceProvider;

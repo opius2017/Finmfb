@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Client;
 using System;
 
-namespace Fin_Backend.Infrastructure.Messaging
+namespace FinTech.Infrastructure.Messaging
 {
     /// <summary>
     /// Service registration for message broker components

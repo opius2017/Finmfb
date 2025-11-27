@@ -1,4 +1,4 @@
-using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
 using FinTech.Core.Domain.Enums;
 
 namespace FinTech.Core.Domain.Entities.Banking;

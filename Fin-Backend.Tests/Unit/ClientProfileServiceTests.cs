@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
-namespace Fin_Backend.Tests.Unit
+namespace FinTech.Tests.Unit
 {
     public class ClientProfileServiceTests
     {
