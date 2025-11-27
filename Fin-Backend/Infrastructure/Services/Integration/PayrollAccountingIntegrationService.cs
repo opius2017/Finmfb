@@ -5,6 +5,7 @@ using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services.Integration;
 using System.Collections.Generic;
 using FinTech.Core.Application.Interfaces.Integration;
+using FinTech.Core.Domain.Entities.Payroll;
 
 namespace FinTech.Infrastructure.Services.Integration
 {

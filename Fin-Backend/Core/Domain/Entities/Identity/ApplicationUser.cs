@@ -1,10 +1,11 @@
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace FinTech.Core.Domain.Entities.Identity;
 
-public class ApplicationUser : IdentityUser<Guid>
+public class ApplicationUser
 {
+    public Guid Id { get; set; }
+
     [Required]
     [StringLength(100)]
     public string FirstName { get; set; } = string.Empty;

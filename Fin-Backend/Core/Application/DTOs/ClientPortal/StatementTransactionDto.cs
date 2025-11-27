@@ -14,3 +14,4 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
         public decimal CreditAmount { get; set; }
         public decimal Balance { get; set; }
     }
+}

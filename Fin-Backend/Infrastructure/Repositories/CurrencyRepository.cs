@@ -16,11 +16,11 @@ namespace FinTech.Infrastructure.Repositories
     /// </summary>
     public class CurrencyRepository : ICurrencyRepository
     {
-        private readonly AppDbContext _dbContext;
+        private readonly IApplicationDbContext _dbContext;
         private readonly ILogger<CurrencyRepository> _logger;
 
         public CurrencyRepository(
-            AppDbContext dbContext,
+            IApplicationDbContext dbContext,
             ILogger<CurrencyRepository> logger)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));

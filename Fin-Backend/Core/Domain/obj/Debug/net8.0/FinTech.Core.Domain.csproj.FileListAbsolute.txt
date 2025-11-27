@@ -1,4 +1,3 @@
-c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.csproj.AssemblyReference.cache
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.GeneratedMSBuildEditorConfig.editorconfig
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.AssemblyInfoInputs.cache
 c:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Core\Domain\obj\Debug\net8.0\FinTech.Core.Domain.AssemblyInfo.cs

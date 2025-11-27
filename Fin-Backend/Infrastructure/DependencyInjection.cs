@@ -1,8 +1,5 @@
-using FinTech.WebAPI.Application.Interfaces;
-using FinTech.WebAPI.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using FinTech.Core.Application.Services.Integrations;
 using FinTech.Core.Application.Common.Settings;
 using FinTech.Infrastructure.Extensions;
 using FinTech.Core.Application;
@@ -18,8 +15,7 @@ namespace FinTech.Infrastructure
         {
             // Register Email Service and Settings
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
-            services.AddScoped<FinTech.Core.Application.Services.Integrations.IEmailService, EmailService>();
-            services.AddScoped<FinTech.WebAPI.Application.Interfaces.IEmailService, EmailServiceAdapter>();
+            services.AddScoped<IEmailService, EmailService>();
             
             // Register MFA Services
             services.AddScoped<IMfaNotificationService, MfaNotificationService>();

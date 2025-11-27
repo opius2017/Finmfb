@@ -11,20 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace FinTech.Core.Application.Services
 {
-    public interface IClientLoanService
-    {
-        Task<IEnumerable<LoanAccount>> GetClientLoansAsync(Guid customerId);
-        Task<LoanAccount> GetLoanDetailsAsync(string loanAccountNumber);
-        Task<IEnumerable<LoanRepaymentSchedule>> GetLoanRepaymentScheduleAsync(string loanAccountNumber);
-        Task<IEnumerable<LoanTransaction>> GetLoanTransactionsAsync(string loanAccountNumber);
-        Task<LoanApplicationRequest> SubmitLoanApplicationAsync(LoanApplicationDto applicationDto, Guid customerId);
-        Task<LoanApplicationRequest> GetLoanApplicationStatusAsync(Guid applicationId);
-        Task<IEnumerable<LoanApplicationRequest>> GetClientLoanApplicationsAsync(Guid customerId);
-        Task<LoanEligibility> CheckLoanEligibilityAsync(LoanEligibilityCheckDto checkDto, Guid customerId);
-        Task<LoanSimulation> SimulateLoanAsync(LoanSimulationDto simulationDto);
-        Task<bool> MakeLoanRepaymentAsync(LoanRepaymentDto repaymentDto, Guid customerId);
-    }
-
     public class ClientLoanService : IClientLoanService
     {
         private readonly IApplicationDbContext _dbContext;

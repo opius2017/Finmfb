@@ -11,32 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace FinTech.Core.Application.Services
 {
-    public interface IClientPaymentService
-    {
-        // Fund Transfers
-        Task<TransferResult> TransferFundsAsync(FundTransferDto transferDto, Guid customerId);
-        Task<IEnumerable<SavedTransferTemplate>> GetSavedTransferTemplatesAsync(Guid customerId);
-        Task<SavedTransferTemplate> SaveTransferTemplateAsync(SaveTransferTemplateDto templateDto, Guid customerId);
-        Task<bool> DeleteTransferTemplateAsync(Guid templateId, Guid customerId);
-        
-        // Bill Payments
-        Task<PaymentResult> PayBillAsync(BillPaymentDto paymentDto, Guid customerId);
-        Task<IEnumerable<SavedPayee>> GetSavedPayeesAsync(Guid customerId);
-        Task<SavedPayee> SavePayeeAsync(SavePayeeDto payeeDto, Guid customerId);
-        Task<bool> DeletePayeeAsync(Guid payeeId, Guid customerId);
-        Task<IEnumerable<BillerInfo>> GetBillerDirectoryAsync();
-        
-        // Recurring Payments
-        Task<RecurringPayment> ScheduleRecurringPaymentAsync(RecurringPaymentDto recurringDto, Guid customerId);
-        Task<IEnumerable<RecurringPayment>> GetRecurringPaymentsAsync(Guid customerId);
-        Task<bool> CancelRecurringPaymentAsync(Guid recurringPaymentId, Guid customerId);
-        Task<bool> UpdateRecurringPaymentAsync(Guid recurringPaymentId, RecurringPaymentUpdateDto updateDto, Guid customerId);
-        
-        // Payment History
-        Task<IEnumerable<PaymentTransaction>> GetPaymentHistoryAsync(PaymentHistoryRequestDto requestDto, Guid customerId);
-        Task<PaymentTransaction> GetPaymentDetailsAsync(Guid transactionId, Guid customerId);
-    }
-
     public class ClientPaymentService : IClientPaymentService
     {
         private readonly IApplicationDbContext _dbContext;

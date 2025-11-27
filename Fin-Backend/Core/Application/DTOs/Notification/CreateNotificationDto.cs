@@ -1,5 +1,5 @@
-using FinTech.Core.Domain.Enums;
 using System;
+using FinTech.Core.Domain.Enums.Notifications;
 
 namespace FinTech.Core.Application.DTOs.Notification
 {

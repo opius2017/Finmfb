@@ -1,6 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using FinTech.Core.Application.Services.Integrations;
-using FinTech.Core.Application;
+using FinTech.Core.Application.Common.Behaviors;
+using System.Reflection;
+using FluentValidation;
+using MediatR;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Services;
 
 namespace FinTech.Core.Application;
 
@@ -8,7 +13,24 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        // Register application services
+        // Register MediatR
+        services.AddMediatR(cfg => {
+            cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+        });
+
+        // Register AutoMapper
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+        // Register FluentValidation
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Register Pipeline Behaviors (order matters!)
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+
+        // Register existing application services
         services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
         services.AddScoped<IInterestCalculationService, InterestCalculationService>();
         services.AddScoped<ILoanService, LoanService>();
@@ -28,13 +50,13 @@ public static class DependencyInjection
         services.AddScoped<IFinancialPeriodService, FinancialPeriodService>();
         
         // Register core accounting services
-        services.AddAccountingServices();
+        // services.AddAccountingServices(); // This method is not defined in this project
         
         // Register loan management services
-        services.AddLoanServices();
+        // services.AddLoanServices(); // This method is not defined in this project
         
         // Register integration services
-        services.AddIntegrationServices();
+        // services.AddIntegrationServices(); // This method is not defined in this project
         
         return services;
     }

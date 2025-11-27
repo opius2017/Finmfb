@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using FinTech.Core.Domain.Enums;
+using FinTech.Core.Domain.Enums.Notifications;
 
 namespace FinTech.Core.Application.DTOs.ClientPortal
 {
