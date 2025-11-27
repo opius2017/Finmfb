@@ -2,7 +2,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FinTech.Core.Application.Features.BankReconciliation.Commands.CreateReconciliation;
+using FinTech.Core.Application.Features.BankReconciliation.Commands.ImportBankStatement;
 using FinTech.Core.Application.Features.BankReconciliation.Queries.GetReconciliation;
+using FinTech.Core.Application.Features.BankReconciliation.Queries.GetReconciliationsByBankAccount;
 
 namespace FinTech.WebAPI.Controllers;
 
@@ -63,8 +65,23 @@ public class BankReconciliationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetReconciliationsByBankAccount(string bankAccountId)
     {
-        // TODO: Implement query
-        return Ok(new List<ReconciliationDetailDto>());
+        try
+        {
+            var query = new GetReconciliationsByBankAccountQuery(bankAccountId);
+            var result = await _mediator.Send(query);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(result.Error);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving reconciliations for bank account {BankAccountId}", bankAccountId);
+            return StatusCode(500, "An error occurred while retrieving reconciliations");
+        }
     }
 
     /// <summary>
@@ -80,10 +97,44 @@ public class BankReconciliationController : ControllerBase
             return BadRequest("File is required");
         }
 
-        // TODO: Implement bank statement import
-        _logger.LogInformation("Importing bank statement for account {BankAccountId}", bankAccountId);
+        try
+        {
+            _logger.LogInformation("Importing bank statement for account {BankAccountId}, File: {FileName}", 
+                bankAccountId, file.FileName);
 
-        return Ok(new { message = "Bank statement imported successfully" });
+            // Read file content
+            using var stream = file.OpenReadStream();
+            using var reader = new StreamReader(stream);
+            var fileContent = await reader.ReadToEndAsync();
+
+            // Create import command
+            var command = new ImportBankStatementCommand
+            {
+                BankAccountId = bankAccountId,
+                FileName = file.FileName,
+                FileContent = fileContent,
+                FileType = Path.GetExtension(file.FileName).ToLowerInvariant()
+            };
+
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+            {
+                return Ok(new 
+                { 
+                    message = "Bank statement imported successfully",
+                    statementId = result.Value.StatementId,
+                    linesImported = result.Value.LinesImported
+                });
+            }
+
+            return BadRequest(result.Error);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error importing bank statement for account {BankAccountId}", bankAccountId);
+            return StatusCode(500, "An error occurred while importing the bank statement");
+        }
     }
 
     /// <summary>

@@ -53,18 +53,36 @@ namespace FinTech.Core.Application.Features.Loans.Commands.CreateLoan
                     $"Loan amount must be between {loanProduct.MinLoanAmount} and {loanProduct.MaxLoanAmount}"));
             }
 
-            // TODO: Create loan entity (adjust according to your Loan entity structure)
-            // This is a placeholder - adapt to your actual Loan entity creation method
+            // Create loan entity with complete initialization
+            var loanNumber = await GenerateLoanNumber();
+            var interestRate = loanProduct.InterestRate;
+            var monthlyPayment = CalculateMonthlyPayment(request.LoanAmount, interestRate, request.TenorInMonths);
+            var totalInterest = (monthlyPayment * request.TenorInMonths) - request.LoanAmount;
+            var totalRepayment = request.LoanAmount + totalInterest;
+
             var loan = new Loan
             {
                 Id = Guid.NewGuid().ToString(),
+                LoanNumber = loanNumber,
                 CustomerId = request.CustomerId,
+                CustomerName = customer.FullName,
                 LoanProductId = request.LoanProductId,
+                LoanProductName = loanProduct.ProductName,
+                PrincipalAmount = request.LoanAmount,
                 LoanAmount = request.LoanAmount,
+                InterestRate = interestRate,
                 TenorInMonths = request.TenorInMonths,
+                MonthlyPayment = monthlyPayment,
+                TotalInterest = totalInterest,
+                TotalRepayment = totalRepayment,
+                OutstandingBalance = request.LoanAmount,
                 Purpose = request.Purpose,
                 ApplicationDate = DateTime.UtcNow,
-                Status = LoanStatus.Pending
+                Status = LoanStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                CreatedBy = "System", // Get from current user context
+                UpdatedAt = DateTime.UtcNow,
+                UpdatedBy = "System"
             };
 
             await _loanRepository.AddAsync(loan, cancellationToken);
@@ -78,6 +96,31 @@ namespace FinTech.Core.Application.Features.Loans.Commands.CreateLoan
             };
 
             return Result.Success(response);
+        }
+
+        private async Task<string> GenerateLoanNumber()
+        {
+            // Generate unique loan number
+            var timestamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            var random = new Random().Next(1000, 9999);
+            return $"LN-{timestamp}-{random}";
+        }
+
+        private decimal CalculateMonthlyPayment(decimal principal, decimal annualRate, int months)
+        {
+            if (months == 0) return 0;
+            
+            // Convert annual rate to monthly rate
+            var monthlyRate = (annualRate / 100) / 12;
+            
+            if (monthlyRate == 0) return principal / months;
+            
+            // Calculate monthly payment using amortization formula
+            // M = P * [r(1+r)^n] / [(1+r)^n - 1]
+            var power = Math.Pow((double)(1 + monthlyRate), months);
+            var monthlyPayment = principal * (monthlyRate * (decimal)power) / ((decimal)power - 1);
+            
+            return Math.Round(monthlyPayment, 2);
         }
     }
 }

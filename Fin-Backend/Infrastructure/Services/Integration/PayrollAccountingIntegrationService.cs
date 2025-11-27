@@ -316,19 +316,148 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public Task ProcessPayrollRunAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
+        public async Task ProcessPayrollRunAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Processing payroll run for employee {EmployeeId}, Period: {Period}", 
+                    payrollEntry.EmployeeId, payrollEntry.PayPeriod);
+
+                // Get chart of accounts
+                var payrollExpenseAccountId = await _chartOfAccountService.GetPayrollExpenseAccountIdAsync();
+                var cashAccountId = await _chartOfAccountService.GetCashAccountIdAsync();
+                var taxPayableAccountId = await _chartOfAccountService.GetTaxPayableAccountIdAsync();
+                var pensionPayableAccountId = await _chartOfAccountService.GetPensionPayableAccountIdAsync();
+
+                // Create journal entry for payroll run
+                var journalEntry = new
+                {
+                    Description = $"Payroll run for {payrollEntry.EmployeeName} - {payrollEntry.PayPeriod}",
+                    Reference = payrollEntry.PayrollRunId,
+                    TransactionDate = payrollEntry.PaymentDate,
+                    Lines = new List<object>
+                    {
+                        // Debit: Payroll Expense
+                        new { AccountId = payrollExpenseAccountId, Debit = payrollEntry.GrossSalary, Credit = 0m },
+                        // Credit: Tax Payable
+                        new { AccountId = taxPayableAccountId, Debit = 0m, Credit = payrollEntry.TaxAmount },
+                        // Credit: Pension Payable
+                        new { AccountId = pensionPayableAccountId, Debit = 0m, Credit = payrollEntry.PensionAmount },
+                        // Credit: Cash (Net Pay)
+                        new { AccountId = cashAccountId, Debit = 0m, Credit = payrollEntry.NetSalary }
+                    }
+                };
+
+                await _journalEntryService.CreateJournalEntryAsync(journalEntry, tenantId);
+                
+                _logger.LogInformation("Successfully processed payroll run for employee {EmployeeId}", payrollEntry.EmployeeId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing payroll run for employee {EmployeeId}", payrollEntry.EmployeeId);
+                throw;
+            }
         }
 
-        public Task ProcessPayrollTaxesAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
+        public async Task ProcessPayrollTaxesAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Processing payroll taxes for employee {EmployeeId}, Amount: {TaxAmount}", 
+                    payrollEntry.EmployeeId, payrollEntry.TaxAmount);
+
+                if (payrollEntry.TaxAmount <= 0)
+                {
+                    _logger.LogInformation("No tax amount to process for employee {EmployeeId}", payrollEntry.EmployeeId);
+                    return;
+                }
+
+                // Get chart of accounts
+                var taxExpenseAccountId = await _chartOfAccountService.GetTaxExpenseAccountIdAsync();
+                var taxPayableAccountId = await _chartOfAccountService.GetTaxPayableAccountIdAsync();
+
+                // Create journal entry for tax payment
+                var journalEntry = new
+                {
+                    Description = $"Payroll tax payment for {payrollEntry.EmployeeName} - {payrollEntry.PayPeriod}",
+                    Reference = $"TAX-{payrollEntry.PayrollRunId}",
+                    TransactionDate = payrollEntry.PaymentDate,
+                    Lines = new List<object>
+                    {
+                        // Debit: Tax Expense
+                        new { AccountId = taxExpenseAccountId, Debit = payrollEntry.TaxAmount, Credit = 0m },
+                        // Credit: Tax Payable
+                        new { AccountId = taxPayableAccountId, Debit = 0m, Credit = payrollEntry.TaxAmount }
+                    }
+                };
+
+                await _journalEntryService.CreateJournalEntryAsync(journalEntry, tenantId);
+                
+                _logger.LogInformation("Successfully processed payroll taxes for employee {EmployeeId}", payrollEntry.EmployeeId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing payroll taxes for employee {EmployeeId}", payrollEntry.EmployeeId);
+                throw;
+            }
         }
 
-        public Task ProcessEmployeeBenefitsAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
+        public async Task ProcessEmployeeBenefitsAsync(PayrollEntry payrollEntry, string tenantId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Processing employee benefits for employee {EmployeeId}", payrollEntry.EmployeeId);
+
+                // Calculate total benefits (pension + other benefits)
+                var totalBenefits = payrollEntry.PensionAmount + payrollEntry.OtherDeductions;
+
+                if (totalBenefits <= 0)
+                {
+                    _logger.LogInformation("No benefits to process for employee {EmployeeId}", payrollEntry.EmployeeId);
+                    return;
+                }
+
+                // Get chart of accounts
+                var benefitsExpenseAccountId = await _chartOfAccountService.GetBenefitsExpenseAccountIdAsync();
+                var pensionPayableAccountId = await _chartOfAccountService.GetPensionPayableAccountIdAsync();
+                var benefitsPayableAccountId = await _chartOfAccountService.GetBenefitsPayableAccountIdAsync();
+
+                var lines = new List<object>
+                {
+                    // Debit: Benefits Expense
+                    new { AccountId = benefitsExpenseAccountId, Debit = totalBenefits, Credit = 0m }
+                };
+
+                // Credit: Pension Payable
+                if (payrollEntry.PensionAmount > 0)
+                {
+                    lines.Add(new { AccountId = pensionPayableAccountId, Debit = 0m, Credit = payrollEntry.PensionAmount });
+                }
+
+                // Credit: Other Benefits Payable
+                if (payrollEntry.OtherDeductions > 0)
+                {
+                    lines.Add(new { AccountId = benefitsPayableAccountId, Debit = 0m, Credit = payrollEntry.OtherDeductions });
+                }
+
+                // Create journal entry for benefits
+                var journalEntry = new
+                {
+                    Description = $"Employee benefits for {payrollEntry.EmployeeName} - {payrollEntry.PayPeriod}",
+                    Reference = $"BEN-{payrollEntry.PayrollRunId}",
+                    TransactionDate = payrollEntry.PaymentDate,
+                    Lines = lines
+                };
+
+                await _journalEntryService.CreateJournalEntryAsync(journalEntry, tenantId);
+                
+                _logger.LogInformation("Successfully processed employee benefits for employee {EmployeeId}", payrollEntry.EmployeeId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing employee benefits for employee {EmployeeId}", payrollEntry.EmployeeId);
+                throw;
+            }
         }
     }
 }
