@@ -9,37 +9,57 @@ namespace FinTech.Core.Domain.Entities.Loans
     public class Loan : AggregateRoot
     {
         public string LoanNumber { get; private set; }
-        public int CustomerId { get; private set; }
+        // Use string IDs across the domain to match BaseEntity.Id
+        public string CustomerId { get; private set; }
+        public string LoanProductId { get; private set; }
+        public string LoanApplicationId { get; private set; }
+
+        // Keep principal terminology used elsewhere while also exposing LoanAmount for configuration compatibility
         public decimal PrincipalAmount { get; private set; }
+        public decimal LoanAmount => PrincipalAmount;
+
         public decimal OutstandingPrincipal { get; private set; }
         public decimal OutstandingInterest { get; private set; }
         public decimal InterestRate { get; private set; }
+        // Loan term in months - expose both names used in codebases
         public int LoanTermMonths { get; private set; }
+        public int LoanTerm => LoanTermMonths;
+
         public DateTime StartDate { get; private set; }
         public DateTime MaturityDate { get; private set; }
         public string LoanType { get; private set; }
-        public string LoanStatus { get; private set; }
+        // Status string to align with configuration
+        public string Status { get; private set; }
         public DateTime? DisbursementDate { get; private set; }
         public string RepaymentFrequency { get; private set; }
         public decimal MonthlyPayment { get; private set; }
+        public string InterestType { get; private set; }
         public string Currency { get; private set; }
+        public string AccountNumber { get; private set; }
+        public string Purpose { get; private set; }
+
         public virtual ICollection<LoanTransaction> Transactions { get; private set; } = new List<LoanTransaction>();
 
         private Loan() { } // For EF Core
 
         public Loan(
             string loanNumber,
-            int customerId,
+            string customerId,
+            string loanProductId,
             decimal principalAmount,
             decimal interestRate,
             int loanTermMonths,
             DateTime startDate,
             string loanType,
             string repaymentFrequency,
-            string currency)
+            string currency,
+            string? loanApplicationId = null,
+            string? purpose = null)
         {
             LoanNumber = loanNumber;
-            CustomerId = customerId;
+            CustomerId = customerId ?? throw new ArgumentNullException(nameof(customerId));
+            LoanProductId = loanProductId ?? string.Empty;
+            LoanApplicationId = loanApplicationId ?? string.Empty;
             PrincipalAmount = principalAmount;
             OutstandingPrincipal = 0; // Not yet disbursed
             OutstandingInterest = 0;
@@ -47,26 +67,27 @@ namespace FinTech.Core.Domain.Entities.Loans
             LoanTermMonths = loanTermMonths;
             StartDate = startDate;
             MaturityDate = startDate.AddMonths(loanTermMonths);
-            LoanType = loanType;
-            LoanStatus = "APPROVED";
-            RepaymentFrequency = repaymentFrequency;
-            Currency = currency;
-            
+            LoanType = loanType ?? string.Empty;
+            Status = "PENDING";
+            RepaymentFrequency = repaymentFrequency ?? string.Empty;
+            Currency = currency ?? string.Empty;
+            Purpose = purpose ?? string.Empty;
+
             // Calculate monthly payment based on loan term and interest rate
-            // This is a simplified calculation for demo purposes
             decimal monthlyRate = interestRate / 12 / 100;
-            MonthlyPayment = principalAmount * monthlyRate * (decimal)Math.Pow((double)(1 + monthlyRate), loanTermMonths) 
-                / ((decimal)Math.Pow((double)(1 + monthlyRate), loanTermMonths) - 1);
+            MonthlyPayment = monthlyRate == 0 ? Math.Round(PrincipalAmount / loanTermMonths, 2)
+                : PrincipalAmount * monthlyRate * (decimal)Math.Pow((double)(1 + monthlyRate), loanTermMonths)
+                    / ((decimal)Math.Pow((double)(1 + monthlyRate), loanTermMonths) - 1);
         }
 
         public void Disburse(string reference, string description)
         {
-            if (LoanStatus != "APPROVED")
+            if (Status != "APPROVED")
                 throw new InvalidOperationException("Loan must be in APPROVED status to disburse");
 
             OutstandingPrincipal = PrincipalAmount;
             DisbursementDate = DateTime.UtcNow;
-            LoanStatus = "ACTIVE";
+            Status = "ACTIVE";
 
             var transaction = new LoanTransaction(
                 this.Id,
@@ -88,7 +109,7 @@ namespace FinTech.Core.Domain.Entities.Loans
 
         public void RecordRepayment(decimal principalAmount, decimal interestAmount, string reference, string description)
         {
-            if (LoanStatus != "ACTIVE")
+            if (Status != "ACTIVE")
                 throw new InvalidOperationException("Loan must be in ACTIVE status to record repayment");
 
             if (principalAmount < 0 || interestAmount < 0)
@@ -116,7 +137,7 @@ namespace FinTech.Core.Domain.Entities.Loans
             // Check if loan is fully repaid
             if (OutstandingPrincipal == 0 && OutstandingInterest == 0)
             {
-                LoanStatus = "CLOSED";
+                Status = "CLOSED";
             }
 
             // Raise domain event
@@ -130,7 +151,7 @@ namespace FinTech.Core.Domain.Entities.Loans
 
         public void AccrueInterest(decimal amount, string reference, string description)
         {
-            if (LoanStatus != "ACTIVE")
+            if (Status != "ACTIVE")
                 throw new InvalidOperationException("Loan must be in ACTIVE status to accrue interest");
 
             if (amount <= 0)
@@ -158,7 +179,7 @@ namespace FinTech.Core.Domain.Entities.Loans
 
         public void ChargeFee(decimal amount, string feeType, string reference, string description)
         {
-            if (LoanStatus != "ACTIVE" && LoanStatus != "APPROVED")
+            if (Status != "ACTIVE" && Status != "APPROVED")
                 throw new InvalidOperationException("Loan must be in ACTIVE or APPROVED status to charge fee");
 
             if (amount <= 0)
@@ -185,7 +206,7 @@ namespace FinTech.Core.Domain.Entities.Loans
 
         public void WriteOff(string reference, string description)
         {
-            if (LoanStatus != "ACTIVE")
+            if (Status != "ACTIVE")
                 throw new InvalidOperationException("Loan must be in ACTIVE status to be written off");
 
             decimal writeOffAmount = OutstandingPrincipal + OutstandingInterest;
@@ -202,7 +223,7 @@ namespace FinTech.Core.Domain.Entities.Loans
 
             OutstandingPrincipal = 0;
             OutstandingInterest = 0;
-            LoanStatus = "WRITTEN_OFF";
+            Status = "WRITTEN_OFF";
 
             // Raise domain event
             AddDomainEvent(new LoanWrittenOffEvent(
@@ -210,6 +231,35 @@ namespace FinTech.Core.Domain.Entities.Loans
                 writeOffAmount,
                 reference,
                 description));
+        }
+
+        // Backwards-compatible constructor used by older call sites that pass int IDs
+        public Loan(
+            string loanNumber,
+            int customerId,
+            decimal principalAmount,
+            decimal interestRate,
+            int loanTermMonths,
+            DateTime startDate,
+            string loanType,
+            string repaymentFrequency,
+            string currency)
+            : this(
+                  loanNumber: loanNumber,
+                  customerId: customerId.ToString(),
+                  loanProductId: string.Empty,
+                  principalAmount: principalAmount,
+                  interestRate: interestRate,
+                  loanTermMonths: loanTermMonths,
+                  startDate: startDate,
+                  loanType: loanType,
+                  repaymentFrequency: repaymentFrequency,
+                  currency: currency,
+                  loanApplicationId: null,
+                  purpose: null)
+        {
+            // Older constructor semantics set approved status by default
+            Status = "APPROVED";
         }
     }
 }

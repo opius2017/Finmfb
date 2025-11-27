@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Fin_Backend.Infrastructure.Messaging;
-using Fin_Backend.Tests.Common;
+using FinTech.Infrastructure.Messaging;
+using FinTech.Tests.Common;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,7 +11,7 @@ using RabbitMQ.Client.Events;
 using Testcontainers.RabbitMq;
 using Xunit;
 
-namespace Fin_Backend.Tests.Integration
+namespace FinTech.Tests.Integration
 {
     public class MessageBrokerTests : IAsyncLifetime
     {

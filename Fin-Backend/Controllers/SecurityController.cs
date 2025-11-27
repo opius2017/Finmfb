@@ -4,7 +4,7 @@ using FinTech.Core.Application.DTOs.Security;
 using FinTech.WebAPI.Application.DTOs.Auth;
 using FinTech.WebAPI.Application.Common.DTOs;
 using FinTech.WebAPI.Application.Interfaces;
-using Fin_Backend.Infrastructure.Security.Authentication;
+using FinTech.Infrastructure.Security.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

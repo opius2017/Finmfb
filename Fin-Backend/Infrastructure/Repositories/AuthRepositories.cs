@@ -1,6 +1,6 @@
-using Fin_Backend.Application.Interfaces.Repositories;
-using Fin_Backend.Domain.Entities.Authentication;
-using Fin_Backend.Infrastructure.Data;
+using FinTech.Application.Interfaces.Repositories;
+using FinTech.Domain.Entities.Authentication;
+using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Infrastructure.Repositories
+namespace FinTech.Infrastructure.Repositories
 {
     /// <summary>
     /// Base repository implementation for authentication entities

@@ -1,10 +1,10 @@
-using Fin_Backend.Infrastructure.Caching;
+using FinTech.Infrastructure.Caching;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Application.Services
+namespace FinTech.Application.Services
 {
     public class BankingIntegrationService
     {

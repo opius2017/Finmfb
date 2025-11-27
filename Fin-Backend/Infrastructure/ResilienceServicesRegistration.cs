@@ -1,7 +1,7 @@
-using Fin_Backend.Infrastructure.Resilience;
+using FinTech.Infrastructure.Resilience;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fin_Backend.Infrastructure
+namespace FinTech.Infrastructure
 {
     public static class ResilienceServicesRegistration
     {

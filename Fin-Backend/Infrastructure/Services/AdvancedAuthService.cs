@@ -1,9 +1,9 @@
-using Fin_Backend.Application.Common.Settings;
-using Fin_Backend.Application.Interfaces;
-using Fin_Backend.Application.Interfaces.Repositories;
-using Fin_Backend.Domain.Entities.Authentication;
-using Fin_Backend.Infrastructure.Security.Authentication;
-using Fin_Backend.Infrastructure.Services;
+using FinTech.Application.Common.Settings;
+using FinTech.Application.Interfaces;
+using FinTech.Application.Interfaces.Repositories;
+using FinTech.Domain.Entities.Authentication;
+using FinTech.Infrastructure.Security.Authentication;
+using FinTech.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using System.Web;
 using FinTech.Core.Application.Interfaces.Shared;
 
-namespace Fin_Backend.Infrastructure.Services
+namespace FinTech.Infrastructure.Services
 {
     /// <summary>
     /// Advanced authentication service implementation

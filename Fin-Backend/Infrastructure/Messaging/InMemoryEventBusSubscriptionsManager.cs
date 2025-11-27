@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fin_Backend.Infrastructure.Messaging
+namespace FinTech.Infrastructure.Messaging
 {
     /// <summary>
     /// In-memory implementation of the event bus subscriptions manager

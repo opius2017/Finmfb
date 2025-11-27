@@ -8,7 +8,7 @@ using FinTech.WebAPI.Application.DTOs.Auth;
 using FinTech.WebAPI.Application.DTOs.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fin_Backend.Tests.Common
+namespace FinTech.Tests.Common
 {
     public static class TestAuthHandler
     {

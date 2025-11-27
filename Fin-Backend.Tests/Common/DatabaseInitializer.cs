@@ -6,7 +6,7 @@ using FinTech.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fin_Backend.Tests.Common
+namespace FinTech.Tests.Common
 {
     public static class DatabaseInitializer
     {

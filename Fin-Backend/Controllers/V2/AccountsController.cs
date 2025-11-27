@@ -1,4 +1,4 @@
-using Fin_Backend.Infrastructure.Documentation;
+using FinTech.Infrastructure.Documentation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Controllers.V2
+namespace FinTech.Controllers.V2
 {
     /// <summary>
     /// API controller for managing customer accounts (V2)

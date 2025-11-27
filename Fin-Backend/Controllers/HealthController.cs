@@ -1,4 +1,4 @@
-using Fin_Backend.Infrastructure.Documentation;
+using FinTech.Infrastructure.Documentation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Swashbuckle.AspNetCore.Annotations;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Health;
 
-namespace Fin_Backend.Controllers
+namespace FinTech.Controllers
 {
     /// <summary>
     /// Health check endpoints for monitoring system status

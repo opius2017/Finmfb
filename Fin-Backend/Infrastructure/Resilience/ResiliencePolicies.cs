@@ -7,7 +7,7 @@ using Polly.Timeout;
 using System;
 using System.Net.Http;
 
-namespace Fin_Backend.Infrastructure.Resilience
+namespace FinTech.Infrastructure.Resilience
 {
     public static class ResiliencePolicies
     {

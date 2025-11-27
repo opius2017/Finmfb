@@ -13,7 +13,7 @@ using WireMock.ResponseBuilders;
 using WireMock.Server;
 using Xunit;
 
-namespace Fin_Backend.Tests.Unit
+namespace FinTech.Tests.Unit
 {
     public class ResiliencePoliciesTests : IDisposable
     {

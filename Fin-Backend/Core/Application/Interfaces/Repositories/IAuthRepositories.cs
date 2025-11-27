@@ -1,9 +1,9 @@
-using Fin_Backend.Domain.Entities.Authentication;
+using FinTech.Core.Domain.Entities.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Fin_Backend.Application.Interfaces.Repositories
+namespace FinTech.Core.Application.Interfaces.Repositories
 {
     /// <summary>
     /// Repository interface for the authentication entities

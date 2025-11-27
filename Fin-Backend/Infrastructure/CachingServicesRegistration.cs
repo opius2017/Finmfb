@@ -1,9 +1,9 @@
-using Fin_Backend.Infrastructure.Caching;
+using FinTech.Infrastructure.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Fin_Backend.Infrastructure
+namespace FinTech.Infrastructure
 {
     public static class CachingServicesRegistration
     {
