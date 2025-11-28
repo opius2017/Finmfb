@@ -1,12 +1,12 @@
-using FinTech.WebAPI.Domain.Entities.Auth;
+using FinTech.Core.Domain.Entities.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FinTech.WebAPI.Infrastructure.Data.Configurations
 {
-    public class UserMfaSettingsConfiguration : IEntityTypeConfiguration<UserMfaSettings>
+    public class UserMfaSettingsConfiguration : IEntityTypeConfiguration<MfaSettings>
     {
-        public void Configure(EntityTypeBuilder<UserMfaSettings> builder)
+        public void Configure(EntityTypeBuilder<MfaSettings> builder)
         {
             builder.HasKey(x => x.Id);
             
@@ -29,8 +29,8 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
                 
             // Relationships
             builder.HasMany(x => x.BackupCodes)
-                .WithOne(x => x.UserMfaSettings)
-                .HasForeignKey(x => x.UserMfaSettingsId)
+                .WithOne(x => x.MfaSettings)
+                .HasForeignKey(x => x.MfaSettingsId)
                 .OnDelete(DeleteBehavior.Cascade);
                 
             builder.HasMany(x => x.Challenges)
@@ -45,13 +45,13 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
         }
     }
     
-    public class MfaBackupCodeConfiguration : IEntityTypeConfiguration<MfaBackupCode>
+    public class MfaBackupCodeConfiguration : IEntityTypeConfiguration<BackupCode>
     {
-        public void Configure(EntityTypeBuilder<MfaBackupCode> builder)
+        public void Configure(EntityTypeBuilder<BackupCode> builder)
         {
             builder.HasKey(x => x.Id);
             
-            builder.Property(x => x.UserMfaSettingsId)
+            builder.Property(x => x.MfaSettingsId)
                 .IsRequired();
                 
             builder.Property(x => x.Code)
@@ -65,7 +65,7 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
                 .IsRequired();
                 
             // Index for faster lookup by UserMfaSettingsId
-            builder.HasIndex(x => x.UserMfaSettingsId);
+            builder.HasIndex(x => x.MfaSettingsId);
             
             // Unique constraint on the code (no duplicate backup codes)
             builder.HasIndex(x => x.Code)
@@ -79,7 +79,7 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
         {
             builder.HasKey(x => x.Id);
             
-            builder.Property(x => x.UserMfaSettingsId)
+            builder.Property(x => x.MfaSettingsId)
                 .IsRequired();
                 
             builder.Property(x => x.Operation)
@@ -96,7 +96,7 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
                 .IsRequired();
                 
             // Index for faster lookup by UserMfaSettingsId
-            builder.HasIndex(x => x.UserMfaSettingsId);
+            builder.HasIndex(x => x.MfaSettingsId);
             
             // Index for expiration cleanup
             builder.HasIndex(x => x.ExpiresAt);
@@ -109,7 +109,7 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
         {
             builder.HasKey(x => x.Id);
             
-            builder.Property(x => x.UserMfaSettingsId)
+            builder.Property(x => x.MfaSettingsId)
                 .IsRequired();
                 
             builder.Property(x => x.DeviceName)
@@ -145,7 +145,7 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
                 .IsRequired();
                 
             // Index for faster lookup by UserMfaSettingsId
-            builder.HasIndex(x => x.UserMfaSettingsId);
+            builder.HasIndex(x => x.MfaSettingsId);
             
             // Index for revoked devices
             builder.HasIndex(x => x.IsRevoked);

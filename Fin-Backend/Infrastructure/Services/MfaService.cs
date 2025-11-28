@@ -1,6 +1,6 @@
 using FinTech.WebAPI.Application.DTOs.Auth;
 using FinTech.WebAPI.Application.Interfaces;
-using FinTech.WebAPI.Domain.Entities.Auth;
+using FinTech.Core.Domain.Entities.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
