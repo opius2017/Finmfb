@@ -1,0 +1,5 @@
+/workspaces/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/workspaces/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.AssemblyInfoInputs.cache
+/workspaces/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.AssemblyInfo.cs
+/workspaces/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.csproj.CoreCompileInputs.cache
+/workspaces/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.sourcelink.json
