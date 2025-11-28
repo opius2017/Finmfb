@@ -1,0 +1,47 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio cache/options
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# NuGet
+**/packages/*
+!**/packages/build/
+project.lock.json
+project.fragment.lock.json
+*.nuget.props
+*.nuget.targets
+
+# IDE
+.idea/
+*.DotSettings.user
+
+# User-specific files
+*.user
+*.rsuser
+
+# Node
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Frontend build
+Fin-Frontend/dist/
+
+# Temp files
+*.tmp
+*.temp
+*.log
