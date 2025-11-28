@@ -22,3 +22,15 @@ c:/Users/opius/Desktop/projectFin/Finmfb/Fin-Backend/Core/Domain/obj/Debug/net8.
 /workspaces/Finmfb/Fin-Backend/Core/Domain/bin/Debug/net8.0/FinTech.Core.Domain.dll
 /workspaces/Finmfb/Fin-Backend/Core/Domain/bin/Debug/net8.0/FinTech.Core.Domain.pdb
 /workspaces/Finmfb/Fin-Backend/Core/Domain/obj/Debug/net8.0/ref/FinTech.Core.Domain.dll
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/bin/Debug/net8.0/FinTech.Core.Domain.deps.json
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/bin/Debug/net8.0/FinTech.Core.Domain.dll
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/bin/Debug/net8.0/FinTech.Core.Domain.pdb
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.AssemblyInfoInputs.cache
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.AssemblyInfo.cs
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.csproj.CoreCompileInputs.cache
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.sourcelink.json
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.dll
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/refint/FinTech.Core.Domain.dll
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/FinTech.Core.Domain.pdb
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/Debug/net8.0/ref/FinTech.Core.Domain.dll

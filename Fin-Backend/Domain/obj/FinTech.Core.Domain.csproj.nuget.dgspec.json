@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/workspaces/Finmfb/Fin-Backend/Core/Domain/FinTech.Core.Domain.csproj": {}
+    "/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/FinTech.Core.Domain.csproj": {}
   },
   "projects": {
-    "/workspaces/Finmfb/Fin-Backend/Core/Domain/FinTech.Core.Domain.csproj": {
+    "/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/FinTech.Core.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/Finmfb/Fin-Backend/Core/Domain/FinTech.Core.Domain.csproj",
+        "projectUniqueName": "/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/FinTech.Core.Domain.csproj",
         "projectName": "FinTech.Core.Domain",
-        "projectPath": "/workspaces/Finmfb/Fin-Backend/Core/Domain/FinTech.Core.Domain.csproj",
-        "packagesPath": "/home/codespace/.nuget/packages/",
-        "outputPath": "/workspaces/Finmfb/Fin-Backend/Core/Domain/obj/",
+        "projectPath": "/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/FinTech.Core.Domain.csproj",
+        "packagesPath": "/home/runner/.nuget/packages/",
+        "outputPath": "/home/runner/work/Finmfb/Finmfb/Fin-Backend/Domain/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/codespace/.nuget/NuGet/NuGet.Config"
+          "/home/runner/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -58,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

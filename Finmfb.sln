@@ -14,9 +14,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinTech.Infrastructure", "F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{64FA76A9-6476-897A-7C07-90A4352D5E4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinTech.Core.Application", "Fin-Backend\Core\Application\FinTech.Core.Application.csproj", "{5299C5E8-4D18-DC1A-4C75-8AE1D7905BAC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinTech.Core.Application", "Fin-Backend\Application\FinTech.Core.Application.csproj", "{5299C5E8-4D18-DC1A-4C75-8AE1D7905BAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinTech.Core.Domain", "Fin-Backend\Core\Domain\FinTech.Core.Domain.csproj", "{54D92672-FA06-EE77-2F1B-CAB87A153A7D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinTech.Core.Domain", "Fin-Backend\Domain\FinTech.Core.Domain.csproj", "{54D92672-FA06-EE77-2F1B-CAB87A153A7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

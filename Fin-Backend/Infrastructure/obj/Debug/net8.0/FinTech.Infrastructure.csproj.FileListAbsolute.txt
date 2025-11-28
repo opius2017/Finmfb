@@ -1,0 +1,6 @@
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Infrastructure/obj/Debug/net8.0/FinTech.Infrastructure.csproj.AssemblyReference.cache
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Infrastructure/obj/Debug/net8.0/FinTech.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Infrastructure/obj/Debug/net8.0/FinTech.Infrastructure.AssemblyInfoInputs.cache
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Infrastructure/obj/Debug/net8.0/FinTech.Infrastructure.AssemblyInfo.cs
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Infrastructure/obj/Debug/net8.0/FinTech.Infrastructure.csproj.CoreCompileInputs.cache
+/home/runner/work/Finmfb/Finmfb/Fin-Backend/Infrastructure/obj/Debug/net8.0/FinTech.Infrastructure.sourcelink.json

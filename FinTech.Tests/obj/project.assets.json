@@ -4867,19 +4867,19 @@
     ]
   },
   "packageFolders": {
-    "/home/codespace/.nuget/packages/": {}
+    "/home/runner/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/workspaces/Finmfb/FinTech.Tests/FinTech.Tests.csproj",
+      "projectUniqueName": "/home/runner/work/Finmfb/Finmfb/FinTech.Tests/FinTech.Tests.csproj",
       "projectName": "FinTech.Tests",
-      "projectPath": "/workspaces/Finmfb/FinTech.Tests/FinTech.Tests.csproj",
-      "packagesPath": "/home/codespace/.nuget/packages/",
-      "outputPath": "/workspaces/Finmfb/FinTech.Tests/obj/",
+      "projectPath": "/home/runner/work/Finmfb/Finmfb/FinTech.Tests/FinTech.Tests.csproj",
+      "packagesPath": "/home/runner/.nuget/packages/",
+      "outputPath": "/home/runner/work/Finmfb/Finmfb/FinTech.Tests/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/codespace/.nuget/NuGet/NuGet.Config"
+        "/home/runner/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -4891,8 +4891,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {
-              "projectPath": "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj"
+            "/home/runner/work/Finmfb/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {
+              "projectPath": "/home/runner/work/Finmfb/Finmfb/Fin-Backend/FinTech.WebAPI.csproj"
             }
           }
         }
@@ -4906,7 +4906,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net8.0": {
@@ -4953,7 +4954,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
