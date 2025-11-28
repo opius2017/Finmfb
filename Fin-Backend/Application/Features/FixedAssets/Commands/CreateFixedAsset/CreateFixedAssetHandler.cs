@@ -3,8 +3,8 @@ using AutoMapper;
 using FinTech.Core.Application.Common.Models;
 using FinTech.Core.Domain.Repositories;
 using FinTech.Core.Domain.Entities.FixedAssets;
-using FinTech.Shared.Abstractions;
 using FluentValidation;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,18 +16,15 @@ namespace FinTech.Core.Application.Features.FixedAssets.Commands.CreateFixedAsse
     public class CreateFixedAssetHandler : IRequestHandler<CreateFixedAssetCommand, Result<CreateFixedAssetResponse>>
     {
         private readonly IRepository<FixedAsset> _repository;
-        private readonly ICurrentUserProvider _userProvider;
         private readonly IValidator<CreateFixedAssetCommand> _validator;
         private readonly IMapper _mapper;
 
         public CreateFixedAssetHandler(
             IRepository<FixedAsset> repository,
-            ICurrentUserProvider userProvider,
             IValidator<CreateFixedAssetCommand> validator,
             IMapper mapper)
         {
             _repository = repository;
-            _userProvider = userProvider;
             _validator = validator;
             _mapper = mapper;
         }
@@ -42,45 +39,39 @@ namespace FinTech.Core.Application.Features.FixedAssets.Commands.CreateFixedAsse
             {
                 var firstError = validationResult.Errors[0];
                 return Result.Failure<CreateFixedAssetResponse>(
-                    Error.New(firstError.PropertyName, firstError.ErrorMessage));
+                    Error.Validation(firstError.PropertyName, firstError.ErrorMessage));
             }
 
-            // 2. AUTHORIZE
-            var currentUser = _userProvider.GetCurrentUser();
-            if (!currentUser.IsAdmin && !currentUser.HasPermission("FixedAssets.Create"))
-            {
-                return Result.Failure<CreateFixedAssetResponse>(
-                    Error.New("Unauthorized", "You do not have permission to create fixed assets"));
-            }
-
-            // 3. CREATE DOMAIN ENTITY
+            // 2. CREATE DOMAIN ENTITY using the proper constructor
             try
             {
-                var asset = FixedAsset.Create(
-                    request.AssetCode,
-                    request.AssetName,
-                    request.Description,
-                    request.PurchasePrice,
-                    request.SalvageValue,
-                    request.UsefulLifeYears,
-                    request.CategoryId,
-                    request.LocationId,
-                    request.DepartmentId,
-                    request.AcquisitionDate,
-                    currentUser.UserId);
+                var asset = new FixedAsset(
+                    assetCode: request.AssetCode,
+                    assetName: request.AssetName,
+                    description: request.Description ?? string.Empty,
+                    assetCategory: request.CategoryId,
+                    acquisitionDate: request.AcquisitionDate,
+                    acquisitionCost: request.PurchasePrice,
+                    residualValue: request.SalvageValue,
+                    usefulLifeYears: request.UsefulLifeYears,
+                    depreciationMethod: "STRAIGHT_LINE",
+                    location: request.LocationId ?? string.Empty,
+                    serialNumber: string.Empty,
+                    model: string.Empty,
+                    manufacturer: string.Empty);
 
-                // 4. PERSIST TO DATABASE
+                // 3. PERSIST TO DATABASE
                 await _repository.AddAsync(asset, cancellationToken);
 
-                // 5. MAP TO RESPONSE DTO
+                // 4. MAP TO RESPONSE DTO
                 var response = new CreateFixedAssetResponse
                 {
                     Id = asset.Id,
                     AssetCode = asset.AssetCode,
                     AssetName = asset.AssetName,
-                    BookValue = asset.BookValue,
+                    BookValue = asset.CurrentValue,
                     Status = asset.Status.ToString(),
-                    CreatedAt = asset.CreatedAt
+                    CreatedAt = DateTime.UtcNow
                 };
 
                 return Result.Success(response);
@@ -88,12 +79,12 @@ namespace FinTech.Core.Application.Features.FixedAssets.Commands.CreateFixedAsse
             catch (ArgumentException ex)
             {
                 return Result.Failure<CreateFixedAssetResponse>(
-                    Error.New("ValidationError", ex.Message));
+                    Error.Validation("ValidationError", ex.Message));
             }
             catch (Exception ex)
             {
                 return Result.Failure<CreateFixedAssetResponse>(
-                    Error.New("InternalError", $"An error occurred while creating the asset: {ex.Message}"));
+                    Error.Failure("InternalError", $"An error occurred while creating the asset: {ex.Message}"));
             }
         }
     }

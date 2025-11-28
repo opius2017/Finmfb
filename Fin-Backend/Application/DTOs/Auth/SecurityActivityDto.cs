@@ -1,4 +1,4 @@
-namespace FinTech.Core.Application.DTOs.Auth.Internal
+namespace FinTech.Core.Application.DTOs.Auth
 {
     public class SecurityActivityDto
     {
