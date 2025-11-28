@@ -107,6 +107,14 @@ namespace FinTech.Infrastructure.Data
         public DbSet<LoanGuarantor> LoanGuarantors { get; set; }
         public DbSet<LoanApplicationRequest> LoanApplicationRequests { get; set; }
         public DbSet<LoanApplicationDocument> LoanApplicationDocuments { get; set; }
+        
+        // Loan Governance & Compliance
+        public DbSet<LoanType> LoanTypes { get; set; }
+        public DbSet<LoanConfiguration> LoanConfigurations { get; set; }
+        public DbSet<LoanCommitteeApproval> LoanCommitteeApprovals { get; set; }
+        public DbSet<LoanEligibilityRule> LoanEligibilityRules { get; set; }
+        public DbSet<LoanRegister> LoanRegisters { get; set; }
+        public DbSet<CommodityLoan> CommodityLoans { get; set; }
 
         // Accounts Payable
         public DbSet<FinTech.Core.Domain.Entities.AccountsPayable.Vendor> Vendors { get; set; }

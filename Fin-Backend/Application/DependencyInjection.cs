@@ -37,6 +37,9 @@ public static class DependencyInjection
         services.AddScoped<IMakerCheckerService, MakerCheckerService>();
         services.AddScoped<ITaxCalculationService, TaxCalculationService>();
         
+        // Register loan governance services
+        services.AddScoped<ILoanCalculatorService, LoanCalculatorService>();
+        
         // Register integration services
         services.AddScoped<INibssService, NibssService>();
         services.AddScoped<ICreditBureauService, CreditBureauService>();

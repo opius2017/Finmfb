@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Loans
 {
