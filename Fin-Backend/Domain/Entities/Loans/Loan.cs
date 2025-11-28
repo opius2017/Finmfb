@@ -39,6 +39,54 @@ namespace FinTech.Core.Domain.Entities.Loans
         public string AccountNumber { get; private set; }
         public string Purpose { get; private set; }
 
+        // Governance properties
+        public int? LoanTypeConfigId { get; set; }
+        public virtual LoanType LoanTypeConfig { get; set; }
+        
+        public int? CommitteeApprovalId { get; set; }
+        public virtual LoanCommitteeApproval CommitteeApproval { get; set; }
+        
+        public int? LoanRegisterId { get; set; }
+        public virtual LoanRegister LoanRegister { get; set; }
+        
+        public int? CommodityLoanId { get; set; }
+        public virtual CommodityLoan CommodityLoan { get; set; }
+        
+        /// <summary>
+        /// Governance status: "Eligible", "RequiresCommitteeReview", "PendingCommitteeApproval", "CommitteeApproved", "CommitteeRejected"
+        /// </summary>
+        public string GovernanceStatus { get; set; } = "Eligible";
+        
+        /// <summary>
+        /// Whether this loan requires committee approval (based on amount or risk rating)
+        /// </summary>
+        public bool RequiresCommitteeApproval { get; set; }
+        
+        /// <summary>
+        /// Risk rating for governance: Low, Medium, High, Critical
+        /// </summary>
+        public string RiskRating { get; set; } = "Medium";
+        
+        /// <summary>
+        /// Auto-approval eligible: True if meets all eligibility criteria
+        /// </summary>
+        public bool IsAutoApprovalEligible { get; set; }
+        
+        /// <summary>
+        /// Last eligibility check date
+        /// </summary>
+        public DateTime? LastEligibilityCheckDate { get; set; }
+        
+        /// <summary>
+        /// Member savings amount at time of loan approval
+        /// </summary>
+        public decimal? MemberSavingsAtApproval { get; set; }
+        
+        /// <summary>
+        /// Maximum deduction percentage for this member based on income
+        /// </summary>
+        public decimal? MaxDeductionPercentage { get; set; }
+
         // Navigation properties for mapping/queries
         public virtual Customer Customer { get; set; }
         public virtual LoanProduct LoanProduct { get; set; }

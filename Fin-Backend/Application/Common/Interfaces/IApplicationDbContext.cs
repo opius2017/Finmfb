@@ -51,6 +51,17 @@ public interface IApplicationDbContext
     DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; }
     DbSet<LoanCollateral> LoanCollaterals { get; }
     DbSet<LoanGuarantor> LoanGuarantors { get; }
+    DbSet<Loan> Loans { get; }
+    DbSet<LoanApplication> LoanApplications { get; }
+    DbSet<LoanDocument> LoanDocuments { get; }
+    
+    // Loan Governance & Compliance
+    DbSet<LoanType> LoanTypes { get; }
+    DbSet<LoanConfiguration> LoanConfigurations { get; }
+    DbSet<LoanCommitteeApproval> LoanCommitteeApprovals { get; }
+    DbSet<LoanEligibilityRule> LoanEligibilityRules { get; }
+    DbSet<LoanRegister> LoanRegisters { get; }
+    DbSet<CommodityLoan> CommodityLoans { get; }
 
     // Accounts Payable
     DbSet<Vendor> Vendors { get; }
