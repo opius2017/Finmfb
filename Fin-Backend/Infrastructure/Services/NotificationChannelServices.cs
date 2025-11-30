@@ -156,7 +156,7 @@ namespace FinTech.Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task<bool> SendPushNotificationAsync(string token, string title, string body, string data = null)
+        public async Task<bool> SendPushNotificationAsync(string token, string title, string body, string? data = null)
         {
             try
             {
@@ -177,7 +177,7 @@ namespace FinTech.Infrastructure.Services
             }
         }
 
-        public async Task<bool> SendPushNotificationToTopicAsync(string topic, string title, string body, string data = null)
+        public async Task<bool> SendPushNotificationToTopicAsync(string topic, string title, string body, string? data = null)
         {
             try
             {

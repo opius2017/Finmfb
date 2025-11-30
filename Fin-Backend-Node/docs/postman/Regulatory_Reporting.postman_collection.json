@@ -1,0 +1,436 @@
+{
+  "info": {
+    "name": "Regulatory Reporting API",
+    "description": "API endpoints for regulatory reporting, compliance management, and alerts",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Generate CBN Prudential Return",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodStart\": \"2024-01-01\",\n  \"periodEnd\": \"2024-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/reports/cbn-prudential",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "reports", "cbn-prudential"]
+            }
+          }
+        },
+        {
+          "name": "Generate CBN Capital Adequacy Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodStart\": \"2024-01-01\",\n  \"periodEnd\": \"2024-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/reports/cbn-capital-adequacy",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "reports", "cbn-capital-adequacy"]
+            }
+          }
+        },
+        {
+          "name": "Generate FIRS VAT Return",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"periodStart\": \"2024-01-01\",\n  \"periodEnd\": \"2024-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/reports/firs-vat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "reports", "firs-vat"]
+            }
+          }
+        },
+        {
+          "name": "Generate IFRS 9 ECL Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assessmentDate\": \"2024-01-31\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/reports/ifrs9-ecl",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "reports", "ifrs9-ecl"]
+            }
+          }
+        },
+        {
+          "name": "Get All Reports",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/reports?reportType=CBN_PRUDENTIAL&status=DRAFT&fiscalYear=2024",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "reports"],
+              "query": [
+                {
+                  "key": "reportType",
+                  "value": "CBN_PRUDENTIAL"
+                },
+                {
+                  "key": "status",
+                  "value": "DRAFT"
+                },
+                {
+                  "key": "fiscalYear",
+                  "value": "2024"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Report by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/reports/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "reports", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{report_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Report Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUBMITTED\",\n  \"submissionReference\": \"CBN-2024-001\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/reports/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "reports", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{report_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Compliance Checklist",
+      "item": [
+        {
+          "name": "Get All Checklist Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/compliance/checklist?category=CBN&status=PENDING&priority=HIGH",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "compliance", "checklist"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "CBN"
+                },
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                },
+                {
+                  "key": "priority",
+                  "value": "HIGH"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Checklist Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Submit CBN Monthly Return\",\n  \"description\": \"Prepare and submit monthly prudential return to CBN\",\n  \"category\": \"CBN\",\n  \"frequency\": \"MONTHLY\",\n  \"dueDate\": \"2024-02-15\",\n  \"priority\": \"HIGH\",\n  \"responsiblePerson\": \"user-id-here\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/compliance/checklist",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "compliance", "checklist"]
+            }
+          }
+        },
+        {
+          "name": "Update Checklist Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\",\n  \"notes\": \"Report submitted successfully via CBN portal\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/compliance/checklist/:id/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "compliance", "checklist", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{checklist_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Overdue Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/compliance/checklist/overdue",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "compliance", "checklist", "overdue"]
+            }
+          }
+        },
+        {
+          "name": "Create Recurring Checklists",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/compliance/checklist/recurring",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "compliance", "checklist", "recurring"]
+            }
+          }
+        },
+        {
+          "name": "Get Compliance Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/compliance/dashboard",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "compliance", "dashboard"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Regulatory Alerts",
+      "item": [
+        {
+          "name": "Get All Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/alerts?alertType=CAPITAL_ADEQUACY&severity=CRITICAL&isAcknowledged=false",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "alerts"],
+              "query": [
+                {
+                  "key": "alertType",
+                  "value": "CAPITAL_ADEQUACY"
+                },
+                {
+                  "key": "severity",
+                  "value": "CRITICAL"
+                },
+                {
+                  "key": "isAcknowledged",
+                  "value": "false"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Acknowledge Alert",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resolutionNotes\": \"Capital injection completed to restore CAR above minimum requirement\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/regulatory/alerts/:id/acknowledge",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "regulatory", "alerts", ":id", "acknowledge"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{alert_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "report_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "checklist_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "alert_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

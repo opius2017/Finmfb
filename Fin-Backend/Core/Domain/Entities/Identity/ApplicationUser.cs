@@ -1,61 +1,28 @@
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Identity;
 
-public class ApplicationUser
+public class ApplicationUser : IdentityUser<Guid>
 {
-    public Guid Id { get; set; }
-
-    [Required]
-    [StringLength(100)]
     public string FirstName { get; set; } = string.Empty;
-    
-    [Required]
-    [StringLength(100)]
     public string LastName { get; set; } = string.Empty;
-    
-    [StringLength(100)]
     public string? MiddleName { get; set; }
-    
-    [Required]
+    public DateTime DateOfBirth { get; set; }
+    public string? ProfilePictureUrl { get; set; }
     public bool IsActive { get; set; } = true;
-    
-    [Required]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
-    public DateTime? LastLoginDate { get; set; }
-    
-    [StringLength(20)]
-    public string? EmployeeId { get; set; }
-    
-    [StringLength(50)]
-    public string? Department { get; set; }
-    
-    [StringLength(100)]
-    public string? Position { get; set; }
-    
-    public DateTime? DateOfBirth { get; set; }
-    
-    [StringLength(200)]
-    public string? Address { get; set; }
-    
-    [StringLength(50)]
-    public string? City { get; set; }
-    
-    [StringLength(50)]
-    public string? State { get; set; }
-    
-    [StringLength(10)]
-    public string? PostalCode { get; set; }
-    
-    [Required]
-    public Guid TenantId { get; set; }
-    public virtual Tenant Tenant { get; set; } = null!;
-    
-    [StringLength(250)]
-    public string? ProfileImageUrl { get; set; }
-    
-    public virtual ICollection<UserRole> UserRoles { get; set; } = [];
-    
-    public string FullName => $"{FirstName} {LastName}";
+    public DateTime? LastLoginAt { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime? LastModifiedAt { get; set; }
+    public string? LastModifiedBy { get; set; }
+
+    // Navigation properties
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public virtual MfaSettings? MfaSettings { get; set; }
+    public virtual ICollection<TrustedDevice> TrustedDevices { get; set; } = new List<TrustedDevice>();
+    public virtual ICollection<LoginAttempt> LoginAttempts { get; set; } = new List<LoginAttempt>();
+    public virtual ICollection<SocialLoginProfile> SocialLoginProfiles { get; set; } = new List<SocialLoginProfile>();
+    public virtual ICollection<SecurityAlert> SecurityAlerts { get; set; } = new List<SecurityAlert>();
+    public virtual UserSecurityPreferences? SecurityPreferences { get; set; }
 }

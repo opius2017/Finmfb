@@ -1,14 +1,15 @@
-using System.Collections.Generic;
+namespace FinTech.Core.Application.DTOs.Email;
 
-namespace FinTech.Core.Application.DTOs.Email
+public class TemplatedEmailRequest
 {
-    public class TemplatedEmailRequest
-    {
-        public string ToEmail { get; set; } = string.Empty;
-        public string Subject { get; set; } = string.Empty;
-        public string TemplateName { get; set; } = string.Empty;
-        public Dictionary<string, string> TemplateParameters { get; set; } = new();
-        public List<string>? CcEmails { get; set; }
-        public List<string>? BccEmails { get; set; }
-    }
+    public string To { get; set; } = string.Empty;
+    public string? ToName { get; set; }
+    public string TemplateName { get; set; } = string.Empty;
+    public Dictionary<string, object> TemplateData { get; set; } = new();
+    public string? Subject { get; set; }
+    public string? From { get; set; }
+    public string? FromName { get; set; }
+    public List<string>? Cc { get; set; }
+    public List<string>? Bcc { get; set; }
+    public int Priority { get; set; } = 3;
 }

@@ -1,265 +1,126 @@
-using System;
-using System.Collections.Generic;
-using FinTech.Core.Domain.Common;
-using FinTech.Core.Domain.Events.Loans;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using FinTech.Core.Domain.Entities.Common;
 
-namespace FinTech.Core.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans;
+
+/// <summary>
+/// Represents an active loan
+/// </summary>
+public class Loan : BaseEntity
 {
-    public class Loan : AggregateRoot
-    {
-        public string LoanNumber { get; private set; }
-        // Use string IDs across the domain to match BaseEntity.Id
-        public string CustomerId { get; private set; }
-        public string LoanProductId { get; private set; }
-        public string LoanApplicationId { get; private set; }
+    [Required]
+    [StringLength(50)]
+    public string LoanNumber { get; set; } = string.Empty;
 
-        // Keep principal terminology used elsewhere while also exposing LoanAmount for configuration compatibility
-        public decimal PrincipalAmount { get; private set; }
-        public decimal LoanAmount => PrincipalAmount;
+    [Required]
+    [ForeignKey(nameof(Member))]
+    public string MemberId { get; set; } = string.Empty;
 
-        public decimal OutstandingPrincipal { get; private set; }
-        public decimal OutstandingInterest { get; private set; }
-        public decimal InterestRate { get; private set; }
-        // Loan term in months - expose both names used in codebases
-        public int LoanTermMonths { get; private set; }
-        public int LoanTerm => LoanTermMonths;
+    public Member? Member { get; set; }
 
-        public DateTime StartDate { get; private set; }
-        public DateTime MaturityDate { get; private set; }
-        public string LoanType { get; private set; }
-        // Status string to align with configuration
-        public string Status { get; private set; }
-        public DateTime? DisbursementDate { get; private set; }
-        public string RepaymentFrequency { get; private set; }
-        public decimal MonthlyPayment { get; private set; }
-        public string InterestType { get; private set; }
-        public string Currency { get; private set; }
-        public string AccountNumber { get; private set; }
-        public string Purpose { get; private set; }
+    [Required]
+    [ForeignKey(nameof(LoanProduct))]
+    public Guid LoanProductId { get; set; }
 
-        public virtual ICollection<LoanTransaction> Transactions { get; private set; } = new List<LoanTransaction>();
+    public LoanProduct? LoanProduct { get; set; }
 
-        private Loan() { } // For EF Core
+    [ForeignKey(nameof(LoanApplication))]
+    public Guid? LoanApplicationId { get; set; }
 
-        public Loan(
-            string loanNumber,
-            string customerId,
-            string loanProductId,
-            decimal principalAmount,
-            decimal interestRate,
-            int loanTermMonths,
-            DateTime startDate,
-            string loanType,
-            string repaymentFrequency,
-            string currency,
-            string? loanApplicationId = null,
-            string? purpose = null)
-        {
-            LoanNumber = loanNumber;
-            CustomerId = customerId ?? throw new ArgumentNullException(nameof(customerId));
-            LoanProductId = loanProductId ?? string.Empty;
-            LoanApplicationId = loanApplicationId ?? string.Empty;
-            PrincipalAmount = principalAmount;
-            OutstandingPrincipal = 0; // Not yet disbursed
-            OutstandingInterest = 0;
-            InterestRate = interestRate;
-            LoanTermMonths = loanTermMonths;
-            StartDate = startDate;
-            MaturityDate = startDate.AddMonths(loanTermMonths);
-            LoanType = loanType ?? string.Empty;
-            Status = "PENDING";
-            RepaymentFrequency = repaymentFrequency ?? string.Empty;
-            Currency = currency ?? string.Empty;
-            Purpose = purpose ?? string.Empty;
+    public LoanApplication? LoanApplication { get; set; }
 
-            // Calculate monthly payment based on loan term and interest rate
-            decimal monthlyRate = interestRate / 12 / 100;
-            MonthlyPayment = monthlyRate == 0 ? Math.Round(PrincipalAmount / loanTermMonths, 2)
-                : PrincipalAmount * monthlyRate * (decimal)Math.Pow((double)(1 + monthlyRate), loanTermMonths)
-                    / ((decimal)Math.Pow((double)(1 + monthlyRate), loanTermMonths) - 1);
-        }
+    [Required]
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal PrincipalAmount { get; set; }
 
-        public void Disburse(string reference, string description)
-        {
-            if (Status != "APPROVED")
-                throw new InvalidOperationException("Loan must be in APPROVED status to disburse");
+    [Required]
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal InterestRate { get; set; }
 
-            OutstandingPrincipal = PrincipalAmount;
-            DisbursementDate = DateTime.UtcNow;
-            Status = "ACTIVE";
+    public int TenureMonths { get; set; }
 
-            var transaction = new LoanTransaction(
-                this.Id,
-                "DISBURSEMENT",
-                PrincipalAmount,
-                0,
-                reference,
-                description);
-            
-            Transactions.Add(transaction);
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal MonthlyInstallment { get; set; }
 
-            // Raise domain event
-            AddDomainEvent(new LoanDisbursedEvent(
-                this.Id,
-                PrincipalAmount,
-                reference,
-                description));
-        }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal TotalInterest { get; set; }
 
-        public void RecordRepayment(decimal principalAmount, decimal interestAmount, string reference, string description)
-        {
-            if (Status != "ACTIVE")
-                throw new InvalidOperationException("Loan must be in ACTIVE status to record repayment");
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal TotalRepayableAmount { get; set; }
 
-            if (principalAmount < 0 || interestAmount < 0)
-                throw new ArgumentException("Repayment amounts must be positive");
+    public DateTime DisbursementDate { get; set; }
 
-            if (principalAmount > OutstandingPrincipal)
-                throw new ArgumentException("Principal repayment cannot exceed outstanding principal");
+    public DateTime MaturityDate { get; set; }
 
-            if (interestAmount > OutstandingInterest)
-                throw new ArgumentException("Interest repayment cannot exceed outstanding interest");
+    public DateTime FirstInstallmentDate { get; set; }
 
-            OutstandingPrincipal -= principalAmount;
-            OutstandingInterest -= interestAmount;
+    [Required]
+    [StringLength(20)]
+    public string Status { get; set; } = "ACTIVE"; // ACTIVE, FULLY_PAID, WRITTEN_OFF, RESTRUCTURED, CLOSED
 
-            var transaction = new LoanTransaction(
-                this.Id,
-                "REPAYMENT",
-                principalAmount,
-                interestAmount,
-                reference,
-                description);
-            
-            Transactions.Add(transaction);
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal OutstandingPrincipal { get; set; }
 
-            // Check if loan is fully repaid
-            if (OutstandingPrincipal == 0 && OutstandingInterest == 0)
-            {
-                Status = "CLOSED";
-            }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal OutstandingInterest { get; set; }
 
-            // Raise domain event
-            AddDomainEvent(new LoanRepaymentReceivedEvent(
-                this.Id,
-                principalAmount,
-                interestAmount,
-                reference,
-                description));
-        }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal TotalOutstanding { get; set; }
 
-        public void AccrueInterest(decimal amount, string reference, string description)
-        {
-            if (Status != "ACTIVE")
-                throw new InvalidOperationException("Loan must be in ACTIVE status to accrue interest");
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal TotalPaid { get; set; }
 
-            if (amount <= 0)
-                throw new ArgumentException("Interest amount must be positive", nameof(amount));
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal PrincipalPaid { get; set; }
 
-            OutstandingInterest += amount;
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal InterestPaid { get; set; }
 
-            var transaction = new LoanTransaction(
-                this.Id,
-                "INTEREST_ACCRUAL",
-                0,
-                amount,
-                reference,
-                description);
-            
-            Transactions.Add(transaction);
+    public int InstallmentsPaid { get; set; }
 
-            // Raise domain event
-            AddDomainEvent(new LoanInterestAccruedEvent(
-                this.Id,
-                amount,
-                reference,
-                description));
-        }
+    public int InstallmentsRemaining { get; set; }
 
-        public void ChargeFee(decimal amount, string feeType, string reference, string description)
-        {
-            if (Status != "ACTIVE" && Status != "APPROVED")
-                throw new InvalidOperationException("Loan must be in ACTIVE or APPROVED status to charge fee");
+    public DateTime? LastPaymentDate { get; set; }
 
-            if (amount <= 0)
-                throw new ArgumentException("Fee amount must be positive", nameof(amount));
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? LastPaymentAmount { get; set; }
 
-            var transaction = new LoanTransaction(
-                this.Id,
-                "FEE",
-                0,
-                amount,
-                reference,
-                description);
-            
-            Transactions.Add(transaction);
+    public DateTime? NextPaymentDate { get; set; }
 
-            // Raise domain event
-            AddDomainEvent(new LoanFeeChargedEvent(
-                this.Id,
-                amount,
-                feeType,
-                reference,
-                description));
-        }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? NextPaymentAmount { get; set; }
 
-        public void WriteOff(string reference, string description)
-        {
-            if (Status != "ACTIVE")
-                throw new InvalidOperationException("Loan must be in ACTIVE status to be written off");
+    public int DaysOverdue { get; set; }
 
-            decimal writeOffAmount = OutstandingPrincipal + OutstandingInterest;
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal OverdueAmount { get; set; }
 
-            var transaction = new LoanTransaction(
-                this.Id,
-                "WRITE_OFF",
-                OutstandingPrincipal,
-                OutstandingInterest,
-                reference,
-                description);
-            
-            Transactions.Add(transaction);
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal PenaltyAmount { get; set; }
 
-            OutstandingPrincipal = 0;
-            OutstandingInterest = 0;
-            Status = "WRITTEN_OFF";
+    [StringLength(50)]
+    public string DelinquencyStatus { get; set; } = "CURRENT"; // CURRENT, EARLY, MODERATE, SEVERE, DEFAULT
 
-            // Raise domain event
-            AddDomainEvent(new LoanWrittenOffEvent(
-                this.Id,
-                writeOffAmount,
-                reference,
-                description));
-        }
+    [StringLength(50)]
+    public string RepaymentFrequency { get; set; } = "MONTHLY";
 
-        // Backwards-compatible constructor used by older call sites that pass int IDs
-        public Loan(
-            string loanNumber,
-            int customerId,
-            decimal principalAmount,
-            decimal interestRate,
-            int loanTermMonths,
-            DateTime startDate,
-            string loanType,
-            string repaymentFrequency,
-            string currency)
-            : this(
-                  loanNumber: loanNumber,
-                  customerId: customerId.ToString(),
-                  loanProductId: string.Empty,
-                  principalAmount: principalAmount,
-                  interestRate: interestRate,
-                  loanTermMonths: loanTermMonths,
-                  startDate: startDate,
-                  loanType: loanType,
-                  repaymentFrequency: repaymentFrequency,
-                  currency: currency,
-                  loanApplicationId: null,
-                  purpose: null)
-        {
-            // Older constructor semantics set approved status by default
-            Status = "APPROVED";
-        }
-    }
+    [StringLength(50)]
+    public string InterestCalculationMethod { get; set; } = "REDUCING_BALANCE";
+
+    public bool IsRestructured { get; set; }
+
+    public DateTime? RestructuredDate { get; set; }
+
+    [StringLength(1000)]
+    public string? RestructureReason { get; set; }
+
+    [StringLength(1000)]
+    public string? Notes { get; set; }
+
+    // Navigation properties
+    public virtual ICollection<Repayment> Repayments { get; set; } = new List<Repayment>();
+    public virtual ICollection<LoanTransaction> Transactions { get; set; } = new List<LoanTransaction>();
+    public virtual ICollection<Guarantor> Guarantors { get; set; } = new List<Guarantor>();
+    public virtual LoanDelinquency? Delinquency { get; set; }
 }

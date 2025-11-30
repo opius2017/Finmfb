@@ -1,4 +1,4 @@
-using FinTech.Core.Domain.Entities.Authentication;
+using FinTech.Core.Domain.Entities.Auth;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

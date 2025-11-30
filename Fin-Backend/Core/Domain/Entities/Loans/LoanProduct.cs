@@ -1,55 +1,83 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FinTech.Core.Domain.Entities.Common;
-using FinTech.Core.Domain.Enums;
 
-namespace FinTech.Core.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans;
+
+/// <summary>
+/// Represents a loan product offered by the cooperative
+/// </summary>
+public class LoanProduct : BaseEntity
 {
-    public class LoanProduct : BaseEntity
-    {
-        [Required]
-        [StringLength(100)]
-        public string Name { get; set; } = string.Empty;
+    [Required]
+    [StringLength(100)]
+    public string Name { get; set; } = string.Empty;
 
-        [StringLength(500)]
-        public string? Description { get; set; }
+    [Required]
+    [StringLength(50)]
+    public string Code { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(20)]
-        public string ProductCode { get; set; } = string.Empty;
+    [StringLength(1000)]
+    public string? Description { get; set; }
 
-        public LoanProductType ProductType { get; set; }
+    [Required]
+    [StringLength(50)]
+    public string LoanType { get; set; } = string.Empty; // PERSONAL, EMERGENCY, COMMODITY, SPECIAL
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal MinAmount { get; set; }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal MinimumAmount { get; set; }
 
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal MaxAmount { get; set; }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal MaximumAmount { get; set; }
 
-        [Column(TypeName = "decimal(5,2)")]
-        public decimal MinInterestRate { get; set; }
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal InterestRate { get; set; }
 
-        [Column(TypeName = "decimal(5,2)")]
-        public decimal MaxInterestRate { get; set; }
+    public int MinimumTenureMonths { get; set; }
 
-        public int MinTermMonths { get; set; }
+    public int MaximumTenureMonths { get; set; }
 
-        public int MaxTermMonths { get; set; }
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal ProcessingFeePercentage { get; set; }
 
-        public RepaymentFrequency RepaymentFrequency { get; set; }
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal ProcessingFeeFixed { get; set; }
 
-        public InterestCalculationMethod InterestCalculationMethod { get; set; }
+    public bool RequiresGuarantor { get; set; }
 
-        public bool IsActive { get; set; } = true;
+    public int MinimumGuarantors { get; set; }
 
-        public bool RequiresCollateral { get; set; }
+    public bool RequiresCollateral { get; set; }
 
-        // Navigation properties
-        public virtual ICollection<LoanAccount> LoanAccounts { get; set; } = new List<LoanAccount>();
-        public virtual ICollection<LoanApplication> LoanApplications { get; set; } = new List<LoanApplication>();
-        public virtual ICollection<LoanProductFee> LoanProductFees { get; set; } = new List<LoanProductFee>();
-        public virtual ICollection<LoanProductDocument> LoanProductDocuments { get; set; } = new List<LoanProductDocument>();
-    }
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal MaxLoanToIncomeRatio { get; set; }
+
+    public int MinimumMembershipMonths { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal MinimumSavingsBalance { get; set; }
+
+    public bool IsActive { get; set; } = true;
+
+    [StringLength(50)]
+    public string RepaymentFrequency { get; set; } = "MONTHLY"; // MONTHLY, QUARTERLY, ANNUALLY
+
+    [StringLength(50)]
+    public string InterestCalculationMethod { get; set; } = "REDUCING_BALANCE"; // FLAT, REDUCING_BALANCE
+
+    public bool AllowEarlyRepayment { get; set; } = true;
+
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal EarlyRepaymentPenaltyPercentage { get; set; }
+
+    [StringLength(1000)]
+    public string? EligibilityCriteria { get; set; }
+
+    [StringLength(1000)]
+    public string? RequiredDocuments { get; set; }
+
+    public int ApprovalWorkflowSteps { get; set; } = 1;
+
+    // Navigation properties
+    public virtual ICollection<LoanApplication> Applications { get; set; } = new List<LoanApplication>();
 }

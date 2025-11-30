@@ -72,7 +72,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanGuarantorDocument : AuditableEntity
     {
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string GuarantorId { get; set; }
         public string DocumentType { get; set; }
         public string DocumentName { get; set; }
@@ -100,7 +100,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanProductDocument : AuditableEntity
     {
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string LoanProductId { get; set; }
         public string DocumentType { get; set; }
         public string DocumentName { get; set; }

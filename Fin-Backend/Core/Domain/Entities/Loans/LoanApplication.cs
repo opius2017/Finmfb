@@ -1,114 +1,101 @@
-using System;
-using System.Collections.Generic;
-using FinTech.Core.Domain.Common;
-using FinTech.Core.Domain.Events.Loans;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using FinTech.Core.Domain.Entities.Common;
-using FinTech.Core.Domain.Features.Loans.Enums;
-using LoanStatus = FinTech.Core.Domain.Features.Loans.Enums.LoanStatus;
 
-namespace FinTech.Core.Domain.Entities.Loans
+namespace FinTech.Core.Domain.Entities.Loans;
+
+/// <summary>
+/// Represents a loan application submitted by a member
+/// </summary>
+public class LoanApplication : BaseEntity
 {
-    /// <summary>
-    /// Represents a loan application from a customer
-    /// </summary>
-    public class LoanApplication : AuditableEntity
-    {
-        public int CustomerId { get; set; }
-        public int LoanProductId { get; set; }
-        public string ApplicationNumber { get; set; }
-        public decimal RequestedAmount { get; set; }
-        public int RequestedTerm { get; set; }
-        public decimal InterestRate { get; set; }
-        public DateTime ApplicationDate { get; set; }
-        public LoanPurpose Purpose { get; set; }
-        public string PurposeDescription { get; set; }
-        public LoanApplicationStatus Status { get; set; }
-        public string RejectionReason { get; set; }
-        public string Notes { get; set; }
-        public string AssignedOfficerId { get; set; }
-        public DateTime? ApprovalDate { get; set; }
-        public string ApprovedBy { get; set; }
-        public decimal? ApprovedAmount { get; set; }
-        public int? ApprovedTerm { get; set; }
-        
-        // Risk assessment
-        public decimal? CreditScore { get; set; }
-        public string RiskRating { get; set; }
-        public decimal? DebtToIncomeRatio { get; set; }
-        
-        // Navigation properties
-        public virtual LoanProduct LoanProduct { get; set; }
-        public virtual ICollection<LoanGuarantor> Guarantors { get; set; } = new List<LoanGuarantor>();
-        public virtual ICollection<LoanCollateral> Collaterals { get; set; } = new List<LoanCollateral>();
-        public virtual ICollection<LoanDocument> Documents { get; set; } = new List<LoanDocument>();
-        public virtual Loan Loan { get; set; }
-        
-        // Business logic methods
-        public void Submit()
-        {
-            if (Status != LoanApplicationStatus.Draft)
-                throw new InvalidOperationException("Only draft applications can be submitted");
-            
-            Status = LoanApplicationStatus.Submitted;
-            AddDomainEvent(new LoanApplicationSubmittedEvent(Id));
-        }
-        
-        public void Approve(string approvedBy, decimal? approvedAmount = null, int? approvedTerm = null)
-        {
-            if (Status != LoanApplicationStatus.InReview)
-                throw new InvalidOperationException("Only applications under review can be approved");
-            
-            Status = LoanApplicationStatus.Approved;
-            ApprovalDate = DateTime.UtcNow;
-            ApprovedBy = approvedBy;
-            ApprovedAmount = approvedAmount ?? RequestedAmount;
-            ApprovedTerm = approvedTerm ?? RequestedTerm;
-            
-            AddDomainEvent(new LoanApplicationApprovedEvent(Id));
-        }
-        
-        public void Reject(string reason)
-        {
-            if (Status == LoanApplicationStatus.Approved || Status == LoanApplicationStatus.Disbursed)
-                throw new InvalidOperationException("Approved or disbursed applications cannot be rejected");
-            
-            Status = LoanApplicationStatus.Rejected;
-            RejectionReason = reason;
-            
-            AddDomainEvent(new LoanApplicationRejectedEvent(Id, reason));
-        }
-        
-        public Loan CreateLoan()
-        {
-            if (Status != LoanApplicationStatus.Approved)
-                throw new InvalidOperationException("Cannot create loan from unapproved application");
-            
-            if (!ApprovedAmount.HasValue)
-                throw new InvalidOperationException("Approved amount is required to create loan");
-                
-            if (!ApprovedTerm.HasValue)
-                throw new InvalidOperationException("Approved term is required to create loan");
-            
-            // Generate loan number - this should be done through a proper service
-            string loanNumber = $"LN{DateTime.Now:yyyyMMdd}{Id:D6}";
-            
-            var loan = new Loan(
-                loanNumber,
-                CustomerId,
-                ApprovedAmount.Value,
-                InterestRate,
-                ApprovedTerm.Value,
-                DateTime.UtcNow,
-                LoanProduct?.Name ?? "Standard",
-                "MONTHLY",
-                "NGN");
-            
-            Status = LoanApplicationStatus.Disbursed;
-            Loan = loan;
-            
-            AddDomainEvent(new LoanCreatedFromApplicationEvent(Id, loan.Id));
-            
-            return loan;
-        }
-    }
+    [Required]
+    [StringLength(50)]
+    public string ApplicationNumber { get; set; } = string.Empty;
+
+    [Required]
+    [ForeignKey(nameof(Member))]
+    public string MemberId { get; set; } = string.Empty;
+
+    public Member? Member { get; set; }
+
+    [Required]
+    [ForeignKey(nameof(LoanProduct))]
+    public Guid LoanProductId { get; set; }
+
+    public LoanProduct? LoanProduct { get; set; }
+
+    [Required]
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal RequestedAmount { get; set; }
+
+    public int RequestedTenureMonths { get; set; }
+
+    [Required]
+    [StringLength(500)]
+    public string Purpose { get; set; } = string.Empty;
+
+    [StringLength(1000)]
+    public string? AdditionalInformation { get; set; }
+
+    [Required]
+    [StringLength(20)]
+    public string Status { get; set; } = "DRAFT"; // DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, CANCELLED, DISBURSED
+
+    public DateTime ApplicationDate { get; set; } = DateTime.UtcNow;
+
+    public DateTime? SubmittedDate { get; set; }
+
+    public DateTime? ReviewedDate { get; set; }
+
+    [StringLength(450)]
+    public string? ReviewedBy { get; set; }
+
+    public DateTime? ApprovedDate { get; set; }
+
+    [StringLength(450)]
+    public string? ApprovedBy { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? ApprovedAmount { get; set; }
+
+    public int? ApprovedTenureMonths { get; set; }
+
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal? ApprovedInterestRate { get; set; }
+
+    public DateTime? RejectedDate { get; set; }
+
+    [StringLength(450)]
+    public string? RejectedBy { get; set; }
+
+    [StringLength(1000)]
+    public string? RejectionReason { get; set; }
+
+    public DateTime? DisbursedDate { get; set; }
+
+    [StringLength(450)]
+    public string? DisbursedBy { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal ProcessingFee { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal InsuranceFee { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal OtherFees { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal NetDisbursementAmount { get; set; }
+
+    public int CurrentWorkflowStep { get; set; } = 1;
+
+    [StringLength(1000)]
+    public string? InternalNotes { get; set; }
+
+    // Navigation properties
+    public virtual ICollection<Guarantor> Guarantors { get; set; } = new List<Guarantor>();
+    public virtual ICollection<CommitteeReview> CommitteeReviews { get; set; } = new List<CommitteeReview>();
+    public virtual Loan? Loan { get; set; }
 }

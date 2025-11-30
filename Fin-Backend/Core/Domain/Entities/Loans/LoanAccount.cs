@@ -1,93 +1,54 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FinTech.Core.Domain.Entities.Common;
-using FinTech.Core.Domain.Entities.Customers;
-using FinTech.Core.Domain.Enums;
 
 namespace FinTech.Core.Domain.Entities.Loans;
 
+/// <summary>
+/// Represents a loan account for accounting integration
+/// </summary>
 public class LoanAccount : BaseEntity
 {
     [Required]
+    [StringLength(50)]
+    public string AccountNumber { get; set; } = string.Empty;
+
+    [Required]
+    [ForeignKey(nameof(Loan))]
+    public string LoanId { get; set; } = string.Empty;
+
+    public Loan? Loan { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    public string AccountType { get; set; } = "LOAN_RECEIVABLE"; // LOAN_RECEIVABLE, INTEREST_RECEIVABLE
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal Balance { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal DebitTotal { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal CreditTotal { get; set; }
+
+    public DateTime OpenedDate { get; set; } = DateTime.UtcNow;
+
+    public DateTime? ClosedDate { get; set; }
+
+    [Required]
     [StringLength(20)]
-    public string? AccountNumber { get; set; }
-    
-    [Required]
-    public Guid CustomerId { get; set; }
-    public virtual Customer Customer { get; set; } = null!;
-    
-    [Required]
-    public Guid ProductId { get; set; }
-    public virtual LoanProduct Product { get; set; } = null!;
-    
-    [Required]
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal PrincipalAmount { get; set; }
-    
-    [Required]
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal OutstandingPrincipal { get; set; }
-    
-    [Required]
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal OutstandingInterest { get; set; }
-    
-    [Required]
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal OutstandingFees { get; set; }
-    
-    [Required]
-    [Column(TypeName = "decimal(5,2)")]
-    public decimal InterestRate { get; set; }
-    
-    [Required]
-    public int TenorDays { get; set; }
-    
-    [Required]
-    public DateTime DisbursementDate { get; set; }
-    
-    [Required]
-    public DateTime MaturityDate { get; set; }
-    
-    public DateTime? FirstRepaymentDate { get; set; }
-    
-    public DateTime? LastRepaymentDate { get; set; }
-    
-    [Required]
-    public LoanStatus Status { get; set; } = LoanStatus.Applied;
-    
-    [Required]
-    public LoanClassification Classification { get; set; } = LoanClassification.Performing;
-    
-    public int DaysPastDue { get; set; } = 0;
-    
-    [Column(TypeName = "decimal(18,2)")]
-    public decimal ProvisionAmount { get; set; } = 0;
-    
-    [Column(TypeName = "decimal(5,2)")]
-    public decimal ProvisionRate { get; set; } = 0;
-    
-    [StringLength(500)]
-    public string? Purpose { get; set; }
-    
-    [StringLength(500)]
+    public string Status { get; set; } = "ACTIVE"; // ACTIVE, CLOSED, SUSPENDED
+
+    [StringLength(100)]
+    public string? GLAccountCode { get; set; }
+
+    [StringLength(200)]
+    public string? GLAccountName { get; set; }
+
+    [StringLength(1000)]
     public string? Notes { get; set; }
-    
-    public string? ApprovedBy { get; set; }
-    public DateTime? ApprovedDate { get; set; }
-    
-    public string? DisbursedBy { get; set; }
-    public DateTime? DisbursedDate { get; set; }
-    
-    [Required]
-    [StringLength(3)]
-    public string? CurrencyCode { get; set; } = "NGN";
-    
-    [Required]
-    public Guid TenantId { get; set; }
-    
-    public virtual ICollection<LoanTransaction> Transactions { get; set; } = [];
-    public virtual ICollection<LoanRepaymentSchedule> RepaymentSchedule { get; set; } = [];
-    public virtual ICollection<LoanCollateral> Collaterals { get; set; } = [];
-    public virtual ICollection<LoanGuarantor> Guarantors { get; set; } = [];
+
+    // Navigation properties
+    public virtual ICollection<LoanTransaction> Transactions { get; set; } = new List<LoanTransaction>();
 }

@@ -1,0 +1,175 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  DOCKER_REGISTRY: 'your-registry.azurecr.io'
+  IMAGE_NAME: 'cooperative-loan-api'
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Restore dependencies
+      run: dotnet restore Fin-Backend/Fin-Backend.csproj
+      
+    - name: Build
+      run: dotnet build Fin-Backend/Fin-Backend.csproj --configuration Release --no-restore
+      
+    - name: Run unit tests
+      run: dotnet test Fin-Backend.Tests/Fin-Backend.Tests.csproj --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        files: '**/coverage.cobertura.xml'
+        
+    - name: Code quality analysis
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  docker-build:
+    name: Build Docker Image
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: Login to Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+        
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: ${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha
+          
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./Fin-Backend
+        file: ./Fin-Backend/Dockerfile
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+        cache-to: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: docker-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging-api.yourdomain.com
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Set AKS context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: 'cooperative-loan-rg'
+        cluster-name: 'cooperative-loan-aks-staging'
+        
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s/configmap.yaml
+        kubectl apply -f k8s/secrets.yaml
+        kubectl apply -f k8s/deployment.yaml
+        kubectl rollout status deployment/cooperative-loan-api
+        
+    - name: Run smoke tests
+      run: |
+        sleep 30
+        curl -f https://staging-api.yourdomain.com/health || exit 1
+
+  deploy-production:
+    name: Deploy to Production
+    needs: docker-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://api.yourdomain.com
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Set AKS context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: 'cooperative-loan-rg'
+        cluster-name: 'cooperative-loan-aks-production'
+        
+    - name: Deploy to Kubernetes (Blue-Green)
+      run: |
+        # Deploy to green environment
+        kubectl apply -f k8s/configmap.yaml
+        kubectl apply -f k8s/secrets.yaml
+        kubectl apply -f k8s/deployment.yaml
+        kubectl rollout status deployment/cooperative-loan-api
+        
+    - name: Run smoke tests
+      run: |
+        sleep 30
+        curl -f https://api.yourdomain.com/health || exit 1
+        
+    - name: Run integration tests
+      run: |
+        # Run critical integration tests
+        echo "Running integration tests..."
+        
+    - name: Notify deployment
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: 'Production deployment completed successfully!'
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      if: always()

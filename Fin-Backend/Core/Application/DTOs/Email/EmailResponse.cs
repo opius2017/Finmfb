@@ -1,12 +1,11 @@
-namespace FinTech.Core.Application.DTOs.Email
+namespace FinTech.Core.Application.DTOs.Email;
+
+public class EmailResponse
 {
-    public class EmailResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; } = string.Empty;
-        public string? EmailId { get; set; }
-        public string? BatchId { get; set; }
-        public int SuccessCount { get; set; }
-        public int FailedCount { get; set; }
-    }
+    public bool Success { get; set; }
+    public string? MessageId { get; set; }
+    public string? Message { get; set; }
+    public DateTime SentAt { get; set; } = DateTime.UtcNow;
+    public string? ErrorMessage { get; set; }
+    public Dictionary<string, string>? Metadata { get; set; }
 }

@@ -33,7 +33,7 @@ namespace FinTech.Core.Domain.Entities.Loans
             AssignedTo = collectorId;
         }
         
-        public void UpdateStatus(CollectionStatus newStatus, string notes = null)
+        public void UpdateStatus(CollectionStatus newStatus, string? notes = null)
         {
             Status = newStatus;
             

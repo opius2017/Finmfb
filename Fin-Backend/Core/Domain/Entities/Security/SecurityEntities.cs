@@ -28,7 +28,7 @@ namespace FinTech.Core.Domain.Entities.Security
         public string Description { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime? LastModified { get; set; }
-        public Guid? LastModifiedBy { get; set; }
+        public new Guid? LastModifiedBy { get; set; }
     }
     
     public class DataAccessLog : BaseEntity

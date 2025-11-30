@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cooperative-loan-config
+data:
+  ASPNETCORE_ENVIRONMENT: "Production"
+  LoanSettings__MaxDeductionRate: "50.0"
+  LoanSettings__MaxDebtToIncomeRatio: "60.0"
+  LoanSettings__MinMembershipMonths: "6"
+  LoanSettings__DefaultSavingsMultiplier: "2.0"
+  BackgroundJobSettings__EnableBackgroundJobs: "true"
+  SecuritySettings__EnableTwoFactorAuth: "true"
+  NotificationSettings__EnableEmailNotifications: "true"
+  NotificationSettings__EnableSmsNotifications: "true"

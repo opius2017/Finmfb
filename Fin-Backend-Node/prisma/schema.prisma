@@ -1,0 +1,542 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTHENTICATION & AUTHORIZATION
+// ============================================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  status        String    @default("ACTIVE")
+  mfaEnabled    Boolean   @default(false)
+  mfaSecret     String?
+  lastLoginAt   DateTime?
+  roles         UserRole[]
+  sessions      Session[]
+  approvals     Approval[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([email])
+  @@map("users")
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  permissions RolePermission[]
+  users       UserRole[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  resource    String
+  action      String
+  roles       RolePermission[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([resource, action])
+  @@map("permissions")
+}
+
+model UserRole {
+  userId    String
+  roleId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshToken String   @unique
+  ipAddress    String?
+  userAgent    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@map("sessions")
+}
+
+// ============================================
+// MEMBERS & ACCOUNTS
+// ============================================
+
+model Branch {
+  id               String            @id @default(uuid())
+  name             String
+  code             String            @unique
+  address          String?
+  city             String?
+  state            String?
+  country          String            @default("Nigeria")
+  status           String            @default("ACTIVE")
+  members          Member[]
+  accounts         Account[]
+  budgets          Budget[]
+  bankConnections  BankConnection[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@map("branches")
+}
+
+model Member {
+  id          String      @id @default(uuid())
+  memberNumber String     @unique
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String
+  dateOfBirth DateTime?
+  address     String?
+  city        String?
+  state       String?
+  country     String      @default("Nigeria")
+  status      String      @default("ACTIVE")
+  joinDate    DateTime    @default(now())
+  branchId    String?
+  branch      Branch?     @relation(fields: [branchId], references: [id])
+  accounts    Account[]
+  loans       Loan[]
+  guarantors  Guarantor[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([memberNumber])
+  @@index([branchId])
+  @@index([email])
+  @@map("members")
+}
+
+model Account {
+  id            String        @id @default(uuid())
+  accountNumber String        @unique
+  memberId      String
+  member        Member        @relation(fields: [memberId], references: [id])
+  type          String        // SAVINGS, SHARES, CASH
+  balance       Decimal       @default(0) @db.Decimal(15, 2)
+  status        String        @default("ACTIVE")
+  branchId      String?
+  branch        Branch?       @relation(fields: [branchId], references: [id])
+  transactions  Transaction[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([accountNumber])
+  @@index([memberId])
+  @@index([branchId])
+  @@map("accounts")
+}
+
+model Transaction {
+  id                   String   @id @default(uuid())
+  accountId            String
+  account              Account  @relation(fields: [accountId], references: [id])
+  type                 String   // DEBIT, CREDIT
+  amount               Decimal  @db.Decimal(15, 2)
+  description          String?
+  reference            String   @unique
+  status               String   @default("PENDING")
+  reconciliationStatus String   @default("UNMATCHED")
+  reconciledAt         DateTime?
+  reconciledBy         String?
+  metadata             Json?
+  createdBy            String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([accountId])
+  @@index([reference])
+  @@index([status])
+  @@index([createdAt])
+  @@map("transactions")
+}
+
+// ============================================
+// LOANS
+// ============================================
+
+model LoanProduct {
+  id                String   @id @default(uuid())
+  name              String
+  description       String?
+  interestRate      Decimal  @db.Decimal(5, 4)
+  minAmount         Decimal  @db.Decimal(15, 2)
+  maxAmount         Decimal  @db.Decimal(15, 2)
+  minTermMonths     Int
+  maxTermMonths     Int
+  calculationMethod String   // reducing_balance, flat_rate
+  penaltyRate       Decimal  @default(0.01) @db.Decimal(5, 4)
+  isActive          Boolean  @default(true)
+  loans             Loan[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("loan_products")
+}
+
+model Loan {
+  id                    String          @id @default(uuid())
+  memberId              String
+  member                Member          @relation(fields: [memberId], references: [id])
+  loanProductId         String
+  loanProduct           LoanProduct     @relation(fields: [loanProductId], references: [id])
+  requestedAmount       Decimal         @db.Decimal(15, 2)
+  approvedAmount        Decimal         @default(0) @db.Decimal(15, 2)
+  disbursedAmount       Decimal         @default(0) @db.Decimal(15, 2)
+  outstandingBalance    Decimal         @default(0) @db.Decimal(15, 2)
+  interestRate          Decimal         @db.Decimal(5, 4)
+  termMonths            Int
+  purpose               String
+  collateralDescription String?
+  status                String          @default("PENDING")
+  applicationDate       DateTime        @default(now())
+  approvalDate          DateTime?
+  disbursementDate      DateTime?
+  closedDate            DateTime?
+  schedules             LoanSchedule[]
+  payments              LoanPayment[]
+  guarantors            Guarantor[]
+  metadata              Json?
+  createdBy             String
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  @@index([memberId])
+  @@index([status])
+  @@index([applicationDate])
+  @@map("loans")
+}
+
+model LoanSchedule {
+  id            String   @id @default(uuid())
+  loanId        String
+  loan          Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  paymentNumber Int
+  dueDate       DateTime
+  principal     Decimal  @db.Decimal(15, 2)
+  interest      Decimal  @db.Decimal(15, 2)
+  totalPayment  Decimal  @db.Decimal(15, 2)
+  balance       Decimal  @db.Decimal(15, 2)
+  paidAmount    Decimal  @default(0) @db.Decimal(15, 2)
+  isPaid        Boolean  @default(false)
+  paidDate      DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([loanId])
+  @@index([dueDate])
+  @@index([isPaid])
+  @@map("loan_schedules")
+}
+
+model LoanPayment {
+  id            String   @id @default(uuid())
+  loanId        String
+  loan          Loan     @relation(fields: [loanId], references: [id])
+  amount        Decimal  @db.Decimal(15, 2)
+  paymentDate   DateTime
+  paymentMethod String
+  reference     String   @unique
+  notes         String?
+  metadata      Json?
+  createdBy     String
+  createdAt     DateTime @default(now())
+
+  @@index([loanId])
+  @@index([paymentDate])
+  @@map("loan_payments")
+}
+
+model Guarantor {
+  id               String   @id @default(uuid())
+  loanId           String
+  loan             Loan     @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  memberId         String
+  member           Member   @relation(fields: [memberId], references: [id])
+  guaranteedAmount Decimal  @db.Decimal(15, 2)
+  status           String   @default("PENDING")
+  approvedAt       DateTime?
+  approvedBy       String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([loanId])
+  @@index([memberId])
+  @@map("guarantors")
+}
+
+// ============================================
+// BUDGETS
+// ============================================
+
+model Budget {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  fiscalYear  Int
+  totalAmount Decimal        @default(0) @db.Decimal(15, 2)
+  status      String         @default("DRAFT")
+  branchId    String?
+  branch      Branch?        @relation(fields: [branchId], references: [id])
+  items       BudgetItem[]
+  actuals     BudgetActual[]
+  metadata    Json?
+  createdBy   String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([fiscalYear])
+  @@index([status])
+  @@map("budgets")
+}
+
+model BudgetItem {
+  id          String         @id @default(uuid())
+  budgetId    String
+  budget      Budget         @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  name        String
+  category    String
+  amount      Decimal        @db.Decimal(15, 2)
+  description String?
+  actuals     BudgetActual[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([budgetId])
+  @@index([category])
+  @@map("budget_items")
+}
+
+model BudgetActual {
+  id           String     @id @default(uuid())
+  budgetId     String
+  budget       Budget     @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  budgetItemId String
+  budgetItem   BudgetItem @relation(fields: [budgetItemId], references: [id], onDelete: Cascade)
+  amount       Decimal    @db.Decimal(15, 2)
+  date         DateTime
+  category     String
+  description  String?
+  reference    String?
+  metadata     Json?
+  createdBy    String
+  createdAt    DateTime   @default(now())
+
+  @@index([budgetId])
+  @@index([budgetItemId])
+  @@index([date])
+  @@map("budget_actuals")
+}
+
+// ============================================
+// DOCUMENTS
+// ============================================
+
+model Document {
+  id              String            @id @default(uuid())
+  name            String
+  description     String?
+  category        String
+  entityType      String
+  entityId        String
+  filename        String
+  originalName    String
+  mimeType        String
+  size            Int
+  url             String
+  tags            String[]
+  currentVersion  Int               @default(1)
+  isDeleted       Boolean           @default(false)
+  deletedAt       DateTime?
+  deletedBy       String?
+  versions        DocumentVersion[]
+  metadata        Json?
+  uploadedBy      String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([entityType, entityId])
+  @@index([category])
+  @@index([isDeleted])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id                String   @id @default(uuid())
+  documentId        String
+  document          Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  versionNumber     Int
+  filename          String
+  originalName      String
+  mimeType          String
+  size              Int
+  url               String
+  changeDescription String?
+  uploadedBy        String
+  createdAt         DateTime @default(now())
+
+  @@index([documentId])
+  @@map("document_versions")
+}
+
+// ============================================
+// BANK INTEGRATION
+// ============================================
+
+model BankConnection {
+  id           String            @id @default(uuid())
+  bankName     String
+  accountNumber String
+  accountName  String
+  bankCode     String?
+  branchId     String?
+  branch       Branch?           @relation(fields: [branchId], references: [id])
+  credentials  Json?
+  status       String            @default("INACTIVE")
+  lastTestedAt DateTime?
+  transactions BankTransaction[]
+  metadata     Json?
+  createdBy    String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([branchId])
+  @@map("bank_connections")
+}
+
+model BankTransaction {
+  id                   String         @id @default(uuid())
+  bankConnectionId     String
+  bankConnection       BankConnection @relation(fields: [bankConnectionId], references: [id], onDelete: Cascade)
+  transactionDate      DateTime
+  description          String
+  reference            String
+  debit                Decimal        @default(0) @db.Decimal(15, 2)
+  credit               Decimal        @default(0) @db.Decimal(15, 2)
+  balance              Decimal        @db.Decimal(15, 2)
+  status               String         @default("UNMATCHED")
+  matchedTransactionId String?
+  matchedAt            DateTime?
+  matchedBy            String?
+  createdAt            DateTime       @default(now())
+
+  @@index([bankConnectionId])
+  @@index([transactionDate])
+  @@index([status])
+  @@map("bank_transactions")
+}
+
+// ============================================
+// APPROVALS
+// ============================================
+
+model ApprovalRequest {
+  id                String     @id @default(uuid())
+  transactionId     String?
+  requestedBy       String
+  status            String     @default("PENDING")
+  approvalLevel     Int
+  requiredApprovers Int
+  approverRoles     String[]
+  reason            String?
+  completedAt       DateTime?
+  approvals         Approval[]
+  metadata          Json?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  @@index([status])
+  @@index([transactionId])
+  @@map("approval_requests")
+}
+
+model Approval {
+  id                String          @id @default(uuid())
+  approvalRequestId String
+  approvalRequest   ApprovalRequest @relation(fields: [approvalRequestId], references: [id], onDelete: Cascade)
+  approvedBy        String
+  approver          User            @relation(fields: [approvedBy], references: [id])
+  decision          String          // APPROVED, REJECTED
+  comment           String?
+  approvedAt        DateTime        @default(now())
+
+  @@index([approvalRequestId])
+  @@index([approvedBy])
+  @@map("approvals")
+}
+
+// ============================================
+// AUDIT & LOGS
+// ============================================
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  changes    Json?
+  ipAddress  String
+  userAgent  String
+  createdAt  DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+model SystemLog {
+  id        String   @id @default(uuid())
+  level     String   // INFO, WARN, ERROR
+  message   String
+  context   Json?
+  createdAt DateTime @default(now())
+
+  @@index([level])
+  @@index([createdAt])
+  @@map("system_logs")
+}

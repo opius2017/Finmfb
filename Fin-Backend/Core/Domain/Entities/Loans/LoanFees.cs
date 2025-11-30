@@ -10,7 +10,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanFee : AuditableEntity
     {
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string LoanId { get; set; }
         public string FeeType { get; set; }
         public string Description { get; set; }
@@ -41,7 +41,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanProductFee : AuditableEntity
     {
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string LoanProductId { get; set; }
         public string FeeType { get; set; }
         public string Name { get; set; }

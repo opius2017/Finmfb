@@ -11,7 +11,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanPaymentScheduleTemplate : AuditableEntity
     {
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string LoanProductId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -46,7 +46,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanPaymentReminder : AuditableEntity
     {
-        public string Id { get; set; }
+        public new string Id { get; set; }
         public string LoanId { get; set; }
         public string RepaymentScheduleId { get; set; }
         public DateTime DueDate { get; set; }

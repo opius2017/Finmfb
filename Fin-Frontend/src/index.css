@@ -1,3 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 14 165 233;
+    --color-secondary: 168 85 247;
+    --color-success: 34 197 94;
+    --color-warning: 245 158 11;
+    --color-error: 239 68 68;
+  }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-neutral-50 text-neutral-900 transition-colors duration-200;
+  }
+
+  .dark body {
+    @apply bg-neutral-900 text-neutral-100;
+  }
+
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-neutral-100 dark:bg-neutral-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 dark:bg-neutral-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-400 dark:bg-neutral-500;
+  }
+}
+
+@layer components {
+  /* Focus visible styles for accessibility */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+  }
+
+  /* Dark mode card styles */
+  .card-dark {
+    @apply dark:bg-neutral-800 dark:border-neutral-700;
+  }
+
+  /* Dark mode input styles */
+  .input-dark {
+    @apply dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-100 dark:placeholder-neutral-500;
+  }
+}
+
+@layer utilities {
+  /* Custom animations */
+  .animate-enter {
+    animation: enter 200ms ease-out;
+  }
+
+  .animate-leave {
+    animation: leave 150ms ease-in forwards;
+  }
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes leave {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+}
