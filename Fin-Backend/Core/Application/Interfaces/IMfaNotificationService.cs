@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FinTech.WebAPI.Application.Interfaces
+namespace FinTech.Core.Application.Interfaces
 {
     /// <summary>
     /// Service responsible for sending MFA-related email notifications

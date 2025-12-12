@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FinTech.WebAPI.Application.DTOs.Auth
+namespace FinTech.Core.Application.DTOs.Auth
 {
     /// <summary>
     /// DTO for social login provider information

@@ -6,6 +6,7 @@ using FluentValidation;
 using MediatR;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
+using FinTech.Core.Application.Services.Accounting;
 
 namespace FinTech.Core.Application;
 
@@ -31,17 +32,17 @@ public static class DependencyInjection
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
         // Register existing application services
-        services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
+        services.AddScoped<IGeneralLedgerService, Services.GeneralLedgerService>();
         services.AddScoped<IInterestCalculationService, InterestCalculationService>();
         services.AddScoped<ILoanService, LoanService>();
         services.AddScoped<IMakerCheckerService, MakerCheckerService>();
-        services.AddScoped<ITaxCalculationService, TaxCalculationService>();
+        // TaxCalculationService is in Accounting namespace and will be registered in AccountingServiceRegistration
         
         // Register integration services
         services.AddScoped<INibssService, NibssService>();
         services.AddScoped<ICreditBureauService, CreditBureauService>();
         services.AddScoped<ISmsService, SmsService>();
-        services.AddScoped<IEmailService, EmailService>();
+        // EmailService registration moved to Infrastructure layer
         services.AddScoped<IBiometricService, BiometricService>();
         services.AddScoped<IPaymentGatewayService, PaymentGatewayService>();
         

@@ -8,6 +8,11 @@ namespace FinTech.Core.Domain.Entities.Accounting
     public enum AccountClassification
     {
         Undefined = 0,
+        Asset = 1,
+        Liability = 2,
+        Equity = 3,
+        Revenue = 4,
+        Expense = 5,
         // Asset classifications
         CurrentAsset = 10,
         NonCurrentAsset = 20,

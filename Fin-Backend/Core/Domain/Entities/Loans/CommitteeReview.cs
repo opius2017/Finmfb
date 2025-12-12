@@ -30,6 +30,14 @@ public class CommitteeReview : BaseEntity
     [StringLength(20)]
     public string Decision { get; set; } = "PENDING"; // PENDING, APPROVED, REJECTED, DEFERRED
 
+    [StringLength(50)]
+    public string? ReviewStatus { get; set; }
+
+    [StringLength(2000)]
+    public string? DecisionNotes { get; set; }
+
+    public DateTime? DecisionDate { get; set; }
+
     public DateTime ReviewDate { get; set; } = DateTime.UtcNow;
 
     [StringLength(2000)]

@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Repositories
 {
@@ -12,5 +13,6 @@ namespace FinTech.Core.Domain.Repositories
         Task BeginTransactionAsync(CancellationToken cancellationToken = default);
         Task CommitTransactionAsync(CancellationToken cancellationToken = default);
         Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+        IRepository<T> Repository<T>() where T : BaseEntity;
     }
 }

@@ -16,6 +16,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
         Expense = 5,
         
         // Asset subtypes
+        CurrentAsset = 6,
         Cash = 10,
         Bank = 11,
         AccountsReceivable = 12,

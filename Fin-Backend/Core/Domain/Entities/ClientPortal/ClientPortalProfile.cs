@@ -17,6 +17,10 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public string? DeviceInfo { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public string? TwoFactorMethod { get; set; }
+        public string? ProfilePictureUrl { get; set; }
+        public bool IsProfileComplete { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
         public ICollection<ClientSession> Sessions { get; set; } = new List<ClientSession>();
         public ICollection<ClientDevice> Devices { get; set; } = new List<ClientDevice>();
     }

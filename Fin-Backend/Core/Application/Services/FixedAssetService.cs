@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
+using JournalEntry = FinTech.Core.Domain.Entities.Accounting.JournalEntry;
 using FinTech.Core.Domain.Entities.FixedAssets;
 using FinTech.Core.Domain.Entities.GeneralLedger;
 using FinTech.Core.Domain.Enums.FixedAssets;
@@ -826,9 +827,39 @@ namespace FinTech.Core.Application.Services.Implementation
 
         #endregion
 
-        // Additional implementation sections for Asset Transfer, Inventory Count,
-        // Asset Disposal, Asset Revaluation, and Reporting would follow the same pattern
-        // but are omitted here for brevity. These would be implemented following the
-        // interface definitions in IFixedAssetService.
+        // Stub implementations for missing interface methods
+        public Task<AssetTransfer> CreateAssetTransferAsync(AssetTransfer transfer) => throw new NotImplementedException();
+        public Task<AssetTransfer> GetAssetTransferByIdAsync(Guid id) => throw new NotImplementedException();
+        public Task<IEnumerable<AssetTransfer>> GetTransferHistoryForAssetAsync(Guid assetId) => throw new NotImplementedException();
+        public Task<AssetTransfer> UpdateAssetTransferAsync(AssetTransfer transfer) => throw new NotImplementedException();
+        public Task<bool> ApproveAssetTransferAsync(Guid transferId, Guid approverId) => throw new NotImplementedException();
+        public Task<bool> CompleteAssetTransferAsync(Guid transferId) => throw new NotImplementedException();
+        public Task<AssetInventoryCount> CreateInventoryCountAsync(AssetInventoryCount inventoryCount) => throw new NotImplementedException();
+        public Task<AssetInventoryCount> GetInventoryCountByIdAsync(Guid id) => throw new NotImplementedException();
+        public Task<IEnumerable<AssetInventoryCount>> GetInventoryCountsByStatusAsync(InventoryCountStatus status) => throw new NotImplementedException();
+        public Task<AssetInventoryCount> UpdateInventoryCountAsync(AssetInventoryCount inventoryCount) => throw new NotImplementedException();
+        public Task<bool> CompleteInventoryCountAsync(Guid inventoryCountId) => throw new NotImplementedException();
+        public Task<AssetInventoryCountItem> RecordInventoryCountItemAsync(AssetInventoryCountItem countItem) => throw new NotImplementedException();
+        public Task<IEnumerable<AssetInventoryCountItem>> GetDiscrepanciesForInventoryCountAsync(Guid inventoryCountId) => throw new NotImplementedException();
+        public Task<AssetDisposal> CreateAssetDisposalAsync(AssetDisposal disposal) => throw new NotImplementedException();
+        public Task<AssetDisposal> GetAssetDisposalByIdAsync(Guid id) => throw new NotImplementedException();
+        public Task<IEnumerable<AssetDisposal>> GetAssetDisposalsByStatusAsync(DisposalStatus status) => throw new NotImplementedException();
+        public Task<AssetDisposal> UpdateAssetDisposalAsync(AssetDisposal disposal) => throw new NotImplementedException();
+        public Task<bool> ApproveAssetDisposalAsync(Guid disposalId, Guid approverId) => throw new NotImplementedException();
+        public Task<bool> CompleteAssetDisposalAsync(Guid disposalId) => throw new NotImplementedException();
+        public Task<bool> PostDisposalToGLAsync(Guid disposalId) => throw new NotImplementedException();
+        public Task<AssetRevaluation> CreateAssetRevaluationAsync(AssetRevaluation revaluation) => throw new NotImplementedException();
+        public Task<AssetRevaluation> GetAssetRevaluationByIdAsync(Guid id) => throw new NotImplementedException();
+        public Task<IEnumerable<AssetRevaluation>> GetRevaluationHistoryForAssetAsync(Guid assetId) => throw new NotImplementedException();
+        public Task<AssetRevaluation> UpdateAssetRevaluationAsync(AssetRevaluation revaluation) => throw new NotImplementedException();
+        public Task<bool> PostRevaluationToGLAsync(Guid revaluationId) => throw new NotImplementedException();
+
+        // Additional missing interface methods
+        public Task<decimal> GetTotalAssetValueAsync() => throw new NotImplementedException();
+        public Task<decimal> GetTotalDepreciationForPeriodAsync(DateTime startDate, DateTime endDate) => throw new NotImplementedException();
+        public Task<IDictionary<string, decimal>> GetAssetValueByDepartmentAsync() => throw new NotImplementedException();
+        public Task<IDictionary<string, decimal>> GetAssetValueByCategoryAsync() => throw new NotImplementedException();
+        public Task<IEnumerable<Asset>> GetFullyDepreciatedAssetsAsync() => throw new NotImplementedException();
+        public Task<IEnumerable<Asset>> GetAssetsNearingEndOfLifeAsync(int monthsThreshold) => throw new NotImplementedException();
     }
 }

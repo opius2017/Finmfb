@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using FinTech.Core.Domain.Entities.Deposits;
 using FinTech.Core.Application.DTOs.ClientPortal;
+using FinTech.Core.Domain.Enums;
 using FinTech.Core.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -84,9 +85,9 @@ namespace FinTech.Core.Application.Services
                 }
                 
                 // Filter by transaction type
-                if (!string.IsNullOrEmpty(searchDto.TransactionType))
+                if (!string.IsNullOrEmpty(searchDto.TransactionType) && Enum.TryParse<TransactionType>(searchDto.TransactionType, out var typeEnum))
                 {
-                    query = query.Where(t => t.TransactionType == searchDto.TransactionType);
+                    query = query.Where(t => t.TransactionType == typeEnum);
                 }
                 
                 // Search in description, reference, beneficiary
@@ -208,7 +209,9 @@ namespace FinTech.Core.Application.Services
                            t.TransactionDate >= startDate &&
                            t.TransactionDate <= endDate &&
                            !string.IsNullOrEmpty(t.Category) &&
-                           t.TransactionType == "Debit") // Only consider expenses
+                           (t.TransactionType == TransactionType.Withdrawal || 
+                            t.TransactionType == TransactionType.ChargeDebit || 
+                            t.TransactionType == TransactionType.Transfer)) // Only consider expenses
                     .ToListAsync();
 
                 return transactions
@@ -258,7 +261,9 @@ namespace FinTech.Core.Application.Services
                     .Where(t => t.AccountNumber == accountNumber &&
                            t.TransactionDate >= startDate &&
                            t.TransactionDate <= endDate &&
-                           t.TransactionType == "Debit") // Only consider expenses
+                           (t.TransactionType == TransactionType.Withdrawal || 
+                            t.TransactionType == TransactionType.ChargeDebit || 
+                            t.TransactionType == TransactionType.Transfer)) // Only consider expenses
                     .ToListAsync();
 
                 return transactions

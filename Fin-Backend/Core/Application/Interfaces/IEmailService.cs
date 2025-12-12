@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Core.Application.Services.Integrations;
+using FinTech.Core.Application.DTOs.Email;
 
-namespace FinTech.WebAPI.Application.Interfaces
+namespace FinTech.Core.Application.Interfaces
 {
     /// <summary>
     /// Interface for email service used within the application

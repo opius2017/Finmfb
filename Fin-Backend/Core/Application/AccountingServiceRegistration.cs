@@ -1,7 +1,5 @@
 using FinTech.Core.Application.Services.Accounting;
-using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Core.Application.Services;
-using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Core.Application
@@ -13,26 +11,7 @@ namespace FinTech.Core.Application
             // Register accounting services
             services.AddScoped<IChartOfAccountService, ChartOfAccountService>();
             services.AddScoped<IJournalEntryService, JournalEntryService>();
-            services.AddScoped<IFiscalYearService, FiscalYearService>();
-            services.AddScoped<IFinancialPeriodService, FinancialPeriodService>();
-            
-            // Register new accounting engine services
-            services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
-            services.AddScoped<ITrialBalanceService, TrialBalanceService>();
-            services.AddScoped<IFinancialStatementService, FinancialStatementService>();
-            services.AddScoped<IRegulatoryMappingService, RegulatoryMappingService>();
-            services.AddScoped<IPeriodClosingService, PeriodClosingService>();
-            services.AddScoped<IFinancialAnalyticsService, FinancialAnalyticsService>();
-            services.AddScoped<IBudgetingService, BudgetingService>();
-            
-            // Register enhanced fixed asset management service
-            services.AddScoped<IFixedAssetService, FixedAssetService>("EnhancedFixedAssetService");
-            
-            // Register multi-currency support service
-            services.AddScoped<ICurrencyService, CurrencyService>();
-            
-            // Register tax calculation service
-            services.AddScoped<ITaxCalculationService, TaxCalculationService>();
+            // Note: IGeneralLedgerService is registered in ServiceRegistration.cs with the main implementation
             
             return services;
         }

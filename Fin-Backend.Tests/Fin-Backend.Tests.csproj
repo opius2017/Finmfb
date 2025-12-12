@@ -26,7 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fin-Backend\Fin-Backend.csproj" />
+    <ProjectReference Include="..\Fin-Backend\FinTech.WebAPI.csproj" />
+    <ProjectReference Include="..\Fin-Backend\Core\Application\FinTech.Core.Application.csproj" />
+    <ProjectReference Include="..\Fin-Backend\Core\Domain\FinTech.Core.Domain.csproj" />
+    <ProjectReference Include="..\Fin-Backend\Infrastructure\FinTech.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

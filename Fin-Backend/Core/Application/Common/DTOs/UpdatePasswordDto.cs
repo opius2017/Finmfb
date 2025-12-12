@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FinTech.WebAPI.Application.Common.DTOs
+namespace FinTech.Core.Application.Common.DTOs
 {
     public class UpdatePasswordDto
     {

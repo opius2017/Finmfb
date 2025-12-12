@@ -33,6 +33,9 @@ namespace FinTech.Core.Domain.Entities.Loans
         [Column(TypeName = "decimal(18,2)")]
         public decimal? AmountPaid { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PaidPrincipal { get; set; }
+
         public RepaymentStatus Status { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]

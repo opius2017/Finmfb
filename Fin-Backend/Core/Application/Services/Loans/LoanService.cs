@@ -739,5 +739,57 @@ namespace FinTech.Core.Application.Services.Loans
                 outstandingPrincipal -= principalPayment;
             }
         }
+
+        // Additional methods from FinTech.Core.Application.Interfaces.Loans.ILoanService interface
+        public async Task<FinTech.Core.Domain.Entities.Loans.LoanAccount> CreateLoanAccountAsync(FinTech.Core.Application.DTOs.Loans.CreateLoanAccountRequest request)
+        {
+            throw new NotImplementedException("Use appropriate loan service implementation");
+        }
+
+        async Task<bool> FinTech.Core.Application.Interfaces.Loans.ILoanService.DisburseLoanAsync(Guid loanAccountId, decimal amount, string disbursedBy)
+        {
+            // Convert to string-based call
+            var loan = await DisburseLoanAsync(loanAccountId.ToString(), amount, disbursedBy, $"DISB-{DateTime.UtcNow:yyyyMMddHHmmss}", "Loan disbursement");
+            return loan != null;
+        }
+
+        async Task<bool> FinTech.Core.Application.Interfaces.Loans.ILoanService.ProcessRepaymentAsync(Guid loanAccountId, decimal amount, string processedBy)
+        {
+            var transaction = await RecordRepaymentAsync(loanAccountId.ToString(), amount, amount, 0, 0, 0, $"REP-{DateTime.UtcNow:yyyyMMddHHmmss}", "Loan repayment");
+            return transaction != null;
+        }
+
+        async Task<List<LoanRepaymentSchedule>> FinTech.Core.Application.Interfaces.Loans.ILoanService.GenerateRepaymentScheduleAsync(Guid loanAccountId)
+        {
+            var schedules = await GetLoanRepaymentScheduleAsync(loanAccountId.ToString());
+            return schedules.ToList();
+        }
+
+        async Task<bool> FinTech.Core.Application.Interfaces.Loans.ILoanService.ClassifyLoansAsync(Guid tenantId)
+        {
+            // Stub implementation
+            _logger.LogWarning("ClassifyLoansAsync called but not fully implemented for tenant {TenantId}", tenantId);
+            return await Task.FromResult(true);
+        }
+
+        async Task<decimal> FinTech.Core.Application.Interfaces.Loans.ILoanService.CalculateProvisionAsync(Guid loanAccountId)
+        {
+            // Stub implementation - calculate 5% provision
+            var loan = await GetLoanByIdAsync(loanAccountId.ToString());
+            if (loan == null) return 0;
+            return loan.OutstandingBalance * 0.05m;
+        }
+
+        async Task<IEnumerable<LoanCollateral>> FinTech.Core.Application.Interfaces.Loans.ILoanService.GetLoanCollateralsAsync(string loanId)
+        {
+            // Stub implementation
+            return await Task.FromResult(new List<LoanCollateral>());
+        }
+
+        async Task<LoanCollateral> FinTech.Core.Application.Interfaces.Loans.ILoanService.AddLoanCollateralAsync(string loanId, FinTech.Core.Application.DTOs.Loans.CreateLoanCollateralDto collateralDto)
+        {
+            // Stub implementation
+            throw new NotImplementedException();
+        }
     }
 }

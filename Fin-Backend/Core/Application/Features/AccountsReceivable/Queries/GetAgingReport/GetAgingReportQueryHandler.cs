@@ -22,7 +22,7 @@ public class GetAgingReportQueryHandler : IRequestHandler<GetAgingReportQuery, R
         // Get all outstanding invoices
         var invoicesQuery = _unitOfWork.Repository<Invoice>()
             .GetAll()
-            .Where(i => i.Balance > 0 && i.InvoiceDate <= asOfDate);
+            .Where(i => i.OutstandingAmount > 0 && i.InvoiceDate <= asOfDate);
 
         if (!string.IsNullOrEmpty(request.CustomerId))
         {
@@ -58,17 +58,17 @@ public class GetAgingReportQueryHandler : IRequestHandler<GetAgingReportQuery, R
 
                 // Categorize by aging bucket
                 if (daysOverdue == 0)
-                    current += invoice.Balance;
+                    current += invoice.OutstandingAmount;
                 else if (daysOverdue <= 30)
-                    days1To30 += invoice.Balance;
+                    days1To30 += invoice.OutstandingAmount;
                 else if (daysOverdue <= 60)
-                    days31To60 += invoice.Balance;
+                    days31To60 += invoice.OutstandingAmount;
                 else if (daysOverdue <= 90)
-                    days61To90 += invoice.Balance;
+                    days61To90 += invoice.OutstandingAmount;
                 else if (daysOverdue <= 120)
-                    days91To120 += invoice.Balance;
+                    days91To120 += invoice.OutstandingAmount;
                 else
-                    over120 += invoice.Balance;
+                    over120 += invoice.OutstandingAmount;
 
                 invoiceAgingList.Add(new InvoiceAgingDto
                 {
@@ -77,8 +77,8 @@ public class GetAgingReportQueryHandler : IRequestHandler<GetAgingReportQuery, R
                     InvoiceDate = invoice.InvoiceDate,
                     DueDate = invoice.DueDate,
                     InvoiceAmount = invoice.TotalAmount,
-                    AmountPaid = invoice.TotalAmount - invoice.Balance,
-                    Balance = invoice.Balance,
+                    AmountPaid = invoice.TotalAmount - invoice.OutstandingAmount,
+                    Balance = invoice.OutstandingAmount,
                     DaysOverdue = daysOverdue,
                     Status = invoice.Status.ToString()
                 });

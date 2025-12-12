@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Domain.Entities.Customers;
+using AccountStatus = FinTech.Core.Domain.Enums.AccountStatus;
 using FinTech.Core.Domain.Enums;
 using FinTech.Core.Application.Common.Interfaces;
 

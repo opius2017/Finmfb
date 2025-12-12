@@ -7,6 +7,9 @@
     <RootNamespace>FinTech.Core.Domain</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Entities\" />

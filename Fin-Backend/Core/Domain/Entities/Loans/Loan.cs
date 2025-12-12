@@ -17,7 +17,12 @@ public class Loan : BaseEntity
     [ForeignKey(nameof(Member))]
     public string MemberId { get; set; } = string.Empty;
 
-    public Member? Member { get; set; }
+    public virtual Member? Member { get; set; }
+
+    [ForeignKey(nameof(Customer))]
+    public string? CustomerId { get; set; }
+
+    public virtual Customers.Customer? Customer { get; set; }
 
     [Required]
     [ForeignKey(nameof(LoanProduct))]
@@ -107,6 +112,25 @@ public class Loan : BaseEntity
 
     [StringLength(50)]
     public string InterestCalculationMethod { get; set; } = "REDUCING_BALANCE";
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal OutstandingBalance { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal DisbursedAmount { get; set; }
+
+    public int RepaymentPeriodMonths { get; set; }
+
+    [StringLength(50)]
+    public string? LoanType { get; set; }
+
+    [StringLength(50)]
+    public string? Classification { get; set; }
+
+    [StringLength(50)]
+    public string? LoanStatus { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
 
     public bool IsRestructured { get; set; }
 

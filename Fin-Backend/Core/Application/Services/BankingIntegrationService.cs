@@ -1,7 +1,9 @@
-using FinTech.Infrastructure.Caching;
+// Removed: using FinTech.Infrastructure.Caching; - Violates Clean Architecture - define interface in Application
+using FinTech.Core.Application.Common.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace FinTech.Application.Services
@@ -52,7 +54,7 @@ namespace FinTech.Application.Services
                     }
                 },
                 // Cache for 15 minutes
-                absoluteExpiration: TimeSpan.FromMinutes(15)
+                expiration: TimeSpan.FromMinutes(15)
             );
         }
 

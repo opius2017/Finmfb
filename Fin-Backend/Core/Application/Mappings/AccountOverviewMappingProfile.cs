@@ -14,17 +14,17 @@ namespace FinTech.Core.Application.Mappings
             CreateMap<DepositAccount, AccountDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.DepositProduct.ProductName))
                 .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.DepositProduct.ProductType))
-                .ForMember(dest => dest.AvailableBalance, opt => opt.MapFrom(src => src.CurrentBalance - src.HoldAmount));
+                .ForMember(dest => dest.AvailableBalance, opt => opt.MapFrom(src => src.CurrentBalance - src.LienAmount));
 
             CreateMap<DepositAccount, AccountDetailDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.DepositProduct.ProductName))
                 .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.DepositProduct.ProductType))
                 .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.DepositProduct.Description))
-                .ForMember(dest => dest.AvailableBalance, opt => opt.MapFrom(src => src.CurrentBalance - src.HoldAmount))
+                .ForMember(dest => dest.AvailableBalance, opt => opt.MapFrom(src => src.CurrentBalance - src.LienAmount))
                 .ForMember(dest => dest.InterestRate, opt => opt.MapFrom(src => src.DepositProduct.InterestRate))
-                .ForMember(dest => dest.InterestPaymentFrequency, opt => opt.MapFrom(src => src.DepositProduct.InterestPaymentFrequency))
+                .ForMember(dest => dest.InterestPaymentFrequency, opt => opt.MapFrom(src => src.DepositProduct.InterestPostingFrequency))
                 .ForMember(dest => dest.MinimumBalance, opt => opt.MapFrom(src => src.DepositProduct.MinimumBalance))
-                .ForMember(dest => dest.MonthlyServiceCharge, opt => opt.MapFrom(src => src.DepositProduct.MonthlyServiceCharge));
+                .ForMember(dest => dest.MonthlyServiceCharge, opt => opt.MapFrom(src => src.DepositProduct.MaintenanceFee));
 
             // Transaction Mappings
             CreateMap<DepositTransaction, TransactionDto>()

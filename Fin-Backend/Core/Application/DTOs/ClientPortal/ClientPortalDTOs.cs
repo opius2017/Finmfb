@@ -154,7 +154,9 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     {
         public string DocumentType { get; set; }
         public string DocumentName { get; set; }
-        public Microsoft.AspNetCore.Http.IFormFile File { get; set; }
+        public byte[] FileContent { get; set; }
+        public string FileName { get; set; }
+        public string ContentType { get; set; }
     }
 
     // Support Ticket DTOs

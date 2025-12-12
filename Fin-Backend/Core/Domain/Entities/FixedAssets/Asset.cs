@@ -101,6 +101,11 @@ public class Asset : BaseEntity
     public Guid? ResponsibleEmployeeId { get; set; }
     
     /// <summary>
+    /// Current custodian of the asset
+    /// </summary>
+    public string? Custodian { get; set; }
+    
+    /// <summary>
     /// Vendor from whom the asset was purchased
     /// </summary>
     public Guid? VendorId { get; set; }

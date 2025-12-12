@@ -21,6 +21,10 @@ namespace FinTech.Core.Domain.Entities.Accounting
         public string ClosedBy { get; private set; }
         public bool IsCurrentYear { get; private set; }
         
+        // Aliases for compatibility
+        public DateTime CreatedAt { get => CreatedDate; set => CreatedDate = value; }
+        public DateTime? LastModifiedAt { get => LastModifiedDate; set => LastModifiedDate = value; }
+        
         private List<FinancialPeriod> _periods = new List<FinancialPeriod>();
         public IReadOnlyCollection<FinancialPeriod> Periods => _periods.AsReadOnly();
         public ICollection<FinancialPeriod> FinancialPeriods { get; set; }

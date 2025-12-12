@@ -13,6 +13,9 @@ public class LoanProduct : BaseEntity
     [StringLength(100)]
     public string Name { get; set; } = string.Empty;
 
+    [StringLength(100)]
+    public string? ProductName { get; set; }
+
     [Required]
     [StringLength(50)]
     public string Code { get; set; } = string.Empty;
@@ -28,10 +31,19 @@ public class LoanProduct : BaseEntity
     public decimal MinimumAmount { get; set; }
 
     [Column(TypeName = "decimal(18,2)")]
+    public decimal MinAmount { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
     public decimal MaximumAmount { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal MaxAmount { get; set; }
 
     [Column(TypeName = "decimal(5,2)")]
     public decimal InterestRate { get; set; }
+
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal MinInterestRate { get; set; }
 
     public int MinimumTenureMonths { get; set; }
 

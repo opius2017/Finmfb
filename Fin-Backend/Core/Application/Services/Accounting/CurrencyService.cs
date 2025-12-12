@@ -8,7 +8,9 @@ using FinTech.Core.Application.DTOs.Currency;
 using FinTech.Core.Application.Exceptions;
 using FinTech.Core.Application.Interfaces.Repositories;
 using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Core.Application.Interfaces.Services;
+using IChartOfAccountService = FinTech.Core.Application.Interfaces.Services.Accounting.IChartOfAccountService;
+using IJournalEntryService = FinTech.Core.Application.Interfaces.Services.Accounting.IJournalEntryService;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
 using FinTech.Core.Domain.Entities.Currency;
 using Microsoft.Extensions.Logging;
 

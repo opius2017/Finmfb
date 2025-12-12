@@ -12,6 +12,7 @@ namespace FinTech.Core.Domain.Repositories
     {
         Task<T> GetByIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken = default);
+        IQueryable<T> GetAll();
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken = default);
         Task<T> FirstOrDefaultAsync(ISpecification<T> spec, CancellationToken cancellationToken = default);
         Task<int> CountAsync(ISpecification<T> spec, CancellationToken cancellationToken = default);

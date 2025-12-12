@@ -9,5 +9,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public string TwoFactorMethod { get; set; }
         public bool LoginAlerts { get; set; }
         public string UserId { get; set; }
+        public DateTime? LastPasswordChangeDate { get; set; }
+        public bool SecurityQuestionsConfigured { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 using FinTech.Core.Application.Interfaces.Loans;
+using ILoanRepaymentService = FinTech.Core.Application.Interfaces.Loans.ILoanRepaymentService;
 using FinTech.Core.Application.Interfaces.Repositories.Loans;
-// Removed ambiguous/missing namespace
 using FinTech.Core.Application.Services.Loans;
-using FinTech.Infrastructure.Repositories.Loans;
+// Removed: using FinTech.Infrastructure.Repositories.Loans; - Violates Clean Architecture
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Core.Application
@@ -20,21 +20,11 @@ namespace FinTech.Core.Application
             services.AddScoped<ILoanCollateralService, LoanCollateralService>();
             services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
             services.AddScoped<ILoanProvisioningService, LoanProvisioningService>();
-            services.AddScoped<ILoanProvisioningService, LoanProvisioningService>();
             
-            // Register repositories
-            services.AddScoped<ILoanApplicationRepository, LoanApplicationRepository>();
-            services.AddScoped<ILoanProductRepository, LoanProductRepository>();
-            services.AddScoped<ILoanRepository, LoanRepository>();
-            services.AddScoped<ILoanTransactionRepository, LoanTransactionRepository>();
-            services.AddScoped<ILoanRepaymentScheduleRepository, LoanRepaymentScheduleRepository>();
-            services.AddScoped<ILoanDocumentRepository, LoanDocumentRepository>();
-            // Use repository from Interfaces.Repositories.Loans
-            services.AddScoped<FinTech.Core.Application.Interfaces.Repositories.Loans.ILoanCollateralRepository, LoanCollateralRepository>();
-            services.AddScoped<ILoanGuarantorRepository, LoanGuarantorRepository>();
-            services.AddScoped<ILoanCollectionRepository, LoanCollectionRepository>();
-            services.AddScoped<ILoanFeeRepository, FinTech.Infrastructure.Repositories.Loans.LoanFeeRepository>();
-            services.AddScoped<ILoanCreditCheckRepository, FinTech.Infrastructure.Repositories.Loans.LoanCreditCheckRepository>();
+            // NOTE: Repository registrations moved to Infrastructure layer to maintain Clean Architecture
+            // services.AddScoped<ILoanApplicationRepository, LoanApplicationRepository>();
+            // services.AddScoped<ILoanProductRepository, LoanProductRepository>();
+            // etc.
             
             return services;
         }

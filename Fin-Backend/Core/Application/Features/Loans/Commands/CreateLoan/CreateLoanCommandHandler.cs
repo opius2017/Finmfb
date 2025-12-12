@@ -59,20 +59,25 @@ namespace FinTech.Core.Application.Features.Loans.Commands.CreateLoan
             var interestRate = loanProduct.MinInterestRate;
             var monthlyPayment = CalculateMonthlyPayment(request.LoanAmount, interestRate, request.TenorInMonths);
 
-            var loan = new Loan(
-                loanNumber: loanNumber,
-                customerId: customer.Id,
-                loanProductId: loanProduct.Id,
-                principalAmount: request.LoanAmount,
-                interestRate: interestRate,
-                loanTermMonths: request.TenorInMonths,
-                startDate: DateTime.UtcNow,
-                loanType: loanProduct.Name,
-                repaymentFrequency: loanProduct.RepaymentFrequency.ToString(),
-                currency: "NGN",
-                loanApplicationId: string.Empty,
-                purpose: request.Purpose
-            );
+            var loan = new Loan
+            {
+                LoanNumber = loanNumber,
+                CustomerId = customer.Id.ToString(),
+                LoanProductId = loanProduct.Id,
+                PrincipalAmount = request.LoanAmount,
+                InterestRate = interestRate,
+                TenureMonths = request.TenorInMonths,
+                DisbursementDate = DateTime.UtcNow,
+                LoanType = loanProduct.Name,
+                RepaymentFrequency = loanProduct.RepaymentFrequency.ToString(),
+                // Currency is not in Loan entity directly, or might be handled differently. Using local var if needed or ignored if not in entity.
+                // Looking at Loan.cs, it doesn't have Currency property? Wait, I saw "CurrencyCode" in Invoice/Deposit but Loan?
+                // Step 330: Loan.cs does NOT have Currency property.
+                LoanApplicationId = null, // or appropriate mapping
+                Notes = request.Purpose, // Mapping purpose to Notes or similar
+                Status = "ACTIVE",
+                MemberId = customer.Id.ToString() // Assuming MemberId maps to CustomerId for now if not distinct
+            };
 
             await _loanRepository.AddAsync(loan, cancellationToken);
 

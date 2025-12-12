@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
+using ValidationException = FinTech.Core.Application.Exceptions.ValidationException;
 using MediatR;
 using FinTech.Core.Application.Exceptions;
 

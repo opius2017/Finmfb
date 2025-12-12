@@ -33,7 +33,6 @@ public class CreateReconciliationCommandHandler : IRequestHandler<CreateReconcil
         // Create reconciliation
         var reconciliation = new Domain.Entities.Banking.BankReconciliation
         {
-            Id = Guid.NewGuid().ToString(),
             BankAccountId = request.BankAccountId,
             BankAccountName = bankAccount.AccountName,
             BankAccountNumber = bankAccount.AccountNumber,
@@ -50,7 +49,7 @@ public class CreateReconciliationCommandHandler : IRequestHandler<CreateReconcil
             Notes = request.Notes,
             ReconciliationReference = GenerateReconciliationReference(),
             ReconciledBy = "System", // Get from current user context
-            CreatedAt = DateTime.UtcNow,
+            CreatedDate = DateTime.UtcNow,
             CreatedBy = "System"
         };
 

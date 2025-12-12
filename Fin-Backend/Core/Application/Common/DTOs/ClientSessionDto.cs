@@ -1,6 +1,6 @@
 using System;
 
-namespace FinTech.WebAPI.Application.Common.DTOs
+namespace FinTech.Core.Application.Common.DTOs
 {
     public class ClientSessionDto
     {

@@ -1,9 +1,10 @@
-using FinTech.WebAPI.Application.DTOs.Accounting;
-using FinTech.WebAPI.Application.DTOs.Common;
+using FinTech.Core.Application.DTOs.Accounting;
+using FinTech.Core.Application.Common;
+using FinTech.Core.Application.Common.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FinTech.WebAPI.Application.Interfaces.Accounting
+namespace FinTech.Core.Application.Interfaces.Accounting
 {
     public interface IFinancialPeriodService
     {

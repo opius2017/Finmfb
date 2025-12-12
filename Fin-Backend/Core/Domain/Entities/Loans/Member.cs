@@ -97,6 +97,20 @@ public class Member : BaseEntity
     [StringLength(1000)]
     public string? Notes { get; set; }
 
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal TotalSavings { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal FreeEquity { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal LockedEquity { get; set; }
+
+    public int TotalLoans { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal OutstandingLoanBalance { get; set; }
+
     // Navigation properties
     public virtual ICollection<LoanApplication> LoanApplications { get; set; } = new List<LoanApplication>();
     public virtual ICollection<Loan> Loans { get; set; } = new List<Loan>();

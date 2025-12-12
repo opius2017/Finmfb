@@ -372,5 +372,53 @@ namespace FinTech.Core.Application.Services.Loans
 
             return statistics;
         }
+
+        // Interface methods matching ILoanRegisterService
+        async Task<LoanRegisterEntryDto> ILoanRegisterService.RegisterLoanAsync(string loanId, string registeredBy)
+        {
+            var result = await RegisterLoanAsync(loanId, registeredBy);
+            return new LoanRegisterEntryDto
+            {
+                LoanId = loanId,
+                SerialNumber = result.SerialNumber,
+                RegisterDate = result.RegisterDate
+            };
+        }
+
+        async Task<string> ILoanRegisterService.GenerateSerialNumberAsync(int year)
+        {
+            return await GenerateSerialNumber();
+        }
+
+        async Task<LoanRegisterEntryDto> ILoanRegisterService.GetRegisterEntryAsync(string loanId)
+        {
+            var entries = await GetLoanRegisterAsync(null, null, loanId);
+            var entry = entries.FirstOrDefault();
+            if (entry == null) return null;
+            
+            return new LoanRegisterEntryDto
+            {
+                LoanId = entry.LoanId,
+                SerialNumber = entry.SerialNumber,
+                RegisterDate = entry.RegisterDate
+            };
+        }
+
+        async Task<List<LoanRegisterEntryDto>> ILoanRegisterService.GetRegisterEntriesAsync(int? year, int? month)
+        {
+            var entries = await GetLoanRegisterAsync(year, month, null);
+            return entries.Select(e => new LoanRegisterEntryDto
+            {
+                LoanId = e.LoanId,
+                SerialNumber = e.SerialNumber,
+                RegisterDate = e.RegisterDate
+            }).ToList();
+        }
+
+        async Task<byte[]> ILoanRegisterService.ExportRegisterAsync(int year)
+        {
+            var csvContent = await ExportLoanRegisterAsync(year, null);
+            return System.Text.Encoding.UTF8.GetBytes(csvContent);
+        }
     }
 }

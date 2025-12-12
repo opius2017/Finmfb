@@ -4,18 +4,11 @@ using FinTech.Core.Domain.Entities.GeneralLedger;
 using FinTech.Core.Domain.Enums;
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.DTOs.Loans;
+using FinTech.Core.Application.Interfaces.Services;
+
+using FinTech.Core.Application.Interfaces.Loans;
 
 namespace FinTech.Core.Application.Services;
-
-public interface ILoanService
-{
-    Task<LoanAccount> CreateLoanAccountAsync(CreateLoanAccountRequest request);
-    Task<bool> DisburseLoanAsync(Guid loanAccountId, decimal amount, string disbursedBy);
-    Task<bool> ProcessRepaymentAsync(Guid loanAccountId, decimal amount, string processedBy);
-    Task<List<LoanRepaymentSchedule>> GenerateRepaymentScheduleAsync(Guid loanAccountId);
-    Task<bool> ClassifyLoansAsync(Guid tenantId);
-    Task<decimal> CalculateProvisionAsync(Guid loanAccountId);
-}
 
 public class LoanService : ILoanService
 {

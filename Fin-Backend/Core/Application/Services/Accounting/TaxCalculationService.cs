@@ -5,11 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using FinTech.Core.Application.DTOs.Tax;
+using TaxDirection = FinTech.Core.Domain.Entities.Tax.TaxDirection;
 using FinTech.Core.Application.Exceptions;
 using FinTech.Core.Application.Interfaces.Repositories;
-using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
 using FinTech.Core.Domain.Entities.Tax;
+using FinTech.Core.Domain.Entities.Payroll;
 using Microsoft.Extensions.Logging;
 
 namespace FinTech.Core.Application.Services.Accounting
@@ -1004,6 +1005,37 @@ namespace FinTech.Core.Application.Services.Accounting
                 _logger.LogError(ex, "Error generating tax report");
                 throw new ApplicationException("Failed to generate tax report", ex);
             }
+        }
+
+        // Stub implementations for simple ITaxCalculationService interface methods
+        decimal FinTech.Core.Application.Services.ITaxCalculationService.CalculatePAYE(decimal grossSalary, decimal annualRelief)
+        {
+            throw new NotImplementedException("Use async methods instead");
+        }
+
+        decimal FinTech.Core.Application.Services.ITaxCalculationService.CalculatePension(decimal grossSalary, decimal rate)
+        {
+            throw new NotImplementedException("Use async methods instead");
+        }
+
+        decimal FinTech.Core.Application.Services.ITaxCalculationService.CalculateNHF(decimal grossSalary, decimal rate)
+        {
+            throw new NotImplementedException("Use async methods instead");
+        }
+
+        decimal FinTech.Core.Application.Services.ITaxCalculationService.CalculateVAT(decimal amount, decimal rate)
+        {
+            throw new NotImplementedException("Use async methods instead");
+        }
+
+        decimal FinTech.Core.Application.Services.ITaxCalculationService.CalculateWHT(decimal amount, decimal rate)
+        {
+            throw new NotImplementedException("Use async methods instead");
+        }
+
+        PayrollTaxBreakdown FinTech.Core.Application.Services.ITaxCalculationService.CalculatePayrollTaxes(Employee employee, decimal grossEarnings)
+        {
+            throw new NotImplementedException("Use async methods instead");
         }
     }
 }

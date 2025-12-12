@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
-using FinTech.Core.Application.Services.Loans;
+using FinTech.Core.Application.Interfaces.Loans;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Repositories;
 using Microsoft.Extensions.Logging;

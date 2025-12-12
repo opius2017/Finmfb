@@ -23,6 +23,13 @@ public class Guarantor : BaseEntity
     [ForeignKey(nameof(GuarantorMember))]
     public string GuarantorMemberId { get; set; } = string.Empty;
 
+    public string? MemberId { get; set; }
+
+    [StringLength(50)]
+    public string? ConsentStatus { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     public Member? GuarantorMember { get; set; }
 
     [Required]

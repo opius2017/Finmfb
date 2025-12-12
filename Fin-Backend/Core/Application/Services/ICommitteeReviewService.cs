@@ -6,6 +6,17 @@ using FinTech.Core.Domain.Entities.Loans;
 namespace FinTech.Core.Application.Services
 {
     /// <summary>
+    /// Committee review decision types
+    /// </summary>
+    public enum CommitteeReviewDecision
+    {
+        Approved,
+        Rejected,
+        Deferred,
+        ConditionalApproval
+    }
+
+    /// <summary>
     /// Service for loan committee review operations
     /// </summary>
     public interface ICommitteeReviewService

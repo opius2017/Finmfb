@@ -28,18 +28,14 @@ namespace FinTech.Core.Application.Interfaces.Loans
     /// </summary>
     public interface ILoanService
     {
-        Task<IEnumerable<Loan>> GetAllLoansAsync();
-        Task<Loan> GetLoanByIdAsync(string id);
-        Task<IEnumerable<Loan>> GetLoansByCustomerIdAsync(string customerId);
-        Task<Loan> DisburseLoanAsync(string id, decimal amount, string disbursedTo, string reference, string description);
-        Task<LoanTransaction> RecordRepaymentAsync(string loanId, decimal amount, decimal principalAmount, decimal interestAmount, decimal feesAmount, decimal penaltyAmount, string reference, string description);
-        Task<LoanTransaction> WriteOffLoanAsync(string id, string reason, string approvedBy);
-        Task<Loan> RescheduleLoanAsync(string id, DateTime newEndDate, string reason, string approvedBy);
-        Task<IEnumerable<LoanTransaction>> GetLoanTransactionsAsync(string loanId);
-        Task<IEnumerable<LoanRepaymentSchedule>> GetLoanRepaymentScheduleAsync(string loanId);
-        Task<LoanStatement> GenerateLoanStatementAsync(string loanId, DateTime fromDate, DateTime toDate);
-    Task<IEnumerable<LoanCollateral>> GetLoanCollateralsAsync(string loanId);
-    Task<LoanCollateral> AddLoanCollateralAsync(string loanId, CreateLoanCollateralDto collateralDto);
+        Task<LoanAccount> CreateLoanAccountAsync(CreateLoanAccountRequest request);
+        Task<bool> DisburseLoanAsync(Guid loanAccountId, decimal amount, string disbursedBy);
+        Task<bool> ProcessRepaymentAsync(Guid loanAccountId, decimal amount, string processedBy);
+        Task<List<LoanRepaymentSchedule>> GenerateRepaymentScheduleAsync(Guid loanAccountId);
+        Task<bool> ClassifyLoansAsync(Guid tenantId);
+        Task<decimal> CalculateProvisionAsync(Guid loanAccountId);
+        Task<IEnumerable<LoanCollateral>> GetLoanCollateralsAsync(string loanId);
+        Task<LoanCollateral> AddLoanCollateralAsync(string loanId, CreateLoanCollateralDto collateralDto);
     }
     
     /// <summary>

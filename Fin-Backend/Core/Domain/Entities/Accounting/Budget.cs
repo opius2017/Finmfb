@@ -49,6 +49,12 @@ namespace FinTech.Core.Domain.Entities.Accounting
 
         [StringLength(500)]
         public string? Notes { get; set; }
+
+        // Aliases for compatibility
+        public string Description { get => Notes ?? string.Empty; set => Notes = value; }
+        public decimal AnnualAmount { get => BudgetedAmount; set => BudgetedAmount = value; }
+        public string AccountId { get => ChartOfAccountId.ToString(); set => ChartOfAccountId = Guid.Parse(value); }
+        public decimal[] MonthlyDistribution { get; set; } = new decimal[0];
     }
 
     public enum BudgetStatus

@@ -42,6 +42,20 @@ public class LoanTransaction : BaseEntity
     public decimal FeeAmount { get; set; }
 
     [Column(TypeName = "decimal(18,2)")]
+    public decimal FeesAmount { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal TotalAmount { get; set; }
+
+    [StringLength(100)]
+    public string? Reference { get; set; }
+
+    [StringLength(100)]
+    public string? TransactionReference { get; set; }
+
+    public string? TenantId { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
     public decimal PenaltyAmount { get; set; }
 
     public DateTime TransactionDate { get; set; } = DateTime.UtcNow;

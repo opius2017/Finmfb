@@ -18,6 +18,15 @@ namespace FinTech.Core.Domain.Entities.Accounting
         Failed
     }
 
+    public enum FinancialPeriodStatus
+    {
+        Undefined,
+        Planned,
+        Open,
+        Closed,
+        Archived
+    }
+
     /// <summary>
     /// Represents a financial period for accounting purposes
     /// </summary>
@@ -33,6 +42,12 @@ namespace FinTech.Core.Domain.Entities.Accounting
         public int FiscalYear { get; private set; }
         public int FiscalMonth { get; private set; }
         public bool IsAdjustmentPeriod { get; private set; }
+        
+        // Missing property fixes
+        public string FiscalYearId { get; set; }
+        public FinancialPeriodStatus Status { get; set; }
+        public DateTime CreatedAt { get => CreatedDate; set => CreatedDate = value; }
+        public DateTime? LastModifiedAt { get => LastModifiedDate; set => LastModifiedDate = value; }
         
         // New properties for period closing process
         public ClosingStatus ClosingStatus { get; private set; } = ClosingStatus.NotStarted;

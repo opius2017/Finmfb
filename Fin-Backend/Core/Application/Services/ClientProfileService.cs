@@ -13,9 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using FinTech.Core.Application.Services;
-using FinTech.WebAPI.Application.Common.Responses;
-using FinTech.WebAPI.Application.Common.Interfaces;
-using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Core.Application.Common;
 using FinTech.Core.Application.Common.Models;
 
 namespace FinTech.Core.Application.Services

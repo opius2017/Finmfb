@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using FinTech.Core.Application.Services.Integrations;
+using FinTech.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
-namespace FinTech.WebAPI.Application.Services
+namespace FinTech.Core.Application.Services
 {
     public interface IMfaNotificationService
     {

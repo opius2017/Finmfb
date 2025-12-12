@@ -12,11 +12,11 @@ namespace FinTech.Core.Application.Common.Mappings
         {
             // Loan Account mappings
             CreateMap<LoanAccount, LoanAccountSummaryDto>()
-                .ForMember(dest => dest.LoanProductName, opt => opt.MapFrom(src => src.LoanProduct.ProductName));
+                .ForMember(dest => dest.LoanProductName, opt => opt.MapFrom(src => src.Loan != null && src.Loan.LoanProduct != null ? src.Loan.LoanProduct.ProductName : "Unknown"));
 
             // Loan Application mappings
             CreateMap<LoanApplicationRequest, LoanApplicationSummaryDto>()
-                .ForMember(dest => dest.LoanProductName, opt => opt.MapFrom(src => src.LoanProduct.ProductName));
+                .ForMember(dest => dest.LoanProductName, opt => opt.MapFrom(src => src.LoanProduct != null ? src.LoanProduct.ProductName : "Unknown"));
 
             // Loan Repayment Schedule mappings
             CreateMap<LoanRepaymentSchedule, LoanRepaymentScheduleDto>();
@@ -32,8 +32,8 @@ namespace FinTech.Core.Application.Common.Mappings
                 .ForMember(dest => dest.Customer, opt => opt.Ignore())
                 .ForMember(dest => dest.CustomerId, opt => opt.Ignore())
                 .ForMember(dest => dest.LoanProduct, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow))
-                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.LastModifiedDate, opt => opt.MapFrom(src => DateTime.UtcNow));
         }
     }
 }

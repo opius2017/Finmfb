@@ -5,14 +5,19 @@ namespace FinTech.Core.Application.Common.Models
     /// <summary>
     /// Represents a validation error with multiple field errors
     /// </summary>
-    public sealed class ValidationError : Error
+    public sealed class ValidationError
     {
         public ValidationError(Error[] errors)
-            : base("Validation.General", "One or more validation errors occurred", ErrorType.Validation)
         {
+            Code = "Validation.General";
+            Message = "One or more validation errors occurred";
+            Type = ErrorType.Validation;
             Errors = errors;
         }
 
+        public string Code { get; }
+        public string Message { get; }
+        public ErrorType Type { get; }
         public Error[] Errors { get; }
 
         public static ValidationError FromResults(IEnumerable<Result> results)

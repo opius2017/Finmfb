@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FinTech.WebAPI.Application.DTOs.Accounting
+namespace FinTech.Core.Application.DTOs.Accounting
 {
     public class FinancialPeriodDto
     {

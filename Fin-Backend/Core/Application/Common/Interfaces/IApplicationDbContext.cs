@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Domain.Entities.GeneralLedger;
+using GLJournalEntry = FinTech.Core.Domain.Entities.GeneralLedger.JournalEntry;
 using FinTech.Core.Domain.Entities.Identity;
+using IdentityRefreshToken = FinTech.Core.Domain.Entities.Identity.RefreshToken;
 using FinTech.Core.Domain.Entities.Customers;
 using FinTech.Core.Domain.Entities.Deposits;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Entities.AccountsPayable;
+using APVendor = FinTech.Core.Domain.Entities.AccountsPayable.Vendor;
 using FinTech.Core.Domain.Entities.AccountsReceivable;
 using FinTech.Core.Domain.Entities.Inventory;
 using FinTech.Core.Domain.Entities.Payroll;
@@ -18,10 +21,10 @@ namespace FinTech.Core.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
-    // General Ledger
+    // General Ledger - Using FinTech.Core.Domain.Entities.GeneralLedger.JournalEntry
     DbSet<ChartOfAccounts> ChartOfAccounts { get; }
     DbSet<GeneralLedgerEntry> GeneralLedgerEntries { get; }
-    DbSet<JournalEntry> JournalEntries { get; }
+    DbSet<GLJournalEntry> JournalEntries { get; }
     DbSet<JournalEntryDetail> JournalEntryDetails { get; }
 
     // Identity & Multi-tenancy
@@ -52,8 +55,8 @@ public interface IApplicationDbContext
     DbSet<LoanCollateral> LoanCollaterals { get; }
     DbSet<LoanGuarantor> LoanGuarantors { get; }
 
-    // Accounts Payable
-    DbSet<Vendor> Vendors { get; }
+    // Accounts Payable - Using APVendor alias for AccountsPayable.Vendor
+    DbSet<APVendor> Vendors { get; }
     DbSet<PurchaseOrder> PurchaseOrders { get; }
     DbSet<PurchaseOrderItem> PurchaseOrderItems { get; }
     DbSet<VendorBill> VendorBills { get; }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
+using LoanCollateralRepo = FinTech.Core.Application.Interfaces.Repositories.Loans.ILoanCollateralRepository;
+using FinTech.Core.Application.Interfaces.Loans;
 using FinTech.Core.Application.Interfaces.Repositories.Loans;
-using FinTech.Core.Application.Interfaces.Services.Loans;
 using FinTech.Core.Domain.Entities.Loans;
 using Microsoft.Extensions.Logging;
 
@@ -12,12 +13,12 @@ namespace FinTech.Core.Application.Services.Loans
 {
     public class LoanCollateralService : ILoanCollateralService
     {
-        private readonly ILoanCollateralRepository _collateralRepository;
+        private readonly LoanCollateralRepo _collateralRepository;
         private readonly ILoanRepository _loanRepository;
         private readonly ILogger<LoanCollateralService> _logger;
 
         public LoanCollateralService(
-            ILoanCollateralRepository collateralRepository,
+            LoanCollateralRepo collateralRepository,
             ILoanRepository loanRepository,
             ILogger<LoanCollateralService> logger)
         {

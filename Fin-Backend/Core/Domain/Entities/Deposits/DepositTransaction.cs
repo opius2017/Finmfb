@@ -11,6 +11,12 @@ public class DepositTransaction : BaseEntity
     public Guid AccountId { get; set; }
     public virtual DepositAccount Account { get; set; } = null!;
     
+    [StringLength(50)]
+    public string? AccountNumber { get; set; }
+    
+    [StringLength(200)]
+    public string? BeneficiaryName { get; set; }
+    
     [Required]
     [StringLength(50)]
     public string TransactionReference { get; set; } = string.Empty;
@@ -55,4 +61,13 @@ public class DepositTransaction : BaseEntity
     
     [Required]
     public Guid TenantId { get; set; }
+
+    [StringLength(50)]
+    public string? BeneficiaryAccountNumber { get; set; }
+
+    [StringLength(100)]
+    public string? Category { get; set; }
+
+    [StringLength(50)]
+    public string? Channel { get; set; }
 }

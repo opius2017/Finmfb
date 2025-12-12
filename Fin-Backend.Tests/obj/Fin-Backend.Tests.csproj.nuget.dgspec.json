@@ -1,33 +1,48 @@
 {
   "format": 1,
   "restore": {
-    "/workspaces/Finmfb/Fin-Backend.Tests/Fin-Backend.Tests.csproj": {}
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj": {}
   },
   "projects": {
-    "/workspaces/Finmfb/Fin-Backend.Tests/Fin-Backend.Tests.csproj": {
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/Finmfb/Fin-Backend.Tests/Fin-Backend.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
         "projectName": "Fin-Backend.Tests",
-        "projectPath": "/workspaces/Finmfb/Fin-Backend.Tests/Fin-Backend.Tests.csproj",
-        "packagesPath": "/home/codespace/.nuget/packages/",
-        "outputPath": "/workspaces/Finmfb/Fin-Backend.Tests/obj/",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\Fin-Backend.Tests.csproj",
+        "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend.Tests\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/codespace/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {
-                "projectPath": "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj"
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj"
               }
             }
           }
@@ -41,20 +56,13 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "AutoFixture": {
-              "target": "Package",
-              "version": "[4.18.1, )"
-            },
-            "AutoFixture.AutoMoq": {
-              "target": "Package",
-              "version": "[4.18.1, )"
-            },
             "FluentAssertions": {
               "target": "Package",
               "version": "[6.12.0, )"
@@ -75,30 +83,6 @@
               "target": "Package",
               "version": "[4.20.70, )"
             },
-            "Respawn": {
-              "target": "Package",
-              "version": "[6.1.0, )"
-            },
-            "Testcontainers": {
-              "target": "Package",
-              "version": "[3.6.0, )"
-            },
-            "Testcontainers.MsSql": {
-              "target": "Package",
-              "version": "[3.6.0, )"
-            },
-            "Testcontainers.RabbitMq": {
-              "target": "Package",
-              "version": "[3.6.0, )"
-            },
-            "Testcontainers.Redis": {
-              "target": "Package",
-              "version": "[3.6.0, )"
-            },
-            "WireMock.Net": {
-              "target": "Package",
-              "version": "[1.5.40, )"
-            },
             "coverlet.collector": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -107,13 +91,13 @@
             },
             "xunit": {
               "target": "Package",
-              "version": "[2.6.3, )"
+              "version": "[2.6.2, )"
             },
             "xunit.runner.visualstudio": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[2.5.5, )"
+              "version": "[2.5.4, )"
             }
           },
           "imports": [
@@ -132,26 +116,139 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj": {
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj",
-        "projectName": "FinTech.WebAPI",
-        "projectPath": "/workspaces/Finmfb/Fin-Backend/FinTech.WebAPI.csproj",
-        "packagesPath": "/home/codespace/.nuget/packages/",
-        "outputPath": "/workspaces/Finmfb/Fin-Backend/obj/",
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj",
+        "projectName": "FinTech.Core.Application",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj",
+        "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/codespace/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.9.0, )"
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.9.0, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj",
+        "projectName": "FinTech.Core.Domain",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj",
+        "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -169,7 +266,89 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
         }
+      }
+    },
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj",
+        "projectName": "FinTech.WebAPI",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj",
+        "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -179,9 +358,25 @@
               "target": "Package",
               "version": "[13.0.1, )"
             },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.3.2, )"
+            },
             "FluentValidation.AspNetCore": {
               "target": "Package",
               "version": "[11.3.0, )"
+            },
+            "Hangfire.AspNetCore": {
+              "target": "Package",
+              "version": "[1.8.14, )"
+            },
+            "Hangfire.Core": {
+              "target": "Package",
+              "version": "[1.8.14, )"
+            },
+            "Hangfire.SqlServer": {
+              "target": "Package",
+              "version": "[1.8.14, )"
             },
             "MediatR": {
               "target": "Package",
@@ -195,6 +390,58 @@
               "target": "Package",
               "version": "[2.22.0, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[7.0.3, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.4.1, )"
+            },
+            "QRCoder": {
+              "target": "Package",
+              "version": "[1.4.3, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.8.1, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
@@ -202,6 +449,14 @@
             "Swashbuckle.AspNetCore.Annotations": {
               "target": "Package",
               "version": "[9.0.4, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[7.0.3, )"
             }
           },
           "imports": [
@@ -223,7 +478,169 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.413/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
+        "projectName": "FinTech.Infrastructure",
+        "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\opius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\opius\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.19.1, )"
+            },
+            "EPPlus": {
+              "target": "Package",
+              "version": "[7.3.2, )"
+            },
+            "Hangfire.AspNetCore": {
+              "target": "Package",
+              "version": "[1.8.14, )"
+            },
+            "Hangfire.Core": {
+              "target": "Package",
+              "version": "[1.8.14, )"
+            },
+            "Hangfire.SqlServer": {
+              "target": "Package",
+              "version": "[1.8.14, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
+            },
+            "Polly": {
+              "target": "Package",
+              "version": "[8.4.1, )"
+            },
+            "RabbitMQ.Client": {
+              "target": "Package",
+              "version": "[6.8.1, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Serilog.Enrichers.Environment": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Serilog.Sinks.Seq": {
+              "target": "Package",
+              "version": "[7.0.1, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[8.0.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

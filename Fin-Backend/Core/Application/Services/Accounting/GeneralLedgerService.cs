@@ -7,20 +7,12 @@ using FinTech.Core.Domain.Entities.Accounting;
 using FinTech.Core.Domain.Entities.Common;
 using FinTech.Core.Domain.Repositories;
 using FinTech.Core.Domain.Repositories.Accounting;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
 
 namespace FinTech.Core.Application.Services.Accounting
 {
-    public interface IGeneralLedgerService
-    {
-        Task UpdateAccountBalancesAsync(JournalEntry journalEntry, CancellationToken cancellationToken = default);
-        Task<decimal> GetAccountBalanceAsync(string accountId, DateTime? asOfDate = null, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<AccountBalanceDto>> GetAccountBalancesAsync(IEnumerable<string> accountIds, DateTime? asOfDate = null, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<AccountBalanceDto>> GetAccountBalancesByClassificationAsync(AccountClassification classification, DateTime? asOfDate = null, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<AccountBalanceDto>> GetAccountBalancesByTypeAsync(AccountType accountType, DateTime? asOfDate = null, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<JournalEntryDto>> GetAccountActivityAsync(string accountId, DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
-    }
-
-    public class GeneralLedgerService : IGeneralLedgerService
+    public class GeneralLedgerService
     {
         private readonly IChartOfAccountRepository _chartOfAccountRepository;
         private readonly IJournalEntryRepository _journalEntryRepository;

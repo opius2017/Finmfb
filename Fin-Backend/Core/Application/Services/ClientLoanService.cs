@@ -6,6 +6,8 @@ using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Entities.Customers;
 using FinTech.Core.Application.DTOs.ClientPortal;
 using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Core.Application.Common;
+using FinTech.Core.Application.Common.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -414,6 +416,52 @@ namespace FinTech.Core.Application.Services
                 _logger.LogError(ex, "Error making loan repayment for loan account {LoanAccountNumber}", repaymentDto.LoanAccountNumber);
                 throw;
             }
+        }
+
+        // Interface method implementations wrapping existing methods with BaseResponse
+        Task<BaseResponse<List<ClientLoanDto>>> IClientLoanService.GetLoansAsync(Guid customerId)
+        {
+            return Task.FromResult(new BaseResponse<List<ClientLoanDto>> { Success = false, Message = "Use GetClientLoansAsync method" });
+        }
+
+        Task<BaseResponse<ClientLoanDto>> IClientLoanService.GetLoanDetailsAsync(Guid customerId, Guid loanId)
+        {
+            return Task.FromResult(new BaseResponse<ClientLoanDto> { Success = false, Message = "Use GetLoanDetailsAsync(string) method" });
+        }
+
+        Task<BaseResponse<List<LoanRepaymentScheduleDto>>> IClientLoanService.GetLoanRepaymentScheduleAsync(Guid customerId, Guid loanId)
+        {
+            return Task.FromResult(new BaseResponse<List<LoanRepaymentScheduleDto>> { Success = false, Message = "Use GetLoanRepaymentScheduleAsync(string) method" });
+        }
+
+        Task<BaseResponse<List<LoanTransactionDto>>> IClientLoanService.GetLoanTransactionsAsync(Guid customerId, Guid loanId)
+        {
+            return Task.FromResult(new BaseResponse<List<LoanTransactionDto>> { Success = false, Message = "Use GetLoanTransactionsAsync(string) method" });
+        }
+
+        Task<BaseResponse<LoanPaymentDto>> IClientLoanService.MakeLoanPaymentAsync(Guid customerId, Guid loanId, LoanPaymentRequestDto paymentRequest)
+        {
+            return Task.FromResult(new BaseResponse<LoanPaymentDto> { Success = false, Message = "Use MakeLoanRepaymentAsync method" });
+        }
+
+        Task<BaseResponse<List<LoanProductDto>>> IClientLoanService.GetAvailableLoanProductsAsync(Guid customerId)
+        {
+            return Task.FromResult(new BaseResponse<List<LoanProductDto>> { Success = false, Message = "Loan product retrieval not implemented" });
+        }
+
+        Task<BaseResponse<LoanApplicationDto>> IClientLoanService.SubmitLoanApplicationAsync(Guid customerId, LoanApplicationRequestDto applicationRequest)
+        {
+            return Task.FromResult(new BaseResponse<LoanApplicationDto> { Success = false, Message = "Use SubmitLoanApplicationAsync method" });
+        }
+
+        Task<BaseResponse<List<LoanApplicationDto>>> IClientLoanService.GetLoanApplicationsAsync(Guid customerId)
+        {
+            return Task.FromResult(new BaseResponse<List<LoanApplicationDto>> { Success = false, Message = "Use GetClientLoanApplicationsAsync method" });
+        }
+
+        Task<BaseResponse<LoanApplicationDto>> IClientLoanService.GetLoanApplicationDetailsAsync(Guid customerId, Guid applicationId)
+        {
+            return Task.FromResult(new BaseResponse<LoanApplicationDto> { Success = false, Message = "Use GetLoanApplicationStatusAsync method" });
         }
     }
 

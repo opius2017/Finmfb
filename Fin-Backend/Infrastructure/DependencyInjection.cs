@@ -25,6 +25,12 @@ namespace FinTech.Infrastructure
             services.AddScoped<ExcelExportService>();
             services.AddScoped<ExcelImportService>();
             services.AddScoped<QRCodeService>();
+            
+            // Register Accounting Integration Services
+            services.AddScoped<FinTech.Core.Application.Services.Integration.IBankingAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.BankingAccountingIntegrationService>();
+            services.AddScoped<FinTech.Core.Application.Services.Integration.ILoanAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.LoanAccountingIntegrationService>();
+            services.AddScoped<FinTech.Core.Application.Services.Integration.IPayrollAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.PayrollAccountingIntegrationService>();
+            services.AddScoped<FinTech.Core.Application.Services.Integration.IFixedAssetAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.FixedAssetAccountingIntegrationService>();
 
             // Register background jobs
             services.AddScoped<DailyDelinquencyCheckJob>();

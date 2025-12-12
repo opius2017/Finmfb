@@ -22,6 +22,12 @@ namespace FinTech.Core.Application.Services
             _logger = logger;
         }
 
+        // Interface stub - needs proper implementation
+        public async Task<PaymentResult> ProcessBillPaymentAsync(Guid customerId, Guid fromAccountId, Guid billerId, decimal amount, string reference, bool isRecurring = false)
+        {
+            throw new NotImplementedException("Bill payment processing not fully implemented");
+        }
+
         // Fund Transfers
         public async Task<TransferResult> TransferFundsAsync(FundTransferDto transferDto, Guid customerId)
         {
@@ -1006,6 +1012,78 @@ namespace FinTech.Core.Application.Services
         private string GenerateReferenceNumber()
         {
             return $"TRF{DateTime.UtcNow:yyyyMMddHHmmss}{Guid.NewGuid().ToString().Substring(0, 4).ToUpper()}";
+        }
+
+        // Missing interface implementations
+        public Task<PaymentResult> ProcessTransferAsync(Guid customerId, Guid fromAccountId, Guid toAccountId, decimal amount, string reference, bool isRecurring = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<PaymentResult> ProcessExternalTransferAsync(Guid customerId, Guid fromAccountId, Guid beneficiaryId, decimal amount, string reference, bool isRecurring = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<List<BillPaymentDto>>> GetRecentBillPaymentsAsync(Guid customerId, int count = 5)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<List<TransferDto>>> GetRecentTransfersAsync(Guid customerId, int count = 5)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<RecurringPaymentDto>> GetRecurringPaymentDetailsAsync(Guid customerId, Guid paymentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<RecurringPaymentDto>> CreateRecurringPaymentAsync(Guid customerId, RecurringPaymentCreateDto paymentDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<RecurringPaymentDto>> UpdateRecurringPaymentAsync(Guid customerId, Guid paymentId, RecurringPaymentUpdateDto paymentDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<List<BillerDto>>> GetAvailableBillersAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<SavedPayeeDto>> CreateSavedPayeeAsync(Guid customerId, SavedPayeeCreateDto payeeDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<SavedPayeeDto>> UpdateSavedPayeeAsync(Guid customerId, Guid payeeId, SavedPayeeUpdateDto payeeDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Common.Models.BaseResponse<bool>> DeleteSavedPayeeAsync(Guid customerId, Guid payeeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Explicit interface implementations with correct signatures
+        Task<Common.Models.BaseResponse<List<RecurringPaymentDto>>> IClientPaymentService.GetRecurringPaymentsAsync(Guid customerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Common.Models.BaseResponse<bool>> IClientPaymentService.CancelRecurringPaymentAsync(Guid customerId, Guid paymentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Common.Models.BaseResponse<List<SavedPayeeDto>>> IClientPaymentService.GetSavedPayeesAsync(Guid customerId)
+        {
+            throw new NotImplementedException();
         }
     }
 

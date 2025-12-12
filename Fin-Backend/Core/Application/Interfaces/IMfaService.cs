@@ -1,9 +1,9 @@
-using FinTech.WebAPI.Application.DTOs.Auth;
+using FinTech.Core.Application.DTOs.Auth;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FinTech.WebAPI.Application.Interfaces
+namespace FinTech.Core.Application.Interfaces
 {
     public interface IMfaService
     {

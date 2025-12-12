@@ -1,4 +1,13 @@
 using FinTech.Core.Domain.Entities.Auth;
+using AuthRefreshToken = FinTech.Core.Domain.Entities.Auth.RefreshToken;
+using AuthMfaSettings = FinTech.Core.Domain.Entities.Auth.MfaSettings;
+using AuthBackupCode = FinTech.Core.Domain.Entities.Auth.BackupCode;
+using AuthMfaChallenge = FinTech.Core.Domain.Entities.Auth.MfaChallenge;
+using AuthTrustedDevice = FinTech.Core.Domain.Entities.Auth.TrustedDevice;
+using AuthLoginAttempt = FinTech.Core.Domain.Entities.Auth.LoginAttempt;
+using AuthSocialLoginProfile = FinTech.Core.Domain.Entities.Auth.SocialLoginProfile;
+using AuthSecurityAlert = FinTech.Core.Domain.Entities.Auth.SecurityAlert;
+using AuthUserSecurityPreferences = FinTech.Core.Domain.Entities.Auth.UserSecurityPreferences;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -56,28 +65,28 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the refresh token entity
     /// </summary>
-    public interface IRefreshTokenRepository : IBaseAuthRepository<RefreshToken>
+    public interface IRefreshTokenRepository : IBaseAuthRepository<AuthRefreshToken>
     {
         /// <summary>
         /// Gets a refresh token by token
         /// </summary>
         /// <param name="token">The token</param>
         /// <returns>The refresh token</returns>
-        Task<RefreshToken> GetByTokenAsync(string token);
+        Task<AuthRefreshToken> GetByTokenAsync(string token);
         
         /// <summary>
         /// Gets all refresh tokens for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The refresh tokens</returns>
-        Task<IEnumerable<RefreshToken>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<AuthRefreshToken>> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Gets all active refresh tokens for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The refresh tokens</returns>
-        Task<IEnumerable<RefreshToken>> GetActiveByUserIdAsync(string userId);
+        Task<IEnumerable<AuthRefreshToken>> GetActiveByUserIdAsync(string userId);
         
         /// <summary>
         /// Revokes all refresh tokens for a user
@@ -98,14 +107,14 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the MFA settings entity
     /// </summary>
-    public interface IMfaSettingsRepository : IBaseAuthRepository<MfaSettings>
+    public interface IMfaSettingsRepository : IBaseAuthRepository<AuthMfaSettings>
     {
         /// <summary>
         /// Gets the MFA settings for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The MFA settings</returns>
-        Task<MfaSettings> GetByUserIdAsync(string userId);
+        Task<AuthMfaSettings> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Enables MFA for a user
@@ -116,7 +125,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="recoveryEmail">The recovery email for email-based MFA</param>
         /// <param name="recoveryPhone">The recovery phone for SMS-based MFA</param>
         /// <returns>The MFA settings</returns>
-        Task<MfaSettings> EnableMfaAsync(string userId, string method, string sharedKey = null, string recoveryEmail = null, string recoveryPhone = null);
+        Task<AuthMfaSettings> EnableMfaAsync(string userId, string method, string sharedKey = null, string recoveryEmail = null, string recoveryPhone = null);
         
         /// <summary>
         /// Disables MFA for a user
@@ -129,21 +138,21 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the backup code entity
     /// </summary>
-    public interface IBackupCodeRepository : IBaseAuthRepository<BackupCode>
+    public interface IBackupCodeRepository : IBaseAuthRepository<AuthBackupCode>
     {
         /// <summary>
         /// Gets all backup codes for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The backup codes</returns>
-        Task<IEnumerable<BackupCode>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<AuthBackupCode>> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Gets all unused backup codes for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The backup codes</returns>
-        Task<IEnumerable<BackupCode>> GetUnusedByUserIdAsync(string userId);
+        Task<IEnumerable<AuthBackupCode>> GetUnusedByUserIdAsync(string userId);
         
         /// <summary>
         /// Validates a backup code for a user
@@ -167,7 +176,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="userId">The user ID</param>
         /// <param name="count">The number of codes to generate</param>
         /// <returns>The backup codes</returns>
-        Task<IEnumerable<BackupCode>> GenerateCodesAsync(string userId, int count = 10);
+        Task<IEnumerable<AuthBackupCode>> GenerateCodesAsync(string userId, int count = 10);
         
         /// <summary>
         /// Deletes all backup codes for a user
@@ -180,28 +189,28 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the MFA challenge entity
     /// </summary>
-    public interface IMfaChallengeRepository : IBaseAuthRepository<MfaChallenge>
+    public interface IMfaChallengeRepository : IBaseAuthRepository<AuthMfaChallenge>
     {
         /// <summary>
         /// Gets an MFA challenge by verification code
         /// </summary>
         /// <param name="code">The verification code</param>
         /// <returns>The MFA challenge</returns>
-        Task<MfaChallenge> GetByVerificationCodeAsync(string code);
+        Task<AuthMfaChallenge> GetByVerificationCodeAsync(string code);
         
         /// <summary>
         /// Gets all MFA challenges for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The MFA challenges</returns>
-        Task<IEnumerable<MfaChallenge>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<AuthMfaChallenge>> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Gets all active MFA challenges for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The MFA challenges</returns>
-        Task<IEnumerable<MfaChallenge>> GetActiveByUserIdAsync(string userId);
+        Task<IEnumerable<AuthMfaChallenge>> GetActiveByUserIdAsync(string userId);
         
         /// <summary>
         /// Creates a new MFA challenge
@@ -212,7 +221,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="deviceId">The device ID</param>
         /// <param name="expiresInMinutes">The expiration time in minutes</param>
         /// <returns>The MFA challenge</returns>
-        Task<MfaChallenge> CreateChallengeAsync(string userId, string method, string ipAddress, string deviceId, int expiresInMinutes = 15);
+        Task<AuthMfaChallenge> CreateChallengeAsync(string userId, string method, string ipAddress, string deviceId, int expiresInMinutes = 15);
         
         /// <summary>
         /// Validates an MFA challenge
@@ -241,21 +250,21 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the trusted device entity
     /// </summary>
-    public interface ITrustedDeviceRepository : IBaseAuthRepository<TrustedDevice>
+    public interface ITrustedDeviceRepository : IBaseAuthRepository<AuthTrustedDevice>
     {
         /// <summary>
         /// Gets a trusted device by device ID
         /// </summary>
         /// <param name="deviceId">The device ID</param>
         /// <returns>The trusted device</returns>
-        Task<TrustedDevice> GetByDeviceIdAsync(string deviceId);
+        Task<AuthTrustedDevice> GetByDeviceIdAsync(string deviceId);
         
         /// <summary>
         /// Gets all trusted devices for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The trusted devices</returns>
-        Task<IEnumerable<TrustedDevice>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<AuthTrustedDevice>> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Checks if a device is trusted for a user
@@ -280,7 +289,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="city">The city</param>
         /// <param name="region">The region</param>
         /// <returns>The trusted device</returns>
-        Task<TrustedDevice> AddTrustedDeviceAsync(string userId, string deviceId, string deviceName, 
+        Task<AuthTrustedDevice> AddTrustedDeviceAsync(string userId, string deviceId, string deviceName, 
             string deviceType, string operatingSystem, string browser, string browserVersion, 
             string ipAddress, string country = null, string city = null, string region = null);
         
@@ -304,14 +313,14 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the login attempt entity
     /// </summary>
-    public interface ILoginAttemptRepository : IBaseAuthRepository<LoginAttempt>
+    public interface ILoginAttemptRepository : IBaseAuthRepository<AuthLoginAttempt>
     {
         /// <summary>
         /// Gets all login attempts for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The login attempts</returns>
-        Task<IEnumerable<LoginAttempt>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<AuthLoginAttempt>> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Gets login attempts for a user in a time range
@@ -320,14 +329,14 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="startTime">The start time</param>
         /// <param name="endTime">The end time</param>
         /// <returns>The login attempts</returns>
-        Task<IEnumerable<LoginAttempt>> GetByUserIdAndTimeRangeAsync(string userId, DateTime startTime, DateTime endTime);
+        Task<IEnumerable<AuthLoginAttempt>> GetByUserIdAndTimeRangeAsync(string userId, DateTime startTime, DateTime endTime);
         
         /// <summary>
         /// Gets login attempts by username
         /// </summary>
         /// <param name="username">The username</param>
         /// <returns>The login attempts</returns>
-        Task<IEnumerable<LoginAttempt>> GetByUsernameAsync(string username);
+        Task<IEnumerable<AuthLoginAttempt>> GetByUsernameAsync(string username);
         
         /// <summary>
         /// Gets login attempts by username in a time range
@@ -336,14 +345,14 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="startTime">The start time</param>
         /// <param name="endTime">The end time</param>
         /// <returns>The login attempts</returns>
-        Task<IEnumerable<LoginAttempt>> GetByUsernameAndTimeRangeAsync(string username, DateTime startTime, DateTime endTime);
+        Task<IEnumerable<AuthLoginAttempt>> GetByUsernameAndTimeRangeAsync(string username, DateTime startTime, DateTime endTime);
         
         /// <summary>
         /// Gets login attempts by IP address
         /// </summary>
         /// <param name="ipAddress">The IP address</param>
         /// <returns>The login attempts</returns>
-        Task<IEnumerable<LoginAttempt>> GetByIpAddressAsync(string ipAddress);
+        Task<IEnumerable<AuthLoginAttempt>> GetByIpAddressAsync(string ipAddress);
         
         /// <summary>
         /// Gets login attempts by IP address in a time range
@@ -352,7 +361,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="startTime">The start time</param>
         /// <param name="endTime">The end time</param>
         /// <returns>The login attempts</returns>
-        Task<IEnumerable<LoginAttempt>> GetByIpAddressAndTimeRangeAsync(string ipAddress, DateTime startTime, DateTime endTime);
+        Task<IEnumerable<AuthLoginAttempt>> GetByIpAddressAndTimeRangeAsync(string ipAddress, DateTime startTime, DateTime endTime);
         
         /// <summary>
         /// Gets the count of failed login attempts for a username in a time range
@@ -375,21 +384,21 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="country">The country</param>
         /// <param name="city">The city</param>
         /// <returns>The login attempt</returns>
-        Task<LoginAttempt> RecordLoginAttemptAsync(string username, string userId, bool success, string failureReason, 
+        Task<AuthLoginAttempt> RecordLoginAttemptAsync(string username, string userId, bool success, string failureReason, 
             string ipAddress, string userAgent, string loginMethod, string country = null, string city = null);
     }
     
     /// <summary>
     /// Repository interface for the social login profile entity
     /// </summary>
-    public interface ISocialLoginProfileRepository : IBaseAuthRepository<SocialLoginProfile>
+    public interface ISocialLoginProfileRepository : IBaseAuthRepository<AuthSocialLoginProfile>
     {
         /// <summary>
         /// Gets all social login profiles for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The social login profiles</returns>
-        Task<IEnumerable<SocialLoginProfile>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<AuthSocialLoginProfile>> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Gets a social login profile by provider and provider key
@@ -397,7 +406,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="provider">The provider</param>
         /// <param name="providerKey">The provider key</param>
         /// <returns>The social login profile</returns>
-        Task<SocialLoginProfile> GetByProviderAndKeyAsync(string provider, string providerKey);
+        Task<AuthSocialLoginProfile> GetByProviderAndKeyAsync(string provider, string providerKey);
         
         /// <summary>
         /// Adds a social login profile
@@ -407,7 +416,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="providerKey">The provider key</param>
         /// <param name="providerDisplayName">The provider display name</param>
         /// <returns>The social login profile</returns>
-        Task<SocialLoginProfile> AddSocialLoginAsync(string userId, string provider, string providerKey, string providerDisplayName);
+        Task<AuthSocialLoginProfile> AddSocialLoginAsync(string userId, string provider, string providerKey, string providerDisplayName);
         
         /// <summary>
         /// Removes a social login profile
@@ -429,21 +438,21 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the security alert entity
     /// </summary>
-    public interface ISecurityAlertRepository : IBaseAuthRepository<SecurityAlert>
+    public interface ISecurityAlertRepository : IBaseAuthRepository<AuthSecurityAlert>
     {
         /// <summary>
         /// Gets all security alerts for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The security alerts</returns>
-        Task<IEnumerable<SecurityAlert>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<AuthSecurityAlert>> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Gets all unread security alerts for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The security alerts</returns>
-        Task<IEnumerable<SecurityAlert>> GetUnreadByUserIdAsync(string userId);
+        Task<IEnumerable<AuthSecurityAlert>> GetUnreadByUserIdAsync(string userId);
         
         /// <summary>
         /// Gets security alerts for a user by alert type
@@ -451,7 +460,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="userId">The user ID</param>
         /// <param name="alertType">The alert type</param>
         /// <returns>The security alerts</returns>
-        Task<IEnumerable<SecurityAlert>> GetByUserIdAndTypeAsync(string userId, string alertType);
+        Task<IEnumerable<AuthSecurityAlert>> GetByUserIdAndTypeAsync(string userId, string alertType);
         
         /// <summary>
         /// Gets security alerts for a user by severity
@@ -459,7 +468,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="userId">The user ID</param>
         /// <param name="severity">The severity</param>
         /// <returns>The security alerts</returns>
-        Task<IEnumerable<SecurityAlert>> GetByUserIdAndSeverityAsync(string userId, string severity);
+        Task<IEnumerable<AuthSecurityAlert>> GetByUserIdAndSeverityAsync(string userId, string severity);
         
         /// <summary>
         /// Creates a security alert
@@ -472,7 +481,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="ipAddress">The IP address</param>
         /// <param name="deviceId">The device ID</param>
         /// <returns>The security alert</returns>
-        Task<SecurityAlert> CreateAlertAsync(string userId, string alertType, string message, string details, 
+        Task<AuthSecurityAlert> CreateAlertAsync(string userId, string alertType, string message, string details, 
             string severity, string ipAddress = null, string deviceId = null);
         
         /// <summary>
@@ -494,14 +503,14 @@ namespace FinTech.Core.Application.Interfaces.Repositories
     /// <summary>
     /// Repository interface for the user security preferences entity
     /// </summary>
-    public interface IUserSecurityPreferencesRepository : IBaseAuthRepository<UserSecurityPreferences>
+    public interface IUserSecurityPreferencesRepository : IBaseAuthRepository<AuthUserSecurityPreferences>
     {
         /// <summary>
         /// Gets the security preferences for a user
         /// </summary>
         /// <param name="userId">The user ID</param>
         /// <returns>The security preferences</returns>
-        Task<UserSecurityPreferences> GetByUserIdAsync(string userId);
+        Task<AuthUserSecurityPreferences> GetByUserIdAsync(string userId);
         
         /// <summary>
         /// Updates the security preferences for a user
@@ -509,6 +518,6 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="userId">The user ID</param>
         /// <param name="preferences">The security preferences</param>
         /// <returns>The security preferences</returns>
-        Task<UserSecurityPreferences> UpdatePreferencesAsync(string userId, UserSecurityPreferences preferences);
+        Task<AuthUserSecurityPreferences> UpdatePreferencesAsync(string userId, AuthUserSecurityPreferences preferences);
     }
 }

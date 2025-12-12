@@ -1,8 +1,8 @@
 using AutoMapper;
 using FinTech.Core.Domain.Entities.Accounting;
-using FinTech.WebAPI.Application.DTOs.Accounting;
+using FinTech.Core.Application.DTOs.Accounting;
 
-namespace FinTech.WebAPI.Application.Mappings
+namespace FinTech.Core.Application.Mappings
 {
     public class AccountingProfile : Profile
     {

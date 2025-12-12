@@ -1,22 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Domain.Entities.GeneralLedger;
+using JournalEntry = FinTech.Core.Domain.Entities.Accounting.JournalEntry;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Entities.Deposits;
 using FinTech.Core.Domain.Enums;
 using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Core.Application.Interfaces.Services;
 
 namespace FinTech.Core.Application.Services;
-
-public interface IGeneralLedgerService
-{
-    Task<bool> PostJournalEntryAsync(CreateJournalEntryRequest request);
-    Task<bool> PostLoanDisbursementAsync(LoanAccount loanAccount, decimal amount, string postedBy);
-    Task<bool> PostLoanRepaymentAsync(LoanAccount loanAccount, decimal principal, decimal interest, string postedBy);
-    Task<bool> PostDepositTransactionAsync(DepositAccount account, decimal amount, TransactionType type, string postedBy);
-    Task<bool> PostInterestAccrualAsync(Guid accountId, decimal interestAmount, string postedBy);
-    Task<List<GeneralLedgerEntry>> GetTrialBalanceAsync(Guid tenantId, DateTime asOfDate);
-    Task<bool> CloseFinancialPeriodAsync(Guid tenantId, DateTime periodEnd, string closedBy);
-}
 
 public class GeneralLedgerService : IGeneralLedgerService
 {
@@ -297,6 +288,32 @@ public class GeneralLedgerService : IGeneralLedgerService
         // This would involve closing revenue and expense accounts to retained earnings
         return true;
     }
+
+    // Missing interface methods - stubs
+    public Task<bool> UpdateAccountBalanceAsync(string accountId, FinTech.Core.Domain.ValueObjects.Money amount, bool isDebit) => throw new NotImplementedException();
+    public Task<FinTech.Core.Domain.ValueObjects.Money> GetAccountBalanceAsync(string accountId) => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Account.AccountBalanceDto> GetAccountWithBalanceAsync(string accountId) => throw new NotImplementedException();
+    public Task<IEnumerable<FinTech.Core.Application.DTOs.GeneralLedger.Account.AccountBalanceDto>> GetAccountBalancesAsync(IEnumerable<string> accountIds = null) => throw new NotImplementedException();
+    public Task<IEnumerable<FinTech.Core.Application.DTOs.GeneralLedger.Journal.JournalEntryLineDto>> GetAccountLedgerEntriesAsync(string accountId, DateTime fromDate, DateTime toDate) => throw new NotImplementedException();
+    public Task<bool> IsAccountingPeriodOpenAsync(DateTime transactionDate) => throw new NotImplementedException();
+    public Task<bool> ClosePeriodAsync(string fiscalPeriodId, string userId) => throw new NotImplementedException();
+    public Task<bool> ReopenPeriodAsync(string fiscalPeriodId, string userId) => throw new NotImplementedException();
+    public Task<bool> CreateNewFiscalYearAsync(FinTech.Core.Application.DTOs.GeneralLedger.Period.FiscalYearDto fiscalYear, string userId) => throw new NotImplementedException();
+    public Task<bool> CloseFiscalYearAsync(string fiscalYearId, string userId) => throw new NotImplementedException();
+    Task<FinTech.Core.Application.DTOs.GeneralLedger.Period.FinancialPeriodDto> IGeneralLedgerService.GetCurrentPeriodAsync() => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Period.FiscalYearDto> GetCurrentFiscalYearAsync() => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Financial.TrialBalanceDto> GenerateTrialBalanceAsync(DateTime asOfDate, string fiscalPeriodId = null) => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Financial.BalanceSheetDto> GenerateBalanceSheetAsync(DateTime asOfDate) => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Financial.IncomeStatementDto> GenerateIncomeStatementAsync(DateTime fromDate, DateTime toDate) => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Financial.CashFlowStatementDto> GenerateCashFlowStatementAsync(DateTime fromDate, DateTime toDate) => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Regulatory.CBNReturnsDto> GenerateCBNReturnsAsync(DateTime asOfDate, string returnType) => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Regulatory.NDICReturnsDto> GenerateNDICReturnsAsync(DateTime asOfDate) => throw new NotImplementedException();
+    public Task<FinTech.Core.Application.DTOs.GeneralLedger.Regulatory.IFRSDisclosureDto> GenerateIFRSDisclosuresAsync(DateTime asOfDate, string disclosureType) => throw new NotImplementedException();
+    public Task<bool> PostLoanDisbursementAsync(string loanAccountId, FinTech.Core.Domain.ValueObjects.Money amount, string userId) => throw new NotImplementedException();
+    public Task<bool> PostLoanRepaymentAsync(string loanAccountId, FinTech.Core.Domain.ValueObjects.Money principal, FinTech.Core.Domain.ValueObjects.Money interest, string userId) => throw new NotImplementedException();
+    public Task<bool> PostDepositTransactionAsync(string depositAccountId, FinTech.Core.Domain.ValueObjects.Money amount, bool isDeposit, string userId) => throw new NotImplementedException();
+    public Task<bool> PostInterestAccrualAsync(string accountId, FinTech.Core.Domain.ValueObjects.Money interestAmount, string userId) => throw new NotImplementedException();
+    public Task<bool> PostFeeIncomeAsync(string accountId, FinTech.Core.Domain.ValueObjects.Money feeAmount, string feeType, string userId) => throw new NotImplementedException();
 
     private async Task<ChartOfAccounts> GetAccountByCodeAsync(string accountCode, Guid tenantId)
     {

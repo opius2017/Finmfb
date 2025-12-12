@@ -16,6 +16,8 @@ public class ApplicationUser : IdentityUser<Guid>
     public string? CreatedBy { get; set; }
     public DateTime? LastModifiedAt { get; set; }
     public string? LastModifiedBy { get; set; }
+    
+    public Guid? CustomerId { get; set; }
 
     // Navigation properties
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();

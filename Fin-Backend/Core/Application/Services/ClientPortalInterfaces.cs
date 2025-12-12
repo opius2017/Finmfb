@@ -5,6 +5,7 @@ using FinTech.Core.Application.DTOs.ClientPortal;
 using FinTech.Core.Application.DTOs.Common;
 using FinTech.Core.Application.Common;
 using FinTech.Core.Application.Common.Models;
+using FinTech.Core.Application.DTOs.Auth;
 
 namespace FinTech.Core.Application.Services
 {

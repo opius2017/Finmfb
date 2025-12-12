@@ -1,4 +1,5 @@
 using FinTech.Core.Domain.Enums;
+using DomainAccountType = FinTech.Core.Domain.Enums.AccountType;
 
 namespace FinTech.Core.Application.DTOs.GeneralLedger.Financial
 {
@@ -10,6 +11,6 @@ namespace FinTech.Core.Application.DTOs.GeneralLedger.Financial
         public decimal DebitAmount { get; set; }
         public decimal CreditAmount { get; set; }
         public AccountClassification Classification { get; set; }
-        public AccountType AccountType { get; set; }
+        public DomainAccountType AccountType { get; set; }
     }
 }
