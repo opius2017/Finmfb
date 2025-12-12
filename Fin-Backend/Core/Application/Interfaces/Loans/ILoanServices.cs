@@ -28,7 +28,7 @@ namespace FinTech.Core.Application.Interfaces.Loans
     /// </summary>
     public interface ILoanService
     {
-        Task<LoanAccount> CreateLoanAccountAsync(CreateLoanAccountRequest request);
+        Task<FinTech.Core.Domain.Entities.Loans.LoanAccount> CreateLoanAccountAsync(FinTech.Core.Application.DTOs.Loans.CreateLoanAccountRequest request);
         Task<bool> DisburseLoanAsync(Guid loanAccountId, decimal amount, string disbursedBy);
         Task<bool> ProcessRepaymentAsync(Guid loanAccountId, decimal amount, string processedBy);
         Task<List<LoanRepaymentSchedule>> GenerateRepaymentScheduleAsync(Guid loanAccountId);

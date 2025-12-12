@@ -741,7 +741,7 @@ namespace FinTech.Core.Application.Services.Loans
         }
 
         // Additional methods from FinTech.Core.Application.Interfaces.Loans.ILoanService interface
-        public async Task<FinTech.Core.Domain.Entities.Loans.LoanAccount> CreateLoanAccountAsync(FinTech.Core.Application.DTOs.Loans.CreateLoanAccountRequest request)
+        async Task<FinTech.Core.Domain.Entities.Loans.LoanAccount> FinTech.Core.Application.Interfaces.Loans.ILoanService.CreateLoanAccountAsync(FinTech.Core.Application.DTOs.Loans.CreateLoanAccountRequest request)
         {
             throw new NotImplementedException("Use appropriate loan service implementation");
         }
