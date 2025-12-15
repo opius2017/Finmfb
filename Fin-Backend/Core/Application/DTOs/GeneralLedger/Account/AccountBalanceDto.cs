@@ -7,6 +7,7 @@ namespace FinTech.Core.Application.DTOs.GeneralLedger.Account
     {
         public string AccountId { get; set; }
         public string AccountCode { get; set; }
+        public string AccountNumber { get; set; }
         public string AccountName { get; set; }
         public AccountClassification Classification { get; set; }
         public DomainAccountType AccountType { get; set; }
@@ -15,5 +16,8 @@ namespace FinTech.Core.Application.DTOs.GeneralLedger.Account
         public string CBNReportingCode { get; set; }
         public string NDICReportingCode { get; set; }
         public string IFRSCategory { get; set; }
+        
+        // FinTech Best Practice: Add AsOfDate for balance reporting
+        public System.DateTime AsOfDate { get; set; }
     }
 }

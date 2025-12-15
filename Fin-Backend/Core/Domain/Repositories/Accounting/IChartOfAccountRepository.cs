@@ -37,6 +37,9 @@ namespace FinTech.Core.Domain.Repositories.Accounting
         Task<IReadOnlyList<ChartOfAccount>> GetActiveAccountsAsync(
             CancellationToken cancellationToken = default);
             
+        Task<IReadOnlyList<ChartOfAccount>> GetAllAsync(
+            CancellationToken cancellationToken = default);
+            
         Task<IReadOnlyList<ChartOfAccount>> SearchAccountsAsync(
             string searchTerm, 
             int? maxResults = null,

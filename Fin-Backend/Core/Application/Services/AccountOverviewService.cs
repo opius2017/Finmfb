@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using FinTech.Core.Domain.Entities.Deposits;
 using FinTech.Core.Domain.Entities.ClientPortal;
 using FinTech.Core.Application.Common.Interfaces;
-using FinTech.Core.Application.Common.Interfaces;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using FinTech.Core.Domain.Enums;
 
 namespace FinTech.Core.Application.Services
 {
@@ -39,7 +40,7 @@ namespace FinTech.Core.Application.Services
             try
             {
                 return await _dbContext.DepositAccounts
-                    .Where(a => a.CustomerId == customerId && a.Status == "Active")
+                    .Where(a => a.CustomerId == customerId && a.Status == AccountStatus.Active)
                     .Include(a => a.DepositProduct)
                     .OrderBy(a => a.DepositProduct.ProductName)
                     .ToListAsync();
@@ -146,13 +147,14 @@ namespace FinTech.Core.Application.Services
                 {
                     TotalBalance = accounts.Sum(a => a.CurrentBalance),
                     TotalSavings = accounts
-                        .Where(a => a.DepositProduct.ProductType == "Savings")
+                        // FinTech Best Practice: Convert enum to string for comparison
+                        .Where(a => a.DepositProduct.ProductType.ToString() == "SavingsAccount")
                         .Sum(a => a.CurrentBalance),
                     TotalCurrent = accounts
-                        .Where(a => a.DepositProduct.ProductType == "Current")
+                        .Where(a => a.DepositProduct.ProductType.ToString() == "CurrentAccount")
                         .Sum(a => a.CurrentBalance),
                     TotalFixed = accounts
-                        .Where(a => a.DepositProduct.ProductType == "Fixed" || a.DepositProduct.ProductType == "Term")
+                        .Where(a => a.DepositProduct.ProductType.ToString() == "FixedDeposit" || a.DepositProduct.ProductType.ToString() == "FixedDeposit")
                         .Sum(a => a.CurrentBalance),
                     AccountCount = accounts.Count(),
                     LastUpdateTime = DateTime.UtcNow
@@ -212,10 +214,11 @@ namespace FinTech.Core.Application.Services
                     .Select(g => new AccountActivity
                     {
                         Date = g.Key,
-                        TotalCredits = g.Where(t => t.TransactionType == "Credit").Sum(t => t.Amount),
-                        TotalDebits = g.Where(t => t.TransactionType == "Debit").Sum(t => t.Amount),
+                        TotalCredits = g.Where(t => t.TransactionType == TransactionType.Credit).Sum(t => t.Amount),
+                        TotalDebits = g.Where(t => t.TransactionType == TransactionType.Debit).Sum(t => t.Amount),
                         TransactionCount = g.Count()
                     })
+
                     .OrderByDescending(a => a.Date)
                     .ToList();
             }

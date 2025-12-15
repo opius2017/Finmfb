@@ -9,9 +9,19 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     {
         public Guid ClientPortalProfileId { get; set; }
         public ClientPortalProfile? ClientPortalProfile { get; set; }
+        public string SessionId { get; set; } = string.Empty;
+        public DateTime LoginTime { get; set; }
+        public DateTime? LogoutTime { get; set; }
         public string? Token { get; set; }
         public DateTime ExpiresAt { get; set; }
         public string? IpAddress { get; set; }
         public string? UserAgent { get; set; }
+        public string? DeviceType { get; set; }
+        public string? Browser { get; set; }
+        public string? OperatingSystem { get; set; }
+        public string? Location { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsSuccessful { get; set; }
+        public string? FailureReason { get; set; }
     }
 }

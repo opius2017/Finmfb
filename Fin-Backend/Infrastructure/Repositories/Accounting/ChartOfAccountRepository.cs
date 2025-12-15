@@ -78,9 +78,15 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             CancellationToken cancellationToken = default)
         {
             return await _context.ChartOfAccounts
-                .Where(a => a.Status == AccountStatus.Active)
+                .Where(a => a.Status == FinTech.Core.Domain.Enums.AccountStatus.Active)
                 .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
+        }
+        
+        public async Task<IReadOnlyList<ChartOfAccount>> GetAllAsync(
+            CancellationToken cancellationToken = default)
+        {
+            return await ListAllAsync(cancellationToken);
         }
         
         public async Task<IReadOnlyList<ChartOfAccount>> SearchAccountsAsync(

@@ -18,10 +18,12 @@ namespace FinTech.Configuration
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Database Context
-            services.AddDbContext<ModularApplicationDbContext>(options =>
+            services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("FinTech.WebAPI")));
+
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
             // Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();

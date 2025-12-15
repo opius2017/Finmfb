@@ -1,4 +1,7 @@
 using System;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Loans
@@ -29,13 +32,28 @@ namespace FinTech.Core.Domain.Entities.Loans
         public string RegisteredBy { get; private set; }
         public string Status { get; private set; }
         public string Notes { get; private set; }
+
+        [NotMapped]
+        public DateTime RegisterDate => RegistrationDate;
+
+        [NotMapped]
+        public string RecordedBy => RegisteredBy;
         
         // Navigation properties
         public virtual Loan Loan { get; private set; }
         public virtual LoanApplication Application { get; private set; }
         public virtual Member Member { get; private set; }
         
-        private LoanRegister() { } // For EF Core
+        private LoanRegister() 
+        {
+            SerialNumber = string.Empty;
+            MemberNumber = string.Empty;
+            MemberName = string.Empty;
+            LoanType = string.Empty;
+            RegisteredBy = string.Empty;
+            Status = string.Empty;
+            Notes = string.Empty;
+        } // For EF Core
         
         public LoanRegister(
             string serialNumber,

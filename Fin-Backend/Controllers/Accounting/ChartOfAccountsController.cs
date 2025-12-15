@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FinTech.WebAPI.Controllers.Accounting
+namespace FinTech.Controllers.Accounting.Accounting
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -266,3 +266,4 @@ namespace FinTech.WebAPI.Controllers.Accounting
         }
     }
 }
+

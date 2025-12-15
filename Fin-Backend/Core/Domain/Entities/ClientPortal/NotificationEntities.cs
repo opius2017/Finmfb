@@ -16,31 +16,31 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(50)]
-        public string NotificationType { get; set; }
+        public string NotificationType { get; set; } = string.Empty;
         
         [Required]
         [StringLength(100)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         
         [Required]
         [StringLength(500)]
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         
         [StringLength(200)]
-        public string Action { get; set; }
+        public string? Action { get; set; }
         
         [StringLength(200)]
-        public string ActionData { get; set; }
+        public string? ActionData { get; set; }
         
         public bool IsRead { get; set; }
         
         public DateTime? ReadAt { get; set; }
         
         [StringLength(100)]
-        public string DeliveryChannels { get; set; }
+        public string? DeliveryChannels { get; set; }
         
         [StringLength(50)]
-        public string DeliveryStatus { get; set; }
+        public string? DeliveryStatus { get; set; }
         
         public DateTime? ExpiryDate { get; set; }
         
@@ -51,7 +51,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public int Priority { get; set; }
         
         [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
+        public virtual Customer? Customer { get; set; }
         
         public DateTime CreatedAt { get; set; }
         
@@ -65,22 +65,22 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(50)]
-        public string TemplateCode { get; set; }
+        public string TemplateCode { get; set; } = string.Empty;
         
         [Required]
         [StringLength(50)]
-        public string NotificationType { get; set; }
+        public string NotificationType { get; set; } = string.Empty;
         
         [Required]
         [StringLength(100)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         
         [Required]
         [StringLength(500)]
-        public string MessageTemplate { get; set; }
+        public string MessageTemplate { get; set; } = string.Empty;
         
         [StringLength(200)]
-        public string DefaultAction { get; set; }
+        public string? DefaultAction { get; set; }
         
         public bool IsActive { get; set; }
         
@@ -111,16 +111,16 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(20)]
-        public string ChannelType { get; set; }
+        public string ChannelType { get; set; } = string.Empty;
         
         [StringLength(200)]
-        public string Recipient { get; set; }
+        public string? Recipient { get; set; }
         
         [StringLength(50)]
-        public string Status { get; set; }
+        public string? Status { get; set; }
         
         [StringLength(500)]
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
         
         public int RetryCount { get; set; }
         
@@ -129,7 +129,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public DateTime? DeliveredAt { get; set; }
         
         [ForeignKey("NotificationId")]
-        public virtual ClientNotification Notification { get; set; }
+        public virtual ClientNotification? Notification { get; set; }
         
         public DateTime CreatedAt { get; set; }
         

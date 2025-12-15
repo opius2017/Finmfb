@@ -103,12 +103,12 @@ namespace FinTech.Core.Application.Services.Accounting
                         AccountId = ab.AccountId,
                         AccountNumber = ab.AccountNumber,
                         AccountName = ab.AccountName,
-                        Classification = ab.Classification,
-                        AccountType = ab.AccountType,
-                        DebitBalance = ab.Balance > 0 && (ab.Classification == "Asset" || ab.Classification == "Expense") ? ab.Balance : 
-                                      ab.Balance < 0 && (ab.Classification == "Liability" || ab.Classification == "Equity" || ab.Classification == "Income") ? Math.Abs(ab.Balance) : 0,
-                        CreditBalance = ab.Balance < 0 && (ab.Classification == "Asset" || ab.Classification == "Expense") ? Math.Abs(ab.Balance) : 
-                                       ab.Balance > 0 && (ab.Classification == "Liability" || ab.Classification == "Equity" || ab.Classification == "Income") ? ab.Balance : 0,
+                        Classification = ab.Classification.ToString(),
+                        AccountType = ab.AccountType.ToString(),
+                        DebitBalance = ab.Balance > 0 && (ab.Classification == AccountClassification.Asset || ab.Classification == AccountClassification.Expense) ? ab.Balance : 
+                                      ab.Balance < 0 && (ab.Classification == AccountClassification.Liability || ab.Classification == AccountClassification.Equity || ab.Classification == AccountClassification.Revenue) ? Math.Abs(ab.Balance) : 0,
+                        CreditBalance = ab.Balance < 0 && (ab.Classification == AccountClassification.Asset || ab.Classification == AccountClassification.Expense) ? Math.Abs(ab.Balance) : 
+                                       ab.Balance > 0 && (ab.Classification == AccountClassification.Liability || ab.Classification == AccountClassification.Equity || ab.Classification == AccountClassification.Revenue) ? ab.Balance : 0,
                         CurrencyCode = ab.CurrencyCode
                     })
                     .OrderBy(a => a.AccountNumber)
@@ -167,12 +167,12 @@ namespace FinTech.Core.Application.Services.Accounting
                         AccountId = ab.AccountId,
                         AccountNumber = ab.AccountNumber,
                         AccountName = ab.AccountName,
-                        Classification = ab.Classification,
-                        AccountType = ab.AccountType,
-                        DebitBalance = ab.Balance > 0 && (ab.Classification == "Asset" || ab.Classification == "Expense") ? ab.Balance : 
-                                      ab.Balance < 0 && (ab.Classification == "Liability" || ab.Classification == "Equity" || ab.Classification == "Income") ? Math.Abs(ab.Balance) : 0,
-                        CreditBalance = ab.Balance < 0 && (ab.Classification == "Asset" || ab.Classification == "Expense") ? Math.Abs(ab.Balance) : 
-                                       ab.Balance > 0 && (ab.Classification == "Liability" || ab.Classification == "Equity" || ab.Classification == "Income") ? ab.Balance : 0,
+                        Classification = ab.Classification.ToString(),
+                        AccountType = ab.AccountType.ToString(),
+                        DebitBalance = ab.Balance > 0 && (ab.Classification == AccountClassification.Asset || ab.Classification == AccountClassification.Expense) ? ab.Balance : 
+                                      ab.Balance < 0 && (ab.Classification == AccountClassification.Liability || ab.Classification == AccountClassification.Equity || ab.Classification == AccountClassification.Revenue) ? Math.Abs(ab.Balance) : 0,
+                        CreditBalance = ab.Balance < 0 && (ab.Classification == AccountClassification.Asset || ab.Classification == AccountClassification.Expense) ? Math.Abs(ab.Balance) : 
+                                       ab.Balance > 0 && (ab.Classification == AccountClassification.Liability || ab.Classification == AccountClassification.Equity || ab.Classification == AccountClassification.Revenue) ? ab.Balance : 0,
                         CurrencyCode = ab.CurrencyCode
                     })
                     .OrderBy(a => a.AccountNumber)
@@ -237,7 +237,7 @@ namespace FinTech.Core.Application.Services.Accounting
             }
             
             // Get account balances as of the financial period end date, excluding adjustment entries
-            var accountBalances = new List<AccountBalanceDto>();
+            var accountBalances = new List<FinTech.Core.Application.DTOs.GeneralLedger.Account.AccountBalanceDto>();
             
             foreach (var account in accounts)
             {
@@ -276,15 +276,15 @@ namespace FinTech.Core.Application.Services.Accounting
                 if (balance == 0 && !includeZeroBalances)
                     continue;
                 
-                accountBalances.Add(new AccountBalanceDto
+                accountBalances.Add(new FinTech.Core.Application.DTOs.GeneralLedger.Account.AccountBalanceDto
                 {
                     AccountId = account.Id,
                     AccountNumber = account.AccountNumber,
                     AccountName = account.AccountName,
                     Balance = balance,
                     CurrencyCode = account.CurrencyCode,
-                    Classification = account.Classification.ToString(),
-                    AccountType = account.AccountType.ToString(),
+                    Classification = account.Classification,
+                    AccountType = (FinTech.Core.Domain.Enums.AccountType)account.AccountType,
                     AsOfDate = financialPeriod.EndDate
                 });
             }
@@ -303,12 +303,13 @@ namespace FinTech.Core.Application.Services.Accounting
                         AccountId = ab.AccountId,
                         AccountNumber = ab.AccountNumber,
                         AccountName = ab.AccountName,
-                        Classification = ab.Classification,
-                        AccountType = ab.AccountType,
-                        DebitBalance = ab.Balance > 0 && (ab.Classification == "Asset" || ab.Classification == "Expense") ? ab.Balance : 
-                                      ab.Balance < 0 && (ab.Classification == "Liability" || ab.Classification == "Equity" || ab.Classification == "Income") ? Math.Abs(ab.Balance) : 0,
-                        CreditBalance = ab.Balance < 0 && (ab.Classification == "Asset" || ab.Classification == "Expense") ? Math.Abs(ab.Balance) : 
-                                       ab.Balance > 0 && (ab.Classification == "Liability" || ab.Classification == "Equity" || ab.Classification == "Income") ? ab.Balance : 0,
+                        Classification = ab.Classification.ToString(),
+                        AccountType = ab.AccountType.ToString(),
+                        // FinTech Best Practice: ab.Classification is already string, compare directly
+                        DebitBalance = ab.Balance > 0 && (ab.Classification == AccountClassification.Asset || ab.Classification == AccountClassification.Expense) ? ab.Balance : 
+                                      ab.Balance < 0 && (ab.Classification == AccountClassification.Liability || ab.Classification == AccountClassification.Equity || ab.Classification == AccountClassification.Revenue) ? Math.Abs(ab.Balance) : 0,
+                        CreditBalance = ab.Balance < 0 && (ab.Classification == AccountClassification.Asset || ab.Classification == AccountClassification.Expense) ? Math.Abs(ab.Balance) : 
+                                       ab.Balance > 0 && (ab.Classification == AccountClassification.Liability || ab.Classification == AccountClassification.Equity || ab.Classification == AccountClassification.Revenue) ? ab.Balance : 0,
                         CurrencyCode = ab.CurrencyCode
                     })
                     .OrderBy(a => a.AccountNumber)
@@ -410,7 +411,7 @@ namespace FinTech.Core.Application.Services.Accounting
                                     AccountName = line.Account?.AccountName,
                                     DebitAmount = line.IsDebit ? line.Amount.Amount : 0,
                                     CreditAmount = !line.IsDebit ? line.Amount.Amount : 0,
-                                    CurrencyCode = line.Amount.CurrencyCode
+                                    CurrencyCode = line.Amount.Currency
                                 })
                                 .ToList()
                         });

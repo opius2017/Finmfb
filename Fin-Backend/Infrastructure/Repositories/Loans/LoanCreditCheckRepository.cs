@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FinTech.Core.Application.Interfaces.Repositories.Loans;
+using System.Linq;
+using FinTech.Core.Application.Interfaces.Loans;
+// using FinTech.Core.Application.Interfaces.Loans;
 using FinTech.Core.Domain.Entities.Loans;
-using FinTech.Infrastructure.Persistence;
+using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -51,18 +53,18 @@ namespace FinTech.Infrastructure.Repositories.Loans
             }
         }
 
-        public async Task<IEnumerable<LoanCreditCheck>> GetByLoanIdAsync(string loanId)
+        public async Task<IEnumerable<LoanCreditCheck>> GetByLoanIdAsync(string loanApplicationId)
         {
             try
             {
                 return await _context.LoanCreditChecks
-                    .Where(lcc => lcc.LoanId == loanId)
+                    .Where(lcc => lcc.LoanApplicationId == loanApplicationId)
                     .AsNoTracking()
                     .ToListAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting credit checks for loan ID: {LoanId}", loanId);
+                _logger.LogError(ex, "Error getting credit checks for loan ID: {LoanId}", loanApplicationId);
                 throw;
             }
         }
@@ -150,12 +152,12 @@ namespace FinTech.Infrastructure.Repositories.Loans
             }
         }
 
-        public async Task<IEnumerable<LoanCreditCheck>> GetCreditChecksByStatusAsync(CreditCheckStatus status)
+        public async Task<IEnumerable<LoanCreditCheck>> GetCreditChecksByStatusAsync(CreditCheckResult status)
         {
             try
             {
                 return await _context.LoanCreditChecks
-                    .Where(lcc => lcc.Status == status)
+                    .Where(lcc => lcc.Result == status)
                     .AsNoTracking()
                     .ToListAsync();
             }

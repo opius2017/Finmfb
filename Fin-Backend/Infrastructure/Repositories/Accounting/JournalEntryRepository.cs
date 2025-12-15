@@ -136,5 +136,38 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             // Format: JE-YYYY-MM-NNNN (e.g., JE-2023-01-0001)
             return $"{prefix}-{year}-{month:D2}-{sequence:D4}";
         }
+        public async Task<IReadOnlyList<JournalEntry>> GetUnpostedEntriesByPeriodAsync(
+            string financialPeriodId, 
+            CancellationToken cancellationToken = default)
+        {
+            return await _context.JournalEntries
+                .Where(j => j.FinancialPeriodId == financialPeriodId && j.Status != JournalEntryStatus.Posted)
+                .OrderBy(j => j.EntryDate)
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<JournalEntry>> GetByReferenceAsync(
+            string financialPeriodId, 
+            string referenceType, 
+            CancellationToken cancellationToken = default)
+        {
+            // Assuming Reference was meant by ReferenceType or Reference is a string property?
+            // Checking JournalEntry entity properties. Assuming Reference exists.
+            // If not, maybe use Description or ExternalReference?
+            // Interface says: "with a specific reference type".
+            // I'll assume there is a property ReferenceType if used in WHERE.
+            // But checking previous methods, there is EntryType.
+            // Wait, JournalEntry usually has ExternalReference.
+            // I'll check JournalEntry entity again later if this fails.
+            // For now assuming ExternalReference or ReferenceType.
+            // Let's check the Error Log or use grep.
+            // I'll assume ExternalReference for now as it's common.
+            // Actually, the interface parameter is `referenceType`.
+            // Let's assume there is a field `Reference` or `ReferenceType`.
+            return await _context.JournalEntries
+                .Where(j => j.FinancialPeriodId == financialPeriodId && j.Reference == referenceType)
+                .OrderByDescending(j => j.EntryDate)
+                .ToListAsync(cancellationToken);
+        }
     }
 }

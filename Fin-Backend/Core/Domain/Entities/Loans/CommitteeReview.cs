@@ -74,4 +74,8 @@ public class CommitteeReview : BaseEntity
 
     [StringLength(1000)]
     public string? InternalNotes { get; set; }
+
+    // FinTech Best Practice: Audit trail for review updates
+    [StringLength(450)]
+    public string? UpdatedBy { get; set; }
 }

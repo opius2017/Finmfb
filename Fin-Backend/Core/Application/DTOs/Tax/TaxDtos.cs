@@ -11,22 +11,22 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Unique identifier for the tax type
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type code (e.g., VAT, WHT, CIT)
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type name (e.g., Value Added Tax)
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Description of the tax type
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether the tax type is active
@@ -56,7 +56,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// The regulatory authority for this tax type
         /// </summary>
-        public string RegulatoryAuthority { get; set; }
+        public string RegulatoryAuthority { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// The regulatory authority for this tax type
         /// </summary>
-        public string RegulatoryAuthority { get; set; }
+        public string RegulatoryAuthority { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// The regulatory authority for this tax type
         /// </summary>
-        public string RegulatoryAuthority { get; set; }
+        public string RegulatoryAuthority { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -169,12 +169,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID this rate belongs to
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type code (e.g., VAT, WHT)
         /// </summary>
-        public string TaxTypeCode { get; set; }
+        public string TaxTypeCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Rate name or description
@@ -214,7 +214,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Category or type of items this rate applies to
         /// </summary>
-        public string ApplicableCategory { get; set; }
+        public string ApplicableCategory { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -225,7 +225,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID this rate belongs to
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Rate name or description
@@ -260,7 +260,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Category or type of items this rate applies to
         /// </summary>
-        public string ApplicableCategory { get; set; }
+        public string ApplicableCategory { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -311,7 +311,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Category or type of items this rate applies to
         /// </summary>
-        public string ApplicableCategory { get; set; }
+        public string ApplicableCategory { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -322,12 +322,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID to calculate
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Specific tax rate ID to use (optional, will use applicable rate if not specified)
         /// </summary>
-        public string TaxRateId { get; set; }
+        public string TaxRateId { get; set; } = string.Empty;
         
         /// <summary>
         /// Taxable amount before tax
@@ -337,7 +337,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Category of the taxable item (e.g., goods, services)
         /// </summary>
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
         
         /// <summary>
         /// Transaction date for determining applicable tax rate
@@ -352,12 +352,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Optional customer/vendor ID for exemption checking
         /// </summary>
-        public string PartyId { get; set; }
+        public string PartyId { get; set; } = string.Empty;
         
         /// <summary>
         /// Optional reference to related transaction
         /// </summary>
-        public string TransactionReference { get; set; }
+        public string TransactionReference { get; set; } = string.Empty;
         
         /// <summary>
         /// Optional additional information for tax calculation
@@ -373,22 +373,22 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID used for calculation
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type code (e.g., VAT, WHT)
         /// </summary>
-        public string TaxTypeCode { get; set; }
+        public string TaxTypeCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type name
         /// </summary>
-        public string TaxTypeName { get; set; }
+        public string TaxTypeName { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax rate ID used for calculation
         /// </summary>
-        public string TaxRateId { get; set; }
+        public string TaxRateId { get; set; } = string.Empty;
         
         /// <summary>
         /// Applied tax rate percentage
@@ -433,7 +433,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Calculation notes or messages
         /// </summary>
-        public string Notes { get; set; }
+        public string Notes { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -449,7 +449,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Type of income for WHT (e.g., professional-services, rent, dividend)
         /// </summary>
-        public string IncomeType { get; set; }
+        public string IncomeType { get; set; } = string.Empty;
         
         /// <summary>
         /// ID of the vendor/payee
@@ -474,7 +474,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Optional reference to related transaction
         /// </summary>
-        public string TransactionReference { get; set; }
+        public string TransactionReference { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -505,22 +505,22 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID used (typically WHT)
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type code (typically WHT)
         /// </summary>
-        public string TaxTypeCode { get; set; }
+        public string TaxTypeCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Specific WHT tax rate ID used
         /// </summary>
-        public string TaxRateId { get; set; }
+        public string TaxRateId { get; set; } = string.Empty;
         
         /// <summary>
         /// Type of income for WHT
         /// </summary>
-        public string IncomeType { get; set; }
+        public string IncomeType { get; set; } = string.Empty;
         
         /// <summary>
         /// Liability account ID for recording WHT
@@ -530,7 +530,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Calculation notes or messages
         /// </summary>
-        public string Notes { get; set; }
+        public string Notes { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -546,17 +546,17 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type code (e.g., VAT, WHT)
         /// </summary>
-        public string TaxTypeCode { get; set; }
+        public string TaxTypeCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax rate ID
         /// </summary>
-        public string TaxRateId { get; set; }
+        public string TaxRateId { get; set; } = string.Empty;
         
         /// <summary>
         /// Applied tax rate
@@ -616,7 +616,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Customer or vendor ID related to this transaction
         /// </summary>
-        public string PartyId { get; set; }
+        public string PartyId { get; set; } = string.Empty;
         
         /// <summary>
         /// Party name (customer or vendor)
@@ -637,7 +637,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax rate ID
@@ -687,7 +687,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Customer or vendor ID related to this transaction
         /// </summary>
-        public string PartyId { get; set; }
+        public string PartyId { get; set; } = string.Empty;
         
         /// <summary>
         /// Party name (customer or vendor)
@@ -713,7 +713,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID to report on (null for all tax types)
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Start date for the report period
@@ -815,7 +815,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type ID
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type code (e.g., VAT, WHT)

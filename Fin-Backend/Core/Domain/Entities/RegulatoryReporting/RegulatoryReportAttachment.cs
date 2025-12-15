@@ -18,17 +18,17 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Navigation property for the report submission
         /// </summary>
-        public virtual RegulatoryReportSubmission Submission { get; set; }
+        public virtual RegulatoryReportSubmission? Submission { get; set; }
         
         /// <summary>
         /// Filename of the attachment
         /// </summary>
-        public string FileName { get; set; }
+        public string FileName { get; set; } = string.Empty;
         
         /// <summary>
         /// Original filename as uploaded
         /// </summary>
-        public string OriginalFileName { get; set; }
+        public string OriginalFileName { get; set; } = string.Empty;
         
         /// <summary>
         /// File size in bytes
@@ -38,22 +38,22 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// MIME type of the file
         /// </summary>
-        public string MimeType { get; set; }
+        public string MimeType { get; set; } = string.Empty;
         
         /// <summary>
         /// Type of attachment (e.g., supporting document, submission file, evidence)
         /// </summary>
-        public string AttachmentType { get; set; }
+        public string AttachmentType { get; set; } = string.Empty;
         
         /// <summary>
         /// Description of the attachment
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         /// <summary>
         /// Storage path or reference
         /// </summary>
-        public string StoragePath { get; set; }
+        public string StoragePath { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether the attachment is submitted to the regulatory body
@@ -63,12 +63,12 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// User who uploaded the attachment
         /// </summary>
-        public string UploadedById { get; set; }
+        public string UploadedById { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the user who uploaded the attachment
         /// </summary>
-        public virtual ApplicationUser UploadedBy { get; set; }
+        public virtual ApplicationUser? UploadedBy { get; set; }
         
         /// <summary>
         /// Date and time when the attachment was uploaded

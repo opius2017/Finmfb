@@ -7,6 +7,12 @@ using MediatR;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
 using FinTech.Core.Application.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Loans;
+using FinTech.Core.Application.Services.Loans;
+
+
+using FinTech.Core.Application.Services.Customers;
+using FinTech.Core.Application.Services.ClientPortal;
 
 namespace FinTech.Core.Application;
 
@@ -32,7 +38,7 @@ public static class DependencyInjection
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
         // Register existing application services
-        services.AddScoped<IGeneralLedgerService, Services.GeneralLedgerService>();
+        services.AddScoped<IGeneralLedgerService, GeneralLedgerService>();
         services.AddScoped<IInterestCalculationService, InterestCalculationService>();
         services.AddScoped<ILoanService, LoanService>();
         services.AddScoped<IMakerCheckerService, MakerCheckerService>();

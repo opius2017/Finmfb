@@ -29,6 +29,14 @@ namespace FinTech.Infrastructure.Repositories.Accounting
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
+        public async Task<FinancialPeriod> GetByPeriodCodeAsync(string periodCode, CancellationToken cancellationToken = default)
+        {
+            return await _context.FinancialPeriods
+                .Where(p => p.PeriodCode == periodCode)
+                .Include(p => p.FiscalYear)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         public async Task<FinancialPeriod> GetByNameAsync(string periodName, string fiscalYearId, CancellationToken cancellationToken = default)
         {
             return await _context.FinancialPeriods
@@ -45,12 +53,17 @@ namespace FinTech.Infrastructure.Repositories.Accounting
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<FinancialPeriod> GetByDateAsync(DateTime date, CancellationToken cancellationToken = default)
+        public async Task<FinancialPeriod> GetPeriodByDateAsync(DateTime date, CancellationToken cancellationToken = default)
         {
             return await _context.FinancialPeriods
                 .Where(p => p.StartDate <= date && p.EndDate >= date)
                 .Include(p => p.FiscalYear)
                 .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<FinancialPeriod> GetByDateAsync(DateTime date, CancellationToken cancellationToken = default)
+        {
+            return await GetPeriodByDateAsync(date, cancellationToken);
         }
 
         public async Task<IReadOnlyList<FinancialPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default)
@@ -62,6 +75,14 @@ namespace FinTech.Infrastructure.Repositories.Accounting
         }
 
         public async Task<bool> IsPeriodValidForPostingAsync(string periodId, CancellationToken cancellationToken = default)
+        {
+            var period = await _context.FinancialPeriods
+                .FirstOrDefaultAsync(p => p.Id == periodId, cancellationToken);
+            
+            return period != null && period.Status == FinancialPeriodStatus.Open;
+        }
+
+        public async Task<bool> IsPeriodOpenAsync(string periodId, CancellationToken cancellationToken = default)
         {
             var period = await _context.FinancialPeriods
                 .FirstOrDefaultAsync(p => p.Id == periodId, cancellationToken);
@@ -81,6 +102,25 @@ namespace FinTech.Infrastructure.Repositories.Accounting
                 .Where(p => p.StartDate > currentPeriod.EndDate)
                 .OrderBy(p => p.StartDate)
                 .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<FinancialPeriod> GetPreviousPeriodAsync(string currentPeriodId, CancellationToken cancellationToken = default)
+        {
+            var currentPeriod = await _context.FinancialPeriods
+                .FirstOrDefaultAsync(p => p.Id == currentPeriodId, cancellationToken);
+                
+            if (currentPeriod == null)
+                return null;
+                
+            return await _context.FinancialPeriods
+                .Where(p => p.EndDate < currentPeriod.StartDate)
+                .OrderByDescending(p => p.EndDate)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<FinancialPeriod> GetCurrentActivePeriodAsync(CancellationToken cancellationToken = default)
+        {
+            return await GetCurrentPeriodAsync(cancellationToken);
         }
     }
 }

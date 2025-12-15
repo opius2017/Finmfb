@@ -22,6 +22,7 @@ public class EmailResponse
 public class TemplatedEmailRequest
 {
     public string To { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
     public string TemplateName { get; set; } = string.Empty;
     public Dictionary<string, string> TemplateData { get; set; } = new();
     public string? From { get; set; }

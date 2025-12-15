@@ -8,7 +8,10 @@ namespace FinTech.Core.Domain.Entities.Common
         public decimal Amount { get; private set; }
         public string Currency { get; private set; }
         
-        private Money() { }
+        private Money() 
+        {
+            Currency = string.Empty;
+        }
         
         private Money(decimal amount, string currency)
         {

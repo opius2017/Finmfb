@@ -21,46 +21,46 @@ namespace FinTech.Application.Common.Settings
         /// <summary>
         /// Gets or sets the name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the display name
         /// </summary>
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the client ID
         /// </summary>
-        public string ClientId { get; set; }
+        public string ClientId { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the client secret
         /// </summary>
-        public string ClientSecret { get; set; }
+        public string ClientSecret { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the authorization endpoint
         /// </summary>
-        public string AuthorizationEndpoint { get; set; }
+        public string AuthorizationEndpoint { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the token endpoint
         /// </summary>
-        public string TokenEndpoint { get; set; }
+        public string TokenEndpoint { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the user information endpoint
         /// </summary>
-        public string UserInfoEndpoint { get; set; }
+        public string UserInfoEndpoint { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the redirect URI
         /// </summary>
-        public string RedirectUri { get; set; }
+        public string RedirectUri { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the scope
         /// </summary>
-        public string Scope { get; set; }
+        public string Scope { get; set; } = string.Empty;
     }
 }

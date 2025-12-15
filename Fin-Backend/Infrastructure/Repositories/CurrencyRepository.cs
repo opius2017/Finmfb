@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FinTech.Core.Application.Interfaces.Repositories;
-using FinTech.Core.Infrastructure.Persistence;
+using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Domain.Entities.Currency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -295,7 +295,7 @@ namespace FinTech.Infrastructure.Repositories
                 // Here's a simplified example:
                 
                 var balances = await (from account in _dbContext.ChartOfAccounts
-                                    join ledger in _dbContext.GeneralLedgerEntries on account.Id equals ledger.AccountId
+                                    join ledger in _dbContext.GeneralLedgerEntries on account.Id equals ledger.AccountId.ToString()
                                     where account.CurrencyCode != baseCurrency.Code
                                           && account.CurrencyCode != null
                                           && ledger.FinancialPeriodId == financialPeriodId

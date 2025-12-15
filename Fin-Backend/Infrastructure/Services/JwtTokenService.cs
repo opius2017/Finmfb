@@ -1,5 +1,5 @@
 using FinTech.Application.Common.Settings;
-using FinTech.Domain.Entities.Authentication;
+using FinTech.Core.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

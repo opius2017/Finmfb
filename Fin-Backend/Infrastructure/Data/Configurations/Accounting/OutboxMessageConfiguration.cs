@@ -1,6 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Infrastructure.Data.Configurations.Accounting
 {

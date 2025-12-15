@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using FinTech.Core.Domain.Features.Loans.Entities;
+using FinTech.Core.Domain.Entities.Loans;
 
 namespace FinTech.Infrastructure.Data.Contexts.Features
 {
@@ -23,7 +23,7 @@ namespace FinTech.Infrastructure.Data.Contexts.Features
         public DbSet<LoanAccount> LoanAccounts { get; set; }
         public DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; set; }
         public DbSet<LoanTransaction> LoanTransactions { get; set; }
-        public DbSet<LoanClassificationHistory> LoanClassificationHistories { get; set; }
+        // public DbSet<LoanClassificationHistory> LoanClassificationHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

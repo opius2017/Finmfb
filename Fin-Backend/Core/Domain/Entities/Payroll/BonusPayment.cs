@@ -14,7 +14,12 @@ namespace FinTech.Core.Domain.Entities.Payroll
         public string Status { get; private set; }
         public DateTime PaymentDate { get; private set; }
         
-        private BonusPayment() { } // For EF Core
+        private BonusPayment() 
+        {
+            BonusType = string.Empty;
+            Reference = string.Empty;
+            Status = string.Empty;
+        } // For EF Core
 
         public BonusPayment(
             int employeeId,

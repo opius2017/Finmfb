@@ -17,8 +17,20 @@ namespace FinTech.Core.Domain.Entities.Payroll
         public string Status { get; set; }
         public string PaymentMethod { get; set; }
         
+        // properties required by integration service
+        public string PayrollRunId { get; set; }
+        public string PayPeriod { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public decimal GrossSalary { get; set; }
+        public decimal PensionAmount { get; set; }
+        public decimal OtherDeductions { get; set; }
+        
         public PayrollEntry()
         {
+            EmployeeId = string.Empty;
+            EmployeeName = string.Empty;
+            PayrollPeriod = string.Empty;
+            PaymentMethod = string.Empty;
             PayrollDate = DateTime.UtcNow;
             Status = "PENDING";
         }

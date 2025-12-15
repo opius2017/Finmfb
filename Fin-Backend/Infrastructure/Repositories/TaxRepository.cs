@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FinTech.Core.Application.Interfaces.Repositories;
 using FinTech.Core.Domain.Entities.Tax;
-using FinTech.Infrastructure.Persistence;
+using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

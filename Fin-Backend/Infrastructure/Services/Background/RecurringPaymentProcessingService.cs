@@ -9,6 +9,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Services;
+using FinTech.Core.Domain.Entities.ClientPortal;
+using FinTech.Core.Application.Interfaces;
+using FinTech.Infrastructure.Data;
 
 namespace FinTech.Infrastructure.Services.Background
 {

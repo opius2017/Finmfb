@@ -12,7 +12,10 @@ public class AssetMaintenance : BaseEntity
     /// <summary>
     /// Reference to the asset
     /// </summary>
-    public Guid AssetId { get; set; }
+    /// <summary>
+    /// Reference to the asset
+    /// </summary>
+    public string AssetId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for the asset
@@ -52,7 +55,7 @@ public class AssetMaintenance : BaseEntity
     /// <summary>
     /// Vendor who performed the maintenance
     /// </summary>
-    public Guid? VendorId { get; set; }
+    public string? VendorId { get; set; }
     
     /// <summary>
     /// Invoice reference for the maintenance service
@@ -77,7 +80,17 @@ public class AssetMaintenance : BaseEntity
     /// <summary>
     /// Employee who authorized the maintenance
     /// </summary>
-    public Guid? AuthorizedById { get; set; }
+    public string? AuthorizedById { get; set; }
+
+    /// <summary>
+    /// Date maintenance was completed
+    /// </summary>
+    public DateTime? CompletionDate { get; set; }
+
+    /// <summary>
+    /// User who marked maintenance as completed
+    /// </summary>
+    public string? CompletedBy { get; set; }
     
     /// <summary>
     /// Any additional notes about the maintenance

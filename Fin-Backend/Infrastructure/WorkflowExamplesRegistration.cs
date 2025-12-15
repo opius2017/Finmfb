@@ -1,4 +1,3 @@
-using FinTech.Examples;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Infrastructure
@@ -7,10 +6,10 @@ namespace FinTech.Infrastructure
     {
         public static IServiceCollection AddWorkflowExamples(this IServiceCollection services)
         {
-            services.AddBankingWorkflowExample();
-            services.AddLoanWorkflowExample();
-            services.AddPayrollWorkflowExample();
-            services.AddFixedAssetWorkflowExample();
+            // services.AddBankingWorkflowExample();
+            // services.AddLoanWorkflowExample();
+            // services.AddPayrollWorkflowExample();
+            // services.AddFixedAssetWorkflowExample();
             
             return services;
         }

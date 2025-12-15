@@ -77,6 +77,10 @@ public class LoanProduct : BaseEntity
     [StringLength(50)]
     public string InterestCalculationMethod { get; set; } = "REDUCING_BALANCE"; // FLAT, REDUCING_BALANCE
 
+    // Added to match config
+    public string? InterestType { get; set; }
+    public string? Status { get; set; }
+
     public bool AllowEarlyRepayment { get; set; } = true;
 
     [Column(TypeName = "decimal(5,2)")]
@@ -85,11 +89,32 @@ public class LoanProduct : BaseEntity
     [StringLength(1000)]
     public string? EligibilityCriteria { get; set; }
 
-    [StringLength(1000)]
-    public string? RequiredDocuments { get; set; }
+    // Navigation property for required documents
+    public virtual ICollection<LoanProductDocument> RequiredDocuments { get; set; } = new List<LoanProductDocument>();
 
     public int ApprovalWorkflowSteps { get; set; } = 1;
 
     // Navigation properties
     public virtual ICollection<LoanApplication> Applications { get; set; } = new List<LoanApplication>();
+    
+    [NotMapped]
+    public virtual ICollection<LoanFee> Fees { get; set; } = new List<LoanFee>();
+
+    [NotMapped]
+    public int MinimumTenor { get => MinimumTenureMonths; set => MinimumTenureMonths = value; }
+    
+    [NotMapped]
+    public int MaximumTenor { get => MaximumTenureMonths; set => MaximumTenureMonths = value; }
+
+    [Column(TypeName = "decimal(5,2)")]
+    public decimal SavingsMultiplier { get; set; }
+
+    [NotMapped]
+    public int MinTerm => MinimumTenureMonths;
+
+    [NotMapped]
+    public int MaxTerm => MaximumTenureMonths;
+
+    [NotMapped]
+    public int MaxTenureMonths => MaximumTenureMonths;
 }

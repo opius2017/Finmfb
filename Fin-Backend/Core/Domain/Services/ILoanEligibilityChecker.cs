@@ -57,7 +57,7 @@ namespace FinTech.Core.Domain.Services
     {
         public bool IsEligible { get; set; }
         public List<string> Reasons { get; set; } = new List<string>();
-        public EligibilityDetails Details { get; set; }
+        public EligibilityDetails Details { get; set; } = new EligibilityDetails();
         
         public void AddReason(string reason)
         {

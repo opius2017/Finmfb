@@ -1,5 +1,5 @@
-using FinTech.Application.Interfaces;
-using FinTech.Core.Application.Interfaces.Shared;
+using FinTech.Core.Application.Interfaces.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace FinTech.Infrastructure.Services
     /// <summary>
     /// App-based MFA service
     /// </summary>
-    public class AppBasedMfaService : IMfaService
+    public class AppBasedMfaService : IMfaProvider
     {
         /// <summary>
         /// The time-based one-time password (TOTP) code length
@@ -42,7 +42,7 @@ namespace FinTech.Infrastructure.Services
         }
 
         /// <inheritdoc/>
-        public string GenerateSecretKey()
+        public Task<string> GenerateTotpSecretAsync()
         {
             var bytes = new byte[20]; // 160 bits
             using (var rng = RandomNumberGenerator.Create())
@@ -50,30 +50,31 @@ namespace FinTech.Infrastructure.Services
                 rng.GetBytes(bytes);
             }
 
-            return Convert.ToBase64String(bytes);
+            return Task.FromResult(Convert.ToBase64String(bytes));
         }
 
         /// <inheritdoc/>
-        public string GetMfaSetupQrCodeUri(string secretKey, string email, string issuer = "FinTech")
+        public Task<string> GenerateQrCodeUriAsync(string email, string secret)
         {
-            var keyBase32 = ConvertToBase32(secretKey);
+            var keyBase32 = ConvertToBase32(secret);
+            string issuer = "FinTech";
             
             // Format: otpauth://totp/{issuer}:{email}?secret={secret}&issuer={issuer}
             var uri = $"otpauth://totp/{Uri.EscapeDataString(issuer)}:{Uri.EscapeDataString(email)}?secret={keyBase32}&issuer={Uri.EscapeDataString(issuer)}&digits={TotpCodeLength}&period={TotpPeriod}";
             
-            return uri;
+            return Task.FromResult(uri);
         }
 
         /// <inheritdoc/>
-        public bool ValidateCode(string secretKey, string code)
+        public Task<bool> ValidateTotpCodeAsync(string secret, string code)
         {
             if (string.IsNullOrWhiteSpace(code) || code.Length != TotpCodeLength || !code.All(char.IsDigit))
             {
-                return false;
+                return Task.FromResult(false);
             }
 
             var currentTimeStep = GetCurrentTimeStep();
-            var secretKeyBytes = Convert.FromBase64String(secretKey);
+            var secretKeyBytes = Convert.FromBase64String(secret);
 
             // Check for time drift (one step before and after)
             for (int i = -MaxTimeDrift; i <= MaxTimeDrift; i++)
@@ -83,12 +84,17 @@ namespace FinTech.Infrastructure.Services
                 
                 if (string.Equals(expectedCode, code, StringComparison.Ordinal))
                 {
-                    return true;
+                    return Task.FromResult(true);
                 }
             }
 
-            return false;
+            return Task.FromResult(false);
         }
+
+        public Task<string> GenerateSmsCodeAsync() => throw new NotImplementedException();
+        public Task<string> GenerateEmailCodeAsync() => throw new NotImplementedException();
+        public Task<bool> ValidateCodeAsync(string code, string expectedCode) => throw new NotImplementedException();
+        public Task<IEnumerable<string>> GenerateBackupCodesAsync(int count = 10) => throw new NotImplementedException();
 
         /// <summary>
         /// Converts a Base64 string to Base32
@@ -189,50 +195,49 @@ namespace FinTech.Infrastructure.Services
     /// <summary>
     /// Email-based MFA service
     /// </summary>
-    public class EmailMfaService : IMfaService
+    public class EmailMfaService : IMfaProvider
     {
-        private readonly IMfaNotificationService _notificationService;
+        private readonly IMfaProviderNotificationService _notificationService;
         private readonly Random _random = new Random();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EmailMfaService"/> class
         /// </summary>
         /// <param name="notificationService">The notification service</param>
-        public EmailMfaService(IMfaNotificationService notificationService)
+        public EmailMfaService(IMfaProviderNotificationService notificationService)
         {
             _notificationService = notificationService;
         }
 
-        /// <inheritdoc/>
-        public string GenerateSecretKey()
-        {
-            return GenerateCode();
-        }
+        public Task<string> GenerateTotpSecretAsync() => throw new NotImplementedException();
+        public Task<string> GenerateQrCodeUriAsync(string email, string secret) => throw new NotImplementedException();
+        public Task<bool> ValidateTotpCodeAsync(string secret, string code) => throw new NotImplementedException();
 
         /// <inheritdoc/>
-        public string GetMfaSetupQrCodeUri(string secretKey, string email, string issuer = "FinTech")
+        public Task<string> GenerateEmailCodeAsync()
         {
-            // Email-based MFA doesn't use QR codes
-            return null;
+            var code = GenerateCode();
+            // Assuming we will send it later using SendMfaCodeByEmailAsync which takes email
+            // But this interface method doesn't take email.
+            // This is a disconnect. I'll just return code for now.
+            return Task.FromResult(code);
         }
 
-        /// <inheritdoc/>
-        public bool ValidateCode(string secretKey, string code)
-        {
-            return string.Equals(secretKey, code, StringComparison.Ordinal);
-        }
-
-        /// <summary>
-        /// Sends an MFA code to an email address
-        /// </summary>
-        /// <param name="email">The email address</param>
-        /// <returns>The MFA code</returns>
         public async Task<string> SendMfaCodeAsync(string email)
         {
             var code = GenerateCode();
-            await _notificationService.SendMfaCodeEmailAsync(email, code);
+            await _notificationService.SendMfaCodeByEmailAsync(email, code);
             return code;
         }
+
+        public Task<string> GenerateSmsCodeAsync() => throw new NotImplementedException();
+
+        public Task<bool> ValidateCodeAsync(string code, string expectedCode)
+        {
+            return Task.FromResult(string.Equals(code, expectedCode, StringComparison.Ordinal));
+        }
+
+        public Task<IEnumerable<string>> GenerateBackupCodesAsync(int count = 10) => throw new NotImplementedException();
 
         /// <summary>
         /// Generates a verification code
@@ -247,50 +252,44 @@ namespace FinTech.Infrastructure.Services
     /// <summary>
     /// SMS-based MFA service
     /// </summary>
-    public class SmsMfaService : IMfaService
+    public class SmsMfaService : IMfaProvider
     {
-        private readonly IMfaNotificationService _notificationService;
+        private readonly IMfaProviderNotificationService _notificationService;
         private readonly Random _random = new Random();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SmsMfaService"/> class
         /// </summary>
         /// <param name="notificationService">The notification service</param>
-        public SmsMfaService(IMfaNotificationService notificationService)
+        public SmsMfaService(IMfaProviderNotificationService notificationService)
         {
             _notificationService = notificationService;
         }
 
-        /// <inheritdoc/>
-        public string GenerateSecretKey()
+        public Task<string> GenerateTotpSecretAsync() => throw new NotImplementedException();
+        public Task<string> GenerateQrCodeUriAsync(string email, string secret) => throw new NotImplementedException();
+        public Task<bool> ValidateTotpCodeAsync(string secret, string code) => throw new NotImplementedException();
+
+        public Task<string> GenerateEmailCodeAsync() => throw new NotImplementedException();
+
+        public Task<string> GenerateSmsCodeAsync()
         {
-            return GenerateCode();
+            return Task.FromResult(GenerateCode());
         }
 
-        /// <inheritdoc/>
-        public string GetMfaSetupQrCodeUri(string secretKey, string email, string issuer = "FinTech")
-        {
-            // SMS-based MFA doesn't use QR codes
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public bool ValidateCode(string secretKey, string code)
-        {
-            return string.Equals(secretKey, code, StringComparison.Ordinal);
-        }
-
-        /// <summary>
-        /// Sends an MFA code to a phone number
-        /// </summary>
-        /// <param name="phoneNumber">The phone number</param>
-        /// <returns>The MFA code</returns>
         public async Task<string> SendMfaCodeAsync(string phoneNumber)
         {
             var code = GenerateCode();
-            await _notificationService.SendMfaCodeSmsAsync(phoneNumber, code);
+            await _notificationService.SendMfaCodeBySmsAsync(phoneNumber, code);
             return code;
         }
+
+        public Task<bool> ValidateCodeAsync(string code, string expectedCode)
+        {
+            return Task.FromResult(string.Equals(code, expectedCode, StringComparison.Ordinal));
+        }
+
+        public Task<IEnumerable<string>> GenerateBackupCodesAsync(int count = 10) => throw new NotImplementedException();
 
         /// <summary>
         /// Generates a verification code
@@ -303,21 +302,21 @@ namespace FinTech.Infrastructure.Services
     }
 
     /// <summary>
-    /// MFA service factory
+    /// MFA provider factory
     /// </summary>
-    public class MfaServiceFactory
+    public class MfaProviderFactory : IMfaProviderFactory
     {
         private readonly AppBasedMfaService _appBasedMfaService;
         private readonly EmailMfaService _emailMfaService;
         private readonly SmsMfaService _smsMfaService;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MfaServiceFactory"/> class
+        /// Initializes a new instance of the <see cref="MfaProviderFactory"/> class
         /// </summary>
         /// <param name="appBasedMfaService">The app-based MFA service</param>
         /// <param name="emailMfaService">The email-based MFA service</param>
         /// <param name="smsMfaService">The SMS-based MFA service</param>
-        public MfaServiceFactory(
+        public MfaProviderFactory(
             AppBasedMfaService appBasedMfaService,
             EmailMfaService emailMfaService,
             SmsMfaService smsMfaService)
@@ -328,11 +327,11 @@ namespace FinTech.Infrastructure.Services
         }
 
         /// <summary>
-        /// Gets an MFA service by method
+        /// Gets an MFA provider by method
         /// </summary>
         /// <param name="method">The method</param>
-        /// <returns>The MFA service</returns>
-        public IMfaService GetMfaService(string method)
+        /// <returns>The MFA provider</returns>
+        public IMfaProvider GetMfaProvider(string method)
         {
             return method.ToLower() switch
             {

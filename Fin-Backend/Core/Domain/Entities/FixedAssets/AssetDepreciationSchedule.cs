@@ -11,7 +11,10 @@ public class AssetDepreciationSchedule : BaseEntity
     /// <summary>
     /// Reference to the asset
     /// </summary>
-    public Guid AssetId { get; set; }
+    /// <summary>
+    /// Reference to the asset
+    /// </summary>
+    public string AssetId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for the asset
@@ -37,6 +40,9 @@ public class AssetDepreciationSchedule : BaseEntity
     /// Opening book value at the start of the period
     /// </summary>
     public decimal OpeningBookValue { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public decimal BookValueBeforeDepreciation { get => OpeningBookValue; set => OpeningBookValue = value; }
     
     /// <summary>
     /// Depreciation amount for this period
@@ -52,11 +58,20 @@ public class AssetDepreciationSchedule : BaseEntity
     /// Closing book value at the end of the period
     /// </summary>
     public decimal ClosingBookValue { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public decimal BookValueAfterDepreciation { get => ClosingBookValue; set => ClosingBookValue = value; }
     
     /// <summary>
     /// Whether this depreciation has been posted to the general ledger
     /// </summary>
     public bool IsPosted { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public bool PostedToGL { get => IsPosted; set => IsPosted = value; }
+
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+    public DateTime? PostedToGLDate { get => PostedDate; set => PostedDate = value; }
     
     /// <summary>
     /// Date when the depreciation was posted to GL

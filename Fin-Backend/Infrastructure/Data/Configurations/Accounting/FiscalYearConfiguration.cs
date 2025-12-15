@@ -51,7 +51,7 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(f => f.ClosedBy)
                 .HasMaxLength(100);
                 
-            builder.Property(f => f.ClosedAt);
+            builder.Property(f => f.ClosedDate);
                 
             // Navigation for financial periods
             builder.HasMany(f => f.FinancialPeriods)

@@ -265,19 +265,19 @@ namespace FinTech.Core.Application.Services.Accounting
                         AccountId = account.Id,
                         AccountNumber = account.AccountNumber,
                         AccountName = account.AccountName,
-                        AccountClassification = account.Classification,
+                        AccountClassification = account.Classification.ToString(),
                         BalanceValues = new decimal[periods.Count]
                     };
                     
                     // Get balance for each period
                     for (int i = 0; i < periods.Count; i++)
                     {
-                        var balance = await _generalLedgerService.GetAccountBalanceAsync(
-                            account.Id, 
-                            periods[i].Id, 
+                        var balances = await _generalLedgerService.GetAccountBalancesAsync(
+                            new[] { account.Id }, 
+                            periods[i].EndDate, 
                             cancellationToken);
                             
-                        accountTrend.BalanceValues[i] = balance.Balance;
+                        accountTrend.BalanceValues[i] = balances.FirstOrDefault()?.Balance ?? 0;
                     }
                     
                     result.AccountTrends.Add(accountTrend);

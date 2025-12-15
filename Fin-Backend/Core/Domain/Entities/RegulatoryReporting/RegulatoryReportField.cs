@@ -4,6 +4,9 @@ using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    /// <summary>
     /// <summary>
     /// Field data types
     /// </summary>
@@ -63,27 +66,29 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Reference to the section
         /// </summary>
-        public int RegulatoryReportSectionId { get; set; }
+        public string RegulatoryReportSectionId { get; set; } = string.Empty;
+        [NotMapped]
+        public string SectionId { get => RegulatoryReportSectionId; set => RegulatoryReportSectionId = value; }
         
         /// <summary>
         /// Navigation property for the section
         /// </summary>
-        public virtual RegulatoryReportSection Section { get; set; }
+        public virtual RegulatoryReportSection? Section { get; set; }
         
         /// <summary>
         /// Field code
         /// </summary>
-        public string FieldCode { get; set; }
+        public string FieldCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Field name
         /// </summary>
-        public string FieldName { get; set; }
+        public string FieldName { get; set; } = string.Empty;
         
         /// <summary>
         /// Field description
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         /// <summary>
         /// Data type of the field
@@ -98,17 +103,17 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Default value for the field
         /// </summary>
-        public string DefaultValue { get; set; }
+        public string? DefaultValue { get; set; }
         
         /// <summary>
         /// Placeholder text for the field
         /// </summary>
-        public string Placeholder { get; set; }
+        public string? Placeholder { get; set; }
         
         /// <summary>
         /// Help text for the field
         /// </summary>
-        public string HelpText { get; set; }
+        public string? HelpText { get; set; }
         
         /// <summary>
         /// Whether the field is required
@@ -128,42 +133,46 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Minimum length/value for validation
         /// </summary>
-        public string MinValue { get; set; }
+        public string? MinValue { get; set; }
         
         /// <summary>
         /// Maximum length/value for validation
         /// </summary>
-        public string MaxValue { get; set; }
+        public string? MaxValue { get; set; }
         
         /// <summary>
         /// Validation pattern (regex)
         /// </summary>
-        public string ValidationPattern { get; set; }
+        public string? ValidationPattern { get; set; }
         
         /// <summary>
         /// Validation error message
         /// </summary>
-        public string ValidationMessage { get; set; }
+        public string? ValidationMessage { get; set; }
+        
+        public string? ValidationRules { get; set; } 
         
         /// <summary>
         /// Options for select/multi-select fields in JSON format
         /// </summary>
-        public string Options { get; set; }
+        public string? Options { get; set; }
         
         /// <summary>
         /// Formula expression for calculated fields
         /// </summary>
-        public string Formula { get; set; }
+        public string? Formula { get; set; }
+        
+        public string? MappingQuery { get; set; } 
         
         /// <summary>
         /// Field format (e.g., date format, number format)
         /// </summary>
-        public string Format { get; set; }
+        public string? Format { get; set; }
         
         /// <summary>
         /// Unit of measurement (e.g., NGN, USD, %)
         /// </summary>
-        public string Unit { get; set; }
+        public string? Unit { get; set; }
         
         /// <summary>
         /// Number of decimal places for numeric fields
@@ -178,7 +187,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// JSON metadata about the field
         /// </summary>
-        public string Metadata { get; set; }
+        public string? Metadata { get; set; }
         
         /// <summary>
         /// Row index for table fields (null for non-table fields)

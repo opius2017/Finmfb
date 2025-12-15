@@ -47,6 +47,10 @@ public class Loan : BaseEntity
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal MonthlyInstallment { get; set; }
+    
+    // FinTech Best Practice: Alias for backward compatibility
+    [NotMapped]
+    public decimal MonthlyRepaymentAmount => MonthlyInstallment;
 
     [Column(TypeName = "decimal(18,2)")]
     public decimal TotalInterest { get; set; }
@@ -127,17 +131,7 @@ public class Loan : BaseEntity
     [StringLength(50)]
     public string? Classification { get; set; }
 
-    [StringLength(50)]
-    public string? LoanStatus { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
-
-    public bool IsRestructured { get; set; }
-
-    public DateTime? RestructuredDate { get; set; }
-
-    [StringLength(1000)]
-    public string? RestructureReason { get; set; }
 
     [StringLength(1000)]
     public string? Notes { get; set; }
@@ -147,4 +141,21 @@ public class Loan : BaseEntity
     public virtual ICollection<LoanTransaction> Transactions { get; set; } = new List<LoanTransaction>();
     public virtual ICollection<Guarantor> Guarantors { get; set; } = new List<Guarantor>();
     public virtual LoanDelinquency? Delinquency { get; set; }
+
+    // Service Compatibility Properties
+    [NotMapped]
+    public int PaymentFrequency 
+    { 
+        get => RepaymentFrequency == "MONTHLY" ? 1 : (RepaymentFrequency == "WEEKLY" ? 2 : 0);
+        set => RepaymentFrequency = value == 1 ? "MONTHLY" : (value == 2 ? "WEEKLY" : "MONTHLY");
+    }
+
+    [NotMapped]
+    public int DaysInArrears { get => DaysOverdue; set => DaysOverdue = value; }
+
+    [NotMapped]
+    public decimal ArrearsAmount { get => OverdueAmount; set => OverdueAmount = value; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal ProvisionAmount { get; set; }
 }

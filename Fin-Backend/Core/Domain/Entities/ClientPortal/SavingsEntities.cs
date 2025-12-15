@@ -12,6 +12,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     /// </summary>
     public class SavingsGoal : BaseEntity, IAuditable
     {
+        public Guid ClientPortalProfileId { get; set; }
         [Required]
         public Guid UserId { get; set; }
         
@@ -84,6 +85,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         [NotMapped]
         public decimal RequiredMonthlyAmount => 
             DaysRemaining > 0 ? AmountRemaining / (DaysRemaining / 30.44m) : 0;
+            
+        public virtual ICollection<SavingsGoalTransaction> Transactions { get; set; } = new List<SavingsGoalTransaction>();
+        public virtual ICollection<SavingsGoalMilestone> Milestones { get; set; } = new List<SavingsGoalMilestone>();
     }
 
     /// <summary>

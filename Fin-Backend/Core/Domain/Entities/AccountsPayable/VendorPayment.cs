@@ -13,11 +13,11 @@ public class VendorPayment : BaseEntity
     
     [Required]
     public Guid VendorId { get; set; }
-    public virtual Vendor Vendor { get; set; } = null!;
+    public virtual Vendor? Vendor { get; set; }
     
     [Required]
     public Guid VendorBillId { get; set; }
-    public virtual VendorBill VendorBill { get; set; } = null!;
+    public virtual VendorBill? VendorBill { get; set; }
     
     [Required]
     public DateTime PaymentDate { get; set; }

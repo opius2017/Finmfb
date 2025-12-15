@@ -9,30 +9,37 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanGuarantor : AuditableEntity
     {
-        public string Id { get; set; }
-        public string LoanId { get; set; }
-        public string GuarantorType { get; set; }
-        public string FullName { get; set; }
-        public string Relationship { get; set; }
-        public string Occupation { get; set; }
-        public string Employer { get; set; }
-        public string IdentificationType { get; set; }
-        public string IdentificationNumber { get; set; }
+        public string LoanId { get; set; } = string.Empty;
+        public string GuarantorType { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Relationship { get; set; } = string.Empty;
+        public string Occupation { get; set; } = string.Empty;
+        public string Employer { get; set; } = string.Empty;
+        public string IdentificationType { get; set; } = string.Empty;
+        public string IdentificationNumber { get; set; } = string.Empty;
         public DateTime? IdentificationExpiryDate { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
+        public string Address { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public decimal MonthlyIncome { get; set; }
-        public string BankName { get; set; }
-        public string BankAccountNumber { get; set; }
-        public string BVN { get; set; }
+        public string BankName { get; set; } = string.Empty;
+        public string BankAccountNumber { get; set; } = string.Empty;
+        public string BVN { get; set; } = string.Empty;
         public DateTime GuaranteeDate { get; set; }
         public decimal GuaranteedAmount { get; set; }
         public GuarantorStatus Status { get; set; }
         public DateTime? VerificationDate { get; set; }
-        public string VerifiedBy { get; set; }
-        public string Notes { get; set; }
+        public string VerifiedBy { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
+
+        // Missing properties required by Configuration/Repository
+        public string GuarantorCustomerId { get; set; } = string.Empty;
+        public string Comments { get; set; } = string.Empty;
+        public bool IsApproved { get; set; }
+        public string ApprovedBy { get; set; } = string.Empty;
+        public string RejectedBy { get; set; } = string.Empty;
+        public string RejectionReason { get; set; } = string.Empty;
         
         // Navigation property
         public virtual Loan Loan { get; set; }

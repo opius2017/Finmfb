@@ -2,76 +2,19 @@ using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Entities.Common;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinTech.Core.Domain.Entities.ClientPortal
 {
-    /// <summary>
-    /// Represents client portal session tracking
-    /// </summary>
-    public class ClientPortalSession : BaseEntity, IAuditable
-    {
-        [Required]
-        public Guid UserId { get; set; }
-        
-        [Required]
-        [MaxLength(256)]
-        public string SessionToken { get; set; } = string.Empty;
-        
-        [Required]
-        public DateTime StartTime { get; set; }
-        
-        public DateTime? EndTime { get; set; }
-        
-        [MaxLength(45)]
-        public string? IpAddress { get; set; }
-        
-        [MaxLength(512)]
-        public string? UserAgent { get; set; }
-        
-        public bool IsActive { get; set; }
-        
-        [MaxLength(100)]
-        public string? Location { get; set; }
-        
-        public DateTime? LastActivity { get; set; }
-    }
 
-    /// <summary>
-    /// Represents client portal activity tracking
-    /// </summary>
-    public class ClientPortalActivity : BaseEntity, IAuditable
-    {
-        [Required]
-        public Guid UserId { get; set; }
-        
-        [Required]
-        public Guid SessionId { get; set; }
-        public ClientPortalSession? Session { get; set; }
-        
-        [Required]
-        [MaxLength(100)]
-        public string ActivityType { get; set; } = string.Empty;
-        
-        [MaxLength(500)]
-        public string? Description { get; set; }
-        
-        [Required]
-        public DateTime Timestamp { get; set; }
-        
-        [MaxLength(45)]
-        public string? IpAddress { get; set; }
-        
-        public bool IsSuccessful { get; set; }
-        
-        [MaxLength(1000)]
-        public string? AdditionalData { get; set; }
-    }
 
-    /// <summary>
+    // ClientPortalActivity moved to ClientPortalActivity.cs
+
     /// Represents saved payee for quick payments
     /// </summary>
     public class SavedPayee : BaseEntity, IAuditable
     {
+        public Guid ClientPortalProfileId { get; set; }
         [Required]
         public Guid UserId { get; set; }
         
@@ -106,6 +49,29 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public DateTime LastUsed { get; set; }
         
         public int UsageCount { get; set; }
+
+        // FinTech Best Practice: Add missing properties for payment processing
+        [MaxLength(200)]
+        public string? Name { get; set; }
+        
+        [MaxLength(200)]
+        public string? BankName { get; set; }
+        
+        [MaxLength(20)]
+        public string? BankCode { get; set; }
+        
+        public bool IsFavorite { get; set; } = false;
+
+        [NotMapped]
+        public Guid CustomerId { get { return UserId; } set { UserId = value; } }
+
+        public Guid? BillerId { get; set; }
+
+        [MaxLength(100)]
+        public string? CustomerReferenceNumber { get; set; }
+
+        [MaxLength(100)]
+        public string? Category { get; set; }
     }
 
     /// <summary>
@@ -143,6 +109,30 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public int UsageCount { get; set; }
         
         public DateTime LastUsed { get; set; }
+
+        [NotMapped]
+        public Guid CustomerId { get { return UserId; } set { UserId = value; } }
+
+        [MaxLength(50)]
+        public string? SourceAccountNumber { get; set; }
+
+        [MaxLength(50)]
+        public string? DestinationAccountNumber { get; set; }
+
+        [MaxLength(100)]
+        public string? DestinationBankName { get; set; }
+
+        [MaxLength(20)]
+        public string? DestinationBankCode { get; set; }
+
+        [MaxLength(200)]
+        public string? BeneficiaryName { get; set; }
+
+        [NotMapped]
+        public decimal Amount { get { return DefaultAmount ?? 0; } set { DefaultAmount = value; } }
+
+        [MaxLength(50)]
+        public string? TransferType { get; set; }
     }
 
     /// <summary>
@@ -150,6 +140,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     /// </summary>
     public class ClientDocument : BaseEntity, IAuditable
     {
+        public Guid ClientPortalProfileId { get; set; }
         [Required]
         public Guid UserId { get; set; }
         

@@ -8,17 +8,17 @@ namespace FinTech.Application.Common.Settings
         /// <summary>
         /// Gets or sets the issuer
         /// </summary>
-        public string Issuer { get; set; }
+        public string Issuer { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the audience
         /// </summary>
-        public string Audience { get; set; }
+        public string Audience { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the secret
         /// </summary>
-        public string Secret { get; set; }
+        public string Secret { get; set; } = string.Empty;
         
         /// <summary>
         /// Gets or sets the expiration in minutes

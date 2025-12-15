@@ -4,4 +4,5 @@ global using FinTech.Core.Domain.Entities.Deposits;
 global using FinTech.Core.Domain.Entities.Accounting;
 global using FinTech.Core.Domain.Entities.Identity;
 global using FinTech.Core.Domain.Entities.Common;
+global using FinTech.Core.Application.Common.Models;
 global using Money = FinTech.Core.Domain.ValueObjects.Money;

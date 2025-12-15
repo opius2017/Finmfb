@@ -8,7 +8,7 @@ public class InvoiceItem : BaseEntity
 {
     [Required]
     public Guid InvoiceId { get; set; }
-    public virtual Invoice Invoice { get; set; } = null!;
+    public virtual Invoice? Invoice { get; set; }
     
     [Required]
     [StringLength(200)]

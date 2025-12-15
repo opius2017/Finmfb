@@ -3,7 +3,7 @@ using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Entities.Security;
 using FinTech.Core.Domain.Entities.Identity;
-using FinTech.Core.Domain.Entities.Authentication;
+
 using FinTech.Core.Domain.Entities.Accounting;
 using FinTech.Core.Domain.Entities.GeneralLedger;
 using FinTech.Core.Domain.Entities.Deposits;
@@ -15,6 +15,7 @@ using FinTech.Core.Domain.Entities.Customers;
 using FinTech.Core.Domain.Entities.Banking;
 using FinTech.Core.Domain.Entities.Payroll;
 using FinTech.Core.Domain.Entities.Currency;
+using FinTech.Core.Domain.Entities.Tax;
 using FinTech.Infrastructure.Data.Configuration;
 using FinTech.Infrastructure.Data.Configurations.Accounting;
 using FinTech.Infrastructure.Data.Interceptors;
@@ -43,7 +44,7 @@ using Newtonsoft.Json;
 
 namespace FinTech.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<FinTech.Core.Domain.Entities.Authentication.ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<FinTech.Core.Domain.Entities.Identity.ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
     {
         private readonly IDomainEventService? _domainEventService;
         private readonly ILogger<ApplicationDbContext>? _logger;
@@ -107,6 +108,10 @@ namespace FinTech.Infrastructure.Data
         public DbSet<LoanGuarantor> LoanGuarantors { get; set; }
         public DbSet<LoanApplicationRequest> LoanApplicationRequests { get; set; }
         public DbSet<LoanApplicationDocument> LoanApplicationDocuments { get; set; }
+        public DbSet<LoanDocument> LoanDocuments { get; set; }
+        public DbSet<LoanFee> LoanFees { get; set; }
+        public DbSet<LoanCollection> LoanCollections { get; set; }
+        public DbSet<LoanCreditCheck> LoanCreditChecks { get; set; }
         
         // Cooperative Loan Management
         public DbSet<Member> Members { get; set; }
@@ -157,11 +162,12 @@ namespace FinTech.Infrastructure.Data
 
         // Reporting
         public DbSet<FinTech.Core.Domain.Entities.Reporting.FinancialStatement> FinancialStatements { get; set; }
-        public DbSet<FinTech.Core.Domain.Entities.Reporting.RegulatoryReport> RegulatoryReports { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.RegulatoryReporting.RegulatoryReport> RegulatoryReports { get; set; }
 
         // Multi-Currency
-        public DbSet<FinTech.Core.Domain.Entities.MultiCurrency.ExchangeRate> ExchangeRates { get; set; }
-        public DbSet<FinTech.Core.Domain.Entities.MultiCurrency.CurrencyRevaluation> CurrencyRevaluations { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Currency.ExchangeRate> ExchangeRates { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Currency.CurrencyRevaluation> CurrencyRevaluations { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Currency.Currency> Currencies { get; set; }
         
         // Fixed Assets
         public DbSet<Asset> Assets { get; set; }
@@ -184,18 +190,25 @@ namespace FinTech.Infrastructure.Data
         public DbSet<RegulatoryReportSchedule> RegulatoryReportSchedules { get; set; }
 
         // MFA and Security
-        public DbSet<MfaSettings> UserMfaSettings { get; set; }
-        public DbSet<BackupCode> MfaBackupCodes { get; set; }
+        public DbSet<UserMfaSettings> UserMfaSettings { get; set; }
+        public DbSet<MfaBackupCode> MfaBackupCodes { get; set; }
         public DbSet<MfaChallenge> MfaChallenges { get; set; }
         public DbSet<TrustedDevice> TrustedDevices { get; set; }
-        public DbSet<SecurityActivity> SecurityActivities { get; set; }
-        public DbSet<SecurityPreferences> SecurityPreferences { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Identity.SecurityActivity> SecurityActivities { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Identity.UserSecurityPreferences> SecurityPreferences { get; set; }
+
+        // Tax
+        // Tax
+        public DbSet<TaxTransaction> TaxTransactions { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Tax.TaxType> TaxTypes { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Tax.TaxRate> TaxRates { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Tax.TaxExemption> TaxExemptions { get; set; }
 
         // Client Portal
         public DbSet<ClientPortalProfile> ClientPortalProfiles { get; set; }
         public DbSet<NotificationPreferences> NotificationPreferences { get; set; }
         public DbSet<DashboardPreferences> DashboardPreferences { get; set; }
-        public DbSet<ClientPortalSession> ClientPortalSessions { get; set; }
+
         public DbSet<ClientPortalActivity> ClientPortalActivities { get; set; }
         public DbSet<SavedPayee> SavedPayees { get; set; }
         public DbSet<SavedTransferTemplate> SavedTransferTemplates { get; set; }
@@ -290,288 +303,9 @@ namespace FinTech.Infrastructure.Data
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var stopwatch = Stopwatch.StartNew();
-            
-            // Track entities being modified for auditing
-            var auditEntries = OnBeforeSaveChanges();
-            
-            // Update audit fields
-            foreach (var entry in ChangeTracker.Entries<FinTech.Core.Domain.Entities.Common.BaseEntity>())
-            {
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        entry.Entity.CreatedDate = DateTime.UtcNow;
-                        if (_currentUserService != null)
-                        {
-                            entry.Entity.CreatedBy = _currentUserService?.UserId?.ToString() ?? "System";
-                        }
-                        break;
-                    case EntityState.Modified:
-                        entry.Entity.LastModifiedDate = DateTime.UtcNow;
-                        if (_currentUserService != null)
-                        {
-                            entry.Entity.LastModifiedBy = _currentUserService.UserId.ToString();
-                        }
-                        break;
-                    case EntityState.Deleted:
-                        // Implement soft delete if entity implements ISoftDelete
-                        if (entry.Entity is FinTech.Core.Domain.Common.ISoftDelete softDeleteEntity)
-                        {
-                            entry.State = EntityState.Modified;
-                            softDeleteEntity.IsDeleted = true;
-                            softDeleteEntity.DeletedAt = DateTime.UtcNow;
-                            if (_currentUserService != null)
-                            {
-                                softDeleteEntity.DeletedBy = _currentUserService.UserId;
-                            }
-                        }
-                        break;
-                }
-            }
-
-            // Get entities with domain events
-            var entitiesWithEvents = ChangeTracker.Entries<FinTech.Core.Domain.Entities.Common.AggregateRoot>()
-                .Select(e => e.Entity)
-                .Where(e => e.DomainEvents.Any())
-                .ToArray();
-                
-            // Store domain events in the outbox for reliable processing
-            AddDomainEventsToOutbox(entitiesWithEvents);
-
-            // Save changes to database
-            int result;
-            try
-            {
-                result = await base.SaveChangesAsync(cancellationToken);
-                
-                // Write audit logs after successful save
-                await OnAfterSaveChanges(auditEntries, cancellationToken);
-                
-                // Track database performance
-                stopwatch.Stop();
-                
-                
-                if (stopwatch.ElapsedMilliseconds > 500)
-                {
-                    _logger?.LogWarning("SaveChangesAsync took {ElapsedMs}ms to complete with {EntitiesModified} entities modified",
-                        stopwatch.ElapsedMilliseconds, result);
-                }
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                _logger?.LogError(ex, "Concurrency conflict detected during SaveChanges");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger?.LogError(ex, "Error during SaveChanges");
-                throw;
-            }
-
-            // Then dispatch domain events
-            await DispatchEvents(entitiesWithEvents, cancellationToken);
-
-            return result;
-        }
-
-        private List<FinTech.Infrastructure.Data.Auditing.AuditEntry> OnBeforeSaveChanges()
-        {
-            ChangeTracker.DetectChanges();
-            var auditEntries = new List<FinTech.Infrastructure.Data.Auditing.AuditEntry>();
-            
-            foreach (var entry in ChangeTracker.Entries())
-            {
-                // Skip entities that are not tracked, not changed, or not auditable
-                if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
-                    continue;
-
-                if (!(entry.Entity is FinTech.Core.Domain.Common.IAuditable))
-                    continue;
-
-                var auditEntry = new FinTech.Infrastructure.Data.Auditing.AuditEntry
-                {
-                    EntityName = entry.Entity.GetType().Name,
-                    EntityId = GetEntityId(entry),
-                    Action = entry.State.ToString(),
-                    Timestamp = DateTime.UtcNow,
-                    UserId = _currentUserService?.UserId?.ToString() ?? "System",
-                    TenantId = _currentUserService?.TenantId,
-                    Changes = new Dictionary<string, object>()
-                };
-
-                foreach (var property in entry.Properties)
-                {
-                    // Skip navigation properties and collections
-                    if (property.Metadata.IsKey() || property.Metadata.IsForeignKey())
-                        continue;
-
-                    // Get property name
-                    string propertyName = property.Metadata.Name;
-
-                    // For created entities, log all property values
-                    if (entry.State == EntityState.Added)
-                    {
-                        auditEntry.Changes[propertyName] = property.CurrentValue ?? DBNull.Value;
-                    }
-                    // For modified entities, log changed properties
-                    else if (entry.State == EntityState.Modified && !property.IsModified)
-                    {
-                        // Skip unmodified properties
-                        continue;
-                    }
-                    else if (entry.State == EntityState.Modified && property.IsModified)
-                    {
-                        auditEntry.Changes[propertyName] = new
-                        {
-                            OldValue = property.OriginalValue,
-                            NewValue = property.CurrentValue
-                        };
-                    }
-                    // For deleted entities, log all property values
-                    else if (entry.State == EntityState.Deleted)
-                    {
-                        auditEntry.Changes[propertyName] = property.OriginalValue ?? DBNull.Value;
-                    }
-                }
-
-                auditEntries.Add(auditEntry);
-            }
-
-            return auditEntries;
-        }
-
-        private async Task OnAfterSaveChanges(List<FinTech.Infrastructure.Data.Auditing.AuditEntry> auditEntries, CancellationToken cancellationToken)
-        {
-            if (auditEntries == null || !auditEntries.Any())
-                return;
-            
-            // Add audit logs to the database
-            foreach (var auditEntry in auditEntries)
-            {
-                var auditLog = new FinTech.Core.Domain.Entities.Security.AuditLog
-                {
-                    EntityName = auditEntry.EntityName,
-                    EntityId = Guid.TryParse(auditEntry.EntityId, out var entityGuid) ? entityGuid : Guid.Empty,
-                    Action = auditEntry.Action,
-                    Timestamp = auditEntry.Timestamp,
-                    UserId = Guid.TryParse(auditEntry.UserId, out var userGuid) ? userGuid : Guid.Empty,
-                    TenantId = auditEntry.TenantId ?? Guid.Empty,
-                    UserName = auditEntry.UserId, // Store the string representation
-                    IPAddress = "0.0.0.0", // Default value
-                    AuditAction = FinTech.Core.Domain.Enums.AuditAction.Update, // Default value
-                    OldValues = auditEntry.Action == "Modified" ? JsonConvert.SerializeObject(auditEntry.Changes) : null,
-                    NewValues = auditEntry.Action == "Added" ? JsonConvert.SerializeObject(auditEntry.Changes) : null
-                };
-
-                AuditLogs.Add(auditLog);
-            }
-
-            await base.SaveChangesAsync(cancellationToken);
-        }
-
-        private string GetEntityId(EntityEntry entry)
-        {
-            var keyValues = entry.Metadata.FindPrimaryKey()?
-                .Properties
-                .Select(p => entry.Property(p.Name).CurrentValue?.ToString() ?? "");
-
-            return string.Join(",", keyValues ?? new[] { "" });
-        }
-
-        private void AddDomainEventsToOutbox(FinTech.Core.Domain.Entities.Common.AggregateRoot[] entitiesWithEvents)
-        {
-            foreach (var entity in entitiesWithEvents)
-            {
-                var events = entity.DomainEvents.ToArray();
-                
-                foreach (var domainEvent in events)
-                {
-                    // Create an outbox message for each domain event
-                    OutboxMessages.Add(new FinTech.Infrastructure.Data.Messaging.OutboxMessage
-                    {
-                        Id = Guid.NewGuid(),
-                        EventType = domainEvent.GetType().AssemblyQualifiedName ?? "",
-                        Content = JsonConvert.SerializeObject(domainEvent),
-                        CreatedAt = DateTime.UtcNow,
-                        ProcessedAt = null,
-                        Error = ""
-                    });
-                    
-                    // Create a domain event record for auditing
-                    DomainEventRecords.Add(new FinTech.Infrastructure.Data.Events.DomainEventRecord
-                    {
-                        Id = Guid.NewGuid(),
-                        EventType = domainEvent.GetType().Name,
-                        EntityName = entity.GetType().Name,
-                        EntityId = entity.Id.ToString(),
-                        CreatedAt = DateTime.UtcNow,
-                        Data = JsonConvert.SerializeObject(domainEvent)
-                    });
-                }
-                
-                // Clear domain events after adding to outbox
-                entity.ClearDomainEvents();
-            }
-        }
-
-        private async Task DispatchEvents(FinTech.Core.Domain.Entities.Common.AggregateRoot[] entities, CancellationToken cancellationToken)
-        {
-            if (_domainEventService == null)
-            {
-                _logger?.LogWarning("Domain event service is not available. Events will not be dispatched.");
-                return;
-            }
-
-            foreach (var entity in entities)
-            {
-                var events = entity.DomainEvents.ToArray();
-                entity.ClearDomainEvents();
-
-                foreach (var domainEvent in events)
-                {
-                    try
-                    {
-                        var eventName = domainEvent.GetType().Name;
-                        var entityType = entity.GetType().Name;
-                        
-                        _logger?.LogInformation("Dispatching domain event {EventName} for entity {EntityType} with ID {EntityId}",
-                            eventName, entityType, entity.Id);
-                            
-                        var stopwatch = Stopwatch.StartNew();
-                        
-                        await _domainEventService.PublishAsync(domainEvent, cancellationToken);
-                        
-                        stopwatch.Stop();
-                        
-                        
-                        _logger?.LogInformation("Successfully dispatched domain event {EventName} for entity {EntityType} with ID {EntityId} in {ElapsedMs}ms",
-                            eventName, entityType, entity.Id, stopwatch.ElapsedMilliseconds);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger?.LogError(ex, "Error publishing domain event {EventType} for entity {EntityType} with ID {EntityId}",
-                            domainEvent.GetType().Name, entity.GetType().Name, entity.Id);
-                            
-                        
-                        // We don't want to throw here to avoid transaction rollback
-                        // Instead, log the error and continue
-                        
-                        // Update the outbox message with error information
-                        var outboxMessage = await OutboxMessages
-                            .FirstOrDefaultAsync(m => 
-                                m.EventType == domainEvent.GetType().AssemblyQualifiedName && 
-                                m.ProcessedAt == null);
-                                
-                        if (outboxMessage != null)
-                        {
-                            outboxMessage.Error = ex.ToString();
-                            outboxMessage.ProcessedAt = DateTime.UtcNow;
-                            await base.SaveChangesAsync(cancellationToken);
-                        }
-                    }
-                }
-            }
+            // Standard EF Core SaveChanges. 
+            // Auditing and Domain Events are now handled by Interceptors (AuditSaveChangesInterceptor, DomainEventInterceptor).
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

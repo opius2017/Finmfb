@@ -37,7 +37,7 @@ namespace FinTech.Infrastructure.Monitoring
                 .Enrich.WithExceptionDetails()
                 .Enrich.WithMachineName()
                 .Enrich.WithEnvironmentName()
-                .Enrich.WithProperty("Application", "FinTech.WebAPI")
+                .Enrich.WithProperty("Application", "FinTech.API")
                 .Filter.ByExcluding(Matching.FromSource("Microsoft.AspNetCore.StaticFiles"))
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .MinimumLevel.Override("System", LogEventLevel.Information)

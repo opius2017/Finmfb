@@ -43,4 +43,7 @@ public class LoanDelinquency : BaseEntity
     public int ContactAttempts { get; set; }
 
     public DateTime? NextFollowUpDate { get; set; }
+
+    // FinTech Best Practice: Track when delinquency was last checked
+    public DateTime CheckDate { get; set; } = DateTime.UtcNow;
 }

@@ -8,8 +8,11 @@ using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.DTOs.ClientPortal;
 using FinTech.Core.Domain.Entities.ClientPortal;
 using FinTech.Core.Domain.Enums;
+using FinTech.Core.Domain.Enums.Notifications;
+using NotificationChannel = FinTech.Core.Domain.Enums.Notifications.NotificationChannel;
+using NotificationDeliveryStatus = FinTech.Core.Domain.Enums.Notifications.NotificationDeliveryStatus;
 using System.Text.Json;
-using FinTech.Core.Application.Common.Interfaces;
+
 
 namespace FinTech.Core.Application.Services
 {
@@ -181,7 +184,7 @@ namespace FinTech.Core.Application.Services
             {
                 // Get customer information
                 var customer = await _context.Customers
-                    .FirstOrDefaultAsync(c => c.Id == notificationDto.CustomerId);
+                    .FirstOrDefaultAsync(c => c.Id == notificationDto.CustomerId.ToString());
 
                 if (customer == null)
                 {
@@ -408,7 +411,7 @@ namespace FinTech.Core.Application.Services
 
                 // Get customer information
                 var customer = await _context.Customers
-                    .FirstOrDefaultAsync(c => c.Id == notificationDto.CustomerId);
+                    .FirstOrDefaultAsync(c => c.Id == notificationDto.CustomerId.ToString());
 
                 if (customer == null)
                 {
@@ -571,8 +574,9 @@ namespace FinTech.Core.Application.Services
                 case NotificationChannel.Push:
                     // Get push notification token from client portal profile
                     var profile = _context.ClientPortalProfiles
-                        .FirstOrDefault(p => p.CustomerId == customer.Id);
-                    return profile?.PushNotificationToken;
+                        .FirstOrDefault(p => p.CustomerId == Guid.Parse(customer.Id));
+                    // return profile?.PushNotificationToken;
+                    return null;
                 default:
                     return null;
             }

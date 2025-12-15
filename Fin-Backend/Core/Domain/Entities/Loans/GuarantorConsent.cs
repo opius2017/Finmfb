@@ -21,11 +21,16 @@ namespace FinTech.Core.Domain.Entities.Loans
         public string Notes { get; private set; }
         
         // Navigation properties
-        public virtual LoanApplication Application { get; private set; }
-        public virtual Member GuarantorMember { get; private set; }
-        public virtual Member ApplicantMember { get; private set; }
+        public virtual LoanApplication? Application { get; private set; }
+        public virtual Member? GuarantorMember { get; private set; }
+        public virtual Member? ApplicantMember { get; private set; }
         
-        private GuarantorConsent() { } // For EF Core
+        private GuarantorConsent() 
+        {
+            ConsentToken = string.Empty;
+            DeclineReason = string.Empty;
+            Notes = string.Empty;
+        } // For EF Core
         
         public GuarantorConsent(
             Guid applicationId,

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FinTech.Core.Domain.Entities.Accounting;
+using FinTech.Core.Application.DTOs.GeneralLedger.Journal;
 
 namespace FinTech.Core.Application.Interfaces.Services.Accounting
 {
@@ -16,6 +17,8 @@ namespace FinTech.Core.Application.Interfaces.Services.Accounting
         Task<IReadOnlyList<JournalEntry>> GetByAccountIdAsync(string accountId, CancellationToken cancellationToken = default);
         Task<IReadOnlyList<JournalEntry>> GetPendingApprovalsAsync(CancellationToken cancellationToken = default);
         Task<string> CreateJournalEntryAsync(JournalEntry journalEntry, CancellationToken cancellationToken = default);
+        Task<string> CreateJournalEntryAsync(JournalEntryDto journalEntryDto, string tenantId = null, CancellationToken cancellationToken = default);
+        Task<string> CreateJournalEntryAsync(object journalEntry, string tenantId, CancellationToken cancellationToken = default);
         Task UpdateJournalEntryAsync(JournalEntry journalEntry, CancellationToken cancellationToken = default);
         Task<string> SubmitForApprovalAsync(string id, string submittedBy, CancellationToken cancellationToken = default);
         Task<string> ApproveJournalEntryAsync(string id, string approvedBy, CancellationToken cancellationToken = default);

@@ -162,7 +162,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
                 Summary = article.Summary,
                 Category = article.Category?.Name,
                 Tags = article.Tags?.Split(',', StringSplitOptions.RemoveEmptyEntries),
-                PublishedDate = article.PublishedDate,
+                PublishedDate = article.PublishedDate ?? DateTime.MinValue,
                 ViewCount = article.ViewCount,
                 HelpfulCount = article.HelpfulCount,
                 NotHelpfulCount = article.NotHelpfulCount

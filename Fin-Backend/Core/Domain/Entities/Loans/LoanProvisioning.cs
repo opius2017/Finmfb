@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.Loans;
@@ -13,6 +15,11 @@ public class LoanProvisioning : AuditableEntity
     public decimal ProvisionAmount { get; set; }
     public decimal PreviousProvision { get; set; }
     public decimal ProvisionMovement { get; set; }
+    
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal ExpectedCreditLoss { get; set; }
+    public DateTime CalculationDate { get; set; }
+    public int Stage { get; set; }
     public string ClassificationCategory { get; set; } = string.Empty; // Performing, NPL, etc.
     public int DaysInArrears { get; set; }
     public string ProvisionBasis { get; set; } = string.Empty; // CBN, IFRS9

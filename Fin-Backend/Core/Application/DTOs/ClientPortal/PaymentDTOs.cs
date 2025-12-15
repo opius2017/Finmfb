@@ -36,6 +36,9 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
         public string IpAddress { get; set; }
         
         public string UserAgent { get; set; }
+
+        // FinTech Best Practice: Transaction reference for tracking
+        public string Reference { get; set; }
     }
 
     public class SaveTransferTemplateDto
@@ -172,5 +175,40 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
         public int Page { get; set; } = 1;
         
         public int PageSize { get; set; } = 20;
+    }
+
+    // Response DTOs
+    public class TransferResult
+    {
+        public bool Success { get; set; }
+        public string ReferenceNumber { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public decimal Amount { get; set; }
+        public string SourceAccountNumber { get; set; }
+        public string DestinationAccountNumber { get; set; }
+        public string Status { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class PaymentResult
+    {
+        public bool Success { get; set; }
+        public string ReferenceNumber { get; set; }
+        public DateTime TransactionDate { get; set; }
+        public decimal Amount { get; set; }
+        public string BillerName { get; set; }
+        public string CustomerReferenceNumber { get; set; }
+        public string Status { get; set; }
+        public string Message { get; set; }
+    }
+
+    public class BillerInfo
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public string LogoUrl { get; set; }
+        public bool RequiresCustomerReference { get; set; }
+        public string ReferenceNumberLabel { get; set; }
     }
 }

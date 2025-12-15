@@ -7,6 +7,8 @@ using FinTech.Core.Domain.Entities;
 using FinTech.Core.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
+using FinTech.Core.Application.Interfaces.Loans;
+
 namespace FinTech.Core.Application.Services.Loans
 {
     /// <summary>
@@ -82,7 +84,8 @@ namespace FinTech.Core.Application.Services.Loans
 
                 result.MembershipDurationCheck = await CheckMembershipDurationAsync(
                     request.MemberId, 
-                    loanProduct.MinimumMembershipMonths ?? DEFAULT_MIN_MEMBERSHIP_MONTHS);
+                    // FinTech Best Practice: MinimumMembershipMonths is non-nullable int
+                    loanProduct.MinimumMembershipMonths > 0 ? loanProduct.MinimumMembershipMonths : DEFAULT_MIN_MEMBERSHIP_MONTHS);
 
                 result.DeductionRateHeadroom = await CalculateDeductionRateHeadroomAsync(
                     request.MemberId,
@@ -148,7 +151,8 @@ namespace FinTech.Core.Application.Services.Loans
                 }
 
                 // Get savings multiplier from loan product (e.g., 2.0 for 200%, 3.0 for 300%, 5.0 for 500%)
-                decimal savingsMultiplier = loanProduct.SavingsMultiplier ?? 2.0m;
+                // FinTech Best Practice: SavingsMultiplier is non-nullable decimal
+                decimal savingsMultiplier = loanProduct.SavingsMultiplier > 0 ? loanProduct.SavingsMultiplier : 2.0m;
                 decimal requiredSavings = requestedAmount / savingsMultiplier;
                 decimal actualMultiplier = member.FreeEquity > 0 ? requestedAmount / member.FreeEquity : 0;
 
@@ -249,7 +253,9 @@ namespace FinTech.Core.Application.Services.Loans
                     tenureMonths);
 
                 // Get current monthly deductions from active loans
-                var activeLoans = await _loanRepository.FindAsync(l => 
+                // FinTech Best Practice: Use GetAllAsync with LINQ instead of FindAsync
+                var allLoans = await _loanRepository.GetAllAsync();
+                var activeLoans = allLoans.Where(l => 
                     l.MemberId == memberId && 
                     l.Status == "ACTIVE");
 
@@ -320,7 +326,9 @@ namespace FinTech.Core.Application.Services.Loans
                     tenureMonths);
 
                 // Get current debt payments
-                var activeLoans = await _loanRepository.FindAsync(l => 
+                // FinTech Best Practice: Use GetAllAsync with LINQ instead of FindAsync
+                var allLoans = await _loanRepository.GetAllAsync();
+                var activeLoans = allLoans.Where(l => 
                     l.MemberId == memberId && 
                     l.Status == "ACTIVE");
 
@@ -379,7 +387,9 @@ namespace FinTech.Core.Application.Services.Loans
                     throw new InvalidOperationException($"Loan product {loanProductId} not found");
                 }
 
-                var activeLoans = await _loanRepository.FindAsync(l => 
+                // FinTech Best Practice: Use GetAllAsync with LINQ instead of FindAsync
+                var allLoans = await _loanRepository.GetAllAsync();
+                var activeLoans = allLoans.Where(l => 
                     l.MemberId == memberId && 
                     l.Status == "ACTIVE");
 
@@ -404,6 +414,7 @@ namespace FinTech.Core.Application.Services.Loans
                         TotalOutstandingBalance = activeLoans.Sum(l => l.OutstandingBalance),
                         CurrentMonthlyDeductions = activeLoans.Sum(l => l.MonthlyRepaymentAmount),
                         MembershipMonths = (int)((DateTime.UtcNow - member.MembershipStartDate).TotalDays / 30.44),
+                        // FinTech Best Practice: RepaymentScore is nullable string, use null-coalescing
                         RepaymentScore = member.RepaymentScore ?? "N/A"
                     }
                 };
@@ -448,12 +459,14 @@ namespace FinTech.Core.Application.Services.Loans
                 };
 
                 // 1. Savings-based limit
-                decimal savingsMultiplier = loanProduct.SavingsMultiplier ?? 2.0m;
+                decimal savingsMultiplier = loanProduct.SavingsMultiplier;
                 result.SavingsBasedLimit = member.FreeEquity * savingsMultiplier;
                 result.Constraints.Add($"Savings limit: ₦{result.SavingsBasedLimit:N2} (Free equity ₦{member.FreeEquity:N2} × {savingsMultiplier})");
 
                 // 2. Income-based limit (deduction rate)
-                var activeLoans = await _loanRepository.FindAsync(l => 
+                // FinTech Best Practice: Use GetAllAsync with LINQ instead of FindAsync
+                var allLoans = await _loanRepository.GetAllAsync();
+                var activeLoans = allLoans.Where(l => 
                     l.MemberId == memberId && 
                     l.Status == "ACTIVE");
 
@@ -461,7 +474,8 @@ namespace FinTech.Core.Application.Services.Loans
                 decimal availableForDeduction = (member.MonthlySalary * (DEFAULT_MAX_DEDUCTION_RATE / 100)) - currentMonthlyDeductions;
                 
                 // Calculate max loan based on available deduction capacity
-                int defaultTenure = loanProduct.MaxTenureMonths ?? 12;
+                // FinTech Best Practice: MaxTenureMonths is non-nullable NotMapped property
+                int defaultTenure = loanProduct.MaxTenureMonths > 0 ? loanProduct.MaxTenureMonths : 12;
                 result.IncomeBasedLimit = CalculateMaxLoanFromEMI(availableForDeduction, loanProduct.InterestRate, defaultTenure);
                 result.Constraints.Add($"Income limit: ₦{result.IncomeBasedLimit:N2} (Based on {DEFAULT_MAX_DEDUCTION_RATE}% deduction rate)");
 
@@ -571,11 +585,14 @@ namespace FinTech.Core.Application.Services.Loans
             var criteria = new List<EligibilityCriterion>();
 
             // Savings criterion
-            decimal requiredSavings = maxEligible.MaximumAmount / (loanProduct.SavingsMultiplier ?? 2.0m);
+            // FinTech Best Practice: SavingsMultiplier is non-nullable decimal
+            decimal savingsMultiplier = loanProduct.SavingsMultiplier > 0 ? loanProduct.SavingsMultiplier : 2.0m;
+            decimal requiredSavings = maxEligible.MaximumAmount / savingsMultiplier;
             criteria.Add(new EligibilityCriterion
             {
                 Name = "Savings Requirement",
-                Description = $"Free equity must support loan amount (multiplier: {loanProduct.SavingsMultiplier ?? 2.0m}x)",
+                // FinTech Best Practice: SavingsMultiplier is non-nullable
+                Description = $"Free equity must support loan amount (multiplier: {savingsMultiplier}x)",
                 Passed = member.FreeEquity >= requiredSavings,
                 Status = member.FreeEquity >= requiredSavings ? "PASSED" : "FAILED",
                 Details = $"Free Equity: ₦{member.FreeEquity:N2}, Required: ₦{requiredSavings:N2}"
@@ -583,7 +600,8 @@ namespace FinTech.Core.Application.Services.Loans
 
             // Membership duration criterion
             int membershipMonths = (int)((DateTime.UtcNow - member.MembershipStartDate).TotalDays / 30.44);
-            int requiredMonths = loanProduct.MinimumMembershipMonths ?? DEFAULT_MIN_MEMBERSHIP_MONTHS;
+            // FinTech Best Practice: MinimumMembershipMonths is non-nullable int
+            int requiredMonths = loanProduct.MinimumMembershipMonths > 0 ? loanProduct.MinimumMembershipMonths : DEFAULT_MIN_MEMBERSHIP_MONTHS;
             criteria.Add(new EligibilityCriterion
             {
                 Name = "Membership Duration",

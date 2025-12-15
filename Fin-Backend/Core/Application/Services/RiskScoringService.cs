@@ -23,7 +23,7 @@ namespace FinTech.Core.Application.Services
 
         public async Task<RiskProfileDto> ScoreCustomerRiskAsync(Guid customerId)
         {
-            var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.Id == customerId);
+            var customer = await _dbContext.Customers.FirstOrDefaultAsync(c => c.Id == customerId.ToString());
             if (customer == null)
                 throw new KeyNotFoundException($"Customer {customerId} not found");
 

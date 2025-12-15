@@ -20,6 +20,12 @@ namespace FinTech.Core.Application
             services.AddScoped<ILoanCollateralService, LoanCollateralService>();
             services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
             services.AddScoped<ILoanProvisioningService, LoanProvisioningService>();
+            services.AddScoped<IGuarantorService, GuarantorService>();
+            services.AddScoped<ILoanCalculatorService, LoanCalculatorService>();
+            services.AddScoped<ILoanRegisterService, LoanRegisterService>();
+            services.AddScoped<ILoanEligibilityService, LoanEligibilityService>();
+            services.AddScoped<ILoanCommitteeService, LoanCommitteeService>();
+            services.AddScoped<IMonthlyThresholdService, MonthlyThresholdService>();
             
             // NOTE: Repository registrations moved to Infrastructure layer to maintain Clean Architecture
             // services.AddScoped<ILoanApplicationRepository, LoanApplicationRepository>();

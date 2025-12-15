@@ -26,7 +26,7 @@ namespace FinTech.Core.Application.Mappings
                     .Condition((src, dest, srcMember) => srcMember != null));
             
             // Session Mappings
-            CreateMap<ClientPortalSession, ClientPortalSessionDto>();
+            CreateMap<ClientSession, ClientPortalSessionDto>();
             CreateMap<ClientPortalActivity, ClientPortalActivityDto>();
             
             // Document Mappings

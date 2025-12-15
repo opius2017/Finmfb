@@ -1,9 +1,9 @@
 using FinTech.Core.Application.Common.Interfaces;
-using FinTech.Core.Application.Services;
+using FinTech.Core.Application.Interfaces;
 using FinTech.Infrastructure.Services;
-using FinTech.WebAPI.Application.Interfaces;
-using FinTech.WebAPI.Infrastructure.Services;
+using FinTech.Core.Application.Interfaces.Services; // For IMfaProviderNotificationService if needed? No, likely IMfaNotificationService which is in Interfaces.
 using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Infrastructure
@@ -14,7 +14,7 @@ namespace FinTech.Infrastructure
         {
             // Register notification services
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<FinTech.Core.Application.Interfaces.IEmailService, FinTech.Infrastructure.Services.EmailService>();
             services.AddScoped<ISmsService, SmsService>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
             

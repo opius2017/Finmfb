@@ -7,11 +7,11 @@ public class UserRole : BaseEntity
 {
     [Required]
     public Guid UserId { get; set; }
-    public virtual ApplicationUser User { get; set; } = null!;
+    public virtual ApplicationUser? User { get; set; }
     
     [Required]
     public Guid RoleId { get; set; }
-    public virtual Role Role { get; set; } = null!;
+    public virtual Role? Role { get; set; }
     
     [Required]
     public bool IsActive { get; set; } = true;

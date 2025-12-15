@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Entities.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
@@ -13,32 +14,40 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Reference to the report submission
         /// </summary>
-        public int RegulatoryReportSubmissionId { get; set; }
+        public string RegulatoryReportSubmissionId { get; set; } = string.Empty;
+        
+        [NotMapped]
+        public string SubmissionId { get => RegulatoryReportSubmissionId; set => RegulatoryReportSubmissionId = value; }
+        
+        public string? ExceptionReason { get; set; }
         
         /// <summary>
         /// Navigation property for the report submission
         /// </summary>
-        public virtual RegulatoryReportSubmission Submission { get; set; }
+        public virtual RegulatoryReportSubmission? Submission { get; set; }
         
         /// <summary>
         /// Section code from the template
         /// </summary>
-        public string SectionCode { get; set; }
+        public string SectionCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Section name from the template
         /// </summary>
-        public string SectionName { get; set; }
+        public string SectionName { get; set; } = string.Empty;
         
         /// <summary>
         /// Field code from the template
         /// </summary>
-        public string FieldCode { get; set; }
+        public string FieldCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Field name from the template
         /// </summary>
-        public string FieldName { get; set; }
+        public string FieldName { get; set; } = string.Empty;
+        
+        public string FieldId { get; set; } = string.Empty;
+        public virtual RegulatoryReportField? Field { get; set; }
         
         /// <summary>
         /// Row index for tabular data
@@ -53,12 +62,14 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Raw data value in string format
         /// </summary>
-        public string RawValue { get; set; }
+        public string RawValue { get; set; } = string.Empty;
+        [NotMapped]
+        public string Value { get => RawValue; set => RawValue = value; }
         
         /// <summary>
         /// Data type of the value (e.g., string, number, date, boolean)
         /// </summary>
-        public string DataType { get; set; }
+        public string DataType { get; set; } = string.Empty;
         
         /// <summary>
         /// Numeric value for calculations
@@ -78,21 +89,23 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Calculation formula if applicable
         /// </summary>
-        public string CalculationFormula { get; set; }
+        public string? CalculationFormula { get; set; }
         
         /// <summary>
         /// JSON metadata about the field
         /// </summary>
-        public string Metadata { get; set; }
+        public string? Metadata { get; set; }
         
         /// <summary>
         /// Comments about this specific data point
         /// </summary>
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
         
         /// <summary>
         /// Whether this data point has validation errors
         /// </summary>
         public bool HasValidationErrors { get; set; }
+        [NotMapped]
+        public bool HasException { get => HasValidationErrors; set => HasValidationErrors = value; }
     }
 }

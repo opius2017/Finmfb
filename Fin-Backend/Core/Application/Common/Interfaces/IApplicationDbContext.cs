@@ -13,9 +13,12 @@ using FinTech.Core.Domain.Entities.Inventory;
 using FinTech.Core.Domain.Entities.Payroll;
 using FinTech.Core.Domain.Entities.Security;
 using FinTech.Core.Domain.Entities.Reporting;
-using FinTech.Core.Domain.Entities.MultiCurrency;
+using FinTech.Core.Domain.Entities.RegulatoryReporting;
+using RegulatoryReport = FinTech.Core.Domain.Entities.RegulatoryReporting.RegulatoryReport;
+using FinTech.Core.Domain.Entities.Currency;
 using FinTech.Core.Domain.Entities.FixedAssets;
 using FinTech.Core.Domain.Entities.ClientPortal;
+using FinTech.Core.Domain.Entities.Tax;
 
 namespace FinTech.Core.Application.Common.Interfaces;
 
@@ -54,6 +57,10 @@ public interface IApplicationDbContext
     DbSet<LoanRepaymentSchedule> LoanRepaymentSchedules { get; }
     DbSet<LoanCollateral> LoanCollaterals { get; }
     DbSet<LoanGuarantor> LoanGuarantors { get; }
+    DbSet<LoanDocument> LoanDocuments { get; }
+    DbSet<LoanFee> LoanFees { get; }
+    DbSet<LoanCollection> LoanCollections { get; }
+    DbSet<LoanCreditCheck> LoanCreditChecks { get; }
 
     // Accounts Payable - Using APVendor alias for AccountsPayable.Vendor
     DbSet<APVendor> Vendors { get; }
@@ -84,10 +91,15 @@ public interface IApplicationDbContext
     // Reporting
     DbSet<FinancialStatement> FinancialStatements { get; }
     DbSet<RegulatoryReport> RegulatoryReports { get; }
+    DbSet<RegulatoryReportSubmission> RegulatoryReportSubmissions { get; }
+    DbSet<RegulatoryReportData> RegulatoryReportData { get; }
+    DbSet<RegulatoryReportValidation> RegulatoryReportValidations { get; }
+    DbSet<RegulatoryReportSchedule> RegulatoryReportSchedules { get; }
 
     // Multi-Currency
     DbSet<ExchangeRate> ExchangeRates { get; }
     DbSet<CurrencyRevaluation> CurrencyRevaluations { get; }
+    DbSet<FinTech.Core.Domain.Entities.Currency.Currency> Currencies { get; } // Added
     
     // Fixed Assets
     DbSet<Asset> Assets { get; }
@@ -104,7 +116,13 @@ public interface IApplicationDbContext
     DbSet<ClientPortalProfile> ClientPortalProfiles { get; }
     DbSet<NotificationPreferences> NotificationPreferences { get; }
     DbSet<DashboardPreferences> DashboardPreferences { get; }
-    DbSet<ClientPortalSession> ClientPortalSessions { get; }
+    DbSet<ClientSession> ClientSessions { get; }
+    DbSet<ClientDevice> ClientDevices { get; }
+    DbSet<Biller> Billers { get; }
+    DbSet<BillPayment> BillPayments { get; }
+    DbSet<ExternalTransfer> ExternalTransfers { get; }
+    DbSet<RecurringPayment> RecurringPayments { get; }
+
     DbSet<ClientPortalActivity> ClientPortalActivities { get; }
     DbSet<SavedPayee> SavedPayees { get; }
     DbSet<SavedTransferTemplate> SavedTransferTemplates { get; }
@@ -115,6 +133,26 @@ public interface IApplicationDbContext
     DbSet<SavingsGoal> SavingsGoals { get; }
     DbSet<SavingsGoalTransaction> SavingsGoalTransactions { get; }
     DbSet<ClientNotification> ClientNotifications { get; }
+    DbSet<NotificationTemplate> NotificationTemplates { get; }
+    DbSet<NotificationDeliveryRecord> NotificationDeliveryRecords { get; }
+    DbSet<LoanApplicationRequest> LoanApplicationRequests { get; }
+
+    // FinTech Best Practice: Knowledge Base and FAQ support
+    DbSet<KnowledgeBaseArticle> KnowledgeBaseArticles { get; }
+    DbSet<KnowledgeBaseCategory> KnowledgeBaseCategories { get; }
+    DbSet<FrequentlyAskedQuestion> FrequentlyAskedQuestions { get; }
+
+
+    // Tax
+    DbSet<TaxTransaction> TaxTransactions { get; }
+    DbSet<TaxType> TaxTypes { get; }
+    DbSet<TaxRate> TaxRates { get; }
+    DbSet<TaxExemption> TaxExemptions { get; }
+
+    // Regulatory Reporting Templates
+    DbSet<RegulatoryReportTemplate> RegulatoryReportTemplates { get; }
+    DbSet<RegulatoryReportSection> RegulatoryReportSections { get; }
+    DbSet<RegulatoryReportField> RegulatoryReportFields { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

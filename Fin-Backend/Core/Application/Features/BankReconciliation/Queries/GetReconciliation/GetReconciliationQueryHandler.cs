@@ -21,7 +21,7 @@ public class GetReconciliationQueryHandler : IRequestHandler<GetReconciliationQu
 
         if (reconciliation == null)
         {
-            return Result<ReconciliationDetailDto>.Failure(
+            return Result.Failure<ReconciliationDetailDto>(
                 Error.NotFound("Reconciliation.NotFound", "Bank reconciliation not found"));
         }
 

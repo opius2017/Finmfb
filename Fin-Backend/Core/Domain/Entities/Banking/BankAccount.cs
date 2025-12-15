@@ -8,13 +8,13 @@ namespace FinTech.Core.Domain.Entities.Banking
 {
     public class BankAccount : AggregateRoot
     {
-        public string AccountNumber { get; private set; } = null!;
-        public string AccountName { get; private set; } = null!;
+        public string AccountNumber { get; private set; } = string.Empty;
+        public string AccountName { get; private set; } = string.Empty;
         public decimal Balance { get; private set; }
-        public string AccountType { get; private set; } = null!;
+        public string AccountType { get; private set; } = string.Empty;
         public bool IsActive { get; private set; }
         public int CustomerId { get; private set; }
-        public string Currency { get; private set; } = null!;
+        public string Currency { get; private set; } = string.Empty;
         public virtual ICollection<Transaction> Transactions { get; private set; } = new List<Transaction>();
 
         private BankAccount() { } // For EF Core

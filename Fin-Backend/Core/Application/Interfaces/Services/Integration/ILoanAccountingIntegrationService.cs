@@ -1,13 +1,17 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
+using FinTech.Core.Domain.Entities.Loans;
 
-namespace FinTech.Core.Application.Services.Integration
+namespace FinTech.Core.Application.Interfaces.Services.Integration
 {
     public interface ILoanAccountingIntegrationService
     {
-        Task ProcessLoanDisbursementAsync(int loanId, decimal amount, string reference, string description);
-        Task ProcessLoanRepaymentAsync(int loanId, decimal principalAmount, decimal interestAmount, string reference, string description);
-        Task ProcessLoanWriteOffAsync(int loanId, decimal amount, string reference, string description);
-        Task ProcessLoanInterestAccrualAsync(int loanId, decimal amount, string reference, string description);
-        Task ProcessLoanFeeChargeAsync(int loanId, decimal amount, string feeType, string reference, string description);
+        Task ProcessLoanDisbursementAsync(LoanAccount loanAccount, LoanTransaction transaction, string tenantId, CancellationToken cancellationToken);
+        Task ProcessLoanRepaymentAsync(LoanAccount loanAccount, LoanTransaction transaction, string tenantId, CancellationToken cancellationToken);
+        Task ProcessInterestAccrualAsync(IEnumerable<LoanAccount> loanAccounts, DateTime accrualDate, string tenantId, CancellationToken cancellationToken);
+        Task ProcessLoanWriteOffAsync(LoanAccount loanAccount, decimal writeOffAmount, string tenantId, CancellationToken cancellationToken);
+        Task ProcessLoanFeeChargeAsync(LoanAccount loanAccount, decimal feeAmount, string feeType, string tenantId, CancellationToken cancellationToken);
     }
 }

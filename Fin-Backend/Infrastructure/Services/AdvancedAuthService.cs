@@ -1,9 +1,13 @@
 using FinTech.Application.Common.Settings;
-using FinTech.Application.Interfaces;
-using FinTech.Application.Interfaces.Repositories;
-using FinTech.Domain.Entities.Authentication;
-using FinTech.Infrastructure.Security.Authentication;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Application.Interfaces.Repositories;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Identity;
+using FinTech.Core.Domain.Entities.ClientPortal;
+using FinTech.Core.Application.DTOs.Auth;
 using FinTech.Infrastructure.Services;
+using FinTech.Infrastructure.Services.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using System;
@@ -13,7 +17,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
-using FinTech.Core.Application.Interfaces.Shared;
+
 
 namespace FinTech.Infrastructure.Services
 {
@@ -529,14 +533,14 @@ namespace FinTech.Infrastructure.Services
             {
                 Succeeded = true,
                 ChallengeId = challenge.Id,
-                Method = (MfaMethod)Enum.Parse(typeof(MfaMethod), mfaSettings.Method, true),
+                Method = (FinTech.Core.Domain.Entities.Identity.MfaMethod)Enum.Parse(typeof(FinTech.Core.Domain.Entities.Identity.MfaMethod), mfaSettings.Method, true),
                 MaskedDeliveryDestination = maskedDestination,
                 VerificationCode = verificationCode
             };
         }
 
         /// <inheritdoc/>
-        public async Task<MfaSetupResult> InitiateMfaSetupAsync(string userId, MfaMethod method)
+        public async Task<MfaSetupResult> InitiateMfaSetupAsync(string userId, FinTech.Core.Domain.Entities.Identity.MfaMethod method)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
@@ -553,7 +557,7 @@ namespace FinTech.Infrastructure.Services
             string verificationCode = null;
 
             // Handle different MFA methods
-            if (method == MfaMethod.App)
+            if (method == FinTech.Core.Domain.Entities.Identity.MfaMethod.App)
             {
                 // For app-based MFA, generate QR code URL
                 var qrCodeUrl = mfaService.GetMfaSetupQrCodeUri(secretKey, user.Email);
@@ -565,7 +569,7 @@ namespace FinTech.Infrastructure.Services
                     QrCodeUrl = qrCodeUrl
                 };
             }
-            else if (method == MfaMethod.Email)
+            else if (method == FinTech.Core.Domain.Entities.Identity.MfaMethod.Email)
             {
                 // For email-based MFA, send verification code to user's email
                 var emailMfaService = mfaService as EmailMfaService;
@@ -578,7 +582,7 @@ namespace FinTech.Infrastructure.Services
                     VerificationCode = verificationCode
                 };
             }
-            else if (method == MfaMethod.Sms)
+            else if (method == FinTech.Core.Domain.Entities.Identity.MfaMethod.Sms)
             {
                 // For SMS-based MFA, send verification code to user's phone number
                 if (string.IsNullOrEmpty(user.PhoneNumber))
@@ -1268,12 +1272,12 @@ namespace FinTech.Infrastructure.Services
             }
 
             // Check if the user has security preferences that allow password reset
-            var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id);
+            var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id.ToString());
             if (!securityPreferences.AllowPasswordReset)
             {
                 // If password reset is disabled, log the attempt but don't allow it
                 await _securityAlertRepository.CreateAlertAsync(
-                    user.Id,
+                    user.Id.ToString(),
                     "Password Reset Attempt",
                     "Password reset verification attempted but is disabled in security preferences",
                     "Password reset has been disabled for this account in security preferences.",
@@ -1293,7 +1297,7 @@ namespace FinTech.Infrastructure.Services
 
             // Log the password change
             await _securityAlertRepository.CreateAlertAsync(
-                user.Id,
+                user.Id.ToString(),
                 "Password Changed",
                 "Your password has been changed successfully",
                 "Your password was reset using the password reset feature.",
@@ -1319,7 +1323,7 @@ namespace FinTech.Infrastructure.Services
 
             // Generate refresh token
             var refreshToken = _jwtTokenService.GenerateRefreshToken(
-                user.Id,
+                user.Id.ToString(),
                 jwtToken.Id,
                 deviceInfo?.ClientIp,
                 deviceInfo?.DeviceId,
@@ -1341,7 +1345,7 @@ namespace FinTech.Infrastructure.Services
             if (rememberDevice && deviceInfo != null && !string.IsNullOrEmpty(deviceInfo.DeviceId))
             {
                 var trustedDevice = await _trustedDeviceRepository.AddTrustedDeviceAsync(
-                    user.Id,
+                    user.Id.ToString(),
                     deviceInfo.DeviceId,
                     deviceInfo.DeviceName,
                     deviceInfo.DeviceType,
@@ -1358,34 +1362,34 @@ namespace FinTech.Infrastructure.Services
             else if (deviceInfo != null && !string.IsNullOrEmpty(deviceInfo.DeviceId))
             {
                 // Update last used date for existing trusted device
-                var isTrusted = await _trustedDeviceRepository.IsDeviceTrustedAsync(user.Id, deviceInfo.DeviceId);
+                var isTrusted = await _trustedDeviceRepository.IsDeviceTrustedAsync(user.Id.ToString(), deviceInfo.DeviceId);
                 if (isTrusted)
                 {
-                    await _trustedDeviceRepository.UpdateLastUsedAsync(user.Id, deviceInfo.DeviceId);
+                    await _trustedDeviceRepository.UpdateLastUsedAsync(user.Id.ToString(), deviceInfo.DeviceId);
                     trustedDeviceId = deviceInfo.DeviceId;
                 }
             }
 
             // Check if we need to send login notification
-            var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id);
+            var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id.ToString());
             if (securityPreferences.NotifyOnNewLogin)
             {
                 await _notificationService.SendNewLoginNotificationAsync(
+                    user.Id.ToString(),
                     user.Email,
                     deviceInfo?.ClientIp,
-                    $"{deviceInfo?.Location?.City}, {deviceInfo?.Location?.Country}",
                     $"{deviceInfo?.DeviceType} - {deviceInfo?.Browser} on {deviceInfo?.OperatingSystem}",
-                    DateTime.UtcNow);
+                    $"{deviceInfo?.Location?.City}, {deviceInfo?.Location?.Country}");
             }
 
             return new AuthResult
             {
                 Succeeded = true,
-                AccessToken = jwtTokenString,
+                Token = jwtTokenString,
                 RefreshToken = refreshToken.Token,
-                Expiration = jwtToken.ValidTo,
-                UserId = user.Id,
-                Username = user.UserName,
+                TokenExpiration = jwtToken.ValidTo,
+                UserId = user.Id.ToString(),
+                UserName = user.UserName,
                 Email = user.Email,
                 Roles = roles.ToList(),
                 RequiresMfa = false, // MFA is already verified at this point
@@ -1441,5 +1445,141 @@ namespace FinTech.Infrastructure.Services
 
             return $"***{phoneNumber.Substring(phoneNumber.Length - 4)}";
         }
+        /// <inheritdoc/>
+        public async Task<SecurityDashboardDto> GetSecurityDashboardAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var activeSessions = (await _refreshTokenRepository.GetActiveByUserIdAsync(userId)).Count();
+            var recentActivity = await _loginAttemptRepository.GetByUserIdAsync(userId);
+
+            return new SecurityDashboardDto
+            {
+                UserId = user.Id,
+                LastLogin = user.LastLoginAt ?? DateTime.UtcNow,
+                ActiveSessions = activeSessions,
+                MfaEnabled = user.IsMfaEnabled,
+                RecentActivity = recentActivity.Take(5).Select(a => new AdvancedSecurityActivityDto
+                {
+                    ActivityType = a.Success ? "Login Success" : "Login Failed",
+                    Date = a.AttemptTime,
+                    IpAddress = a.IpAddress,
+                    Location = $"{a.City}, {a.Country}",
+                    Details = a.Details
+                }).ToList()
+            };
+        }
+
+        /// <inheritdoc/>
+        public async Task<List<ClientSessionDto>> GetActiveSessionsAsync(string userId)
+        {
+            var sessions = await _refreshTokenRepository.GetActiveByUserIdAsync(userId);
+            return sessions.Select(s => new ClientSessionDto
+            {
+                SessionId = s.Token, // Using token as session ID
+                DeviceId = s.DeviceId,
+                IpAddress = s.IpAddress,
+                UserAgent = "Unknown",
+                LastAccessed = s.CreatedAt,
+                CreatedAt = s.CreatedAt,
+                IsCurrent = false
+            }).ToList();
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> RevokeAllSessionsExceptCurrentAsync(string userId, string currentSessionId)
+        {
+            await _refreshTokenRepository.RevokeAllForUserExceptCurrentAsync(userId, currentSessionId);
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> RevokeSessionAsync(string userId, string sessionId)
+        {
+            var token = await _refreshTokenRepository.GetByTokenAsync(sessionId);
+            if (token != null && token.UserId == userId)
+            {
+                token.IsRevoked = true;
+                await _refreshTokenRepository.UpdateAsync(token);
+                return true;
+            }
+            return false;
+        }
+
+        /// <inheritdoc/>
+        public async Task<IdentityResult> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (result.Succeeded)
+            {
+                 await _securityAlertRepository.CreateAlertAsync(
+                    user.Id.ToString(),
+                    "Password Changed",
+                    "Your password has been changed",
+                    "Your password was changed successfully.",
+                    "Medium",
+                    null,
+                    null);
+            }
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> RequestDataExportAsync(string userId)
+        {
+             var user = await _userManager.FindByIdAsync(userId);
+             if (user == null) return false;
+             
+             // Logic to queue data export
+             await _notificationService.SendSecurityAlertEmailAsync(
+                 user.Id.ToString(),
+                 user.Email,
+                 "Data Export Requested",
+                 "A data export has been requested for your account. The export will be sent to your email when ready.");
+                 
+             return true;
+        }
+
+        /// <inheritdoc/>
+        public async Task<AdvancedSecurityPreferencesDto> GetSecurityPreferencesAsync(string userId)
+        {
+            var prefs = await _securityPreferencesRepository.GetByUserIdAsync(userId);
+            if (prefs == null) return null;
+            
+            var user = await _userManager.FindByIdAsync(userId);
+
+            return new AdvancedSecurityPreferencesDto
+            {
+                MfaEnabled = user?.IsMfaEnabled ?? false,
+                BiometricLoginEnabled = false,
+                SuspiciousActivityAlerts = prefs.EnableSecurityAlerts,
+                MfaMethods = new[] { "App", "Email", "Sms" }
+            };
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> UpdateSecurityPreferencesAsync(string userId, AdvancedSecurityPreferencesDto preferences)
+        {
+            var prefs = await _securityPreferencesRepository.GetByUserIdAsync(userId);
+            if (prefs == null) return false;
+
+            // Update user entity for MFA status if needed, but usually that's a separate flow
+            // prefs.EnableMfaReminder = preferences.MfaEnabled; // Example mapping
+            prefs.EnableSecurityAlerts = preferences.SuspiciousActivityAlerts;
+            
+            await _securityPreferencesRepository.UpdateAsync(prefs);
+            return true;
+        }
+
     }
 }

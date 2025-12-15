@@ -4,8 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
 using FinTech.Core.Domain.Entities.Loans;
+using FinTech.Core.Domain.Enums.Loans;
 using FinTech.Core.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
+using FinTech.Core.Application.Interfaces.Loans;
 
 namespace FinTech.Core.Application.Services.Loans
 {
@@ -63,34 +67,23 @@ namespace FinTech.Core.Application.Services.Loans
                     $"Threshold cannot exceed ₦{MAX_THRESHOLD_LIMIT:N2}", nameof(maxLoanAmount));
 
             // Check if threshold already exists
-            var existing = (await _thresholdRepository.GetAllAsync())
-                .FirstOrDefault(t => t.Month == month && t.Year == year);
+            var existing = await _thresholdRepository.GetAll()
+                .FirstOrDefaultAsync(t => t.Month == month && t.Year == year);
 
             if (existing != null)
             {
                 // Update existing threshold
-                existing.MaxLoanAmount = maxLoanAmount;
-                existing.RemainingAmount = maxLoanAmount - existing.TotalDisbursed;
-                existing.UpdatedAt = DateTime.UtcNow;
-                existing.UpdatedBy = setBy;
+                existing.UpdateMaximumAmount(maxLoanAmount);
+                existing.LastModifiedBy = setBy;
 
                 await _thresholdRepository.UpdateAsync(existing);
             }
             else
             {
                 // Create new threshold
-                var threshold = new MonthlyThreshold
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Month = month,
-                    Year = year,
-                    MaxLoanAmount = maxLoanAmount,
-                    TotalDisbursed = 0,
-                    RemainingAmount = maxLoanAmount,
-                    IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedBy = setBy
-                };
+                var threshold = new MonthlyThreshold(year, month, maxLoanAmount);
+                threshold.CreatedBy = setBy;
+                threshold.CreatedAt = DateTime.UtcNow;
 
                 await _thresholdRepository.AddAsync(threshold);
                 existing = threshold;
@@ -108,7 +101,7 @@ namespace FinTech.Core.Application.Services.Loans
                 Month = month,
                 Year = year,
                 MaxLoanAmount = maxLoanAmount,
-                TotalDisbursed = existing.TotalDisbursed,
+                TotalDisbursed = existing.AllocatedAmount,
                 RemainingAmount = existing.RemainingAmount,
                 Message = "Monthly threshold set successfully"
             };
@@ -140,8 +133,8 @@ namespace FinTech.Core.Application.Services.Loans
             // Get threshold for the month
             var threshold = await GetOrCreateThresholdAsync(month, year);
 
-            result.MaxLoanAmount = threshold.MaxLoanAmount;
-            result.TotalDisbursed = threshold.TotalDisbursed;
+            result.MaxLoanAmount = threshold.MaximumAmount;
+            result.TotalDisbursed = threshold.AllocatedAmount;
             result.RemainingAmount = threshold.RemainingAmount;
 
             // Check if amount fits within remaining threshold
@@ -207,17 +200,16 @@ namespace FinTech.Core.Application.Services.Loans
             }
 
             // Update threshold
+            // Update threshold
             var threshold = await GetOrCreateThresholdAsync(allocatedMonth, allocatedYear);
-            threshold.TotalDisbursed += loanAmount;
-            threshold.RemainingAmount -= loanAmount;
-            threshold.UpdatedAt = DateTime.UtcNow;
+            threshold.AllocateAmount(loanAmount);
 
             await _thresholdRepository.UpdateAsync(threshold);
 
             // Update application with queued month if not current month
             if (allocatedMonth != currentMonth || allocatedYear != currentYear)
             {
-                application.CommitteeReviewStatus = "QUEUED";
+                application.InternalNotes = $"Queued for {allocatedMonth}/{allocatedYear}";
                 application.UpdatedAt = DateTime.UtcNow;
                 await _loanApplicationRepository.UpdateAsync(application);
             }
@@ -255,10 +247,7 @@ namespace FinTech.Core.Application.Services.Loans
                 loanAmount, month, year);
 
             var threshold = await GetOrCreateThresholdAsync(month, year);
-
-            threshold.TotalDisbursed -= loanAmount;
-            threshold.RemainingAmount += loanAmount;
-            threshold.UpdatedAt = DateTime.UtcNow;
+            threshold.ReleaseAmount(loanAmount);
 
             await _thresholdRepository.UpdateAsync(threshold);
             await _unitOfWork.SaveChangesAsync();
@@ -277,19 +266,28 @@ namespace FinTech.Core.Application.Services.Loans
             {
                 Month = month,
                 Year = year,
-                MaxLoanAmount = threshold.MaxLoanAmount,
-                TotalDisbursed = threshold.TotalDisbursed,
+                MaxLoanAmount = threshold.MaximumAmount,
+                TotalDisbursed = threshold.AllocatedAmount,
                 RemainingAmount = threshold.RemainingAmount,
-                UtilizationPercentage = threshold.MaxLoanAmount > 0
-                    ? Math.Round((threshold.TotalDisbursed / threshold.MaxLoanAmount) * 100, 2)
-                    : 0,
-                IsActive = threshold.IsActive
+                UtilizationPercentage = threshold.GetUtilizationPercentage(),
+                IsActive = threshold.Status == ThresholdStatus.Open
             };
 
             // Get queued applications for this month
             info.QueuedApplicationsCount = await GetQueuedApplicationsCountAsync(month, year);
 
             return info;
+        }
+
+        // FinTech Best Practice: Helper method to get queued applications count
+        private async Task<int> GetQueuedApplicationsCountAsync(int month, int year)
+        {
+            var applications = await _loanApplicationRepository.GetAllAsync();
+            return applications.Count(a => 
+                a.Status == LoanApplicationStatus.Approved && // FinTech Best Practice: Compare enum to enum
+                a.ApprovedDate.HasValue &&
+                a.ApprovedDate.Value.Month == month && 
+                a.ApprovedDate.Value.Year == year);
         }
 
         /// <summary>
@@ -312,11 +310,12 @@ namespace FinTech.Core.Application.Services.Loans
             };
 
             // Get queued applications for this month
-            var queuedApplications = (await _loanApplicationRepository.GetAllAsync())
-                .Where(a => a.CommitteeReviewStatus == "QUEUED" &&
-                           a.ApplicationStatus == "APPROVED")
-                .OrderBy(a => a.ApprovedAt)
-                .ToList();
+            var queuedApplications = await _loanApplicationRepository.GetAll()
+                .Where(a => a.InternalNotes != null && a.InternalNotes.Contains("Queued") &&
+                           a.Status == LoanApplicationStatus.Approved)
+                .ToListAsync();
+            
+            queuedApplications = queuedApplications.OrderBy(a => a.ApprovedDate).ToList();
 
             var threshold = await GetOrCreateThresholdAsync(currentMonth, currentYear);
 
@@ -325,7 +324,7 @@ namespace FinTech.Core.Application.Services.Loans
                 if (application.ApprovedAmount <= threshold.RemainingAmount)
                 {
                     // Process application
-                    application.CommitteeReviewStatus = "READY_FOR_DISBURSEMENT";
+                    application.InternalNotes = "Released from queue - Ready for disbursement";
                     application.UpdatedAt = DateTime.UtcNow;
                     await _loanApplicationRepository.UpdateAsync(application);
 
@@ -356,9 +355,7 @@ namespace FinTech.Core.Application.Services.Loans
             // Check current month threshold
             var threshold = await GetOrCreateThresholdAsync(currentMonth, currentYear);
 
-            decimal utilizationPercentage = threshold.MaxLoanAmount > 0
-                ? (threshold.TotalDisbursed / threshold.MaxLoanAmount) * 100
-                : 0;
+            decimal utilizationPercentage = threshold.GetUtilizationPercentage();
 
             if (utilizationPercentage >= 90)
             {
@@ -386,28 +383,74 @@ namespace FinTech.Core.Application.Services.Loans
             return alerts;
         }
 
+        /// <summary>
+        /// Gets queued applications for a specific month
+        /// </summary>
+        public async Task<List<QueuedLoanApplicationDto>> GetQueuedApplicationsAsync(int month, int year)
+        {
+            var result = new List<QueuedLoanApplicationDto>();
+
+            // Get queued applications (Approved but not processed or explicitly Queued)
+            // Logic adapted to find applications queued for the specific month
+            var queuedApps = (await _loanApplicationRepository.GetAllAsync())
+                .Where(a => 
+                    a.Status == LoanApplicationStatus.Approved &&
+                     (a.InternalNotes != null && a.InternalNotes.Contains($"Queued for {month}/{year}"))
+                )
+                .OrderBy(a => a.ApprovedDate)
+                .ToList();
+            
+            // If checking past/present, might also include general queued items?
+            // For now, strict matching based on InternalNotes or ApprovalDate if intended logic was "Approved in that month but blocked"
+            // Infrastructure logic filtered by ApprovalDate.Value.Year/Month.
+            // Let's support both: explicitly queued OR approved in that month.
+            
+            if (!queuedApps.Any())
+            {
+                 queuedApps = (await _loanApplicationRepository.GetAllAsync())
+                    .Where(a => 
+                        a.Status == LoanApplicationStatus.Approved &&
+                        a.ApprovedDate.HasValue &&
+                        a.ApprovedDate.Value.Month == month &&
+                        a.ApprovedDate.Value.Year == year)
+                    .OrderBy(a => a.ApprovedDate)
+                    .ToList();
+            }
+
+            int position = 1;
+            foreach (var app in queuedApps)
+            {
+                var member = await _unitOfWork.Repository<Domain.Entities.Customers.Customer>().GetByIdAsync(app.MemberId); // FinTech Best Practice: Use Customer entity
+
+                result.Add(new QueuedLoanApplicationDto
+                {
+                    ApplicationId = Guid.Parse(app.Id),
+                    ApplicationNumber = app.ApplicationNumber,
+                    MemberId = Guid.Parse(app.CustomerId.ToString()), // Assuming CustomerId maps to MemberId guid
+                    MemberName = member != null ? $"{member.FirstName} {member.LastName}" : $"Member {app.CustomerId}",
+                    RequestedAmount = app.ApprovedAmount ?? app.RequestedAmount,
+                    ApprovedDate = app.ApprovedDate ?? app.SubmittedAt ?? DateTime.UtcNow, // FinTech Best Practice: Handle nullable DateTime
+                    QueuedDate = app.ApprovedDate ?? app.SubmittedAt ?? DateTime.UtcNow, // FinTech Best Practice: Handle nullable DateTime
+                    QueuePosition = position++,
+                    Status = "QUEUED"
+                });
+            }
+
+            return result;
+        }
+
         #region Helper Methods
 
         private async Task<MonthlyThreshold> GetOrCreateThresholdAsync(int month, int year)
         {
-            var threshold = (await _thresholdRepository.GetAllAsync())
-                .FirstOrDefault(t => t.Month == month && t.Year == year);
+            var threshold = await _thresholdRepository.GetAll()
+                .FirstOrDefaultAsync(t => t.Month == month && t.Year == year);
 
             if (threshold == null)
             {
                 // Create default threshold
-                threshold = new MonthlyThreshold
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Month = month,
-                    Year = year,
-                    MaxLoanAmount = MAX_THRESHOLD_LIMIT,
-                    TotalDisbursed = 0,
-                    RemainingAmount = MAX_THRESHOLD_LIMIT,
-                    IsActive = true,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedBy = "SYSTEM"
-                };
+                threshold = new MonthlyThreshold(year, month, MAX_THRESHOLD_LIMIT);
+                threshold.CreatedBy = "SYSTEM";
 
                 await _thresholdRepository.AddAsync(threshold);
                 await _unitOfWork.SaveChangesAsync();
@@ -443,10 +486,81 @@ namespace FinTech.Core.Application.Services.Loans
             return null;
         }
 
-        private async Task<int> GetQueuedApplicationsCountAsync(int month, int year)
+
+
+        public async Task<List<MonthlyThresholdInfo>> GetThresholdHistoryAsync(int year)
         {
-            // TODO: Implement proper queued applications tracking
-            return await Task.FromResult(0);
+            var thresholds = await _thresholdRepository.GetAll()
+                .Where(t => t.Year == year)
+                .OrderBy(t => t.Month)
+                .ToListAsync();
+
+            var result = new List<MonthlyThresholdInfo>();
+            foreach (var t in thresholds)
+            {
+                result.Add(new MonthlyThresholdInfo
+                {
+                    Month = t.Month,
+                    Year = t.Year,
+                    MaxLoanAmount = t.MaximumAmount,
+                    TotalDisbursed = t.AllocatedAmount,
+                    RemainingAmount = t.RemainingAmount,
+                    UtilizationPercentage = t.GetUtilizationPercentage(),
+                    IsActive = t.Status == ThresholdStatus.Open,
+                    // Queued count requires extra query, doing simplified mapping for history list
+                    QueuedApplicationsCount = t.TotalApplicationsQueued
+                });
+            }
+            return result;
+        }
+
+        public async Task<ThresholdUtilizationReport> GetUtilizationReportAsync(int year, int? month = null)
+        {
+             var query = _thresholdRepository.GetAll()
+                .Where(t => t.Year == year);
+            
+            if (month.HasValue)
+            {
+                query = query.Where(t => t.Month == month.Value);
+            }
+            
+            var thresholds = await query.ToListAsync();
+            
+            var report = new ThresholdUtilizationReport
+            {
+                Year = year,
+                Month = month,
+                TotalThresholdAmount = thresholds.Sum(t => t.MaximumAmount),
+                TotalAllocatedAmount = thresholds.Sum(t => t.AllocatedAmount),
+                TotalRemainingAmount = thresholds.Sum(t => t.RemainingAmount),
+                TotalLoansRegistered = thresholds.Sum(t => t.TotalApplicationsRegistered),
+                TotalApplicationsQueued = thresholds.Sum(t => t.TotalApplicationsQueued)
+            };
+            
+            if (report.TotalThresholdAmount > 0)
+            {
+                report.AverageUtilizationPercentage = 
+                    (report.TotalAllocatedAmount / report.TotalThresholdAmount) * 100;
+            }
+            
+            // Monthly breakdown
+            foreach (var threshold in thresholds.OrderBy(t => t.Month))
+            {
+                report.MonthlyBreakdown.Add(new MonthlyUtilization
+                {
+                    Month = threshold.Month,
+                    MonthName = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(threshold.Month),
+                    MaximumAmount = threshold.MaximumAmount,
+                    AllocatedAmount = threshold.AllocatedAmount,
+                    RemainingAmount = threshold.RemainingAmount,
+                    UtilizationPercentage = threshold.GetUtilizationPercentage(),
+                    LoansRegistered = threshold.TotalApplicationsRegistered,
+                    ApplicationsQueued = threshold.TotalApplicationsQueued,
+                    Status = threshold.Status.ToString()
+                });
+            }
+            
+            return report;
         }
 
         #endregion

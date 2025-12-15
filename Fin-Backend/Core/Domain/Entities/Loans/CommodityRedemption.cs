@@ -13,6 +13,10 @@ public class CommodityRedemption : BaseEntity
     [ForeignKey(nameof(Voucher))]
     public Guid VoucherId { get; set; }
 
+    [Required]
+    [StringLength(50)]
+    public string RedemptionNumber { get; set; } = string.Empty;
+
     public CommodityVoucher? Voucher { get; set; }
 
     [Required]
@@ -39,4 +43,17 @@ public class CommodityRedemption : BaseEntity
 
     [StringLength(500)]
     public string? DocumentPath { get; set; }
+
+    // FinTech Best Practice: Additional properties for redemption tracking
+    [NotMapped]
+    public decimal RedemptionAmount { get => RedeemedAmount; set => RedeemedAmount = value; }
+
+    [StringLength(200)]
+    public string? StoreLocation { get; set; }
+
+    [NotMapped]
+    public string? ItemsDescription { get => Items; set => Items = value; }
+
+    [StringLength(50)]
+    public string Status { get; set; } = "PENDING"; // PENDING, APPROVED, COMPLETED, CANCELLED
 }

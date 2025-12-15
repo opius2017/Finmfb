@@ -114,8 +114,11 @@ public class Customer : BaseEntity
     [StringLength(100)]
     public string? NextOfKinRelationship { get; set; }
     
+    
     [Required]
     public Guid TenantId { get; set; }
+
+    public virtual ICollection<CustomerDocument> Documents { get; set; } = new List<CustomerDocument>();
     
     public string GetFullName()
     {

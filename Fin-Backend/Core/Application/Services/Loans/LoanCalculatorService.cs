@@ -4,6 +4,8 @@ using System.Linq;
 using FinTech.Core.Application.DTOs.Loans;
 using Microsoft.Extensions.Logging;
 
+using FinTech.Core.Application.Interfaces.Loans;
+
 namespace FinTech.Core.Application.Services.Loans
 {
     /// <summary>

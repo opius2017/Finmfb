@@ -6,5 +6,6 @@ namespace FinTech.Core.Application.Settings
         public string ApiKey { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string SubscriberId { get; set; } = string.Empty;
     }
 }

@@ -80,9 +80,9 @@ namespace FinTech.Infrastructure.Data.Configurations
         }
     }
     
-    public class ClientPortalSessionConfiguration : IEntityTypeConfiguration<ClientPortalSession>
+    public class ClientSessionConfiguration : IEntityTypeConfiguration<ClientSession>
     {
-        public void Configure(EntityTypeBuilder<ClientPortalSession> builder)
+        public void Configure(EntityTypeBuilder<ClientSession> builder)
         {
             builder.HasKey(s => s.Id);
             

@@ -12,22 +12,22 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The ID of the party (customer or vendor) exempted from tax
         /// </summary>
-        public string PartyId { get; set; }
+        public string PartyId { get; set; } = string.Empty;
         
         /// <summary>
         /// The ID of the tax type this exemption applies to (null for all tax types)
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string? TaxTypeId { get; set; }
         
         /// <summary>
         /// The reason for the exemption
         /// </summary>
-        public string Reason { get; set; }
+        public string Reason { get; set; } = string.Empty;
         
         /// <summary>
         /// The exemption certificate number (if applicable)
         /// </summary>
-        public string ExemptionCertificateNumber { get; set; }
+        public string? ExemptionCertificateNumber { get; set; }
         
         /// <summary>
         /// The start date of the exemption
@@ -47,11 +47,11 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The name of the approving authority
         /// </summary>
-        public string ApprovingAuthority { get; set; }
+        public string? ApprovingAuthority { get; set; }
         
         /// <summary>
         /// Additional notes or comments about the exemption
         /// </summary>
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
     }
 }

@@ -62,8 +62,8 @@ namespace FinTech.Core.Application.Features.Loans.Commands.CreateLoan
             var loan = new Loan
             {
                 LoanNumber = loanNumber,
-                CustomerId = customer.Id.ToString(),
-                LoanProductId = loanProduct.Id,
+                CustomerId = customer.Id,
+                LoanProductId = Guid.Parse(loanProduct.Id),
                 PrincipalAmount = request.LoanAmount,
                 InterestRate = interestRate,
                 TenureMonths = request.TenorInMonths,

@@ -393,19 +393,19 @@ namespace FinTech.Core.Application.Services.Accounting
             
             // Calculate the report totals
             report.TotalAssets = report.Sections
-                .FirstOrDefault(s => s.Category == "Asset")?.Total ?? 0;
+                .FirstOrDefault(s => s.Category == "Asset")?.Total ?? 0m;
                 
             report.TotalLiabilities = report.Sections
-                .FirstOrDefault(s => s.Category == "Liability")?.Total ?? 0;
+                .FirstOrDefault(s => s.Category == "Liability")?.Total ?? 0m;
                 
             report.TotalEquity = report.Sections
-                .FirstOrDefault(s => s.Category == "Equity")?.Total ?? 0;
+                .FirstOrDefault(s => s.Category == "Equity")?.Total ?? 0m;
                 
             report.TotalIncome = report.Sections
-                .FirstOrDefault(s => s.Category == "Income")?.Total ?? 0;
+                .FirstOrDefault(s => s.Category == "Income")?.Total ?? 0m;
                 
             report.TotalExpenses = report.Sections
-                .FirstOrDefault(s => s.Category == "Expense")?.Total ?? 0;
+                .FirstOrDefault(s => s.Category == "Expense")?.Total ?? 0m;
             
             return report;
         }
@@ -422,7 +422,7 @@ namespace FinTech.Core.Application.Services.Accounting
                 ChartOfAccountId = mapping.ChartOfAccountId,
                 AccountNumber = chartOfAccount?.AccountNumber,
                 AccountName = chartOfAccount?.AccountName,
-                AccountClassification = chartOfAccount?.Classification,
+                AccountClassification = chartOfAccount?.Classification.ToString(),
                 RegulatoryCodeId = mapping.RegulatoryCodeId,
                 RegulatoryCode = regulatoryCode?.Code,
                 RegulatoryDescription = regulatoryCode?.Description,
@@ -435,6 +435,7 @@ namespace FinTech.Core.Application.Services.Accounting
                 EffectiveDate = mapping.EffectiveDate,
                 ExpiryDate = mapping.ExpiryDate,
                 CreatedAt = mapping.CreatedAt,
+                // FinTech Best Practice: UpdatedAt is nullable DateTime, use null-coalescing
                 UpdatedAt = mapping.UpdatedAt
             };
         }
@@ -443,25 +444,25 @@ namespace FinTech.Core.Application.Services.Accounting
     // DTOs
     public class RegulatoryMappingDto
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         // Chart of Account info
-        public string ChartOfAccountId { get; set; }
-        public string AccountNumber { get; set; }
-        public string AccountName { get; set; }
-        public string AccountClassification { get; set; }
+        public string ChartOfAccountId { get; set; } = string.Empty;
+        public string? AccountNumber { get; set; }
+        public string? AccountName { get; set; }
+        public string? AccountClassification { get; set; }
         
         // Regulatory Code info
-        public string RegulatoryCodeId { get; set; }
-        public string RegulatoryCode { get; set; }
-        public string RegulatoryDescription { get; set; }
-        public string RegulatoryCategory { get; set; }
-        public string RegulatoryAuthority { get; set; }
-        public string ReportingForm { get; set; }
+        public string RegulatoryCodeId { get; set; } = string.Empty;
+        public string? RegulatoryCode { get; set; }
+        public string? RegulatoryDescription { get; set; }
+        public string? RegulatoryCategory { get; set; }
+        public string? RegulatoryAuthority { get; set; }
+        public string? ReportingForm { get; set; }
         
         // Mapping info
         public decimal MappingWeight { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         public bool IsActive { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime? ExpiryDate { get; set; }
@@ -471,27 +472,27 @@ namespace FinTech.Core.Application.Services.Accounting
 
     public class CreateRegulatoryMappingDto
     {
-        public string ChartOfAccountId { get; set; }
-        public string RegulatoryCodeId { get; set; }
+        public string ChartOfAccountId { get; set; } = string.Empty;
+        public string RegulatoryCodeId { get; set; } = string.Empty;
         public decimal MappingWeight { get; set; } = 1.0m;
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         public DateTime? EffectiveDate { get; set; }
     }
 
     public class UpdateRegulatoryMappingDto
     {
         public decimal MappingWeight { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         public DateTime? ExpiryDate { get; set; }
     }
 
     public class RegulatoryReportDto
     {
-        public string ReportingForm { get; set; }
-        public string FinancialPeriodId { get; set; }
+        public string ReportingForm { get; set; } = string.Empty;
+        public string FinancialPeriodId { get; set; } = string.Empty;
         public DateTime GeneratedAt { get; set; }
-        public string CurrencyCode { get; set; }
-        public List<RegulatoryReportSectionDto> Sections { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
+        public List<RegulatoryReportSectionDto> Sections { get; set; } = new List<RegulatoryReportSectionDto>();
         public decimal TotalAssets { get; set; }
         public decimal TotalLiabilities { get; set; }
         public decimal TotalEquity { get; set; }
@@ -501,25 +502,25 @@ namespace FinTech.Core.Application.Services.Accounting
 
     public class RegulatoryReportSectionDto
     {
-        public string Category { get; set; }
-        public List<RegulatoryReportItemDto> Items { get; set; }
+        public string Category { get; set; } = string.Empty;
+        public List<RegulatoryReportItemDto> Items { get; set; } = new List<RegulatoryReportItemDto>();
         public decimal Total { get; set; }
     }
 
     public class RegulatoryReportItemDto
     {
-        public string RegulatoryCodeId { get; set; }
-        public string RegulatoryCode { get; set; }
-        public string Description { get; set; }
+        public string RegulatoryCodeId { get; set; } = string.Empty;
+        public string RegulatoryCode { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public decimal Amount { get; set; }
-        public List<RegulatoryReportMappedAccountDto> MappedAccounts { get; set; }
+        public List<RegulatoryReportMappedAccountDto> MappedAccounts { get; set; } = new List<RegulatoryReportMappedAccountDto>();
     }
 
     public class RegulatoryReportMappedAccountDto
     {
-        public string AccountId { get; set; }
-        public string AccountNumber { get; set; }
-        public string AccountName { get; set; }
+        public string AccountId { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
+        public string AccountName { get; set; } = string.Empty;
         public decimal AccountBalance { get; set; }
         public decimal MappingWeight { get; set; }
         public decimal MappedAmount { get; set; }

@@ -9,11 +9,11 @@ public class JournalEntryDetail : BaseEntity
 {
     [Required]
     public Guid JournalEntryId { get; set; }
-    public virtual JournalEntry JournalEntry { get; set; } = null!;
+    public virtual JournalEntry? JournalEntry { get; set; }
     
     [Required]
     public Guid AccountId { get; set; }
-    public virtual ChartOfAccounts Account { get; set; } = null!;
+    public virtual ChartOfAccounts? Account { get; set; }
     
     [Required]
     public EntryType EntryType { get; set; }

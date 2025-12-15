@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Core.Application.Interfaces.Repositories.Loans;
+using FinTech.Core.Application.Interfaces.Loans;
 using FinTech.Core.Domain.Entities.Loans;
-using FinTech.Infrastructure.Persistence;
+using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

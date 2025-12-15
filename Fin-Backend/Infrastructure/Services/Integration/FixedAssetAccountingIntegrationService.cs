@@ -2,8 +2,10 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Core.Application.Services.Integration;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Services.Integration;
 using System.Collections.Generic;
+using FinTech.Core.Application.DTOs.GeneralLedger.Journal;
 
 namespace FinTech.Infrastructure.Services.Integration
 {

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using FinTech.Core.Application.Common.Settings;
+using FinTech.Core.Application.DTOs.Email;
+using FinTech.Core.Application.DTOs.Notification; // Just in case
 
 namespace FinTech.Infrastructure.Services
 {

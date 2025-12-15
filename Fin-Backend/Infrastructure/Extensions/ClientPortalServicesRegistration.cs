@@ -2,8 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System;
 using FinTech.Core.Application.Services;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Services.ClientPortal;
 using FinTech.Infrastructure.Services;
-using FinTech.Infrastructure.Services.Notifications;
+// using FinTech.Infrastructure.Services.Notifications; // Removed invalid namespace
+using FinTech.Core.Application.Services;
+using FinTech.Core.Application.Interfaces;
 
 namespace FinTech.Infrastructure.Extensions
 {

@@ -27,8 +27,14 @@ public class Guarantor : BaseEntity
 
     [StringLength(50)]
     public string? ConsentStatus { get; set; }
+    
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal LockedEquity { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    [StringLength(1000)]
+    public string? ConsentNotes { get; set; }
+
+
 
     public Member? GuarantorMember { get; set; }
 
@@ -78,4 +84,8 @@ public class Guarantor : BaseEntity
 
     [StringLength(1000)]
     public string? Notes { get; set; }
+
+    // FinTech Best Practice: Audit trail for guarantor updates
+    [StringLength(450)]
+    public string? UpdatedBy { get; set; }
 }

@@ -2,9 +2,12 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Core.Application.Services.Integration;
+using FinTech.Core.Application.Interfaces.Services.Integration;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
 using System.Collections.Generic;
-using FinTech.Core.Application.Interfaces.Integration;
+using System.Collections.Generic;
+// using FinTech.Core.Application.Interfaces.Integration;
+using FinTech.Core.Domain.Entities.Loans;
 
 namespace FinTech.Infrastructure.Services.Integration
 {

@@ -9,7 +9,7 @@ public class GeneralLedgerEntry : BaseEntity
 {
     [Required]
     public Guid AccountId { get; set; }
-    public virtual ChartOfAccounts Account { get; set; } = null!;
+    public virtual ChartOfAccounts? Account { get; set; }
     
     [Required]
     public Guid TransactionId { get; set; }

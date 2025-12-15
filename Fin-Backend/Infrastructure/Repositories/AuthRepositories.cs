@@ -1,7 +1,10 @@
-using FinTech.Application.Interfaces.Repositories;
-using FinTech.Domain.Entities.Authentication;
+using FinTech.Core.Application.Interfaces.Repositories;
+using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.Entities.Identity;
+using FinTech.Core.Domain.Entities.ClientPortal;
 using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +22,7 @@ namespace FinTech.Infrastructure.Repositories
         /// <summary>
         /// The database context
         /// </summary>
-        protected readonly AuthDbContext _context;
+        protected readonly ApplicationDbContext _context;
 
         /// <summary>
         /// The entity set
@@ -30,7 +33,7 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="BaseAuthRepository{T}"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        protected BaseAuthRepository(AuthDbContext context)
+        protected BaseAuthRepository(ApplicationDbContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
@@ -91,14 +94,16 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="RefreshTokenRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public RefreshTokenRepository(AuthDbContext context) : base(context)
+        public RefreshTokenRepository(ApplicationDbContext context) : base(context)
         {
         }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<RefreshToken>> GetActiveByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(rt => rt.UserId == userId && !rt.IsRevoked && !rt.IsUsed && rt.ExpiresAt > DateTime.UtcNow)
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<RefreshToken>();
+            
+            return await _dbSet.Where(rt => rt.UserId == userGuid && !rt.IsRevoked && !rt.IsUsed && rt.ExpiresAt > DateTime.UtcNow)
                 .ToListAsync();
         }
 
@@ -111,13 +116,15 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<RefreshToken>> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(rt => rt.UserId == userId).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<RefreshToken>();
+            return await _dbSet.Where(rt => rt.UserId == userGuid).ToListAsync();
         }
 
         /// <inheritdoc/>
         public async Task RevokeAllForUserAsync(string userId)
         {
-            var tokens = await _dbSet.Where(rt => rt.UserId == userId).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return;
+            var tokens = await _dbSet.Where(rt => rt.UserId == userGuid).ToListAsync();
             foreach (var token in tokens)
             {
                 token.IsRevoked = true;
@@ -128,7 +135,8 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task RevokeAllForUserExceptCurrentAsync(string userId, string currentToken)
         {
-            var tokens = await _dbSet.Where(rt => rt.UserId == userId && rt.Token != currentToken).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return;
+            var tokens = await _dbSet.Where(rt => rt.UserId == userGuid && rt.Token != currentToken).ToListAsync();
             foreach (var token in tokens)
             {
                 token.IsRevoked = true;
@@ -140,13 +148,13 @@ namespace FinTech.Infrastructure.Repositories
     /// <summary>
     /// Repository implementation for the MFA settings entity
     /// </summary>
-    public class MfaSettingsRepository : BaseAuthRepository<MfaSettings>, IMfaSettingsRepository
+    public class MfaSettingsRepository : BaseAuthRepository<UserMfaSettings>, IMfaSettingsRepository
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MfaSettingsRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public MfaSettingsRepository(AuthDbContext context) : base(context)
+        public MfaSettingsRepository(ApplicationDbContext context) : base(context)
         {
         }
 
@@ -163,19 +171,19 @@ namespace FinTech.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<MfaSettings> EnableMfaAsync(string userId, string method, string sharedKey = null, string recoveryEmail = null, string recoveryPhone = null)
+        public async Task<UserMfaSettings> EnableMfaAsync(string userId, string method, string? sharedKey = null, string? recoveryEmail = null, string? recoveryPhone = null)
         {
             var settings = await GetByUserIdAsync(userId);
             var now = DateTime.UtcNow;
             
             if (settings == null)
             {
-                settings = new MfaSettings
+                settings = new UserMfaSettings
                 {
                     UserId = userId,
                     IsEnabled = true,
                     Method = method,
-                    SharedKey = sharedKey,
+                    SecretKey = sharedKey,
                     RecoveryEmail = recoveryEmail,
                     RecoveryPhone = recoveryPhone,
                     CreatedAt = now,
@@ -188,7 +196,7 @@ namespace FinTech.Infrastructure.Repositories
             {
                 settings.IsEnabled = true;
                 settings.Method = method;
-                settings.SharedKey = sharedKey ?? settings.SharedKey;
+                settings.SecretKey = sharedKey ?? settings.SecretKey;
                 settings.RecoveryEmail = recoveryEmail ?? settings.RecoveryEmail;
                 settings.RecoveryPhone = recoveryPhone ?? settings.RecoveryPhone;
                 settings.UpdatedAt = now;
@@ -198,7 +206,7 @@ namespace FinTech.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<MfaSettings> GetByUserIdAsync(string userId)
+        public async Task<UserMfaSettings> GetByUserIdAsync(string userId)
         {
             return await _dbSet.FirstOrDefaultAsync(ms => ms.UserId == userId);
         }
@@ -213,7 +221,7 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="BackupCodeRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public BackupCodeRepository(AuthDbContext context) : base(context)
+        public BackupCodeRepository(ApplicationDbContext context) : base(context)
         {
         }
 
@@ -323,7 +331,7 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="MfaChallengeRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public MfaChallengeRepository(AuthDbContext context) : base(context)
+        public MfaChallengeRepository(ApplicationDbContext context) : base(context)
         {
         }
 
@@ -441,12 +449,12 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="TrustedDeviceRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public TrustedDeviceRepository(AuthDbContext context) : base(context)
+        public TrustedDeviceRepository(ApplicationDbContext context) : base(context)
         {
         }
 
         /// <inheritdoc/>
-        public async Task<TrustedDevice> AddTrustedDeviceAsync(string userId, string deviceId, string deviceName, string deviceType, string operatingSystem, string browser, string browserVersion, string ipAddress, string country = null, string city = null, string region = null)
+        public async Task<TrustedDevice> AddTrustedDeviceAsync(string userId, string deviceId, string deviceName, string deviceType, string operatingSystem, string browser, string browserVersion, string ipAddress, string? country = null, string? city = null, string? region = null)
         {
             var existingDevice = await GetByDeviceIdAsync(deviceId);
             
@@ -537,7 +545,7 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="LoginAttemptRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public LoginAttemptRepository(AuthDbContext context) : base(context)
+        public LoginAttemptRepository(ApplicationDbContext context) : base(context)
         {
         }
 
@@ -610,7 +618,7 @@ namespace FinTech.Infrastructure.Repositories
         }
 
         /// <inheritdoc/>
-        public async Task<LoginAttempt> RecordLoginAttemptAsync(string username, string userId, bool success, string failureReason, string ipAddress, string userAgent, string loginMethod, string country = null, string city = null)
+        public async Task<LoginAttempt> RecordLoginAttemptAsync(string username, string userId, bool success, string failureReason, string ipAddress, string userAgent, string loginMethod, string? country = null, string? city = null)
         {
             var attempt = new LoginAttempt
             {
@@ -639,7 +647,7 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="SocialLoginProfileRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public SocialLoginProfileRepository(AuthDbContext context) : base(context)
+        public SocialLoginProfileRepository(ApplicationDbContext context) : base(context)
         {
         }
 
@@ -723,20 +731,24 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="SecurityAlertRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public SecurityAlertRepository(AuthDbContext context) : base(context)
+        public SecurityAlertRepository(ApplicationDbContext context) : base(context)
         {
         }
 
         /// <inheritdoc/>
-        public async Task<SecurityAlert> CreateAlertAsync(string userId, string alertType, string message, string details, string severity, string ipAddress = null, string deviceId = null)
+        public async Task<SecurityAlert> CreateAlertAsync(string userId, string alertType, string message, string details, string severity, string? ipAddress = null, string? deviceId = null)
         {
+            Enum.TryParse<SecurityAlertType>(alertType, true, out var typeEnum);
+            Enum.TryParse<SecurityAlertSeverity>(severity, true, out var severityEnum);
+            Guid.TryParse(userId, out var userGuid);
+
             var alert = new SecurityAlert
             {
-                UserId = userId,
-                AlertType = alertType,
+                UserId = userGuid,
+                AlertType = typeEnum,
                 Message = message,
                 Details = details,
-                Severity = severity,
+                Severity = severityEnum,
                 IpAddress = ipAddress,
                 DeviceId = deviceId,
                 CreatedAt = DateTime.UtcNow,
@@ -749,9 +761,12 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<SecurityAlert>> GetByUserIdAndSeverityAsync(string userId, string severity)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<SecurityAlert>();
+            Enum.TryParse<SecurityAlertSeverity>(severity, true, out var severityEnum);
+
             return await _dbSet.Where(sa => 
-                sa.UserId == userId && 
-                sa.Severity == severity)
+                sa.UserId == userGuid && 
+                sa.Severity == severityEnum)
                 .OrderByDescending(sa => sa.CreatedAt)
                 .ToListAsync();
         }
@@ -759,9 +774,12 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<SecurityAlert>> GetByUserIdAndTypeAsync(string userId, string alertType)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<SecurityAlert>();
+            Enum.TryParse<SecurityAlertType>(alertType, true, out var typeEnum);
+
             return await _dbSet.Where(sa => 
-                sa.UserId == userId && 
-                sa.AlertType == alertType)
+                sa.UserId == userGuid && 
+                sa.AlertType == typeEnum)
                 .OrderByDescending(sa => sa.CreatedAt)
                 .ToListAsync();
         }
@@ -769,7 +787,9 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<SecurityAlert>> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(sa => sa.UserId == userId)
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<SecurityAlert>();
+
+            return await _dbSet.Where(sa => sa.UserId == userGuid)
                 .OrderByDescending(sa => sa.CreatedAt)
                 .ToListAsync();
         }
@@ -777,8 +797,10 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<SecurityAlert>> GetUnreadByUserIdAsync(string userId)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<SecurityAlert>();
+
             return await _dbSet.Where(sa => 
-                sa.UserId == userId && 
+                sa.UserId == userGuid && 
                 !sa.IsRead)
                 .OrderByDescending(sa => sa.CreatedAt)
                 .ToListAsync();
@@ -787,8 +809,10 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task MarkAllAsReadAsync(string userId)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return;
+
             var alerts = await _dbSet.Where(sa => 
-                sa.UserId == userId && 
+                sa.UserId == userGuid && 
                 !sa.IsRead)
                 .ToListAsync();
                 
@@ -833,7 +857,7 @@ namespace FinTech.Infrastructure.Repositories
         /// Initializes a new instance of the <see cref="UserSecurityPreferencesRepository"/> class
         /// </summary>
         /// <param name="context">The database context</param>
-        public UserSecurityPreferencesRepository(AuthDbContext context) : base(context)
+        public UserSecurityPreferencesRepository(ApplicationDbContext context) : base(context)
         {
         }
 

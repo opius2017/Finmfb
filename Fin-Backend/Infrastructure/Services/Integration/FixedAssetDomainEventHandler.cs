@@ -1,8 +1,9 @@
-using FinTech.Core.Application.Interfaces.Integration;
-using FinTech.Core.Application.Services;
+using FinTech.Core.Application.Interfaces.Services.Integration;
+// using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Domain.Events.FixedAssets;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using FinTech.Core.Application.Interfaces.Events;
 
 namespace FinTech.Infrastructure.Services.Integration
 {
@@ -24,7 +25,7 @@ namespace FinTech.Infrastructure.Services.Integration
             _logger = logger;
         }
 
-        public async Task HandleAsync(AssetAcquiredEvent domainEvent)
+        public async Task HandleAsync(AssetAcquiredEvent domainEvent, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Handling AssetAcquiredEvent for asset {AssetId}", domainEvent.AssetId);
             
@@ -39,7 +40,7 @@ namespace FinTech.Infrastructure.Services.Integration
             _logger.LogInformation("Successfully processed asset acquisition for asset {AssetId}", domainEvent.AssetId);
         }
 
-        public async Task HandleAsync(AssetDepreciatedEvent domainEvent)
+        public async Task HandleAsync(AssetDepreciatedEvent domainEvent, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Handling AssetDepreciatedEvent for asset {AssetId}", domainEvent.AssetId);
             
@@ -53,7 +54,7 @@ namespace FinTech.Infrastructure.Services.Integration
             _logger.LogInformation("Successfully processed asset depreciation for asset {AssetId}", domainEvent.AssetId);
         }
 
-        public async Task HandleAsync(AssetDisposedEvent domainEvent)
+        public async Task HandleAsync(AssetDisposedEvent domainEvent, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Handling AssetDisposedEvent for asset {AssetId}", domainEvent.AssetId);
             
@@ -68,7 +69,7 @@ namespace FinTech.Infrastructure.Services.Integration
             _logger.LogInformation("Successfully processed asset disposal for asset {AssetId}", domainEvent.AssetId);
         }
 
-        public async Task HandleAsync(AssetRevaluedEvent domainEvent)
+        public async Task HandleAsync(AssetRevaluedEvent domainEvent, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Handling AssetRevaluedEvent for asset {AssetId}", domainEvent.AssetId);
             
@@ -81,7 +82,7 @@ namespace FinTech.Infrastructure.Services.Integration
             _logger.LogInformation("Successfully processed asset revaluation for asset {AssetId}", domainEvent.AssetId);
         }
 
-        public async Task HandleAsync(AssetImpairedEvent domainEvent)
+        public async Task HandleAsync(AssetImpairedEvent domainEvent, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Handling AssetImpairedEvent for asset {AssetId}", domainEvent.AssetId);
             

@@ -14,7 +14,14 @@ namespace FinTech.Core.Domain.Entities.Payroll
         public string Description { get; private set; }
         public DateTime TransactionDate { get; private set; }
 
-        private PayrollTransaction() { } // For EF Core
+        private PayrollTransaction() 
+        {
+            PayrollPeriodId = string.Empty;
+            TransactionType = string.Empty;
+            RelatedEntity = string.Empty;
+            Reference = string.Empty;
+            Description = string.Empty;
+        } // For EF Core
 
         public PayrollTransaction(
             string payrollPeriodId,

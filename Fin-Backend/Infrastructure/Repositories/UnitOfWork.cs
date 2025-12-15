@@ -1,6 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FinTech.Core.Domain.Repositories;
+using FinTech.Core.Domain.Entities.Common;
 using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -18,6 +19,11 @@ namespace FinTech.Infrastructure.Repositories
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public IRepository<T> Repository<T>() where T : BaseEntity
+        {
+            return new Repository<T>(_context);
         }
         
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

@@ -30,6 +30,26 @@ namespace FinTech.Infrastructure.Repositories
         {
             return await _context.Set<T>().ToListAsync(cancellationToken);
         }
+
+        public async Task<IReadOnlyList<T>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await ListAllAsync(cancellationToken);
+        }
+
+        public async Task<T> FindAsync(string id, CancellationToken cancellationToken = default)
+        {
+            return await GetByIdAsync(id, cancellationToken);
+        }
+
+        public async Task<T> FindAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await GetByIdAsync(id.ToString(), cancellationToken);
+        }
+
+        public IQueryable<T> GetAll()
+        {
+            return _context.Set<T>().AsQueryable();
+        }
         
         public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec, CancellationToken cancellationToken = default)
         {

@@ -41,9 +41,37 @@ namespace FinTech.Core.Domain.Entities.Loans
         [Column(TypeName = "decimal(18,2)")]
         public decimal? PenaltyAmount { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PaidInterest { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal FeesAmount { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PaidFees { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PaidPenalty { get; set; }
+
         public int? DaysOverdue { get; set; }
 
         [StringLength(500)]
         public string? Notes { get; set; }
+
+        // FinTech Best Practice: Add LoanId as NotMapped alias for LoanAccountId for backward compatibility
+        [NotMapped]
+        public Guid LoanId
+        {
+            get => LoanAccountId;
+            set => LoanAccountId = value;
+        }
+
+        // FinTech Best Practice: Add PaidAmount as NotMapped alias for AmountPaid for backward compatibility
+        [NotMapped]
+        public decimal PaidAmount
+        {
+            get => AmountPaid ?? 0;
+            set => AmountPaid = value;
+        }
     }
 }

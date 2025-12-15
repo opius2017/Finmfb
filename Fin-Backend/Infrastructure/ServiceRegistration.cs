@@ -3,7 +3,7 @@ using FinTech.Core.Application.Services;
 using FinTech.Core.Domain.Services;
 using FinTech.Infrastructure.BackgroundServices;
 using FinTech.Infrastructure.Data;
-using FinTech.Infrastructure.Services;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,12 +24,8 @@ namespace FinTech.Infrastructure
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
             
             // Register Cooperative Loan Management Services
-            services.AddScoped<ILoanCalculator, LoanCalculatorService>();
-            services.AddScoped<ILoanEligibilityChecker, LoanEligibilityCheckerService>();
-            services.AddScoped<IGuarantorService, GuarantorService>();
-            services.AddScoped<ICommitteeReviewService, CommitteeReviewService>();
-            services.AddScoped<ILoanRegisterService, LoanRegisterService>();
-            services.AddScoped<IThresholdManager, ThresholdManagerService>();
+            // Note: Services have been moved to Core and registered there.
+
             
             // Register Background Services
             services.AddHostedService<MonthlyRolloverJob>();

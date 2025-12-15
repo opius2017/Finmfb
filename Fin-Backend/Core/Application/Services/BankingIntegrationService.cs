@@ -92,31 +92,31 @@ namespace FinTech.Application.Services
 
     public class AccountDetails
     {
-        public string AccountNumber { get; set; }
-        public string AccountName { get; set; }
-        public string AccountType { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
+        public string AccountName { get; set; } = string.Empty;
+        public string AccountType { get; set; } = string.Empty;
         public decimal Balance { get; set; }
-        public string Currency { get; set; }
+        public string Currency { get; set; } = string.Empty;
         public DateTime LastUpdated { get; set; }
     }
 
     public class TransactionRequest
     {
         public Guid TransactionId { get; set; }
-        public string FromAccount { get; set; }
-        public string ToAccount { get; set; }
+        public string FromAccount { get; set; } = string.Empty;
+        public string ToAccount { get; set; } = string.Empty;
         public decimal Amount { get; set; }
-        public string Currency { get; set; }
-        public string Reference { get; set; }
-        public string Description { get; set; }
+        public string Currency { get; set; } = string.Empty;
+        public string Reference { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 
     public class TransactionResult
     {
         public Guid TransactionId { get; set; }
-        public string Status { get; set; }
-        public string ReferenceNumber { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string ReferenceNumber { get; set; } = string.Empty;
         public DateTime Timestamp { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 }

@@ -239,35 +239,36 @@ namespace FinTech.Core.Application.Services.Accounting
             }
             
             // Get income and expense accounts
-            var incomeAccounts = await _chartOfAccountRepository.GetByClassificationAsync("Income", cancellationToken);
-            var expenseAccounts = await _chartOfAccountRepository.GetByClassificationAsync("Expense", cancellationToken);
+            var incomeAccounts = await _chartOfAccountRepository.GetByClassificationAsync(AccountClassification.Revenue, cancellationToken); // FinTech Best Practice: Use Revenue instead of Income
+            var expenseAccounts = await _chartOfAccountRepository.GetByClassificationAsync(AccountClassification.Expense, cancellationToken);
             
             // Create a closing entry for income accounts
             if (incomeAccounts.Any())
             {
-                var incomeClosingEntry = JournalEntry.Create(
-                    financialPeriodId,
+                var incomeClosingEntry = new JournalEntry(
+                    $"CL-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString().Substring(0, 8)}",
                     DateTime.UtcNow,
                     "Closing entry for income accounts",
-                    "System",
+                    JournalEntryType.YearEndClosing,
                     "Period End Closing",
                     null,
-                    null);
+                    financialPeriodId,
+                    "GeneralLedger");
                     
                 foreach (var account in incomeAccounts)
                 {
                     // Get the account balance
                     var accountBalance = await _generalLedgerService.GetAccountBalanceAsync(
                         account.Id, 
-                        financialPeriodId, 
-                        cancellationToken);
+                        financialPeriod.StartDate,
+                        financialPeriod.EndDate);
                         
-                    if (accountBalance.Balance != 0)
+                    if (accountBalance.Amount != 0)
                     {
                         // Income accounts normally have credit balances, so debit them to close
                         incomeClosingEntry.AddLine(
                             account.Id,
-                            accountBalance.Balance,
+                            accountBalance.Amount,
                             0,
                             $"Closing {account.AccountName}");
                     }
@@ -289,30 +290,31 @@ namespace FinTech.Core.Application.Services.Accounting
             // Create a closing entry for expense accounts
             if (expenseAccounts.Any())
             {
-                var expenseClosingEntry = JournalEntry.Create(
-                    financialPeriodId,
+                var expenseClosingEntry = new JournalEntry(
+                    $"CL-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString().Substring(0, 8)}",
                     DateTime.UtcNow,
                     "Closing entry for expense accounts",
-                    "System",
+                    JournalEntryType.YearEndClosing,
                     "Period End Closing",
                     null,
-                    null);
+                    financialPeriodId,
+                    "GeneralLedger");
                     
                 foreach (var account in expenseAccounts)
                 {
                     // Get the account balance
                     var accountBalance = await _generalLedgerService.GetAccountBalanceAsync(
                         account.Id, 
-                        financialPeriodId, 
-                        cancellationToken);
+                        financialPeriod.EndDate, 
+                        financialPeriod.EndDate); // FinTech Best Practice: Correct argument order - DateTime then CancellationToken
                         
-                    if (accountBalance.Balance != 0)
+                    if (accountBalance.Amount != 0)
                     {
                         // Expense accounts normally have debit balances, so credit them to close
                         expenseClosingEntry.AddLine(
                             account.Id,
                             0,
-                            accountBalance.Balance,
+                            accountBalance.Amount,
                             $"Closing {account.AccountName}");
                     }
                 }
@@ -365,19 +367,20 @@ namespace FinTech.Core.Application.Services.Accounting
             
             // Get all balance sheet accounts (Assets, Liabilities, Equity)
             var balanceSheetAccounts = new List<ChartOfAccount>();
-            balanceSheetAccounts.AddRange(await _chartOfAccountRepository.GetByClassificationAsync("Asset", cancellationToken));
-            balanceSheetAccounts.AddRange(await _chartOfAccountRepository.GetByClassificationAsync("Liability", cancellationToken));
-            balanceSheetAccounts.AddRange(await _chartOfAccountRepository.GetByClassificationAsync("Equity", cancellationToken));
+            balanceSheetAccounts.AddRange(await _chartOfAccountRepository.GetByClassificationAsync(AccountClassification.Asset, cancellationToken));
+            balanceSheetAccounts.AddRange(await _chartOfAccountRepository.GetByClassificationAsync(AccountClassification.Liability, cancellationToken));
+            balanceSheetAccounts.AddRange(await _chartOfAccountRepository.GetByClassificationAsync(AccountClassification.Equity, cancellationToken));
             
             // Create an opening balance entry for the next period
-            var openingBalanceEntry = JournalEntry.Create(
-                nextPeriod.Id,
+            var openingBalanceEntry = new JournalEntry(
+                $"OP-{DateTime.UtcNow:yyyyMMdd}-{Guid.NewGuid().ToString().Substring(0, 8)}",
                 nextPeriod.StartDate,
                 "Opening balances",
-                "System",
+                JournalEntryType.SystemGenerated,
                 "Period Opening",
                 null,
-                null);
+                nextPeriod.Id,
+                "GeneralLedger");
                 
             decimal totalDebits = 0;
             decimal totalCredits = 0;
@@ -388,34 +391,34 @@ namespace FinTech.Core.Application.Services.Accounting
                 // Get the account balance
                 var accountBalance = await _generalLedgerService.GetAccountBalanceAsync(
                     account.Id, 
-                    financialPeriodId, 
-                    cancellationToken);
+                    financialPeriod.EndDate, 
+                    financialPeriod.EndDate); // FinTech Best Practice: Correct argument order
                     
-                if (accountBalance.Balance != 0)
+                if (accountBalance.Amount != 0)
                 {
                     switch (account.Classification)
                     {
-                        case "Asset":
+                        case AccountClassification.Asset: // FinTech Best Practice: Compare enum to enum
                             // Asset accounts normally have debit balances
                             openingBalanceEntry.AddLine(
                                 account.Id,
-                                accountBalance.Balance,
+                                accountBalance.Amount,
                                 0,
                                 $"Opening balance for {account.AccountName}");
                                 
-                            totalDebits += accountBalance.Balance;
+                            totalDebits += accountBalance.Amount;
                             break;
                             
-                        case "Liability":
-                        case "Equity":
+                        case AccountClassification.Liability: // FinTech Best Practice: Compare enum to enum
+                        case AccountClassification.Equity:
                             // Liability and Equity accounts normally have credit balances
                             openingBalanceEntry.AddLine(
                                 account.Id,
                                 0,
-                                accountBalance.Balance,
+                                accountBalance.Amount,
                                 $"Opening balance for {account.AccountName}");
                                 
-                            totalCredits += accountBalance.Balance;
+                            totalCredits += accountBalance.Amount;
                             break;
                     }
                 }
@@ -476,7 +479,7 @@ namespace FinTech.Core.Application.Services.Accounting
                     
                 foreach (var entry in closingEntries)
                 {
-                    await _journalEntryRepository.DeleteAsync(entry.Id, cancellationToken);
+                    await _journalEntryRepository.DeleteAsync(entry, cancellationToken); // FinTech Best Practice: Pass JournalEntry object not string Id
                 }
             }
             
@@ -500,7 +503,7 @@ namespace FinTech.Core.Application.Services.Accounting
                 EndDate = financialPeriod.EndDate,
                 ClosingStatus = financialPeriod.ClosingStatus.ToString(),
                 IsClosed = financialPeriod.IsClosed,
-                ClosedAt = financialPeriod.ClosedAt,
+                ClosedAt = financialPeriod.ClosedDate,
                 ClosedBy = financialPeriod.ClosedBy,
                 ValidationErrors = validationErrors ?? (
                     string.IsNullOrEmpty(financialPeriod.ValidationErrors) 
@@ -527,3 +530,4 @@ namespace FinTech.Core.Application.Services.Accounting
         public bool CanRollBack { get; set; }
     }
 }
+

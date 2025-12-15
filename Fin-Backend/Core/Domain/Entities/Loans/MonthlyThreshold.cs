@@ -21,7 +21,11 @@ namespace FinTech.Core.Domain.Entities.Loans
         public string ClosedBy { get; private set; }
         public string Notes { get; private set; }
         
-        private MonthlyThreshold() { } // For EF Core
+        private MonthlyThreshold() 
+        {
+            ClosedBy = string.Empty;
+            Notes = string.Empty;
+        } // For EF Core
         
         public MonthlyThreshold(int year, int month, decimal maximumAmount)
         {

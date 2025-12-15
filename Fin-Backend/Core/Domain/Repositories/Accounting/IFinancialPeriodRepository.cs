@@ -13,12 +13,17 @@ namespace FinTech.Core.Domain.Repositories.Accounting
         Task<FinancialPeriod> GetByPeriodCodeAsync(
             string periodCode, 
             CancellationToken cancellationToken = default);
+
+        Task<FinancialPeriod> GetByNameAsync(
+            string periodName, 
+            string fiscalYearId,
+            CancellationToken cancellationToken = default);
             
         Task<FinancialPeriod> GetCurrentPeriodAsync(
             CancellationToken cancellationToken = default);
             
         Task<IReadOnlyList<FinancialPeriod>> GetByFiscalYearAsync(
-            int fiscalYear, 
+            string fiscalYearId, 
             CancellationToken cancellationToken = default);
             
         Task<IReadOnlyList<FinancialPeriod>> GetOpenPeriodsAsync(
@@ -50,6 +55,10 @@ namespace FinTech.Core.Domain.Repositories.Accounting
         /// Gets the current active financial period
         /// </summary>
         Task<FinancialPeriod> GetCurrentActivePeriodAsync(
+            CancellationToken cancellationToken = default);
+
+        Task<bool> IsPeriodValidForPostingAsync(
+            string periodId, 
             CancellationToken cancellationToken = default);
     }
 }

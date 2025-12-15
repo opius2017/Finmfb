@@ -6,4 +6,5 @@ public class LoginResponse
     public DateTime ExpiryDate { get; set; }
     public UserDto User { get; set; } = null!;
     public TenantDto Tenant { get; set; } = null!;
+    public bool RequiresTwoFactor { get; set; }
 }

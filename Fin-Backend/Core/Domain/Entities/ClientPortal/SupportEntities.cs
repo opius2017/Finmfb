@@ -11,50 +11,61 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         [Key]
         public Guid Id { get; set; }
         
+        public Guid ClientPortalProfileId { get; set; }
+        
         [Required]
         public Guid CustomerId { get; set; }
         
         [Required]
         [StringLength(20)]
-        public string TicketNumber { get; set; }
+        public string TicketNumber { get; set; } = string.Empty;
         
         [Required]
         [StringLength(100)]
-        public string Subject { get; set; }
+        public string Subject { get; set; } = string.Empty;
         
         [Required]
         [StringLength(1000)]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         [Required]
         [StringLength(50)]
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
         
         [Required]
         [StringLength(20)]
-        public string Priority { get; set; }
+        public string Priority { get; set; } = string.Empty;
         
         [Required]
         [StringLength(20)]
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         
         public DateTime? ClosedDate { get; set; }
         
         [StringLength(1000)]
-        public string Resolution { get; set; }
+        public string? Resolution { get; set; }
         
         public int CustomerSatisfactionRating { get; set; }
         
         [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
+        public virtual Customer? Customer { get; set; }
         
-        public virtual ICollection<ClientSupportMessage> Messages { get; set; }
+        public virtual ICollection<ClientSupportMessage> Messages { get; set; } = new List<ClientSupportMessage>();
         
-        public virtual ICollection<ClientSupportAttachment> Attachments { get; set; }
+        public virtual ICollection<ClientSupportAttachment> Attachments { get; set; } = new List<ClientSupportAttachment>();
         
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedDate { get; set; }
         
-        public DateTime UpdatedAt { get; set; }
+        public DateTime LastModifiedDate { get; set; }
+
+        [NotMapped]
+        public DateTime CreatedAt { get => CreatedDate; set => CreatedDate = value; }
+        [NotMapped]
+        public DateTime UpdatedAt { get => LastModifiedDate; set => LastModifiedDate = value; }
+        [NotMapped]
+        public DateTime CreatedOn { get => CreatedDate; set => CreatedDate = value; }
+        [NotMapped]
+        public DateTime LastModifiedOn { get => LastModifiedDate; set => LastModifiedDate = value; }
     }
 
     public class ClientSupportMessage
@@ -71,15 +82,15 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(100)]
-        public string SenderName { get; set; }
+        public string SenderName { get; set; } = string.Empty;
         
         [Required]
         [StringLength(20)]
-        public string SenderType { get; set; }
+        public string SenderType { get; set; } = string.Empty;
         
         [Required]
         [StringLength(2000)]
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         
         public bool IsRead { get; set; }
         
@@ -88,11 +99,22 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public DateTime? ReadAt { get; set; }
         
         [ForeignKey("TicketId")]
-        public virtual ClientSupportTicket Ticket { get; set; }
+        public virtual ClientSupportTicket? Ticket { get; set; }
         
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedDate { get; set; }
         
-        public DateTime UpdatedAt { get; set; }
+        public DateTime LastModifiedDate { get; set; }
+        
+        [NotMapped]
+        public DateTime CreatedAt { get => CreatedDate; set => CreatedDate = value; }
+        [NotMapped]
+        public DateTime UpdatedAt { get => LastModifiedDate; set => LastModifiedDate = value; }
+        [NotMapped]
+        public DateTime CreatedOn { get => CreatedDate; set => CreatedDate = value; }
+        [NotMapped]
+        public DateTime LastModifiedOn { get => LastModifiedDate; set => LastModifiedDate = value; }
+        [NotMapped]
+        public Guid ClientSupportTicketId { get => TicketId; set => TicketId = value; }
     }
 
     public class ClientSupportAttachment
@@ -105,27 +127,27 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(255)]
-        public string FileName { get; set; }
+        public string FileName { get; set; } = string.Empty;
         
         [Required]
         [StringLength(20)]
-        public string FileType { get; set; }
+        public string FileType { get; set; } = string.Empty;
         
         [Required]
         public long FileSize { get; set; }
         
         [Required]
         [StringLength(500)]
-        public string FileUrl { get; set; }
+        public string FileUrl { get; set; } = string.Empty;
         
         [Required]
         [StringLength(20)]
-        public string UploadedBy { get; set; }
+        public string UploadedBy { get; set; } = string.Empty;
         
         public DateTime UploadDate { get; set; }
         
         [ForeignKey("TicketId")]
-        public virtual ClientSupportTicket Ticket { get; set; }
+        public virtual ClientSupportTicket? Ticket { get; set; }
         
         public DateTime CreatedAt { get; set; }
         
@@ -139,14 +161,14 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         [StringLength(200)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         public int DisplayOrder { get; set; }
         
-        public virtual ICollection<KnowledgeBaseArticle> Articles { get; set; }
+        public virtual ICollection<KnowledgeBaseArticle> Articles { get; set; } = new List<KnowledgeBaseArticle>();
         
         public DateTime CreatedAt { get; set; }
         
@@ -163,16 +185,16 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(100)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         
         [Required]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
         
         [StringLength(500)]
-        public string Summary { get; set; }
+        public string? Summary { get; set; }
         
         [StringLength(500)]
-        public string Tags { get; set; }
+        public string? Tags { get; set; }
         
         public bool IsPublished { get; set; }
         
@@ -189,7 +211,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public int NotHelpfulCount { get; set; }
         
         [ForeignKey("CategoryId")]
-        public virtual KnowledgeBaseCategory Category { get; set; }
+        public virtual KnowledgeBaseCategory? Category { get; set; }
         
         public DateTime CreatedAt { get; set; }
         
@@ -203,14 +225,14 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [Required]
         [StringLength(50)]
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
         
         [Required]
         [StringLength(255)]
-        public string Question { get; set; }
+        public string Question { get; set; } = string.Empty;
         
         [Required]
-        public string Answer { get; set; }
+        public string Answer { get; set; } = string.Empty;
         
         public int DisplayOrder { get; set; }
         

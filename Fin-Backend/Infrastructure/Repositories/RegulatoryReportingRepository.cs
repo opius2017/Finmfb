@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FinTech.Infrastructure.Repositories
+namespace FinTech.Infrastructure.Data
 {
     public class RegulatoryReportingRepository : IRegulatoryReportingRepository
     {

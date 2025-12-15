@@ -12,22 +12,22 @@ namespace FinTech.Core.Domain.Entities.Accounting
         /// <summary>
         /// The ID of the chart of account
         /// </summary>
-        public string ChartOfAccountId { get; private set; }
+        public string ChartOfAccountId { get; private set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the Chart of Account
         /// </summary>
-        public ChartOfAccount ChartOfAccount { get; private set; }
+        public ChartOfAccount? ChartOfAccount { get; private set; }
         
         /// <summary>
         /// The ID of the regulatory code
         /// </summary>
-        public string RegulatoryCodeId { get; private set; }
+        public string RegulatoryCodeId { get; private set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the Regulatory Code
         /// </summary>
-        public RegulatoryCode RegulatoryCode { get; private set; }
+        public RegulatoryCode? RegulatoryCode { get; private set; }
         
         /// <summary>
         /// The mapping weight, used for proportional distribution when an account maps to multiple regulatory codes
@@ -37,7 +37,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
         /// <summary>
         /// Notes or additional information about this mapping
         /// </summary>
-        public string Notes { get; private set; }
+        public string? Notes { get; private set; }
         
         /// <summary>
         /// Whether this mapping is currently active
@@ -66,7 +66,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
             string chartOfAccountId,
             string regulatoryCodeId,
             decimal mappingWeight = 1.0m,
-            string notes = null,
+            string? notes = null,
             DateTime? effectiveDate = null)
         {
             if (string.IsNullOrWhiteSpace(chartOfAccountId))
@@ -91,7 +91,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
         /// </summary>
         public void Update(
             decimal mappingWeight,
-            string notes = null,
+            string? notes = null,
             DateTime? expiryDate = null)
         {
             if (mappingWeight <= 0 || mappingWeight > 1)

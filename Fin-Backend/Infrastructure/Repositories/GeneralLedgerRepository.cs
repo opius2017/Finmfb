@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using FinTech.Core.Application.Interfaces.Repositories;
 using FinTech.Core.Domain.Entities.Accounting;
-using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.ValueObjects;
 using FinTech.Infrastructure.Data;
 
 namespace FinTech.Infrastructure.Repositories
@@ -88,7 +88,7 @@ namespace FinTech.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<bool> UpdateAccountBalanceAsync(string accountId, Money amount, bool isDebit)
+        public async Task<bool> UpdateAccountBalanceAsync(string accountId, FinTech.Core.Domain.ValueObjects.Money amount, bool isDebit)
         {
             var account = await GetAccountByIdAsync(accountId);
             if (account == null)

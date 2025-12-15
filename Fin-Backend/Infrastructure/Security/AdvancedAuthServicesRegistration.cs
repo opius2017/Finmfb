@@ -1,9 +1,11 @@
 using FinTech.Infrastructure.Services;
-using FinTech.WebAPI.Application.Common.Settings;
-using FinTech.WebAPI.Application.Interfaces;
-using FinTech.WebAPI.Application.Interfaces.Repositories;
-using FinTech.WebAPI.Infrastructure.Repositories;
-using FinTech.WebAPI.Infrastructure.Services;
+using FinTech.Core.Application.Common.Settings;
+using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Application.Interfaces.Repositories;
+using FinTech.Core.Application.DTOs.Auth;
+using FinTech.Infrastructure.Repositories;
+
+using FinTech.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -41,10 +43,10 @@ namespace FinTech.Infrastructure.Security
             services.AddScoped<IUserSocialLoginRepository, UserSocialLoginRepository>();
             services.AddScoped<IUserSecurityPreferencesRepository, UserSecurityPreferencesRepository>();
             
-            // Register MFA providers
-            services.AddScoped<ITotpProvider, TotpProvider>();
-            services.AddScoped<IEmailMfaProvider, EmailMfaProvider>();
-            services.AddScoped<ISmsMfaProvider, SmsMfaProvider>();
+            // Register MFA providers (Concrete classes used by Factory)
+            services.AddScoped<AppBasedMfaService>();
+            services.AddScoped<EmailMfaService>();
+            services.AddScoped<SmsMfaService>();
             
             // Register MFA factory
             services.AddScoped<IMfaProviderFactory, MfaProviderFactory>();
@@ -136,6 +138,9 @@ namespace FinTech.Infrastructure.Security
                     }
                 };
             });
+            
+            
+
             
             return services;
         }

@@ -1,6 +1,8 @@
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Services;
+using FinTech.Core.Application.Services.ClientPortal;
 using FinTech.Infrastructure.Services;
+using FinTech.Core.Application.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Infrastructure

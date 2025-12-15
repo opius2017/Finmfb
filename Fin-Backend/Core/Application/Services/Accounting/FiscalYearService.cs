@@ -99,29 +99,26 @@ namespace FinTech.Core.Application.Services.Accounting
             }
 
             // Set default values if not provided
-            if (string.IsNullOrEmpty(fiscalYear.Id))
+            var newFiscalYear = new FiscalYear(fiscalYear.Year, fiscalYear.StartDate, fiscalYear.EndDate);
+            newFiscalYear.Code = string.IsNullOrEmpty(fiscalYear.Code) ? await GenerateFiscalYearCodeAsync(fiscalYear.Year, cancellationToken) : fiscalYear.Code;
+            newFiscalYear.Name = string.IsNullOrEmpty(fiscalYear.Name) ? $"Fiscal Year {fiscalYear.Year}" : fiscalYear.Name;
+            newFiscalYear.CreatedBy = fiscalYear.CreatedBy; 
+            newFiscalYear.CreatedAt = DateTime.UtcNow;
+            
+            if (fiscalYear.Status != FiscalYearStatus.Undefined && fiscalYear.Status != FiscalYearStatus.Draft)
             {
-                fiscalYear.Id = Guid.NewGuid().ToString();
+                 newFiscalYear.Status = fiscalYear.Status;
             }
-
-            if (string.IsNullOrEmpty(fiscalYear.Code))
+            else 
             {
-                fiscalYear.Code = await GenerateFiscalYearCodeAsync(fiscalYear.Year, cancellationToken);
+                 newFiscalYear.Status = FiscalYearStatus.Planned;
             }
-
-            if (string.IsNullOrEmpty(fiscalYear.Name))
-            {
-                fiscalYear.Name = $"Fiscal Year {fiscalYear.Year}";
-            }
-
-            fiscalYear.CreatedAt = DateTime.UtcNow;
-            fiscalYear.Status = fiscalYear.Status == FiscalYearStatus.Undefined ? FiscalYearStatus.Planned : fiscalYear.Status;
 
             // Add the fiscal year
-            await _fiscalYearRepository.AddAsync(fiscalYear, cancellationToken);
+            await _fiscalYearRepository.AddAsync(newFiscalYear, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return fiscalYear.Id;
+            return newFiscalYear.Id;
         }
 
         public async Task UpdateFiscalYearAsync(FiscalYear fiscalYear, CancellationToken cancellationToken = default)
@@ -151,7 +148,7 @@ namespace FinTech.Core.Application.Services.Accounting
             }
 
             // Update the fiscal year
-            fiscalYear.LastModifiedAt = DateTime.UtcNow;
+            fiscalYear.LastModifiedDate = DateTime.UtcNow;
             await _fiscalYearRepository.UpdateAsync(fiscalYear, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
@@ -172,7 +169,7 @@ namespace FinTech.Core.Application.Services.Accounting
             // Update status
             fiscalYear.Status = FiscalYearStatus.Open;
             fiscalYear.LastModifiedBy = modifiedBy;
-            fiscalYear.LastModifiedAt = DateTime.UtcNow;
+            fiscalYear.LastModifiedDate = DateTime.UtcNow;
 
             await _fiscalYearRepository.UpdateAsync(fiscalYear, cancellationToken);
 
@@ -213,11 +210,8 @@ namespace FinTech.Core.Application.Services.Accounting
             }
 
             // Update status
-            fiscalYear.Status = FiscalYearStatus.Closed;
+            fiscalYear.CloseYear(modifiedBy);
             fiscalYear.LastModifiedBy = modifiedBy;
-            fiscalYear.LastModifiedAt = DateTime.UtcNow;
-            fiscalYear.ClosedBy = modifiedBy;
-            fiscalYear.ClosedAt = DateTime.UtcNow;
 
             await _fiscalYearRepository.UpdateAsync(fiscalYear, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -242,17 +236,11 @@ namespace FinTech.Core.Application.Services.Accounting
             CancellationToken cancellationToken = default)
         {
             // Create the fiscal year
-            var fiscalYear = new FiscalYear
-            {
-                Id = Guid.NewGuid().ToString(),
-                Year = year,
-                Name = $"Fiscal Year {year}",
-                StartDate = startDate.Date,
-                EndDate = endDate.Date,
-                Status = FiscalYearStatus.Planned,
-                CreatedBy = createdBy,
-                CreatedAt = DateTime.UtcNow
-            };
+            var fiscalYear = new FiscalYear(year, startDate.Date, endDate.Date);
+            fiscalYear.Name = $"Fiscal Year {year}";
+            fiscalYear.Status = FiscalYearStatus.Planned;
+            fiscalYear.CreatedBy = createdBy;
+            fiscalYear.CreatedAt = DateTime.UtcNow;
 
             fiscalYear.Code = await GenerateFiscalYearCodeAsync(year, cancellationToken);
 
@@ -273,17 +261,20 @@ namespace FinTech.Core.Application.Services.Accounting
                         periodEndDate = endDate;
                     }
 
-                    fiscalYear.FinancialPeriods.Add(new FinancialPeriod
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        FiscalYearId = fiscalYear.Id,
-                        Name = $"Period {periodNumber:D2} - {currentDate:MMM yyyy}",
-                        StartDate = currentDate,
-                        EndDate = periodEndDate,
-                        Status = FinancialPeriodStatus.Planned,
-                        CreatedBy = createdBy,
-                        CreatedAt = DateTime.UtcNow
-                    });
+                    var periodCode = $"{fiscalYear.Code}-P{periodNumber:D2}";
+                    var period = new FinancialPeriod(
+                        periodCode,
+                        $"Period {periodNumber:D2} - {currentDate:MMM yyyy}",
+                        currentDate,
+                        periodEndDate,
+                        year,
+                        periodNumber
+                    );
+                    period.FiscalYearId = fiscalYear.Id;
+                    period.Status = FinancialPeriodStatus.Planned;
+                    period.CreatedBy = createdBy;
+                    
+                    fiscalYear.FinancialPeriods.Add(period);
 
                     // Move to next month
                     currentDate = periodEndDate.AddDays(1);
@@ -293,17 +284,20 @@ namespace FinTech.Core.Application.Services.Accounting
             else
             {
                 // Create a single period for the whole fiscal year
-                fiscalYear.FinancialPeriods.Add(new FinancialPeriod
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    FiscalYearId = fiscalYear.Id,
-                    Name = $"Annual Period {year}",
-                    StartDate = startDate,
-                    EndDate = endDate,
-                    Status = FinancialPeriodStatus.Planned,
-                    CreatedBy = createdBy,
-                    CreatedAt = DateTime.UtcNow
-                });
+                var annualPeriodCode = $"{fiscalYear.Code}-ANNUAL";
+                var annualPeriod = new FinancialPeriod(
+                    annualPeriodCode,
+                    $"Annual Period {year}",
+                    startDate,
+                    endDate,
+                    year,
+                    1
+                );
+                annualPeriod.FiscalYearId = fiscalYear.Id;
+                annualPeriod.Status = FinancialPeriodStatus.Planned;
+                annualPeriod.CreatedBy = createdBy;
+                
+                fiscalYear.FinancialPeriods.Add(annualPeriod);
             }
 
             // Save the fiscal year and periods

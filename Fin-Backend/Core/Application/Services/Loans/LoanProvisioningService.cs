@@ -19,7 +19,7 @@ namespace FinTech.Core.Application.Services.Loans
             var ecl = new Random().Next(1000, 100000); // Replace with real calculation
             var provisioning = new LoanProvisioning
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.NewGuid().ToString(),
                 LoanId = loanId,
                 ExpectedCreditLoss = ecl,
                 CalculationDate = DateTime.UtcNow,

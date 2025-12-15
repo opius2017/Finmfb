@@ -111,6 +111,48 @@ public class Member : BaseEntity
     [Column(TypeName = "decimal(18,2)")]
     public decimal OutstandingLoanBalance { get; set; }
 
+    [StringLength(20)]
+    public string? RepaymentScore { get; set; }
+
+    [StringLength(20)]
+    public string? PayrollPin { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal MonthlyContribution { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal ShareCapital { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal GrossSalary { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal NetSalary { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal StatutoryDeductions { get; set; }
+
+    public int CreditScore { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal TotalOutstandingLoans { get; set; } // Note: This might duplicate OutstandingLoanBalance if logic differs
+
+    [StringLength(20)]
+    public string? RiskRating { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal GuarantorObligations { get; set; }
+
+    public bool IsActive { get; set; }
+
+    public DateTime MembershipDate { get; set; }
+
+    [NotMapped]
+    public DateTime MembershipStartDate => JoinDate;
+
+    [NotMapped]
+    public decimal MonthlySalary => MonthlyIncome;
+
     // Navigation properties
     public virtual ICollection<LoanApplication> LoanApplications { get; set; } = new List<LoanApplication>();
     public virtual ICollection<Loan> Loans { get; set; } = new List<Loan>();

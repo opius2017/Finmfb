@@ -15,5 +15,6 @@ namespace FinTech.Core.Application.Interfaces
         /// Send a template-based email with the specified parameters
         /// </summary>
         Task<EmailResponse> SendTemplatedEmailAsync(TemplatedEmailRequest request);
+        Task<EmailResponse> SendEmailAsync(EmailRequest request);
     }
 }

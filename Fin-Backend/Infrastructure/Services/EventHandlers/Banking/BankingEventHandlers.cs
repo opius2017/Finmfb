@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FinTech.Core.Application.Interfaces.Services;
-using FinTech.Core.Application.Services.Integration;
+using FinTech.Core.Application.Interfaces.Services.Integration;
 using FinTech.Core.Domain.Events.Banking;
 using Microsoft.Extensions.Logging;
 

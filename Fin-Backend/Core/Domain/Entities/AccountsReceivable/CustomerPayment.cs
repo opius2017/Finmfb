@@ -14,11 +14,11 @@ public class CustomerPayment : BaseEntity
     
     [Required]
     public Guid CustomerId { get; set; }
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual Customer? Customer { get; set; }
     
     [Required]
     public Guid InvoiceId { get; set; }
-    public virtual Invoice Invoice { get; set; } = null!;
+    public virtual Invoice? Invoice { get; set; }
     
     [Required]
     public DateTime PaymentDate { get; set; }

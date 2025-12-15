@@ -22,17 +22,17 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// Tax type code (e.g., VAT, WHT)
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Description of the tax type
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         /// <summary>
         /// Whether the tax type is active
@@ -52,16 +52,16 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The ID of the account for tax liabilities
         /// </summary>
-        public string LiabilityAccountId { get; set; }
+        public string? LiabilityAccountId { get; set; }
         
         /// <summary>
         /// The ID of the account for tax receivables
         /// </summary>
-        public string ReceivableAccountId { get; set; }
+        public string? ReceivableAccountId { get; set; }
         
         /// <summary>
         /// The regulatory authority managing this tax type
         /// </summary>
-        public string RegulatoryAuthority { get; set; }
+        public string? RegulatoryAuthority { get; set; }
     }
 }

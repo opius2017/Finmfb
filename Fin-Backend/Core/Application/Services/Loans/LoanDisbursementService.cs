@@ -5,6 +5,10 @@ using FinTech.Core.Application.Services.Loans;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Repositories;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using FinTech.Core.Domain.Enums.Loans;
+
+using FinTech.Core.Application.Interfaces.Loans;
 
 namespace FinTech.Core.Application.Services.Loans
 {
@@ -53,7 +57,7 @@ namespace FinTech.Core.Application.Services.Loans
             if (application == null)
                 throw new InvalidOperationException("Loan application not found");
 
-            if (application.ApplicationStatus != "APPROVED")
+            if (application.Status != LoanApplicationStatus.Approved)
                 throw new InvalidOperationException("Only approved applications can be disbursed");
 
             var member = await _memberRepository.GetByIdAsync(application.MemberId);
@@ -76,19 +80,20 @@ namespace FinTech.Core.Application.Services.Loans
                 request.BankTransferReference);
 
             // Update loan status
-            loan.LoanStatus = "DISBURSED";
+            loan.Status = "DISBURSED"; // Loan.Status
             loan.DisbursementDate = DateTime.UtcNow;
             loan.UpdatedAt = DateTime.UtcNow;
             await _loanRepository.UpdateAsync(loan);
 
             // Update application status
-            application.ApplicationStatus = "DISBURSED";
-            application.DisbursementDate = DateTime.UtcNow;
+            application.Status = LoanApplicationStatus.Disbursed;
+            application.DisbursedDate = DateTime.UtcNow;
             application.UpdatedAt = DateTime.UtcNow;
             await _loanApplicationRepository.UpdateAsync(application);
 
             // Update member loan totals
-            member.TotalLoans += loan.PrincipalAmount;
+            // FinTech Best Practice: TotalLoans is int, increment by 1
+            member.TotalLoans = (int)(member.TotalLoans + 1);
             member.OutstandingLoanBalance += loan.OutstandingBalance;
             member.UpdatedAt = DateTime.UtcNow;
             await _memberRepository.UpdateAsync(member);
@@ -125,11 +130,25 @@ namespace FinTech.Core.Application.Services.Loans
             _logger.LogInformation("Generating loan agreement for loan {LoanId}", loan.Id);
 
             // Generate amortization schedule
-            var schedule = _calculatorService.GenerateAmortizationSchedule(
-                loan.PrincipalAmount,
-                loan.InterestRate,
-                loan.RepaymentPeriodMonths,
-                loan.DisbursementDate);
+            // Generate amortization schedule
+            var scheduleRequest = new AmortizationScheduleRequest
+            {
+                Principal = loan.PrincipalAmount,
+                AnnualInterestRate = loan.InterestRate,
+                TenureMonths = loan.RepaymentPeriodMonths,
+                StartDate = loan.DisbursementDate
+            };
+            var installments = _calculatorService.GenerateAmortizationSchedule(scheduleRequest).Installments;
+            var schedule = installments.Select(i => new FinTech.Core.Application.DTOs.Loans.AmortizationScheduleItem 
+            {
+                InstallmentNumber = i.InstallmentNumber,
+                DueDate = i.DueDate,
+                EMI = i.EMIAmount,
+                PrincipalPayment = i.PrincipalAmount,
+                InterestPayment = i.InterestAmount,
+                RemainingBalance = i.ClosingBalance,
+                Status = "Pending"
+            }).ToList();
 
             // Create agreement document content
             var agreementContent = GenerateAgreementContent(loan, member, serialNumber, schedule);
@@ -248,10 +267,10 @@ Thank you for your continued membership.
         /// </summary>
         public async Task<DisbursementHistory> GetMemberDisbursementHistoryAsync(string memberId)
         {
-            var loans = (await _loanRepository.GetAllAsync())
-                .Where(l => l.MemberId == memberId && l.LoanStatus == "DISBURSED")
+            var loans = await _loanRepository.GetAll()
+                .Where(l => l.MemberId == memberId && l.Status == "DISBURSED")
                 .OrderByDescending(l => l.DisbursementDate)
-                .ToList();
+                .ToListAsync();
 
             var history = new DisbursementHistory
             {
@@ -264,7 +283,7 @@ Thank you for your continued membership.
                     SerialNumber = l.LoanNumber,
                     Amount = l.PrincipalAmount,
                     DisbursementDate = l.DisbursementDate,
-                    Status = l.LoanStatus
+                    Status = l.Status
                 }).ToList()
             };
 
@@ -286,18 +305,22 @@ Thank you for your continued membership.
                 application.InterestRate,
                 application.RepaymentPeriodMonths);
 
-            var totalRepayable = _calculatorService.CalculateTotalRepayable(
-                application.ApprovedAmount ?? application.RequestedAmount,
+            var principal = application.ApprovedAmount ?? application.RequestedAmount;
+            var totalInterest = _calculatorService.CalculateTotalInterest(
+                principal,
                 application.InterestRate,
                 application.RepaymentPeriodMonths);
+            var totalRepayable = principal + totalInterest;
 
             var loan = new Loan
             {
-                Id = Guid.NewGuid().ToString(),
+                // Id = Guid.NewGuid().ToString(), // BaseEntity handles this? Or we set it. CommitteeReview sets it. Most BaseEntities have private set Id. I should assign if possible or remove if protected.
+                // Assuming BaseEntity generates ID if not set, or we can set it.
+                // LoanCommitteeService we removed explicit set. Here let's try removing it for safety.
                 LoanNumber = "PENDING", // Will be updated after registration
-                LoanApplicationId = application.Id,
+                LoanApplicationId = Guid.Parse(application.Id), // LoanApplicationId is Guid
                 MemberId = application.MemberId,
-                PrincipalAmount = application.ApprovedAmount ?? application.RequestedAmount,
+                PrincipalAmount = principal,
                 InterestRate = application.InterestRate,
                 RepaymentPeriodMonths = application.RepaymentPeriodMonths,
                 MonthlyInstallment = emi,
@@ -307,8 +330,8 @@ Thank you for your continued membership.
                 InterestPaid = 0,
                 DisbursementDate = disbursementDate,
                 MaturityDate = maturityDate,
-                LoanStatus = "PENDING_DISBURSEMENT",
-                PaymentFrequency = "MONTHLY",
+                Status = "PENDING_DISBURSEMENT",
+                PaymentFrequency = 1, // Monthly int (mapped)
                 NextPaymentDate = disbursementDate.AddMonths(1),
                 DaysInArrears = 0,
                 ArrearsAmount = 0,
@@ -329,7 +352,7 @@ Thank you for your continued membership.
             Loan loan,
             Member member,
             string serialNumber,
-            System.Collections.Generic.List<AmortizationScheduleItem> schedule)
+            List<AmortizationScheduleItem> schedule)
         {
             return $@"
 LOAN AGREEMENT

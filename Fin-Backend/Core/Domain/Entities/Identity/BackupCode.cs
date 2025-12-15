@@ -8,12 +8,12 @@ public class BackupCode : BaseEntity
     public string Code { get; set; } = string.Empty;
     public bool IsUsed { get; set; }
     public DateTime? UsedAt { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     public DateTime ExpiresAt { get; set; }
     
     public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
     public bool IsValid => !IsUsed && !IsExpired;
     
     // Navigation property
-    public virtual ApplicationUser User { get; set; } = null!;
+    public virtual ApplicationUser? User { get; set; }
 }

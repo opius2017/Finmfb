@@ -13,7 +13,13 @@ namespace FinTech.Core.Domain.Entities.FixedAssets
         public string Description { get; private set; }
         public DateTime TransactionDate { get; private set; }
 
-        private AssetTransaction() { } // For EF Core
+        private AssetTransaction() 
+        {
+            FixedAssetId = string.Empty;
+            TransactionType = string.Empty;
+            Reference = string.Empty;
+            Description = string.Empty;
+        } // For EF Core
 
         public AssetTransaction(
             string fixedAssetId,

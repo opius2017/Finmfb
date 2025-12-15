@@ -44,7 +44,7 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(p => p.ClosedBy)
                 .HasMaxLength(100);
                 
-            builder.Property(p => p.ClosedAt);
+            builder.Property(p => p.ClosedDate);
                 
             // Foreign key references
             builder.Property(p => p.FiscalYearId)

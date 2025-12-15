@@ -8,7 +8,7 @@ public class VendorBillItem : BaseEntity
 {
     [Required]
     public Guid VendorBillId { get; set; }
-    public virtual VendorBill VendorBill { get; set; } = null!;
+    public virtual VendorBill? VendorBill { get; set; }
     
     [Required]
     [StringLength(200)]

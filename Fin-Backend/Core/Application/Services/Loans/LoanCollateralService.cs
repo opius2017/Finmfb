@@ -89,7 +89,8 @@ namespace FinTech.Core.Application.Services.Loans
                 {
                     CollateralType = collateralDto.CollateralType,
                     Description = collateralDto.Description,
-                    EstimatedValue = collateralDto.Value,
+                    // FinTech Best Practice: Value is nullable decimal, use null-coalescing
+                    EstimatedValue = collateralDto.Value ?? 0m,
                     ValuationDate = collateralDto.ValuationDate,
                     ValuedBy = collateralDto.ValuedBy,
                     Location = collateralDto.Location,
@@ -170,7 +171,7 @@ namespace FinTech.Core.Application.Services.Loans
                     throw new ApplicationException($"Collateral with ID {id} not found");
                 }
 
-                collateral.Status = FinTech.Core.Domain.Enums.CollateralStatus.Active;
+                collateral.Status = (FinTech.Core.Domain.Features.Loans.Enums.CollateralStatus)FinTech.Core.Domain.Enums.CollateralStatus.Active;
                 collateral.Notes = $"Approved by {approverId}: {comments}";
                 collateral.UpdatedAt = DateTime.UtcNow;
 
@@ -194,7 +195,7 @@ namespace FinTech.Core.Application.Services.Loans
                     throw new ApplicationException($"Collateral with ID {id} not found");
                 }
 
-                collateral.Status = FinTech.Core.Domain.Enums.CollateralStatus.Impaired;
+                collateral.Status = (FinTech.Core.Domain.Features.Loans.Enums.CollateralStatus)FinTech.Core.Domain.Enums.CollateralStatus.Impaired;
                 collateral.Notes = $"Rejected by {rejecterId}: {reason}";
                 collateral.UpdatedAt = DateTime.UtcNow;
 

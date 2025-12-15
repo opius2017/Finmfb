@@ -11,10 +11,10 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanPaymentScheduleTemplate : AuditableEntity
     {
-        public new string Id { get; set; }
-        public string LoanProductId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public new string Id { get; set; } = Guid.NewGuid().ToString();
+        public string LoanProductId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public RepaymentFrequency RepaymentFrequency { get; set; }
         public int GracePeriodDays { get; set; }
         public bool AllowEarlyRepayment { get; set; }
@@ -46,19 +46,19 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanPaymentReminder : AuditableEntity
     {
-        public new string Id { get; set; }
-        public string LoanId { get; set; }
-        public string RepaymentScheduleId { get; set; }
+        public new string Id { get; set; } = Guid.NewGuid().ToString();
+        public string LoanId { get; set; } = string.Empty;
+        public string RepaymentScheduleId { get; set; } = string.Empty;
         public DateTime DueDate { get; set; }
         public decimal AmountDue { get; set; }
         public ReminderType ReminderType { get; set; }
         public DateTime ScheduledDate { get; set; }
         public DateTime? SentDate { get; set; }
-        public string RecipientChannels { get; set; } // Email, SMS, Push, etc.
-        public string MessageTemplate { get; set; }
+        public string RecipientChannels { get; set; } = string.Empty; // Email, SMS, Push, etc.
+        public string MessageTemplate { get; set; } = string.Empty;
         public bool IsSent { get; set; }
-        public string DeliveryStatus { get; set; }
-        public string Notes { get; set; }
+        public string DeliveryStatus { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
         
         // Navigation properties
         public virtual Loan Loan { get; set; }

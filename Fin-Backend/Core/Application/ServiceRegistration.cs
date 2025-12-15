@@ -1,7 +1,13 @@
 using FinTech.Core.Application.Interfaces.Repositories;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
-using FinTech.Core.Application.Services.Implementation;
+
+using FinTech.Core.Application.Services.Regulatory;
+using FinTech.Core.Application.Services.Customers;
+using FinTech.Core.Application.Services.ClientPortal;
+using FinTech.Core.Application.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Loans;
+using FinTech.Core.Application.Services.Loans;
 // Removed: using FinTech.Infrastructure.Repositories; - Violates Clean Architecture
 using Microsoft.Extensions.DependencyInjection;
 

@@ -36,6 +36,9 @@ public class DeductionSchedule : BaseEntity
     [StringLength(450)]
     public string? ProcessedBy { get; set; }
 
+    [StringLength(450)]
+    public string? UpdatedBy { get; set; }
+
     [StringLength(1000)]
     public string? Notes { get; set; }
 

@@ -8,7 +8,14 @@ public class LoginAttempt : BaseEntity
     public string? Username { get; set; }
     public string IpAddress { get; set; } = string.Empty;
     public string? UserAgent { get; set; }
+    public bool Success { get => IsSuccessful; set => IsSuccessful = value; }
     public bool IsSuccessful { get; set; }
+    public DateTime AttemptTime { get => AttemptedAt; set => AttemptedAt = value; }
+    public string LoginMethod { get; set; } = string.Empty;
+    public string Details { get; set; } = string.Empty;
+    public string Country { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
+
     public string? FailureReason { get; set; }
     public DateTime AttemptedAt { get; set; } = DateTime.UtcNow;
     public string? Location { get; set; }

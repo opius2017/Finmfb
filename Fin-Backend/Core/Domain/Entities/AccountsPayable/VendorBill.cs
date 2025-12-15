@@ -16,7 +16,7 @@ public class VendorBill : BaseEntity
     
     [Required]
     public Guid VendorId { get; set; }
-    public virtual Vendor Vendor { get; set; } = null!;
+    public virtual Vendor? Vendor { get; set; }
     
     public Guid? PurchaseOrderId { get; set; }
     public virtual PurchaseOrder? PurchaseOrder { get; set; }

@@ -10,6 +10,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public string? MiddleName { get; set; }
     public DateTime DateOfBirth { get; set; }
     public string? ProfilePictureUrl { get; set; }
+    public bool IsMfaEnabled { get; set; }
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? LastLoginAt { get; set; }
@@ -18,10 +19,11 @@ public class ApplicationUser : IdentityUser<Guid>
     public string? LastModifiedBy { get; set; }
     
     public Guid? CustomerId { get; set; }
+    public string? LastLoginIp { get; set; }
 
     // Navigation properties
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
-    public virtual MfaSettings? MfaSettings { get; set; }
+    public virtual UserMfaSettings? MfaSettings { get; set; }
     public virtual ICollection<TrustedDevice> TrustedDevices { get; set; } = new List<TrustedDevice>();
     public virtual ICollection<LoginAttempt> LoginAttempts { get; set; } = new List<LoginAttempt>();
     public virtual ICollection<SocialLoginProfile> SocialLoginProfiles { get; set; } = new List<SocialLoginProfile>();

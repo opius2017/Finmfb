@@ -5,6 +5,9 @@ using FinTech.Core.Domain.Entities.Common;
 
 namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    /// <summary>
     /// <summary>
     /// Represents a section in a regulatory report template
     /// </summary>
@@ -13,27 +16,31 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Reference to the report template
         /// </summary>
-        public int RegulatoryReportTemplateId { get; set; }
+        public string RegulatoryReportTemplateId { get; set; } = string.Empty;
+        [NotMapped]
+        public string ReportTemplateId { get => RegulatoryReportTemplateId; set => RegulatoryReportTemplateId = value; }
         
         /// <summary>
         /// Navigation property for the report template
         /// </summary>
-        public virtual RegulatoryReportTemplate Template { get; set; }
+        public virtual RegulatoryReportTemplate? Template { get; set; }
+        [NotMapped]
+        public virtual RegulatoryReportTemplate? ReportTemplate { get => Template; set => Template = value; }
         
         /// <summary>
         /// Section code
         /// </summary>
-        public string SectionCode { get; set; }
+        public string SectionCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Section name
         /// </summary>
-        public string SectionName { get; set; }
+        public string SectionName { get; set; } = string.Empty;
         
         /// <summary>
         /// Section description
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         /// <summary>
         /// Display order of the section
@@ -53,7 +60,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Instructions for completing the section
         /// </summary>
-        public string Instructions { get; set; }
+        public string? Instructions { get; set; }
         
         /// <summary>
         /// Whether the section is required
@@ -68,7 +75,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// JSON metadata about the section
         /// </summary>
-        public string Metadata { get; set; }
+        public string? Metadata { get; set; }
         
         /// <summary>
         /// Parent section ID for nested sections (null for top-level sections)
@@ -78,25 +85,25 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Navigation property for the parent section
         /// </summary>
-        public virtual RegulatoryReportSection ParentSection { get; set; }
+        public virtual RegulatoryReportSection? ParentSection { get; set; }
         
         /// <summary>
         /// Collection of child sections
         /// </summary>
-        public virtual ICollection<RegulatoryReportSection> ChildSections { get; set; }
+        public virtual ICollection<RegulatoryReportSection> ChildSections { get; set; } = new List<RegulatoryReportSection>();
         
         /// <summary>
         /// Collection of fields in this section
         /// </summary>
-        public virtual ICollection<RegulatoryReportField> Fields { get; set; }
+        public virtual ICollection<RegulatoryReportField> Fields { get; set; } = new List<RegulatoryReportField>();
+        
+        public virtual ICollection<RegulatoryReportValidationRule> ValidationRules { get; set; } = new List<RegulatoryReportValidationRule>();
         
         /// <summary>
         /// Constructor
         /// </summary>
         public RegulatoryReportSection()
         {
-            ChildSections = new HashSet<RegulatoryReportSection>();
-            Fields = new HashSet<RegulatoryReportField>();
         }
     }
 }

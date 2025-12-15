@@ -12,17 +12,17 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The ID of the tax type
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// The ID of the tax rate
         /// </summary>
-        public string TaxRateId { get; set; }
+        public string TaxRateId { get; set; } = string.Empty;
         
         /// <summary>
         /// The reference to the original transaction
         /// </summary>
-        public string TransactionReference { get; set; }
+        public string TransactionReference { get; set; } = string.Empty;
         
         /// <summary>
         /// The date of the transaction
@@ -32,7 +32,7 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The financial period ID
         /// </summary>
-        public string FinancialPeriodId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
         
         /// <summary>
         /// The taxable amount (amount before tax)
@@ -47,22 +47,22 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The category of the transaction
         /// </summary>
-        public string Category { get; set; }
+        public string? Category { get; set; }
         
         /// <summary>
         /// The ID of the party involved in the transaction
         /// </summary>
-        public string PartyId { get; set; }
+        public string? PartyId { get; set; }
         
         /// <summary>
         /// The name of the party involved in the transaction
         /// </summary>
-        public string PartyName { get; set; }
+        public string? PartyName { get; set; }
         
         /// <summary>
         /// The description of the transaction
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         /// <summary>
         /// Whether the tax has been settled with the tax authority
@@ -77,6 +77,12 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The ID of the journal entry for this tax transaction
         /// </summary>
-        public string JournalEntryId { get; set; }
+        /// <summary>
+        /// The ID of the journal entry for this tax transaction
+        /// </summary>
+        public string? JournalEntryId { get; set; }
+
+        public virtual TaxType? TaxType { get; set; }
+        public virtual TaxRate? TaxRate { get; set; }
     }
 }

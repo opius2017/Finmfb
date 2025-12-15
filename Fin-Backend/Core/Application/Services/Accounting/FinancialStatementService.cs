@@ -810,26 +810,26 @@ namespace FinTech.Core.Application.Services.Accounting
     // DTOs
     public class FinancialStatementSectionDto
     {
-        public string Title { get; set; }
-        public List<FinancialStatementAccountDto> Accounts { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public List<FinancialStatementAccountDto> Accounts { get; set; } = new List<FinancialStatementAccountDto>();
         public decimal Total { get; set; }
     }
 
     public class FinancialStatementAccountDto
     {
-        public string AccountId { get; set; }
-        public string AccountNumber { get; set; }
-        public string AccountName { get; set; }
+        public string AccountId { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
+        public string AccountName { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public bool IsCredit { get; set; }
-        public string CurrencyCode { get; set; }
-        public List<FinancialStatementAccountDto> SubAccounts { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
+        public List<FinancialStatementAccountDto> SubAccounts { get; set; } = new List<FinancialStatementAccountDto>();
     }
 
     public class ComparativePeriodDto
     {
-        public string FinancialPeriodId { get; set; }
-        public string FinancialPeriodName { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
+        public string FinancialPeriodName { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         
@@ -870,47 +870,47 @@ namespace FinTech.Core.Application.Services.Accounting
 
     public class IncomeStatementDto
     {
-        public string FinancialPeriodId { get; set; }
-        public string FinancialPeriodName { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
+        public string FinancialPeriodName { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime GeneratedAt { get; set; }
-        public string CurrencyCode { get; set; }
-        public FinancialStatementSectionDto Income { get; set; }
-        public FinancialStatementSectionDto Expenses { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
+        public FinancialStatementSectionDto Income { get; set; } = new FinancialStatementSectionDto();
+        public FinancialStatementSectionDto Expenses { get; set; } = new FinancialStatementSectionDto();
         public decimal GrossProfit { get; set; }
         public decimal TotalExpenses { get; set; }
         public decimal NetIncome { get; set; }
-        public ComparativePeriodDto ComparativePeriod { get; set; }
+        public ComparativePeriodDto? ComparativePeriod { get; set; }
     }
 
     public class BalanceSheetDto
     {
-        public string FinancialPeriodId { get; set; }
-        public string FinancialPeriodName { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
+        public string FinancialPeriodName { get; set; } = string.Empty;
         public DateTime AsOfDate { get; set; }
         public DateTime GeneratedAt { get; set; }
-        public string CurrencyCode { get; set; }
-        public FinancialStatementSectionDto Assets { get; set; }
-        public FinancialStatementSectionDto Liabilities { get; set; }
-        public FinancialStatementSectionDto Equity { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
+        public FinancialStatementSectionDto Assets { get; set; } = new FinancialStatementSectionDto();
+        public FinancialStatementSectionDto Liabilities { get; set; } = new FinancialStatementSectionDto();
+        public FinancialStatementSectionDto Equity { get; set; } = new FinancialStatementSectionDto();
         public decimal TotalAssets { get; set; }
         public decimal TotalLiabilitiesAndEquity { get; set; }
         public bool IsBalanced { get; set; }
-        public ComparativePeriodDto ComparativePeriod { get; set; }
+        public ComparativePeriodDto? ComparativePeriod { get; set; }
     }
 
     public class CashFlowStatementDto
     {
-        public string FinancialPeriodId { get; set; }
-        public string FinancialPeriodName { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
+        public string FinancialPeriodName { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime GeneratedAt { get; set; }
-        public string CurrencyCode { get; set; }
-        public CashFlowSectionDto OperatingActivities { get; set; }
-        public CashFlowSectionDto InvestingActivities { get; set; }
-        public CashFlowSectionDto FinancingActivities { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
+        public CashFlowSectionDto OperatingActivities { get; set; } = new CashFlowSectionDto();
+        public CashFlowSectionDto InvestingActivities { get; set; } = new CashFlowSectionDto();
+        public CashFlowSectionDto FinancingActivities { get; set; } = new CashFlowSectionDto();
         public decimal NetCashFromOperatingActivities { get; set; }
         public decimal NetCashFromInvestingActivities { get; set; }
         public decimal NetCashFromFinancingActivities { get; set; }
@@ -918,42 +918,42 @@ namespace FinTech.Core.Application.Services.Accounting
         public decimal CashAtBeginningOfPeriod { get; set; }
         public decimal CashAtEndOfPeriod { get; set; }
         public bool IsReconciled { get; set; }
-        public ComparativePeriodDto ComparativePeriod { get; set; }
+        public ComparativePeriodDto? ComparativePeriod { get; set; }
     }
 
     public class CashFlowSectionDto
     {
-        public string Title { get; set; }
-        public List<CashFlowItemDto> Items { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public List<CashFlowItemDto> Items { get; set; } = new List<CashFlowItemDto>();
         public decimal Total { get; set; }
     }
 
     public class CashFlowItemDto
     {
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         public decimal Amount { get; set; }
     }
 
     public class EquityChangeStatementDto
     {
-        public string FinancialPeriodId { get; set; }
-        public string FinancialPeriodName { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
+        public string FinancialPeriodName { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public DateTime GeneratedAt { get; set; }
-        public string CurrencyCode { get; set; }
-        public List<EquityComponentDto> Components { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
+        public List<EquityComponentDto> Components { get; set; } = new List<EquityComponentDto>();
         public decimal TotalBeginningBalance { get; set; }
         public decimal TotalChange { get; set; }
         public decimal TotalEndingBalance { get; set; }
-        public ComparativePeriodDto ComparativePeriod { get; set; }
+        public ComparativePeriodDto? ComparativePeriod { get; set; }
     }
 
     public class EquityComponentDto
     {
-        public string ComponentName { get; set; }
-        public string AccountId { get; set; }
-        public string AccountNumber { get; set; }
+        public string ComponentName { get; set; } = string.Empty;
+        public string AccountId { get; set; } = string.Empty;
+        public string AccountNumber { get; set; } = string.Empty;
         public decimal BeginningBalance { get; set; }
         public decimal Change { get; set; }
         public decimal EndingBalance { get; set; }

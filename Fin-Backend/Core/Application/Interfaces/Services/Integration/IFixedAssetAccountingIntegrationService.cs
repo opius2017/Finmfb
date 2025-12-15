@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace FinTech.Core.Application.Services.Integration
+namespace FinTech.Core.Application.Interfaces.Services.Integration
 {
     public interface IFixedAssetAccountingIntegrationService
     {

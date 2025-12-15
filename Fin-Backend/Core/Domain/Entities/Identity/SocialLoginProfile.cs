@@ -18,5 +18,5 @@ public class SocialLoginProfile : BaseEntity
     public DateTime? TokenExpiresAt { get; set; }
     
     // Navigation property
-    public virtual ApplicationUser User { get; set; } = null!;
+    public virtual ApplicationUser? User { get; set; }
 }

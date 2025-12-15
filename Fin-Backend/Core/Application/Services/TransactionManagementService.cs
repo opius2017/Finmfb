@@ -58,7 +58,7 @@ namespace FinTech.Core.Application.Services
                 }
                 else
                 {
-                    query = query.Where(t => accountNumbers.Contains(t.AccountNumber));
+                    query = query.Where(t => t.AccountNumber != null && accountNumbers.Contains(t.AccountNumber));
                 }
                 
                 // Apply date filters
@@ -140,7 +140,7 @@ namespace FinTech.Core.Application.Services
             {
                 return await _dbContext.DepositTransactions
                     .Where(t => t.AccountNumber == accountNumber && !string.IsNullOrEmpty(t.Category))
-                    .Select(t => t.Category)
+                    .Select(t => t.Category!)
                     .Distinct()
                     .ToListAsync();
             }
@@ -157,7 +157,7 @@ namespace FinTech.Core.Application.Services
             {
                 return await _dbContext.DepositTransactions
                     .Where(t => t.AccountNumber == accountNumber && !string.IsNullOrEmpty(t.Channel))
-                    .Select(t => t.Channel)
+                    .Select(t => t.Channel!)
                     .Distinct()
                     .ToListAsync();
             }

@@ -25,9 +25,36 @@ namespace FinTech.Core.Domain.Entities.FixedAssets
         public string SerialNumber { get; private set; }
         public string Model { get; private set; }
         public string Manufacturer { get; private set; }
+        
+        // Added properties for compatibility
+        // Added properties for compatibility
+        public string? AssetAccountId { get; private set; }
+        public string? AccumulatedDepreciationAccountId { get; private set; }
+        public string? DepreciationExpenseAccountId { get; private set; }
+        public string? DisposalGainLossAccountId { get; private set; }
+        public DateTime? LastDepreciationDate { get; private set; }
+        public string? DisposalType { get; private set; }
+        public decimal? DisposalAmount { get; private set; }
+        public decimal? DisposalGainLoss { get; private set; }
+        public DateTime? WarrantyExpiryDate { get; private set; }
+        public string? AssetTag { get; private set; }
+        public string? Notes { get; private set; }
+        
         public virtual ICollection<AssetTransaction> Transactions { get; private set; } = new List<AssetTransaction>();
 
-        private FixedAsset() { } // For EF Core
+        private FixedAsset() 
+        {
+            AssetCode = string.Empty;
+            AssetName = string.Empty;
+            Description = string.Empty;
+            AssetCategory = string.Empty;
+            DepreciationMethod = string.Empty;
+            Location = string.Empty;
+            AssetStatus = string.Empty;
+            SerialNumber = string.Empty;
+            Model = string.Empty;
+            Manufacturer = string.Empty;
+        } // For EF Core
 
         public FixedAsset(
             string assetCode,
@@ -60,6 +87,67 @@ namespace FinTech.Core.Domain.Entities.FixedAssets
             SerialNumber = serialNumber;
             Model = model;
             Manufacturer = manufacturer;
+        }
+
+        public void UpdateDetails(
+            string assetName,
+            string description,
+            string assetCategory,
+            string location,
+            string notes,
+            string assetAccountId,
+            string accumulatedDepreciationAccountId,
+            string depreciationExpenseAccountId,
+            string disposalGainLossAccountId)
+        {
+            AssetName = assetName;
+            Description = description;
+            AssetCategory = assetCategory;
+            Location = location;
+            Notes = notes;
+            if(!string.IsNullOrEmpty(assetAccountId)) AssetAccountId = assetAccountId;
+            if(!string.IsNullOrEmpty(accumulatedDepreciationAccountId)) AccumulatedDepreciationAccountId = accumulatedDepreciationAccountId;
+            if(!string.IsNullOrEmpty(depreciationExpenseAccountId)) DepreciationExpenseAccountId = depreciationExpenseAccountId;
+            if(!string.IsNullOrEmpty(disposalGainLossAccountId)) DisposalGainLossAccountId = disposalGainLossAccountId;
+            
+            LastModifiedDate = DateTime.UtcNow;
+        }
+
+        public void SetAccountIds(
+            string assetAccountId, 
+            string accumulatedDepreciationAccountId, 
+            string depreciationExpenseAccountId, 
+            string disposalGainLossAccountId)
+        {
+            AssetAccountId = assetAccountId;
+            AccumulatedDepreciationAccountId = accumulatedDepreciationAccountId;
+            DepreciationExpenseAccountId = depreciationExpenseAccountId;
+            DisposalGainLossAccountId = disposalGainLossAccountId;
+        }
+
+        public void UpdateDepreciation(decimal amount, DateTime depreciationDate)
+        {
+             AccumulatedDepreciation += amount;
+             CurrentValue -= amount;
+             LastDepreciationDate = depreciationDate;
+             LastModifiedDate = DateTime.UtcNow;
+        }
+
+        public void CompleteDisposal(
+             string disposalType, 
+             decimal disposalAmount, 
+             decimal gainLoss, 
+             DateTime disposalDate,
+             string disposedBy)
+        {
+
+             AssetStatus = "DISPOSED";
+             DisposalType = disposalType;
+             DisposalAmount = disposalAmount;
+             DisposalGainLoss = gainLoss;
+             DisposalDate = disposalDate;
+             LastModifiedDate = DateTime.UtcNow;
+             LastModifiedBy = disposedBy;
         }
 
         public void RecordAcquisition(decimal taxAmount, string reference, string description)

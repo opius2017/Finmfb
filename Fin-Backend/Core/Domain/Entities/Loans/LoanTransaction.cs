@@ -97,4 +97,9 @@ public class LoanTransaction : BaseEntity
 
     [StringLength(1000)]
     public string? ReversalReason { get; set; }
+    [StringLength(50)]
+    public string? SourceAccountNumber { get; set; }
+
+    [NotMapped]
+    public string ReferenceNumber { get => Reference; set => Reference = value; }
 }

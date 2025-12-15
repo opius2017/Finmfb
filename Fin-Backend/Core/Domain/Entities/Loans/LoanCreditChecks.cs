@@ -10,10 +10,14 @@ namespace FinTech.Core.Domain.Entities.Loans
     public class LoanCreditCheck : AuditableEntity
     {
     public new string? Id { get; set; }
+    public string? LoanId { get; set; } // Added to match config
+   
     public string? LoanApplicationId { get; set; }
     public string? CustomerId { get; set; }
         public DateTime CheckDate { get; set; }
     public string? CreditBureau { get; set; }
+    public string? CreditBureauId { get; set; } // Added to match config
+    public decimal? MaxEligibleAmount { get; set; } // Added to match config
     public string? ReferenceNumber { get; set; }
     public decimal? CreditScore { get; set; }
     public string? CreditRating { get; set; }
@@ -26,6 +30,13 @@ namespace FinTech.Core.Domain.Entities.Loans
     public string? PerformedBy { get; set; }
     public CreditCheckResult Result { get; set; }
     public string? Notes { get; set; }
+    
+    // Added properties to match configuration
+    public decimal? ExistingLoans { get; set; }
+    public decimal? OutstandingDebt { get; set; }
+    public string? CheckedBy { get; set; }
+    public string? Comments { get; set; }
+    public string? Status { get; set; }
         
         // Navigation property
     public virtual LoanApplication? LoanApplication { get; set; }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using FinTech.Core.Domain.Entities.Security;
+using FinTech.Core.Domain.Entities.Identity;
 
 namespace FinTech.Infrastructure.Data.Configurations.Accounting
 {
@@ -98,16 +99,16 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 .IsRequired()
                 .HasMaxLength(256);
                 
-            builder.Property(x => x.IPAddress)
+            builder.Property(x => x.IpAddress)
                 .HasMaxLength(50);
                 
             builder.Property(x => x.UserAgent)
                 .HasMaxLength(500);
                 
-            builder.Property(x => x.AttemptTime)
+            builder.Property(x => x.AttemptedAt)
                 .IsRequired();
                 
-            builder.Property(x => x.WasSuccessful)
+            builder.Property(x => x.IsSuccessful)
                 .IsRequired();
                 
             builder.Property(x => x.FailureReason)
@@ -115,8 +116,8 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 
             // Create indexes for efficient querying
             builder.HasIndex(x => x.Username);
-            builder.HasIndex(x => x.IPAddress);
-            builder.HasIndex(x => x.AttemptTime);
+            builder.HasIndex(x => x.IpAddress);
+            builder.HasIndex(x => x.AttemptedAt);
         }
     }
     

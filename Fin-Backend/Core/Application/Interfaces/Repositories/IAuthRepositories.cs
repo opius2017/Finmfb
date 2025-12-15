@@ -1,13 +1,13 @@
-using FinTech.Core.Domain.Entities.Auth;
-using AuthRefreshToken = FinTech.Core.Domain.Entities.Auth.RefreshToken;
-using AuthMfaSettings = FinTech.Core.Domain.Entities.Auth.MfaSettings;
-using AuthBackupCode = FinTech.Core.Domain.Entities.Auth.BackupCode;
-using AuthMfaChallenge = FinTech.Core.Domain.Entities.Auth.MfaChallenge;
-using AuthTrustedDevice = FinTech.Core.Domain.Entities.Auth.TrustedDevice;
-using AuthLoginAttempt = FinTech.Core.Domain.Entities.Auth.LoginAttempt;
-using AuthSocialLoginProfile = FinTech.Core.Domain.Entities.Auth.SocialLoginProfile;
-using AuthSecurityAlert = FinTech.Core.Domain.Entities.Auth.SecurityAlert;
-using AuthUserSecurityPreferences = FinTech.Core.Domain.Entities.Auth.UserSecurityPreferences;
+using FinTech.Core.Domain.Entities.Identity;
+using AuthRefreshToken = FinTech.Core.Domain.Entities.Identity.RefreshToken;
+using AuthMfaSettings = FinTech.Core.Domain.Entities.Identity.UserMfaSettings;
+using AuthBackupCode = FinTech.Core.Domain.Entities.Identity.BackupCode;
+using AuthMfaChallenge = FinTech.Core.Domain.Entities.Identity.MfaChallenge;
+using AuthTrustedDevice = FinTech.Core.Domain.Entities.Identity.TrustedDevice;
+using AuthLoginAttempt = FinTech.Core.Domain.Entities.Identity.LoginAttempt;
+using AuthSocialLoginProfile = FinTech.Core.Domain.Entities.Identity.SocialLoginProfile;
+using AuthSecurityAlert = FinTech.Core.Domain.Entities.Identity.SecurityAlert;
+using AuthUserSecurityPreferences = FinTech.Core.Domain.Entities.Identity.UserSecurityPreferences;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -125,7 +125,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="recoveryEmail">The recovery email for email-based MFA</param>
         /// <param name="recoveryPhone">The recovery phone for SMS-based MFA</param>
         /// <returns>The MFA settings</returns>
-        Task<AuthMfaSettings> EnableMfaAsync(string userId, string method, string sharedKey = null, string recoveryEmail = null, string recoveryPhone = null);
+        Task<AuthMfaSettings> EnableMfaAsync(string userId, string method, string? sharedKey = null, string? recoveryEmail = null, string? recoveryPhone = null);
         
         /// <summary>
         /// Disables MFA for a user
@@ -291,7 +291,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <returns>The trusted device</returns>
         Task<AuthTrustedDevice> AddTrustedDeviceAsync(string userId, string deviceId, string deviceName, 
             string deviceType, string operatingSystem, string browser, string browserVersion, 
-            string ipAddress, string country = null, string city = null, string region = null);
+            string ipAddress, string? country = null, string? city = null, string? region = null);
         
         /// <summary>
         /// Removes a trusted device
@@ -385,7 +385,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="city">The city</param>
         /// <returns>The login attempt</returns>
         Task<AuthLoginAttempt> RecordLoginAttemptAsync(string username, string userId, bool success, string failureReason, 
-            string ipAddress, string userAgent, string loginMethod, string country = null, string city = null);
+            string ipAddress, string userAgent, string loginMethod, string? country = null, string? city = null);
     }
     
     /// <summary>
@@ -482,7 +482,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         /// <param name="deviceId">The device ID</param>
         /// <returns>The security alert</returns>
         Task<AuthSecurityAlert> CreateAlertAsync(string userId, string alertType, string message, string details, 
-            string severity, string ipAddress = null, string deviceId = null);
+            string severity, string? ipAddress = null, string? deviceId = null);
         
         /// <summary>
         /// Marks a security alert as read

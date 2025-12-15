@@ -48,11 +48,14 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
 
     public class AccountBalanceDto
     {
+        public Guid AccountId { get; set; }
         public string AccountNumber { get; set; }
         public string AccountName { get; set; }
+        public string AccountType { get; set; }
         public decimal CurrentBalance { get; set; }
         public decimal AvailableBalance { get; set; }
         public string Currency { get; set; } = "NGN";
+        public string Status { get; set; }
         public DateTime AsOfDate { get; set; }
     }
 

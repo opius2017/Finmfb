@@ -124,11 +124,15 @@ public enum InterestPostingFrequency
 
 public enum AccountStatus
 {
+    Undefined = 0,
     Active = 1,
     Dormant = 2,
+    Inactive = 2,
     Frozen = 3,
     Closed = 4,
-    PendingClosure = 5
+    PendingClosure = 5,
+    Suspended = 6,
+    PendingApproval = 7
 }
 
 public enum TransactionType
@@ -140,7 +144,9 @@ public enum TransactionType
     ChargeDebit = 5,
     Reversal = 6,
     Opening = 7,
-    Closing = 8
+    Closing = 8,
+    Credit = 9,
+    Debit = 10
 }
 
 // Loan Management Enums
@@ -207,7 +213,8 @@ public enum RepaymentStatus
     Paid = 2,
     PartiallyPaid = 3,
     Overdue = 4,
-    Waived = 5
+    Waived = 5,
+    WrittenOff = 6
 }
 
 public enum CollateralStatus

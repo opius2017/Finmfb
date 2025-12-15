@@ -8,7 +8,7 @@ public class PurchaseOrderItem : BaseEntity
 {
     [Required]
     public Guid PurchaseOrderId { get; set; }
-    public virtual PurchaseOrder PurchaseOrder { get; set; } = null!;
+    public virtual PurchaseOrder? PurchaseOrder { get; set; }
     
     [Required]
     [StringLength(200)]

@@ -10,15 +10,15 @@ namespace FinTech.Core.Domain.Entities.Accounting
     /// </summary>
     public class FiscalYear : AggregateRoot
     {
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public int Year { get; private set; }
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
         public FiscalYearStatus Status { get; set; }
-        public bool IsClosed { get; private set; }
-        public DateTime? ClosedDate { get; private set; }
-        public string ClosedBy { get; private set; }
+        public bool IsClosed { get; set; }
+        public DateTime? ClosedDate { get; set; }
+        public string? ClosedBy { get; set; }
         public bool IsCurrentYear { get; private set; }
         
         // Aliases for compatibility
@@ -27,7 +27,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
         
         private List<FinancialPeriod> _periods = new List<FinancialPeriod>();
         public IReadOnlyCollection<FinancialPeriod> Periods => _periods.AsReadOnly();
-        public ICollection<FinancialPeriod> FinancialPeriods { get; set; }
+        public ICollection<FinancialPeriod> FinancialPeriods { get; set; } = new List<FinancialPeriod>();
         
         // Required by EF Core
         private FiscalYear() 
@@ -54,7 +54,6 @@ namespace FinTech.Core.Domain.Entities.Accounting
             IsCurrentYear = isCurrentYear;
             Code = string.Empty;
             Name = string.Empty;
-            ClosedBy = string.Empty;
             FinancialPeriods = new List<FinancialPeriod>();
             
             AddDomainEvent(new FiscalYearCreatedEvent(Id, year, startDate, endDate));
@@ -150,8 +149,11 @@ namespace FinTech.Core.Domain.Entities.Accounting
 
     public enum FiscalYearStatus
     {
-        Draft,
-        Active,
-        Closed
+        Undefined = 0,
+        Draft = 1,
+        Planned = 2,
+        Open = 3,
+        Active = 4,
+        Closed = 5
     }
 }

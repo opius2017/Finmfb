@@ -1,7 +1,10 @@
-using FinTech.WebAPI.Application.DTOs.Auth;
-using FinTech.WebAPI.Application.Interfaces;
-using FinTech.WebAPI.Domain.Entities.Auth;
+using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Application.Interfaces.Repositories;
+using FinTech.Core.Domain.Entities.Identity;
+using FinTech.Core.Domain.Entities.ClientPortal;
+using FinTech.Core.Application.DTOs.Auth;
 using Microsoft.AspNetCore.Identity;
+using SecurityActivity = FinTech.Core.Domain.Entities.Identity.SecurityActivity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,7 +15,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using FinTech.Infrastructure.Data;
-using FinTech.WebAPI.Application.Services;
+using FinTech.Infrastructure.Data;
+using FinTech.Infrastructure.Services.Security;
 
 namespace FinTech.WebAPI.Infrastructure.Services
 {
@@ -193,7 +197,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-                    await _notificationService.SendMfaSetupSuccessEmail(user.Email, user.UserName);
+                    await _notificationService.SendMfaSetupSuccessEmailAsync(userId, user.UserName, user.Email);
                 }
                 
                 await _context.SaveChangesAsync();
@@ -240,9 +244,9 @@ namespace FinTech.WebAPI.Infrastructure.Services
                     var user = await _userManager.FindByIdAsync(userId);
                     if (user != null)
                     {
-                        await _notificationService.SendSecurityAlertEmail(
+                        await _notificationService.SendSecurityAlertEmailAsync(
+                            userId,
                             user.Email, 
-                            user.UserName,
                             "Two-Factor Authentication Disabled",
                             "Your account's two-factor authentication has been disabled. If you did not make this change, please contact support immediately."
                         );
@@ -298,26 +302,24 @@ namespace FinTech.WebAPI.Infrastructure.Services
                                 if (isUnusual && preferences.UnusualActivityNotificationsEnabled)
                                 {
                                     // Send suspicious activity alert
-                                    await _notificationService.SendSuspiciousActivityAlertEmail(
+                                    await _notificationService.SendSuspiciousActivityAlertAsync(
+                                        userId,
                                         user.Email,
-                                        user.UserName,
-                                        deviceInfo.Browser,
-                                        deviceInfo.OperatingSystem,
+                                        "Suspicious Login",
                                         deviceInfo.IpAddress,
-                                        DateTime.UtcNow
+                                        $"{deviceInfo.Browser} on {deviceInfo.OperatingSystem}",
+                                        "Unknown"
                                     );
                                 }
                                 else
                                 {
                                     // Send regular login notification
-                                    await _notificationService.SendLoginNotificationEmail(
+                                    await _notificationService.SendNewLoginNotificationAsync(
+                                        userId,
                                         user.Email,
-                                        user.UserName,
-                                        deviceInfo.Browser,
-                                        deviceInfo.OperatingSystem,
                                         deviceInfo.IpAddress,
-                                        DateTime.UtcNow,
-                                        false // Not a new trusted device notification
+                                        $"{deviceInfo.Browser} on {deviceInfo.OperatingSystem}",
+                                        "Unknown"
                                     );
                                 }
                             }
@@ -431,9 +433,9 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-                    await _notificationService.SendSecurityAlertEmail(
+                     await _notificationService.SendSecurityAlertEmailAsync(
+                        userId,
                         user.Email,
-                        user.UserName,
                         "Backup Code Used for Login",
                         "A backup code was just used to access your account. If this wasn't you, please secure your account immediately."
                     );
@@ -507,10 +509,11 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-                    await _notificationService.SendBackupCodesGeneratedEmail(
-                        user.Email,
-                        user.UserName,
-                        backupCodes
+                    await _notificationService.SendBackupCodesGeneratedEmailAsync(
+                        userId, 
+                        user.UserName, 
+                        // We don't send codes via email for security
+                        user.Email
                     );
                 }
                 
@@ -658,14 +661,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-                    await _notificationService.SendLoginNotificationEmail(
+                    await _notificationService.SendTrustedDeviceAddedEmailAsync(
+                        userId,
                         user.Email,
-                        user.UserName,
-                        deviceInfo.Browser,
-                        deviceInfo.OperatingSystem,
-                        deviceInfo.IpAddress,
-                        DateTime.UtcNow,
-                        true // New device trusted
+                        $"{deviceInfo.Browser} on {deviceInfo.OperatingSystem}"
                     );
                 }
                 
@@ -758,11 +757,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null)
                 {
-                    await _notificationService.SendSecurityAlertEmail(
+                    await _notificationService.SendTrustedDeviceRemovedEmailAsync(
+                        userId,
                         user.Email,
-                        user.UserName,
-                        "Device Removed From Trusted Devices",
-                        $"A device ({device.DeviceName} - {device.Browser} on {device.OperatingSystem}) has been removed from your trusted devices list. If you did not perform this action, please secure your account immediately."
+                        $"{device.Browser} on {device.OperatingSystem}"
                     );
                 }
                 

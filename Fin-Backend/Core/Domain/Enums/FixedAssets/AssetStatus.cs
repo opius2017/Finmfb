@@ -6,6 +6,11 @@ namespace FinTech.Core.Domain.Enums.FixedAssets;
 public enum AssetStatus
 {
     /// <summary>
+    /// Asset is active (generic status)
+    /// </summary>
+    Active = 0,
+
+    /// <summary>
     /// Asset is in active use
     /// </summary>
     InUse = 1,

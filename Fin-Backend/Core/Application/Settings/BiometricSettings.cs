@@ -4,5 +4,6 @@ namespace FinTech.Core.Application.Settings
     {
         public string BaseUrl { get; set; } = string.Empty;
         public string ApiKey { get; set; } = string.Empty;
+        public string TenantId { get; set; } = string.Empty;
     }
 }

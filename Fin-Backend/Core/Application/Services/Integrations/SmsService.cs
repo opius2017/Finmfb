@@ -61,7 +61,7 @@ public class SmsService : ISmsService
                 var result = await response.Content.ReadFromJsonAsync<SmsResponse>();
                 _logger.LogInformation("SMS successfully sent to: {PhoneNumber}, MessageId: {MessageId}", 
                     MaskPhoneNumber(request.PhoneNumber), result?.MessageId);
-                return result;
+                return result ?? new SmsResponse { Success = false, Message = "Empty response from gateway" };
             }
             
             var errorContent = await response.Content.ReadAsStringAsync();
@@ -108,7 +108,7 @@ public class SmsService : ISmsService
                 var result = await response.Content.ReadFromJsonAsync<SmsResponse>();
                 _logger.LogInformation("Bulk SMS successfully sent to {Count} recipients, BatchId: {BatchId}", 
                     request.PhoneNumbers.Count, result?.BatchId);
-                return result;
+                return result ?? new SmsResponse { Success = false, Message = "Empty response from gateway" };
             }
             
             var errorContent = await response.Content.ReadAsStringAsync();
@@ -146,7 +146,7 @@ public class SmsService : ISmsService
                 var result = await response.Content.ReadFromJsonAsync<DeliveryStatusResponse>();
                 _logger.LogInformation("Delivery status for message {MessageId}: {Status}", 
                     messageId, result?.Status);
-                return result;
+                return result ?? new DeliveryStatusResponse { Success = false, Message = "Empty response from gateway" };
             }
             
             var errorContent = await response.Content.ReadAsStringAsync();

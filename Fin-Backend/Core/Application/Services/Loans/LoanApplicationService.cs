@@ -1,4 +1,5 @@
 using System;
+using FinTech.Core.Domain.Enums.Loans;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -84,7 +85,8 @@ namespace FinTech.Core.Application.Services.Loans
                 _logger.LogInformation("Creating new loan application for customer: {CustomerId}", loanApplication.CustomerId);
                 
                 // Validate loan product exists
-                var loanProduct = await _loanProductRepository.GetByIdAsync(loanApplication.LoanProductId);
+                // FinTech Best Practice: Convert Guid to string for GetByIdAsync
+                var loanProduct = await _loanProductRepository.GetByIdAsync(loanApplication.LoanProductId.ToString());
                 if (loanProduct == null)
                 {
                     throw new ArgumentException($"Loan product with ID: {loanApplication.LoanProductId} not found");

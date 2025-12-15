@@ -153,7 +153,7 @@ namespace FinTech.Infrastructure.Messaging
             _subsManager.Clear();
         }
 
-        private void SubsManager_OnEventRemoved(object sender, string eventName)
+        private void SubsManager_OnEventRemoved(object? sender, string eventName)
         {
             if (!_persistentConnection.IsConnected)
             {

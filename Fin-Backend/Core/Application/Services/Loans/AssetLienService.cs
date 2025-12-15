@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
+using FinTech.Core.Application.Interfaces.Loans;
 
 namespace FinTech.Core.Application.Services.Loans
 {
@@ -106,7 +109,7 @@ namespace FinTech.Core.Application.Services.Loans
                 lien.ReleasedBy = request.ReleasedBy;
                 lien.ReleaseNotes = request.ReleaseNotes;
                 lien.UpdatedAt = DateTime.UtcNow;
-                lien.UpdatedBy = request.ReleasedBy;
+                lien.LastModifiedBy = request.ReleasedBy;
 
                 await _lienRepository.UpdateAsync(lien);
                 await _unitOfWork.SaveChangesAsync();
@@ -131,7 +134,10 @@ namespace FinTech.Core.Application.Services.Loans
 
         public async Task<List<AssetLienDto>> GetLoanAssetLiensAsync(string loanId)
         {
-            var liens = await _lienRepository.FindAsync(l => l.LoanId == loanId);
+            var liens = await _lienRepository.GetAll()
+                        .Where(l => l.LoanId == loanId)
+                        .ToListAsync();
+
             return liens.OrderByDescending(l => l.CreatedAt)
                        .Select(l => MapToDto(l))
                        .ToList();
@@ -139,19 +145,24 @@ namespace FinTech.Core.Application.Services.Loans
 
         public async Task<List<AssetLienDto>> GetMemberAssetLiensAsync(string memberId, string? status = null)
         {
-            var query = await _lienRepository.FindAsync(l => l.MemberId == memberId);
+            var query = _lienRepository.GetAll().Where(l => l.MemberId == memberId);
 
             if (!string.IsNullOrEmpty(status))
                 query = query.Where(l => l.Status == status);
 
-            return query.OrderByDescending(l => l.CreatedAt)
+            var result = await query.ToListAsync();
+
+            return result.OrderByDescending(l => l.CreatedAt)
                        .Select(l => MapToDto(l))
                        .ToList();
         }
 
         public async Task<List<AssetLienDto>> GetActiveAssetLiensAsync()
         {
-            var liens = await _lienRepository.FindAsync(l => l.Status == "ACTIVE");
+            var liens = await _lienRepository.GetAll()
+                        .Where(l => l.Status == "ACTIVE")
+                        .ToListAsync();
+
             return liens.OrderByDescending(l => l.CreatedAt)
                        .Select(l => MapToDto(l))
                        .ToList();
@@ -159,18 +170,18 @@ namespace FinTech.Core.Application.Services.Loans
 
         public async Task<bool> HasActiveLiensAsync(string loanId)
         {
-            var liens = await _lienRepository.FindAsync(l => 
-                l.LoanId == loanId && 
-                l.Status == "ACTIVE");
+            var liens = await _lienRepository.GetAll()
+                .Where(l => l.LoanId == loanId && l.Status == "ACTIVE")
+                .ToListAsync();
             
             return liens.Any();
         }
 
         public async Task<decimal> GetMemberTotalLienValueAsync(string memberId)
         {
-            var activeLiens = await _lienRepository.FindAsync(l => 
-                l.MemberId == memberId && 
-                l.Status == "ACTIVE");
+            var activeLiens = await _lienRepository.GetAll()
+                .Where(l => l.MemberId == memberId && l.Status == "ACTIVE")
+                .ToListAsync();
             
             return activeLiens.Sum(l => l.AssetValue);
         }
@@ -180,7 +191,7 @@ namespace FinTech.Core.Application.Services.Loans
         private async Task<string> GenerateLienNumberAsync()
         {
             var year = DateTime.UtcNow.Year;
-            var allLiens = await _lienRepository.GetAllAsync();
+            var allLiens = await _lienRepository.GetAll().ToListAsync();
             var count = allLiens.Count(l => l.LienNumber.StartsWith($"LIEN/{year}")) + 1;
             return $"LIEN/{year}/{count:D6}";
         }

@@ -1,4 +1,4 @@
-using FinTech.WebAPI.Domain.Entities.Auth;
+using FinTech.Core.Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -192,9 +192,9 @@ namespace FinTech.WebAPI.Infrastructure.Data.Configurations
         }
     }
     
-    public class SecurityPreferencesConfiguration : IEntityTypeConfiguration<SecurityPreferences>
+    public class SecurityPreferencesConfiguration : IEntityTypeConfiguration<UserSecurityPreferences>
     {
-        public void Configure(EntityTypeBuilder<SecurityPreferences> builder)
+        public void Configure(EntityTypeBuilder<UserSecurityPreferences> builder)
         {
             builder.HasKey(x => x.Id);
             

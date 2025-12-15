@@ -32,29 +32,29 @@ namespace FinTech.Core.Domain.Entities.Accounting
     /// </summary>
     public class FinancialPeriod : AggregateRoot
     {
-        public string PeriodCode { get; private set; }
-        public string Name { get; private set; } // Renamed from PeriodName for consistency
+        public string PeriodCode { get; private set; } = string.Empty;
+        public string Name { get; private set; } = string.Empty; // Renamed from PeriodName for consistency
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
-        public bool IsClosed { get; private set; }
-        public DateTime? ClosedAt { get; private set; } // Renamed from ClosedDate for consistency
-        public string ClosedBy { get; private set; }
+        public bool IsClosed { get; set; }
+        public DateTime? ClosedDate { get; set; }
+        public string? ClosedBy { get; set; }
         public int FiscalYear { get; private set; }
         public int FiscalMonth { get; private set; }
         public bool IsAdjustmentPeriod { get; private set; }
         
         // Missing property fixes
-        public string FiscalYearId { get; set; }
+        public string? FiscalYearId { get; set; }
         public FinancialPeriodStatus Status { get; set; }
         public DateTime CreatedAt { get => CreatedDate; set => CreatedDate = value; }
         public DateTime? LastModifiedAt { get => LastModifiedDate; set => LastModifiedDate = value; }
         
         // New properties for period closing process
         public ClosingStatus ClosingStatus { get; private set; } = ClosingStatus.NotStarted;
-        public string ValidationErrors { get; private set; }
+        public string? ValidationErrors { get; private set; }
         public DateTime? ClosingStartedAt { get; private set; }
         public DateTime? ClosingCompletedAt { get; private set; }
-        public string ClosingInitiatedBy { get; private set; }
+        public string? ClosingInitiatedBy { get; private set; }
         
         // Required by EF Core
         private FinancialPeriod() { }
@@ -159,7 +159,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
                 throw new InvalidOperationException($"Financial period {PeriodCode} is not ready to be closed");
                 
             IsClosed = true;
-            ClosedAt = DateTime.UtcNow;
+            ClosedDate = DateTime.UtcNow;
             ClosedBy = closedBy;
             ClosingStatus = ClosingStatus.Completed;
             ClosingCompletedAt = DateTime.UtcNow;
@@ -195,7 +195,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
                 throw new InvalidOperationException($"Financial period {PeriodCode} is not closed");
                 
             IsClosed = false;
-            ClosedAt = null;
+            ClosedDate = null;
             ClosedBy = null;
             ClosingStatus = ClosingStatus.NotStarted;
             ClosingStartedAt = null;

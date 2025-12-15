@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using RabbitMQ.Client;
 
 namespace FinTech.Infrastructure.Messaging
 {

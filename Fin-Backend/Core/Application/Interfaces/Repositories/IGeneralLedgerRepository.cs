@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Core.Domain.Entities.Accounting;
-using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.ValueObjects;
 
 namespace FinTech.Core.Application.Interfaces.Repositories
 {
@@ -20,7 +20,7 @@ namespace FinTech.Core.Application.Interfaces.Repositories
         Task<ChartOfAccount> GetAccountByCodeAsync(string accountCode);
         Task<IEnumerable<ChartOfAccount>> GetAccountsByIdsAsync(IEnumerable<string> accountIds);
         Task<IEnumerable<ChartOfAccount>> GetAllActiveAccountsAsync();
-        Task<bool> UpdateAccountBalanceAsync(string accountId, Money amount, bool isDebit);
+        Task<bool> UpdateAccountBalanceAsync(string accountId, FinTech.Core.Domain.ValueObjects.Money amount, bool isDebit);
         
         // Journal Entry Line Operations
         Task<IEnumerable<JournalEntryLine>> GetJournalLinesForAccountAsync(string accountId, DateTime fromDate, DateTime toDate);

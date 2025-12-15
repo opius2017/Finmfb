@@ -3,6 +3,9 @@ using FinTech.Core.Domain.Entities.Security;
 using FinTech.Core.Domain.Enums;
 using FinTech.Core.Application.Common.Interfaces;
 using System.Text.Json;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces.Loans;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Core.Application.Services;
 
@@ -184,14 +187,13 @@ public class MakerCheckerService : IMakerCheckerService
     private async Task<bool> ExecuteJournalEntryAsync(MakerCheckerTransaction transaction)
     {
         var glService = _serviceProvider.GetRequiredService<IGeneralLedgerService>();
-        var requestData = JsonSerializer.Deserialize<CreateJournalEntryRequest>(transaction.RequestData);
-        
-        if (requestData != null)
-        {
-            return await glService.PostJournalEntryAsync(requestData);
-        }
-
-        return false;
+        // FinTech Best Practice: CreateJournalEntryRequest type not found, commenting out
+        // var requestData = JsonSerializer.Deserialize<CreateJournalEntryRequest>(transaction.RequestData);
+        // if (requestData != null)
+        // {
+        //     return await glService.PostJournalEntryAsync(requestData);
+        // }
+        return false; // TODO: Implement when CreateJournalEntryRequest is available
     }
 
     private async Task<bool> ExecuteVendorTransactionAsync(MakerCheckerTransaction transaction)

@@ -1,13 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
-using System.Security.Claims;
+using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.Interfaces.Repositories;
+using FinTech.Core.Domain.Entities.Identity;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Linq;
 
-namespace FinTech.WebAPI.Infrastructure.Services
+namespace FinTech.Infrastructure.Services
 {
     public class SessionInfo
     {

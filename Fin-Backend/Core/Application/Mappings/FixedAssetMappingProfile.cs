@@ -11,14 +11,14 @@ namespace FinTech.Core.Application.Mappings
             // Asset mappings
             CreateMap<Asset, AssetDto>()
                 .ForMember(dest => dest.AssetCategoryName, opt => opt.MapFrom(src => src.AssetCategory.CategoryName))
-                .ForMember(dest => dest.CustodianName, opt => opt.MapFrom(src => src.Custodian != null ? $"{src.Custodian.FirstName} {src.Custodian.LastName}" : null));
+                .ForMember(dest => dest.CustodianName, opt => opt.MapFrom(src => src.Custodian));
             
             CreateMap<CreateAssetDto, Asset>();
             CreateMap<UpdateAssetDto, Asset>();
             
             // Asset Category mappings
             CreateMap<AssetCategory, AssetCategoryDto>()
-                .ForMember(dest => dest.ParentCategoryName, opt => opt.MapFrom(src => src.ParentCategory != null ? src.ParentCategory.CategoryName : null));
+                .ForMember(dest => dest.ParentCategoryName, opt => opt.Ignore());
             
             CreateMap<CreateAssetCategoryDto, AssetCategory>();
             CreateMap<UpdateAssetCategoryDto, AssetCategory>();

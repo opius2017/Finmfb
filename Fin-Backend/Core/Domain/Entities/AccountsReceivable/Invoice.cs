@@ -14,7 +14,7 @@ public class Invoice : BaseEntity
     
     [Required]
     public Guid CustomerId { get; set; }
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual Customer? Customer { get; set; }
     
     [Required]
     public DateTime InvoiceDate { get; set; }

@@ -20,8 +20,14 @@ namespace FinTech.Core.Application.Interfaces.Services
         Task<bool> UpdateAccountBalanceAsync(string accountId, Money amount, bool isDebit);
         Task<Money> GetAccountBalanceAsync(string accountId);
         Task<AccountBalanceDto> GetAccountWithBalanceAsync(string accountId);
-        Task<IEnumerable<AccountBalanceDto>> GetAccountBalancesAsync(IEnumerable<string> accountIds = null);
+        Task<IEnumerable<AccountBalanceDto>> GetAccountBalancesAsync(IEnumerable<string> accountIds, DateTime asOfDate, System.Threading.CancellationToken cancellationToken = default);
         Task<IEnumerable<JournalEntryLineDto>> GetAccountLedgerEntriesAsync(string accountId, DateTime fromDate, DateTime toDate);
+        
+        // Added for Period Closing and Fixed Assets
+        Task<Money> GetAccountBalanceAsync(string accountId, DateTime fromDate, DateTime toDate);
+        Task<string> GenerateJournalNumberAsync();
+        Task<bool> CreateJournalEntryAsync(FinTech.Core.Domain.Entities.Accounting.JournalEntry journalEntry);
+        Task UpdateAccountBalancesAsync(FinTech.Core.Domain.Entities.Accounting.JournalEntry journalEntry, System.Threading.CancellationToken cancellationToken = default);
         
         // Financial Period Management
         Task<bool> IsAccountingPeriodOpenAsync(DateTime transactionDate);
@@ -33,7 +39,7 @@ namespace FinTech.Core.Application.Interfaces.Services
         Task<FiscalYearDto> GetCurrentFiscalYearAsync();
         
         // Financial Reporting
-        Task<TrialBalanceDto> GenerateTrialBalanceAsync(DateTime asOfDate, string fiscalPeriodId = null);
+        Task<TrialBalanceDto> GenerateTrialBalanceAsync(DateTime asOfDate, string? fiscalPeriodId = null);
         Task<BalanceSheetDto> GenerateBalanceSheetAsync(DateTime asOfDate);
         Task<IncomeStatementDto> GenerateIncomeStatementAsync(DateTime fromDate, DateTime toDate);
         Task<CashFlowStatementDto> GenerateCashFlowStatementAsync(DateTime fromDate, DateTime toDate);

@@ -14,14 +14,17 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public bool IsLocked { get; set; }
         public DateTime? LockoutEnd { get; set; }
         public int FailedLoginAttempts { get; set; }
+        public int LoginCount { get; set; }
         public string? DeviceInfo { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public string? TwoFactorMethod { get; set; }
         public string? ProfilePictureUrl { get; set; }
         public bool IsProfileComplete { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
+
+        public Guid UserId { get; set; } // Link to Identity User
         public ICollection<ClientSession> Sessions { get; set; } = new List<ClientSession>();
         public ICollection<ClientDevice> Devices { get; set; } = new List<ClientDevice>();
+        public NotificationPreferences? NotificationPreferences { get; set; }
+        public DashboardPreferences? DashboardPreferences { get; set; }
     }
 }

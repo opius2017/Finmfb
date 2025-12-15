@@ -12,12 +12,12 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// The ID of the tax type this rate belongs to
         /// </summary>
-        public string TaxTypeId { get; set; }
+        public string TaxTypeId { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax rate name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// The tax rate as a percentage
@@ -52,6 +52,6 @@ namespace FinTech.Core.Domain.Entities.Tax
         /// <summary>
         /// Category to which this tax rate applies (e.g., "Goods", "Services")
         /// </summary>
-        public string ApplicableCategory { get; set; }
+        public string? ApplicableCategory { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using FinTech.Core.Domain.Common;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FinTech.Core.Domain.Entities.RegulatoryReporting
 {
@@ -12,22 +13,26 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Reference to the report template
         /// </summary>
-        public int RegulatoryReportTemplateId { get; set; }
+        public string RegulatoryReportTemplateId { get; set; } = string.Empty;
+        [NotMapped]
+        public string ReportTemplateId { get => RegulatoryReportTemplateId; set => RegulatoryReportTemplateId = value; }
         
         /// <summary>
         /// Navigation property for the report template
         /// </summary>
-        public virtual RegulatoryReportTemplate Template { get; set; }
+        public virtual RegulatoryReportTemplate? Template { get; set; }
+        [NotMapped]
+        public virtual RegulatoryReportTemplate? ReportTemplate { get => Template; set => Template = value; }
         
         /// <summary>
         /// Name of the schedule
         /// </summary>
-        public string ScheduleName { get; set; }
+        public string ScheduleName { get; set; } = string.Empty;
         
         /// <summary>
         /// Description of the schedule
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
         
         /// <summary>
         /// Frequency of the schedule
@@ -78,15 +83,19 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// Next execution date
         /// </summary>
         public DateTime? NextExecutionDate { get; set; }
+        [NotMapped]
+        public DateTime? NextGenerationDate { get => NextExecutionDate; set => NextExecutionDate = value; }
+        
+        public DateTime? NextSubmissionDeadline { get; set; }
         
         /// <summary>
         /// CRON expression for complex schedules
         /// </summary>
-        public string CronExpression { get; set; }
+        public string? CronExpression { get; set; }
         
         /// <summary>
         /// Comma-separated list of email addresses to notify
         /// </summary>
-        public string NotificationEmails { get; set; }
+        public string? NotificationEmails { get; set; }
     }
 }

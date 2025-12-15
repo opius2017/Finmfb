@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
+using FinTech.Infrastructure.Data;
+
 namespace FinTech.Infrastructure
 {
     /// <summary>
@@ -27,15 +29,16 @@ namespace FinTech.Infrastructure
             services.AddScoped<QRCodeService>();
             
             // Register Accounting Integration Services
-            services.AddScoped<FinTech.Core.Application.Services.Integration.IBankingAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.BankingAccountingIntegrationService>();
-            services.AddScoped<FinTech.Core.Application.Services.Integration.ILoanAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.LoanAccountingIntegrationService>();
-            services.AddScoped<FinTech.Core.Application.Services.Integration.IPayrollAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.PayrollAccountingIntegrationService>();
-            services.AddScoped<FinTech.Core.Application.Services.Integration.IFixedAssetAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.FixedAssetAccountingIntegrationService>();
+            // Register Accounting Integration Services
+            services.AddScoped<FinTech.Core.Application.Interfaces.Services.Integration.IBankingAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.BankingAccountingIntegrationService>();
+            services.AddScoped<FinTech.Core.Application.Interfaces.Services.Integration.ILoanAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.LoanAccountingIntegrationService>();
+            services.AddScoped<FinTech.Core.Application.Interfaces.Services.Integration.IPayrollAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.PayrollAccountingIntegrationService>();
+            services.AddScoped<FinTech.Core.Application.Interfaces.Services.Integration.IFixedAssetAccountingIntegrationService, FinTech.Infrastructure.Services.Integration.FixedAssetAccountingIntegrationService>();
 
             // Register background jobs
-            services.AddScoped<DailyDelinquencyCheckJob>();
-            services.AddScoped<VoucherExpiryJob>();
-            services.AddScoped<MonthlyDeductionScheduleJob>();
+            // services.AddScoped<DailyDelinquencyCheckJob>();
+            // services.AddScoped<VoucherExpiryJob>();
+            // services.AddScoped<MonthlyDeductionScheduleJob>();
 
             // Configure Hangfire
             services.AddHangfire(config => config

@@ -10,41 +10,41 @@ namespace FinTech.Core.Application.Interfaces.Services
         // Template Management
         Task<RegulatoryReportTemplate> CreateTemplateAsync(RegulatoryReportTemplate template);
         Task<RegulatoryReportTemplate> UpdateTemplateAsync(RegulatoryReportTemplate template);
-        Task<RegulatoryReportTemplate> GetTemplateByIdAsync(Guid id);
+        Task<RegulatoryReportTemplate> GetTemplateByIdAsync(string id);
         Task<IEnumerable<RegulatoryReportTemplate>> GetAllTemplatesAsync();
         Task<IEnumerable<RegulatoryReportTemplate>> GetTemplatesByRegulatoryBodyAsync(RegulatoryBody regulatoryBody);
-        Task<bool> DeleteTemplateAsync(Guid id);
+        Task<bool> DeleteTemplateAsync(string id);
         
         // Section Management
         Task<RegulatoryReportSection> CreateSectionAsync(RegulatoryReportSection section);
         Task<RegulatoryReportSection> UpdateSectionAsync(RegulatoryReportSection section);
-        Task<bool> DeleteSectionAsync(Guid id);
-        Task<IEnumerable<RegulatoryReportSection>> GetSectionsByTemplateIdAsync(Guid templateId);
+        Task<bool> DeleteSectionAsync(string id);
+        Task<IEnumerable<RegulatoryReportSection>> GetSectionsByTemplateIdAsync(string templateId);
         
         // Field Management
         Task<RegulatoryReportField> CreateFieldAsync(RegulatoryReportField field);
         Task<RegulatoryReportField> UpdateFieldAsync(RegulatoryReportField field);
-        Task<bool> DeleteFieldAsync(Guid id);
-        Task<IEnumerable<RegulatoryReportField>> GetFieldsBySectionIdAsync(Guid sectionId);
+        Task<bool> DeleteFieldAsync(string id);
+        Task<IEnumerable<RegulatoryReportField>> GetFieldsBySectionIdAsync(string sectionId);
         
         // Report Generation
-        Task<RegulatoryReportSubmission> InitiateReportSubmissionAsync(Guid templateId, DateTime reportingPeriodStart, DateTime reportingPeriodEnd);
-        Task<RegulatoryReportSubmission> PopulateReportDataAsync(Guid submissionId);
-        Task<IEnumerable<RegulatoryReportValidation>> ValidateReportAsync(Guid submissionId);
-        Task<string> GenerateReportFileAsync(Guid submissionId);
-        Task<RegulatoryReportSubmission> SubmitReportAsync(Guid submissionId);
+        Task<RegulatoryReportSubmission> InitiateReportSubmissionAsync(string templateId, DateTime reportingPeriodStart, DateTime reportingPeriodEnd);
+        Task<RegulatoryReportSubmission> PopulateReportDataAsync(string submissionId);
+        Task<IEnumerable<RegulatoryReportValidation>> ValidateReportAsync(string submissionId);
+        Task<string> GenerateReportFileAsync(string submissionId);
+        Task<RegulatoryReportSubmission> SubmitReportAsync(string submissionId);
         
         // Report Submission Management
-        Task<RegulatoryReportSubmission> GetSubmissionByIdAsync(Guid id);
-        Task<IEnumerable<RegulatoryReportSubmission>> GetSubmissionsByTemplateIdAsync(Guid templateId, DateTime? fromDate = null, DateTime? toDate = null);
+        Task<RegulatoryReportSubmission> GetSubmissionByIdAsync(string id);
+        Task<IEnumerable<RegulatoryReportSubmission>> GetSubmissionsByTemplateIdAsync(string templateId, DateTime? fromDate = null, DateTime? toDate = null);
         Task<IEnumerable<RegulatoryReportSubmission>> GetPendingSubmissionsAsync();
-        Task<RegulatoryReportSubmission> ApproveSubmissionAsync(Guid submissionId, Guid approverId, string comments);
-        Task<RegulatoryReportSubmission> RejectSubmissionAsync(Guid submissionId, string reason);
+        Task<RegulatoryReportSubmission> ApproveSubmissionAsync(string submissionId, Guid approverId, string comments);
+        Task<RegulatoryReportSubmission> RejectSubmissionAsync(string submissionId, string reason);
         
         // Schedule Management
         Task<RegulatoryReportSchedule> CreateScheduleAsync(RegulatoryReportSchedule schedule);
         Task<RegulatoryReportSchedule> UpdateScheduleAsync(RegulatoryReportSchedule schedule);
-        Task<bool> DeleteScheduleAsync(Guid id);
+        Task<bool> DeleteScheduleAsync(string id);
         Task<IEnumerable<RegulatoryReportSchedule>> GetUpcomingSchedulesAsync(int daysAhead);
         
         // CBN Specific Reports

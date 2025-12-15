@@ -79,6 +79,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// Annual reporting
         /// </summary>
         Annual = 6,
+        Annually = 6, // Added to match usage
         
         /// <summary>
         /// Ad-hoc reporting (no set schedule)
@@ -100,6 +101,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// Report is pending review
         /// </summary>
         PendingReview = 2,
+        PendingApproval = 8, // Added to match usage
         
         /// <summary>
         /// Report has been reviewed and returned for corrections
@@ -161,17 +163,17 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Name of the report template
         /// </summary>
-        public string TemplateName { get; set; }
+        public string TemplateName { get; set; } = string.Empty;
         
         /// <summary>
         /// Unique code for the report template
         /// </summary>
-        public string TemplateCode { get; set; }
+        public string TemplateCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Description of the report template
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         /// <summary>
         /// Regulatory body that requires this report
@@ -186,7 +188,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// File format for report submission (e.g., XML, XBRL, CSV, Excel)
         /// </summary>
-        public string FileFormat { get; set; }
+        public string FileFormat { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether the template is active
@@ -196,11 +198,17 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Version of the report schema
         /// </summary>
-        public string SchemaVersion { get; set; }
+        public string SchemaVersion { get; set; } = "1.0";
         
         /// <summary>
         /// Template structure in JSON format
         /// </summary>
-        public string TemplateStructure { get; set; }
+        public string TemplateStructure { get; set; } = "{}";
+
+        /// <summary>
+        /// Sections within this report template
+        /// </summary>
+        public virtual ICollection<RegulatoryReportSection> Sections { get; set; } = new List<RegulatoryReportSection>();
+        public virtual ICollection<RegulatoryReportSubmission> Submissions { get; set; } = new List<RegulatoryReportSubmission>();
     }
 }

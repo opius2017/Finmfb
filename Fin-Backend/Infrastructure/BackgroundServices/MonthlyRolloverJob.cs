@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FinTech.Core.Application.Services;
+using FinTech.Core.Application.Interfaces.Loans;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -57,9 +57,9 @@ namespace FinTech.Infrastructure.BackgroundServices
                 
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var thresholdManager = scope.ServiceProvider.GetRequiredService<IThresholdManager>();
+                    var thresholdService = scope.ServiceProvider.GetRequiredService<IMonthlyThresholdService>();
                     
-                    await thresholdManager.ProcessMonthlyRolloverAsync();
+                    await thresholdService.PerformMonthlyRolloverAsync();
                     
                     _logger.LogInformation("Monthly rollover completed successfully");
                 }

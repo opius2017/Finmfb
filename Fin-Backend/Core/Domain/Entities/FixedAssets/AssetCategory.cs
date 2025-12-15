@@ -7,18 +7,30 @@ namespace FinTech.Core.Domain.Entities.FixedAssets
 {
     public class AssetCategory : BaseEntity
     {
-        public string CategoryName { get; private set; }
-        public string Description { get; private set; }
-        public decimal DefaultUsefulLifeYears { get; private set; }
-        public string DefaultDepreciationMethod { get; private set; }
-        public string GLAccountFixedAsset { get; private set; }
-        public string GLAccountDepreciation { get; private set; }
-        public string GLAccountAccumDepreciation { get; private set; }
-        public string GLAccountDisposalGain { get; private set; }
-        public string GLAccountDisposalLoss { get; private set; }
-        public virtual ICollection<FixedAsset> Assets { get; private set; } = new List<FixedAsset>();
+        public string CategoryName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal DefaultUsefulLifeYears { get; set; }
+        public string DefaultDepreciationMethod { get; set; } = string.Empty;
+        public string GLAccountFixedAsset { get; set; } = string.Empty;
+        public string GLAccountDepreciation { get; set; } = string.Empty;
+        public string GLAccountAccumDepreciation { get; set; } = string.Empty;
+        public string GLAccountDisposalGain { get; set; } = string.Empty;
+        public string GLAccountDisposalLoss { get; set; } = string.Empty;
+        public virtual ICollection<FixedAsset> Assets { get; set; } = new List<FixedAsset>();
 
-        private AssetCategory() { } // For EF Core
+        // Additional properties for Compatibility
+        public string? TenantId { get; set; }
+        public string? ParentCategoryId { get; set; }
+        public virtual AssetCategory? ParentCategory { get; set; }
+        public virtual ICollection<AssetCategory> ChildCategories { get; set; } = new List<AssetCategory>();
+        public string? CategoryCode { get; set; }
+        public decimal DefaultSalvageValuePercent { get; set; }
+
+        public string AssetAccountId { get => GLAccountFixedAsset; set => GLAccountFixedAsset = value; }
+        public string DepreciationExpenseAccountId { get => GLAccountDepreciation; set => GLAccountDepreciation = value; }
+        public string AccumulatedDepreciationAccountId { get => GLAccountAccumDepreciation; set => GLAccountAccumDepreciation = value; }
+
+        public AssetCategory() { } // For EF Core
 
         public AssetCategory(
             string categoryName,

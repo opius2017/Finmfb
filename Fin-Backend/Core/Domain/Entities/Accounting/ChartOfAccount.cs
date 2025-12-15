@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using FinTech.Core.Domain.Entities.Accounting.Events;
 using FinTech.Core.Domain.Entities.Common;
+using FinTech.Core.Domain.Enums;
+using FinTech.Core.Domain.ValueObjects; // Added
 
 namespace FinTech.Core.Domain.Entities.Accounting
 {
@@ -10,33 +12,41 @@ namespace FinTech.Core.Domain.Entities.Accounting
     /// </summary>
     public class ChartOfAccount : AggregateRoot
     {
-        public string AccountNumber { get; set; }
-        public string AccountName { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
+        
+        // Added aliases for compatibility
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public string AccountCode { get => AccountNumber; set => AccountNumber = value; }
+        
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public bool IsActive => Status == AccountStatus.Active;
+        
+        public string AccountName { get; set; } = string.Empty;
         public AccountClassification Classification { get; set; }
         public AccountType AccountType { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public AccountStatus Status { get; set; }
         public NormalBalanceType NormalBalance { get; set; }
-        public string ParentAccountId { get; set; }
-        public ChartOfAccount ParentAccount { get; private set; }
+        public string? ParentAccountId { get; set; }
+        public ChartOfAccount? ParentAccount { get; private set; }
         public ICollection<ChartOfAccount> ChildAccounts { get; private set; } = new List<ChartOfAccount>();
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
         public bool AllowManualEntries { get; set; }
         public bool RequiresReconciliation { get; set; }
-        public string CBNReportingCode { get; set; }
-        public string NDICReportingCode { get; set; }
-        public string IFRSCategory { get; set; }
+        public string? CBNReportingCode { get; set; }
+        public string? NDICReportingCode { get; set; }
+        public string? IFRSCategory { get; set; }
         public int AccountLevel { get; set; }
-        public string AccountMnemonic { get; set; }
+        public string? AccountMnemonic { get; set; }
+
         public bool IsBudgeted { get; set; }
         public bool IsRestricted { get; set; }
         public int? BranchId { get; set; }
-        public string Tags { get; set; }
-        public Money CurrentBalance { get; private set; }
-        public DateTime CreatedAt { get; set; }
-        public string CreatedBy { get; set; }
+        public string? Tags { get; set; }
+        public new FinTech.Core.Domain.ValueObjects.Money CurrentBalance { get; private set; } = FinTech.Core.Domain.ValueObjects.Money.Zero("NGN"); // Default
+
         public DateTime? LastModifiedAt { get; set; }
-        public string LastModifiedBy { get; set; }
+
         
         // Required by EF Core
         private ChartOfAccount() { }
@@ -83,7 +93,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
             IsRestricted = isRestricted;
             BranchId = branchId;
             Tags = tags;
-            CurrentBalance = Money.Zero(currencyCode);
+            CurrentBalance = FinTech.Core.Domain.ValueObjects.Money.Zero(currencyCode);
             CreatedAt = DateTime.UtcNow;
             
             // Add domain event
@@ -92,17 +102,17 @@ namespace FinTech.Core.Domain.Entities.Accounting
         
         public void UpdateAccountDetails(
             string accountName, 
-            string description,
+            string? description,
             bool allowManualEntries,
             bool requiresReconciliation,
-            string cbnReportingCode,
+            string? cbnReportingCode,
             string modifiedBy,
-            string ndicReportingCode = null,
-            string ifrsCategory = null,
-            string accountMnemonic = null,
+            string? ndicReportingCode = null,
+            string? ifrsCategory = null,
+            string? accountMnemonic = null,
             bool isBudgeted = false,
             bool isRestricted = false,
-            string tags = null)
+            string? tags = null)
         {
             AccountName = accountName;
             Description = description;
@@ -121,7 +131,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
             AddDomainEvent(new AccountUpdatedEvent(Id, AccountNumber, accountName));
         }
         
-        public void UpdateBalance(Money amount, bool isDebit)
+        public void UpdateBalance(FinTech.Core.Domain.ValueObjects.Money amount, bool isDebit)
         {
             // For debit normal balance accounts (Assets, Expenses)
             if (NormalBalance == NormalBalanceType.Debit)

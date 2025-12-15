@@ -28,7 +28,7 @@ namespace FinTech.Infrastructure.Repositories
         {
             return await _dbContext.Assets
                 .Include(a => a.AssetCategory)
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id.ToString());
         }
 
         public async Task<Asset> GetAssetByNumberAsync(string assetNumber)
@@ -50,7 +50,7 @@ namespace FinTech.Infrastructure.Repositories
         {
             return await _dbContext.Assets
                 .Include(a => a.AssetCategory)
-                .Where(a => a.AssetCategoryId == categoryId)
+                .Where(a => a.AssetCategoryId == categoryId.ToString())
                 .ToListAsync();
         }
 
@@ -106,7 +106,7 @@ namespace FinTech.Infrastructure.Repositories
 
         public async Task<bool> DeleteAssetAsync(Guid id)
         {
-            var asset = await _dbContext.Assets.FindAsync(id);
+            var asset = await _dbContext.Assets.FindAsync(id.ToString());
             if (asset == null)
                 return false;
                 
@@ -150,20 +150,20 @@ namespace FinTech.Infrastructure.Repositories
             return await _dbContext.AssetCategories
                 .Include(c => c.ParentCategory)
                 .Include(c => c.ChildCategories)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id.ToString());
         }
 
         public async Task<AssetCategory> GetAssetCategoryByCodeAsync(string categoryCode, Guid tenantId)
         {
             return await _dbContext.AssetCategories
                 .Include(c => c.ParentCategory)
-                .FirstOrDefaultAsync(c => c.CategoryCode == categoryCode && c.TenantId == tenantId);
+                .FirstOrDefaultAsync(c => c.CategoryCode == categoryCode && c.TenantId == tenantId.ToString());
         }
 
         public async Task<IEnumerable<AssetCategory>> GetAllAssetCategoriesAsync(Guid tenantId)
         {
             return await _dbContext.AssetCategories
-                .Where(c => c.TenantId == tenantId)
+                .Where(c => c.TenantId == tenantId.ToString())
                 .Include(c => c.ParentCategory)
                 .ToListAsync();
         }
@@ -184,7 +184,7 @@ namespace FinTech.Infrastructure.Repositories
 
         public async Task<bool> DeleteAssetCategoryAsync(Guid id)
         {
-            var category = await _dbContext.AssetCategories.FindAsync(id);
+            var category = await _dbContext.AssetCategories.FindAsync(id.ToString());
             if (category == null)
                 return false;
                 
@@ -200,7 +200,7 @@ namespace FinTech.Infrastructure.Repositories
         public async Task<IEnumerable<AssetDepreciationSchedule>> GetDepreciationScheduleForAssetAsync(Guid assetId)
         {
             return await _dbContext.AssetDepreciationSchedules
-                .Where(s => s.AssetId == assetId)
+                .Where(s => s.AssetId == assetId.ToString())
                 .OrderBy(s => s.PeriodNumber)
                 .ToListAsync();
         }
@@ -249,13 +249,13 @@ namespace FinTech.Infrastructure.Repositories
         {
             return await _dbContext.AssetMaintenances
                 .Include(m => m.Asset)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id.ToString());
         }
 
         public async Task<IEnumerable<AssetMaintenance>> GetMaintenanceHistoryForAssetAsync(Guid assetId)
         {
             return await _dbContext.AssetMaintenances
-                .Where(m => m.AssetId == assetId)
+                .Where(m => m.AssetId == assetId.ToString())
                 .OrderByDescending(m => m.MaintenanceDate)
                 .ToListAsync();
         }
@@ -287,7 +287,7 @@ namespace FinTech.Infrastructure.Repositories
 
         public async Task<bool> DeleteMaintenanceRecordAsync(Guid id)
         {
-            var maintenance = await _dbContext.AssetMaintenances.FindAsync(id);
+            var maintenance = await _dbContext.AssetMaintenances.FindAsync(id.ToString());
             if (maintenance == null)
                 return false;
                 
@@ -322,7 +322,7 @@ namespace FinTech.Infrastructure.Repositories
         {
             return await _dbContext.AssetTransfers
                 .Include(t => t.Asset)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id.ToString());
         }
 
         public async Task<IEnumerable<AssetTransfer>> GetTransferHistoryForAssetAsync(Guid assetId)
@@ -374,7 +374,7 @@ namespace FinTech.Infrastructure.Repositories
             return await _dbContext.AssetInventoryCounts
                 .Include(i => i.CountItems)
                 .ThenInclude(ci => ci.Asset)
-                .FirstOrDefaultAsync(i => i.Id == id);
+                .FirstOrDefaultAsync(i => i.Id == id.ToString());
         }
 
         public async Task<IEnumerable<AssetInventoryCount>> GetInventoryCountsByStatusAsync(InventoryCountStatus status)
@@ -440,7 +440,7 @@ namespace FinTech.Infrastructure.Repositories
         {
             return await _dbContext.AssetDisposals
                 .Include(d => d.Asset)
-                .FirstOrDefaultAsync(d => d.Id == id);
+                .FirstOrDefaultAsync(d => d.Id == id.ToString());
         }
 
         public async Task<IEnumerable<AssetDisposal>> GetAssetDisposalsByStatusAsync(DisposalStatus status)
@@ -492,7 +492,7 @@ namespace FinTech.Infrastructure.Repositories
         {
             return await _dbContext.AssetRevaluations
                 .Include(r => r.Asset)
-                .FirstOrDefaultAsync(r => r.Id == id);
+                .FirstOrDefaultAsync(r => r.Id == id.ToString());
         }
 
         public async Task<IEnumerable<AssetRevaluation>> GetRevaluationHistoryForAssetAsync(Guid assetId)

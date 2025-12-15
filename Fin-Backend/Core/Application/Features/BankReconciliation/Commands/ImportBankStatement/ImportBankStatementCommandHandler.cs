@@ -23,7 +23,7 @@ public class ImportBankStatementCommandHandler : IRequestHandler<ImportBankState
             
         if (bankAccount == null)
         {
-            return Result<ImportBankStatementResponse>.Failure(
+            return Result.Failure<ImportBankStatementResponse>(
                 Error.NotFound("BankAccount.NotFound", "Bank account not found"));
         }
 
@@ -32,7 +32,7 @@ public class ImportBankStatementCommandHandler : IRequestHandler<ImportBankState
 
         if (!statementLines.Any())
         {
-            return Result<ImportBankStatementResponse>.Failure(
+            return Result.Failure<ImportBankStatementResponse>(
                 Error.Validation("Import.NoData", "No valid data found in the file"));
         }
 
@@ -42,10 +42,8 @@ public class ImportBankStatementCommandHandler : IRequestHandler<ImportBankState
         var openingBalance = statementLines.First().Balance - statementLines.First().DebitAmount + statementLines.First().CreditAmount;
         var closingBalance = statementLines.Last().Balance;
 
-        // Create bank statement
         var statement = new BankStatement
         {
-            Id = Guid.NewGuid().ToString(),
             BankAccountId = request.BankAccountId,
             BankAccountName = bankAccount.AccountName,
             BankAccountNumber = bankAccount.AccountNumber,
@@ -113,7 +111,6 @@ public class ImportBankStatementCommandHandler : IRequestHandler<ImportBankState
             {
                 var line = new BankStatementLine
                 {
-                    Id = Guid.NewGuid().ToString(),
                     TransactionDate = DateTime.Parse(columns[0].Trim()),
                     Description = columns[1].Trim(),
                     Reference = columns.Length > 2 ? columns[2].Trim() : null,

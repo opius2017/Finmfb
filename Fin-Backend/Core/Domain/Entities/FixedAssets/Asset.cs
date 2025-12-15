@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using FinTech.Core.Domain.Entities.Common;
 using FinTech.Core.Domain.Enums.FixedAssets;
 
@@ -14,6 +15,9 @@ public class Asset : BaseEntity
     /// Unique asset number for identification
     /// </summary>
     public string AssetNumber { get; set; } = string.Empty;
+
+    [NotMapped]
+    public string AssetCode { get => AssetNumber; set => AssetNumber = value; }
     
     /// <summary>
     /// Name of the asset
@@ -33,7 +37,7 @@ public class Asset : BaseEntity
     /// <summary>
     /// Reference to the asset category
     /// </summary>
-    public Guid AssetCategoryId { get; set; }
+    public string AssetCategoryId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for asset category
@@ -49,6 +53,9 @@ public class Asset : BaseEntity
     /// Original purchase cost of the asset
     /// </summary>
     public decimal PurchaseCost { get; set; }
+
+    [NotMapped]
+    public decimal AcquisitionCost { get => PurchaseCost; set => PurchaseCost = value; }
     
     /// <summary>
     /// Current book value of the asset
@@ -59,12 +66,25 @@ public class Asset : BaseEntity
     /// Salvage/residual value expected at the end of useful life
     /// </summary>
     public decimal SalvageValue { get; set; }
+
+    [NotMapped]
+    public decimal ResidualValue { get => SalvageValue; set => SalvageValue = value; }
     
     /// <summary>
     /// Useful life of the asset in months
     /// </summary>
     public int UsefulLifeMonths { get; set; }
     
+    /// <summary>
+    /// Useful life of the asset in years (Derived/Helper)
+    /// </summary>
+    [NotMapped]
+    public decimal UsefulLifeYears 
+    { 
+        get => UsefulLifeMonths / 12.0m; 
+        set => UsefulLifeMonths = (int)(value * 12); 
+    }
+
     /// <summary>
     /// Depreciation method used for this asset
     /// </summary>
@@ -74,6 +94,9 @@ public class Asset : BaseEntity
     /// Current status of the asset
     /// </summary>
     public AssetStatus Status { get; set; }
+
+    [NotMapped]
+    public string AssetStatus { get => Status.ToString(); set => Status = Enum.Parse<Domain.Enums.FixedAssets.AssetStatus>(value, true); }
     
     /// <summary>
     /// Barcode or tag number physically attached to the asset
@@ -98,7 +121,7 @@ public class Asset : BaseEntity
     /// <summary>
     /// Employee responsible for the asset
     /// </summary>
-    public Guid? ResponsibleEmployeeId { get; set; }
+    public string? ResponsibleEmployeeId { get; set; }
     
     /// <summary>
     /// Current custodian of the asset
@@ -108,7 +131,7 @@ public class Asset : BaseEntity
     /// <summary>
     /// Vendor from whom the asset was purchased
     /// </summary>
-    public Guid? VendorId { get; set; }
+    public string? VendorId { get; set; }
     
     /// <summary>
     /// Purchase order reference if asset was purchased through a PO
@@ -194,4 +217,24 @@ public class Asset : BaseEntity
     /// Navigation property for asset revaluations
     /// </summary>
     public virtual ICollection<AssetRevaluation> Revaluations { get; set; } = new List<AssetRevaluation>();
+
+    [NotMapped]
+    public decimal AccumulatedDepreciation 
+    { 
+        get => PurchaseCost - CurrentBookValue; 
+        set => CurrentBookValue = PurchaseCost - value;
+    }
+
+    [NotMapped]
+    public bool IsDepreciable => DepreciationMethod != DepreciationMethod.None;
+
+    [NotMapped]
+    public decimal BookValue { get => CurrentBookValue; set => CurrentBookValue = value; }
+
+    [NotMapped]
+    public decimal SalvageValuePercent 
+    { 
+        get => PurchaseCost > 0 ? (SalvageValue / PurchaseCost) * 100 : 0; 
+        set => SalvageValue = PurchaseCost * (value / 100); 
+    }
 }

@@ -70,4 +70,10 @@ public class DepositTransaction : BaseEntity
 
     [StringLength(50)]
     public string? Channel { get; set; }
+
+    [NotMapped]
+    public string ReferenceNumber { get { return TransactionReference; } set { TransactionReference = value; } }
+
+    [NotMapped]
+    public string? TransactionCategory { get { return Category; } set { Category = value; } }
 }

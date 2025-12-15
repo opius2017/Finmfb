@@ -11,6 +11,8 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class NotificationPreferences : BaseEntity, IAuditable
     {
         [Required]
+        public Guid ClientPortalProfileId { get; set; }
+        [Required]
         public Guid UserId { get; set; }
         
         // Email preferences
@@ -59,6 +61,8 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class DashboardPreferences : BaseEntity, IAuditable
     {
         [Required]
+        public Guid ClientPortalProfileId { get; set; }
+        [Required]
         public Guid UserId { get; set; }
         
         [MaxLength(50)]
@@ -84,9 +88,16 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public bool ShowBudgetOverview { get; set; } = true;
         public bool ShowGoalsProgress { get; set; } = true;
         public bool ShowQuickActions { get; set; } = true;
+        public bool ShowLoanStatus { get; set; } = true;
+        public bool ShowSavingsGoals { get; set; } = true;
+        public bool ShowFinancialInsights { get; set; } = true;
         
         [MaxLength(1000)]
         public string? DashboardLayout { get; set; } // JSON string for widget positions
+        [MaxLength(1000)]
+        public string? Layout { get; set; }
+        public string? WidgetOrder { get; set; }
+        public string? VisibleWidgets { get; set; }
         
         [MaxLength(500)]
         public string? DefaultAccount { get; set; } // Default account for quick actions

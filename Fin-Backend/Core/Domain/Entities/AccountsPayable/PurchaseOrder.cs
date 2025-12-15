@@ -13,7 +13,7 @@ public class PurchaseOrder : BaseEntity
     
     [Required]
     public Guid VendorId { get; set; }
-    public virtual Vendor Vendor { get; set; } = null!;
+    public virtual Vendor? Vendor { get; set; }
     
     [Required]
     public DateTime OrderDate { get; set; }

@@ -7,11 +7,11 @@ public class UserDashboardPreference : BaseEntity
 {
     [Required]
     public Guid UserId { get; set; }
-    public virtual ApplicationUser User { get; set; } = null!;
+    public virtual ApplicationUser? User { get; set; }
     
     [Required]
     public Guid ModuleDashboardId { get; set; }
-    public virtual ModuleDashboard ModuleDashboard { get; set; } = null!;
+    public virtual ModuleDashboard? ModuleDashboard { get; set; }
     
     [Required]
     public string PreferenceConfig { get; set; } = string.Empty; // JSON configuration

@@ -13,7 +13,7 @@ public class InventoryTransaction : BaseEntity
     
     [Required]
     public Guid InventoryItemId { get; set; }
-    public virtual InventoryItem InventoryItem { get; set; } = null!;
+    public virtual InventoryItem? InventoryItem { get; set; }
     
     [Required]
     public InventoryTransactionType TransactionType { get; set; }

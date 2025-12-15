@@ -6,6 +6,9 @@ using FinTech.Core.Application.DTOs.Loans;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Repositories;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+
+using FinTech.Core.Application.Interfaces.Loans;
 
 namespace FinTech.Core.Application.Services.Loans
 {
@@ -95,7 +98,10 @@ namespace FinTech.Core.Application.Services.Loans
             };
 
             // Get all active loans
-            var activeLoans = await _loanRepository.FindAsync(l => l.LoanStatus == "ACTIVE");
+            // Get all active loans
+            var activeLoans = await _loanRepository.GetAll()
+                .Where(l => l.Status == "ACTIVE") // LoanStatus vs Status
+                .ToListAsync();
             result.LoansChecked = activeLoans.Count();
 
             var delinquentLoans = new List<LoanDelinquencyDto>();
@@ -127,15 +133,14 @@ namespace FinTech.Core.Application.Services.Loans
                     var delinquency = new LoanDelinquency
                     {
                         LoanId = loan.Id,
-                        CheckDate = DateTime.UtcNow,
-                        DaysOverdue = checkResult.DaysOverdue,
-                        OverdueAmount = checkResult.OverdueAmount,
-                        PenaltyApplied = checkResult.PenaltyAmount,
-                        Classification = checkResult.Classification,
-                        PreviousClassification = checkResult.PreviousClassification,
-                        ClassificationChanged = checkResult.ClassificationChanged,
-                        NotificationSent = checkResult.NotificationRequired,
-                        NotificationType = checkResult.NotificationType ?? "NONE",
+                        CheckDate = DateTime.UtcNow, // Not in Entity, but useful DTO property, map to CreatedAt? No, used in logic.
+                        // PenaltyApplied removed from Entity
+                        DelinquencyStage = checkResult.Classification,
+                        Status = "ACTIVE",
+                        // PreviousClassification removed
+                        // ClassificationChanged removed
+                        // NotificationSent removed
+                        // NotificationType removed
                         CreatedAt = DateTime.UtcNow,
                         CreatedBy = "SYSTEM"
                     };
@@ -153,15 +158,15 @@ namespace FinTech.Core.Application.Services.Loans
                         LoanNumber = loan.LoanNumber,
                         MemberNumber = member?.MemberNumber ?? "",
                         MemberName = member != null ? $"{member.FirstName} {member.LastName}" : "",
-                        CheckDate = delinquency.CheckDate,
+                        CheckDate = delinquency.CreatedAt,
                         DaysOverdue = delinquency.DaysOverdue,
                         OverdueAmount = delinquency.OverdueAmount,
-                        PenaltyApplied = delinquency.PenaltyApplied,
-                        Classification = delinquency.Classification,
-                        PreviousClassification = delinquency.PreviousClassification,
-                        ClassificationChanged = delinquency.ClassificationChanged,
-                        NotificationSent = delinquency.NotificationSent,
-                        NotificationType = delinquency.NotificationType
+                        PenaltyApplied = 0, // Not available in entity
+                        Classification = delinquency.DelinquencyStage,
+                        PreviousClassification = "", // Not available
+                        ClassificationChanged = false, // Not available
+                        NotificationSent = false, // Not available
+                        NotificationType = "" // Not available
                     });
                 }
             }
@@ -181,16 +186,16 @@ namespace FinTech.Core.Application.Services.Loans
 
         public async Task<List<LoanDelinquencyDto>> GetDelinquentLoansAsync(DelinquencyReportRequest request)
         {
-            var query = await _delinquencyRepository.GetAllAsync();
+            var query = _delinquencyRepository.GetAll();
 
             if (request.StartDate.HasValue)
-                query = query.Where(d => d.CheckDate >= request.StartDate.Value);
+                query = query.Where(d => d.CreatedAt >= request.StartDate.Value);
 
             if (request.EndDate.HasValue)
-                query = query.Where(d => d.CheckDate <= request.EndDate.Value);
+                query = query.Where(d => d.CreatedAt <= request.EndDate.Value);
 
             if (!string.IsNullOrEmpty(request.Classification))
-                query = query.Where(d => d.Classification == request.Classification);
+                query = query.Where(d => d.DelinquencyStage == request.Classification);
 
             if (request.MinDaysOverdue.HasValue)
                 query = query.Where(d => d.DaysOverdue >= request.MinDaysOverdue.Value);
@@ -198,7 +203,7 @@ namespace FinTech.Core.Application.Services.Loans
             if (request.MinOverdueAmount.HasValue)
                 query = query.Where(d => d.OverdueAmount >= request.MinOverdueAmount.Value);
 
-            var delinquencies = query.OrderByDescending(d => d.CheckDate).ToList();
+            var delinquencies = await query.OrderByDescending(d => d.CreatedAt).ToListAsync();
 
             var result = new List<LoanDelinquencyDto>();
             foreach (var delinquency in delinquencies)
@@ -213,15 +218,15 @@ namespace FinTech.Core.Application.Services.Loans
                     LoanNumber = loan?.LoanNumber ?? "",
                     MemberNumber = member?.MemberNumber ?? "",
                     MemberName = member != null ? $"{member.FirstName} {member.LastName}" : "",
-                    CheckDate = delinquency.CheckDate,
+                    CheckDate = delinquency.CreatedAt,
                     DaysOverdue = delinquency.DaysOverdue,
                     OverdueAmount = delinquency.OverdueAmount,
-                    PenaltyApplied = delinquency.PenaltyApplied,
-                    Classification = delinquency.Classification,
-                    PreviousClassification = delinquency.PreviousClassification,
-                    ClassificationChanged = delinquency.ClassificationChanged,
-                    NotificationSent = delinquency.NotificationSent,
-                    NotificationType = delinquency.NotificationType
+                    PenaltyApplied = 0,
+                    Classification = delinquency.DelinquencyStage,
+                    PreviousClassification = "",
+                    ClassificationChanged = false,
+                    NotificationSent = false,
+                    NotificationType = ""
                 });
             }
 
@@ -230,23 +235,28 @@ namespace FinTech.Core.Application.Services.Loans
 
         public async Task<DelinquencySummaryDto> GetDelinquencySummaryAsync()
         {
-            var allLoans = await _loanRepository.FindAsync(l => l.LoanStatus == "ACTIVE");
-            var delinquencies = await _delinquencyRepository.GetAllAsync();
+            var allLoans = await _loanRepository.GetAll()
+                .Where(l => l.Status == "ACTIVE")
+                .ToListAsync();
+            
+            var delinquencies = await _delinquencyRepository.GetAll() // ListAllAsync()
+                .ToListAsync();
+
             var latestDelinquencies = delinquencies
                 .GroupBy(d => d.LoanId)
-                .Select(g => g.OrderByDescending(d => d.CheckDate).First())
+                .Select(g => g.OrderByDescending(d => d.CreatedAt).First())
                 .ToList();
 
             var summary = new DelinquencySummaryDto
             {
                 TotalDelinquentLoans = latestDelinquencies.Count,
                 TotalOverdueAmount = latestDelinquencies.Sum(d => d.OverdueAmount),
-                TotalPenalties = latestDelinquencies.Sum(d => d.PenaltyApplied),
-                PerformingLoans = latestDelinquencies.Count(d => d.Classification == "PERFORMING"),
-                SpecialMentionLoans = latestDelinquencies.Count(d => d.Classification == "SPECIAL_MENTION"),
-                SubstandardLoans = latestDelinquencies.Count(d => d.Classification == "SUBSTANDARD"),
-                DoubtfulLoans = latestDelinquencies.Count(d => d.Classification == "DOUBTFUL"),
-                LossLoans = latestDelinquencies.Count(d => d.Classification == "LOSS"),
+                TotalPenalties = 0, // PenaltyApplied removed
+                PerformingLoans = latestDelinquencies.Count(d => d.DelinquencyStage == "PERFORMING"),
+                SpecialMentionLoans = latestDelinquencies.Count(d => d.DelinquencyStage == "SPECIAL_MENTION"),
+                SubstandardLoans = latestDelinquencies.Count(d => d.DelinquencyStage == "SUBSTANDARD"),
+                DoubtfulLoans = latestDelinquencies.Count(d => d.DelinquencyStage == "DOUBTFUL"),
+                LossLoans = latestDelinquencies.Count(d => d.DelinquencyStage == "LOSS"),
                 AverageOverdueDays = latestDelinquencies.Any() ? 
                     (decimal)latestDelinquencies.Average(d => d.DaysOverdue) : 0,
                 DelinquencyRate = allLoans.Any() ? 
@@ -264,7 +274,7 @@ namespace FinTech.Core.Application.Services.Loans
             loan.PenaltyAmount += penaltyAmount;
             loan.OutstandingBalance += penaltyAmount;
             loan.UpdatedAt = DateTime.UtcNow;
-            loan.UpdatedBy = appliedBy;
+            loan.LastModifiedBy = appliedBy;
 
             await _loanRepository.UpdateAsync(loan);
             await _unitOfWork.SaveChangesAsync();
@@ -285,7 +295,7 @@ namespace FinTech.Core.Application.Services.Loans
             loan.Classification = newClassification;
             loan.DaysInArrears = daysOverdue;
             loan.UpdatedAt = DateTime.UtcNow;
-            loan.UpdatedBy = "SYSTEM";
+            loan.LastModifiedBy = "SYSTEM";
 
             await _loanRepository.UpdateAsync(loan);
             await _unitOfWork.SaveChangesAsync();
@@ -309,35 +319,39 @@ namespace FinTech.Core.Application.Services.Loans
 
         public async Task<List<LoanDelinquencyDto>> GetLoanDelinquencyHistoryAsync(string loanId)
         {
-            var delinquencies = await _delinquencyRepository.FindAsync(d => d.LoanId == loanId);
+            var delinquencies = await _delinquencyRepository.GetAll()
+                .Where(d => d.LoanId == loanId)
+                .ToListAsync();
+            
             var loan = await _loanRepository.GetByIdAsync(loanId);
             var member = loan != null ? await _memberRepository.GetByIdAsync(loan.MemberId) : null;
 
-            return delinquencies.OrderByDescending(d => d.CheckDate).Select(d => new LoanDelinquencyDto
+            return delinquencies.OrderByDescending(d => d.CreatedAt).Select(d => new LoanDelinquencyDto
             {
                 Id = d.Id,
                 LoanId = d.LoanId,
                 LoanNumber = loan?.LoanNumber ?? "",
                 MemberNumber = member?.MemberNumber ?? "",
                 MemberName = member != null ? $"{member.FirstName} {member.LastName}" : "",
-                CheckDate = d.CheckDate,
+                CheckDate = d.CreatedAt,
                 DaysOverdue = d.DaysOverdue,
                 OverdueAmount = d.OverdueAmount,
-                PenaltyApplied = d.PenaltyApplied,
-                Classification = d.Classification,
-                PreviousClassification = d.PreviousClassification,
-                ClassificationChanged = d.ClassificationChanged,
-                NotificationSent = d.NotificationSent,
-                NotificationType = d.NotificationType
+                PenaltyApplied = 0,
+                Classification = d.DelinquencyStage,
+                PreviousClassification = "",
+                ClassificationChanged = false,
+                NotificationSent = false,
+                NotificationType = ""
             }).ToList();
         }
 
         public async Task<List<LoanDelinquencyDto>> IdentifyOverdueLoansAsync(int minDaysOverdue = 1)
         {
-            var activeLoans = await _loanRepository.FindAsync(l => 
-                l.LoanStatus == "ACTIVE" && 
-                l.NextPaymentDate.HasValue &&
-                l.NextPaymentDate.Value < DateTime.UtcNow);
+            var activeLoans = await _loanRepository.GetAll()
+                .Where(l => l.Status == "ACTIVE" && 
+                            l.NextPaymentDate.HasValue &&
+                            l.NextPaymentDate.Value < DateTime.UtcNow)
+                .ToListAsync();
 
             var overdueLoans = new List<LoanDelinquencyDto>();
 
@@ -365,7 +379,9 @@ namespace FinTech.Core.Application.Services.Loans
 
         public async Task<decimal> CalculateDelinquencyRateAsync()
         {
-            var allLoans = await _loanRepository.FindAsync(l => l.LoanStatus == "ACTIVE");
+            var allLoans = await _loanRepository.GetAll()
+                .Where(l => l.Status == "ACTIVE")
+                .ToListAsync();
             var totalLoans = allLoans.Count();
 
             if (totalLoans == 0) return 0;

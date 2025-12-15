@@ -23,7 +23,7 @@ public class CreateReconciliationCommandHandler : IRequestHandler<CreateReconcil
             
         if (bankAccount == null)
         {
-            return Result<CreateReconciliationResponse>.Failure(
+            return Result.Failure<CreateReconciliationResponse>(
                 Error.NotFound("BankAccount.NotFound", "Bank account not found"));
         }
 

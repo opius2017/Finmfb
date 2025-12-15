@@ -22,11 +22,16 @@ public class GetAgingReportQueryHandler : IRequestHandler<GetAgingReportQuery, R
         // Get all outstanding invoices
         var invoicesQuery = _unitOfWork.Repository<Invoice>()
             .GetAll()
+            .Include(i => i.Customer)
             .Where(i => i.OutstandingAmount > 0 && i.InvoiceDate <= asOfDate);
 
         if (!string.IsNullOrEmpty(request.CustomerId))
         {
-            invoicesQuery = invoicesQuery.Where(i => i.CustomerId == request.CustomerId);
+            // Assuming request.CustomerId is a Guid string
+            if (Guid.TryParse(request.CustomerId, out var customerIdGuid))
+            {
+                invoicesQuery = invoicesQuery.Where(i => i.CustomerId == customerIdGuid);
+            }
         }
 
         var invoices = await invoicesQuery.ToListAsync(cancellationToken);
@@ -35,7 +40,7 @@ public class GetAgingReportQueryHandler : IRequestHandler<GetAgingReportQuery, R
         var customerGroups = invoices.GroupBy(i => new
         {
             i.CustomerId,
-            i.CustomerName
+            CustomerName = i.Customer != null ? i.Customer.GetFullName() : "Unknown"
         });
 
         var customerAgingList = new List<CustomerAgingDto>();
@@ -97,9 +102,9 @@ public class GetAgingReportQueryHandler : IRequestHandler<GetAgingReportQuery, R
             {
                 customerAgingList.Add(new CustomerAgingDto
                 {
-                    CustomerId = group.Key.CustomerId,
+                    CustomerId = group.Key.CustomerId.ToString(),
                     CustomerName = group.Key.CustomerName ?? "Unknown",
-                    CustomerCode = group.Key.CustomerId,
+                    CustomerCode = group.Key.CustomerId.ToString(),
                     TotalOutstanding = totalOutstanding,
                     Current = current,
                     Days1To30 = days1To30,

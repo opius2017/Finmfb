@@ -62,7 +62,7 @@ namespace FinTech.Core.Application.Services.Accounting
 
         public async Task<FinancialPeriod> GetByDateAsync(DateTime date, CancellationToken cancellationToken = default)
         {
-            return await _financialPeriodRepository.GetByDateAsync(date, cancellationToken);
+            return await _financialPeriodRepository.GetPeriodByDateAsync(date, cancellationToken);
         }
 
         public async Task<IReadOnlyList<FinancialPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default)
@@ -215,7 +215,7 @@ namespace FinTech.Core.Application.Services.Accounting
             period.LastModifiedBy = modifiedBy;
             period.LastModifiedAt = DateTime.UtcNow;
             period.ClosedBy = modifiedBy;
-            period.ClosedAt = DateTime.UtcNow;
+            period.ClosedDate = DateTime.UtcNow;
 
             await _financialPeriodRepository.UpdateAsync(period, cancellationToken);
 

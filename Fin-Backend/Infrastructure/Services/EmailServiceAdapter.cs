@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using FinTech.Core.Application.Services.Integrations;
-using FinTech.WebAPI.Application.Interfaces;
+using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Application.DTOs.Email;
 using Microsoft.Extensions.Logging;
 
 namespace FinTech.WebAPI.Infrastructure.Services
@@ -10,11 +10,11 @@ namespace FinTech.WebAPI.Infrastructure.Services
     /// </summary>
     public class EmailServiceAdapter : IEmailService
     {
-        private readonly FinTech.Core.Application.Services.Integrations.IEmailService _coreEmailService;
+        private readonly IEmailService _coreEmailService;
         private readonly ILogger<EmailServiceAdapter> _logger;
 
         public EmailServiceAdapter(
-            FinTech.Core.Application.Services.Integrations.IEmailService coreEmailService,
+            IEmailService coreEmailService,
             ILogger<EmailServiceAdapter> logger)
         {
             _coreEmailService = coreEmailService;
@@ -25,6 +25,12 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             _logger.LogInformation("Delegating templated email to core email service");
             return await _coreEmailService.SendTemplatedEmailAsync(request);
+        }
+
+        public async Task<EmailResponse> SendEmailAsync(EmailRequest request)
+        {
+             _logger.LogInformation("Delegating standard email to core email service");
+             return await _coreEmailService.SendEmailAsync(request);
         }
     }
 }

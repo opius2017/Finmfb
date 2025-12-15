@@ -13,17 +13,17 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// ISO 4217 currency code (e.g., NGN, USD)
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency name (e.g., Nigerian Naira, US Dollar)
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency symbol (e.g., ₦, $)
         /// </summary>
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = string.Empty;
         
         /// <summary>
         /// Number of decimal places typically used (e.g., 2 for NGN, USD)
@@ -43,12 +43,12 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Navigation property for exchange rates where this currency is the source
         /// </summary>
-        public virtual ICollection<ExchangeRate> FromExchangeRates { get; set; }
+        public virtual ICollection<ExchangeRate> FromExchangeRates { get; set; } = new List<ExchangeRate>();
         
         /// <summary>
         /// Navigation property for exchange rates where this currency is the target
         /// </summary>
-        public virtual ICollection<ExchangeRate> ToExchangeRates { get; set; }
+        public virtual ICollection<ExchangeRate> ToExchangeRates { get; set; } = new List<ExchangeRate>();
     }
 
     /// <summary>
@@ -59,12 +59,12 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// From currency code
         /// </summary>
-        public string FromCurrencyCode { get; set; }
+        public string FromCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// To currency code
         /// </summary>
-        public string ToCurrencyCode { get; set; }
+        public string ToCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Exchange rate date
@@ -79,17 +79,17 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Source of the exchange rate (e.g., "CBN", "Manual", "API")
         /// </summary>
-        public string Source { get; set; }
+        public string Source { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the source currency
         /// </summary>
-        public virtual Currency FromCurrency { get; set; }
+        public virtual Currency? FromCurrency { get; set; }
         
         /// <summary>
         /// Navigation property for the target currency
         /// </summary>
-        public virtual Currency ToCurrency { get; set; }
+        public virtual Currency? ToCurrency { get; set; }
     }
 
     /// <summary>
@@ -100,22 +100,22 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Account ID
         /// </summary>
-        public string AccountId { get; set; }
+        public string AccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// Account number
         /// </summary>
-        public string AccountNumber { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
         
         /// <summary>
         /// Account name
         /// </summary>
-        public string AccountName { get; set; }
+        public string AccountName { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency code
         /// </summary>
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Balance in foreign currency
@@ -140,7 +140,7 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Financial period ID
         /// </summary>
-        public string FinancialPeriodId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -151,7 +151,7 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Financial period ID
         /// </summary>
-        public string FinancialPeriodId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty; // Added init
         
         /// <summary>
         /// Revaluation date
@@ -161,7 +161,7 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Currency code
         /// </summary>
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Previous exchange rate
@@ -201,7 +201,7 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Journal entry ID for the revaluation
         /// </summary>
-        public string JournalEntryId { get; set; }
+        public string JournalEntryId { get; set; } = string.Empty;
         
         /// <summary>
         /// Status of the revaluation
@@ -211,17 +211,17 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Processed by user ID
         /// </summary>
-        public string ProcessedById { get; set; }
+        public string ProcessedById { get; set; } = string.Empty;
         
         /// <summary>
         /// Processing notes
         /// </summary>
-        public string Notes { get; set; }
+        public string Notes { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for revaluation details
         /// </summary>
-        public virtual ICollection<CurrencyRevaluationDetail> Details { get; set; }
+        public virtual ICollection<CurrencyRevaluationDetail> Details { get; set; } = new List<CurrencyRevaluationDetail>();
     }
 
     /// <summary>
@@ -232,17 +232,17 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Revaluation ID
         /// </summary>
-        public string RevaluationId { get; set; }
+        public string RevaluationId { get; set; } = string.Empty;
         
         /// <summary>
         /// Account ID
         /// </summary>
-        public string AccountId { get; set; }
+        public string AccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// Account number
         /// </summary>
-        public string AccountNumber { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
         
         /// <summary>
         /// Foreign currency amount
@@ -267,7 +267,7 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Navigation property for the parent revaluation
         /// </summary>
-        public virtual CurrencyRevaluation Revaluation { get; set; }
+        public virtual CurrencyRevaluation? Revaluation { get; set; }
     }
 
     /// <summary>

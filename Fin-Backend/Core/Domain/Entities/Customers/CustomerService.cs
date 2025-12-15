@@ -18,11 +18,11 @@ public class CustomerInquiry : BaseEntity
     public string? Response { get; set; }
     public string? RespondedBy { get; set; }
     public DateTime? RespondedDate { get; set; }
-    public string CreatedBy { get; set; } = string.Empty;
+
     public Guid TenantId { get; set; }
 
     // Navigation properties
-    public virtual Customer Customer { get; set; }
+    public virtual Customer? Customer { get; set; }
 }
 
 public class CustomerComplaint : BaseEntity
@@ -40,11 +40,11 @@ public class CustomerComplaint : BaseEntity
     public string? Resolution { get; set; }
     public string? ResolvedBy { get; set; }
     public DateTime? ResolvedDate { get; set; }
-    public string CreatedBy { get; set; } = string.Empty;
+
     public Guid TenantId { get; set; }
 
     // Navigation properties
-    public virtual Customer Customer { get; set; }
+    public virtual Customer? Customer { get; set; }
 }
 
 public class CustomerCommunicationLog : BaseEntity
@@ -59,5 +59,5 @@ public class CustomerCommunicationLog : BaseEntity
     public Guid TenantId { get; set; }
 
     // Navigation properties
-    public virtual Customer Customer { get; set; }
+    public virtual Customer? Customer { get; set; }
 }

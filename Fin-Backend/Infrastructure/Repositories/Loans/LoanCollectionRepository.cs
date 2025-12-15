@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FinTech.Core.Application.Interfaces.Repositories.Loans;
 using FinTech.Core.Domain.Entities.Loans;
-using FinTech.Infrastructure.Persistence;
+using FinTech.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -75,7 +75,7 @@ namespace FinTech.Infrastructure.Repositories.Loans
                 var cutoffDate = DateTime.UtcNow.AddDays(-daysOverdue);
                 
                 return await _context.LoanCollections
-                    .Where(lc => lc.Status == CollectionStatus.Pending && 
+                    .Where(lc => lc.Status == CollectionStatus.New && 
                                 lc.DueDate < cutoffDate)
                     .AsNoTracking()
                     .ToListAsync();
@@ -183,6 +183,36 @@ namespace FinTech.Infrastructure.Repositories.Loans
             {
                 _logger.LogError(ex, "Error getting collections in date range: {StartDate} to {EndDate}", 
                     startDate, endDate);
+                throw;
+            }
+        }
+        public async Task<IEnumerable<LoanCollectionAction>> GetCollectionActionsAsync(string collectionId)
+        {
+            try
+            {
+                return await _context.Set<LoanCollectionAction>()
+                    .Where(a => a.CollectionId == collectionId)
+                    .AsNoTracking()
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting actions for collection ID: {CollectionId}", collectionId);
+                throw;
+            }
+        }
+
+        public async Task<LoanCollectionAction> AddCollectionActionAsync(LoanCollectionAction action)
+        {
+            try
+            {
+                await _context.Set<LoanCollectionAction>().AddAsync(action);
+                await _context.SaveChangesAsync();
+                return action;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding collection action");
                 throw;
             }
         }

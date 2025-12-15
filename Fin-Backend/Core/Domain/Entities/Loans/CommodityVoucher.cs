@@ -29,6 +29,12 @@ public class CommodityVoucher : BaseEntity
     [Column(TypeName = "decimal(18,2)")]
     public decimal Amount { get; set; }
 
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal RemainingAmount { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal UsedAmount { get; set; }
+
     [Required]
     [StringLength(200)]
     public string Vendor { get; set; } = string.Empty;
@@ -52,6 +58,10 @@ public class CommodityVoucher : BaseEntity
 
     [StringLength(1000)]
     public string? Notes { get; set; }
+
+    // FinTech Best Practice: Alias for IssueDate
+    [NotMapped]
+    public DateTime IssuedDate { get => IssueDate; set => IssueDate = value; }
 
     // Navigation property
     public virtual ICollection<CommodityRedemption> Redemptions { get; set; } = new List<CommodityRedemption>();

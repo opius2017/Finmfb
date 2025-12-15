@@ -15,7 +15,14 @@ namespace FinTech.Core.Domain.Entities.Banking
         public DateTime TransactionDate { get; private set; }
         public string Status { get; private set; }
 
-        private Transaction() { } // For EF Core
+        private Transaction() 
+        {
+            BankAccountId = string.Empty;
+            TransactionType = string.Empty;
+            Reference = string.Empty;
+            Description = string.Empty;
+            Status = string.Empty;
+        } // For EF Core
 
         public Transaction(
             string bankAccountId,

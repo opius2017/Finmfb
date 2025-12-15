@@ -9,17 +9,19 @@ public class SecurityAlert : BaseEntity
     public string Title { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public SecurityAlertSeverity Severity { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     public bool IsRead { get; set; }
     public DateTime? ReadAt { get; set; }
     public bool IsResolved { get; set; }
     public DateTime? ResolvedAt { get; set; }
     public string? IpAddress { get; set; }
+    public string? Details { get; set; } // Added
+    public string? DeviceId { get; set; } // Added
     public string? DeviceInfo { get; set; }
     public string? Location { get; set; }
     
     // Navigation property
-    public virtual ApplicationUser User { get; set; } = null!;
+    public virtual ApplicationUser? User { get; set; }
 }
 
 public enum SecurityAlertType

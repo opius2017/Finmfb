@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using FinTech.Core.Domain.Entities.Common;
 using FinTech.Core.Domain.Common;
+using FinTech.Core.Domain.ValueObjects;
+using Money = FinTech.Core.Domain.ValueObjects.Money;
 
 namespace FinTech.Core.Domain.Entities.Accounting
 {
@@ -30,25 +32,40 @@ namespace FinTech.Core.Domain.Entities.Accounting
     /// </summary>
     public class JournalEntry : AggregateRoot
     {
-        public string JournalEntryNumber { get; private set; }
+        public string JournalEntryNumber { get; private set; } = string.Empty;
         public DateTime EntryDate { get; private set; }
-        public string Description { get; private set; }
+        public string Description { get; private set; } = string.Empty;
         public JournalEntryStatus Status { get; private set; }
         public JournalEntryType EntryType { get; private set; }
-        public string Reference { get; private set; }
-        public string SourceDocument { get; private set; }
-        public string ApprovedBy { get; private set; }
+        public string? Reference { get; private set; }
+        public string? SourceDocument { get; private set; }
+        
+        public string? PreparedBy { get; private set; }
+        public DateTime PreparedDate { get; private set; }
+        
+        public string? ApprovedBy { get; private set; }
         public DateTime? ApprovalDate { get; private set; }
-        public string PostedBy { get; private set; }
+        public string? PostedBy { get; private set; }
         public DateTime? PostedDate { get; private set; }
-        public string ReversalReason { get; private set; }
-        public string ReversalJournalEntryId { get; private set; }
-        public JournalEntry ReversalJournalEntry { get; private set; }
-        public string FinancialPeriodId { get; private set; }
-        public string ModuleSource { get; private set; }
+        public string? ReversalReason { get; private set; }
+        public string? ReversalJournalEntryId { get; private set; }
+        public JournalEntry? ReversalJournalEntry { get; private set; }
+        public string? FinancialPeriodId { get; private set; }
+        public string? ModuleSource { get; private set; }
         public bool IsRecurring { get; private set; }
-        public string RecurrencePattern { get; private set; }
-        public string Notes { get; private set; }
+        public string? RecurrencePattern { get; private set; }
+        public string? Notes { get; private set; }
+        
+        public string? RejectedBy { get; private set; }
+        public DateTime? RejectedDate { get; private set; }
+        public string? ReversedBy { get; private set; }
+        public DateTime? ReversedDate { get; private set; }
+        public bool IsSystemGenerated => EntryType == JournalEntryType.SystemGenerated;
+        public string? OriginalJournalEntryId { get; private set; } 
+        
+        public Guid TenantId { get; private set; }
+        public decimal TotalDebit { get; private set; }
+        public decimal TotalCredit { get; private set; }
         
         private List<JournalEntryLine> _journalEntryLines = new List<JournalEntryLine>();
         public IReadOnlyCollection<JournalEntryLine> JournalEntryLines => _journalEntryLines.AsReadOnly();
@@ -61,13 +78,16 @@ namespace FinTech.Core.Domain.Entities.Accounting
             DateTime entryDate,
             string description,
             JournalEntryType entryType,
-            string reference = null,
-            string sourceDocument = null,
-            string financialPeriodId = null,
-            string moduleSource = null,
+            string? reference = null,
+            string? sourceDocument = null,
+            string? financialPeriodId = null,
+            string? moduleSource = null,
             bool isRecurring = false,
-            string recurrencePattern = null,
-            string notes = null)
+            string? recurrencePattern = null,
+            string? notes = null,
+            Guid tenantId = default,
+            string? preparedBy = null,
+            DateTime? preparedDate = null)
         {
             JournalEntryNumber = journalEntryNumber;
             EntryDate = entryDate;
@@ -81,16 +101,42 @@ namespace FinTech.Core.Domain.Entities.Accounting
             IsRecurring = isRecurring;
             RecurrencePattern = recurrencePattern;
             Notes = notes;
+            TenantId = tenantId;
+            PreparedBy = preparedBy;
+            PreparedDate = preparedDate ?? DateTime.UtcNow;
             
             AddDomainEvent(new JournalEntryCreatedEvent(Id, journalEntryNumber));
+        }
+
+        public void Update(
+            string description, 
+            DateTime entryDate, 
+            string? reference, 
+            string? notes,
+            string? financialPeriodId)
+        {
+            if (Status != JournalEntryStatus.Draft && Status != JournalEntryStatus.Rejected)
+                throw new InvalidOperationException($"Cannot update journal entry in {Status} status");
+
+            Description = description;
+            EntryDate = entryDate;
+            Reference = reference;
+            Notes = notes;
+            FinancialPeriodId = financialPeriodId;
+            LastModifiedDate = DateTime.UtcNow;
+        }
+
+        public void SetOriginalJournalEntryId(string originalId)
+        {
+             OriginalJournalEntryId = originalId;
         }
         
         public void AddJournalLine(
             string accountId,
             Money amount,
             bool isDebit,
-            string description = null,
-            string reference = null)
+            string? description = null,
+            string? reference = null)
         {
             var line = new JournalEntryLine(
                 this.Id,
@@ -102,8 +148,27 @@ namespace FinTech.Core.Domain.Entities.Accounting
                 
             _journalEntryLines.Add(line);
             
-            // Validate balance after adding line
-            ValidateBalance();
+            // Recalculate totals
+            CalculateTotals();
+            
+            // Validate balance after adding line - BUT only if not Draft
+            if (Status != JournalEntryStatus.Draft)
+            {
+                ValidateBalance();
+            }
+        }
+
+        // Added to support PeriodClosingService
+        public void AddLine(string accountId, decimal debitAmount, decimal creditAmount, string description)
+        {
+            // Determine if debit or credit
+            bool isDebit = debitAmount > 0;
+            decimal amount = isDebit ? debitAmount : creditAmount;
+            
+            // Assume default currency NGN for internal operations if not specified
+            var money = Money.Create(amount, "NGN"); 
+
+            AddJournalLine(accountId, money, isDebit, description, null);
         }
         
         public void RemoveJournalLine(string lineId)
@@ -115,8 +180,18 @@ namespace FinTech.Core.Domain.Entities.Accounting
                 
             _journalEntryLines.Remove(line);
             
-            // Validate balance after removing line
-            ValidateBalance();
+            CalculateTotals();
+            
+            if (Status != JournalEntryStatus.Draft)
+            {
+                ValidateBalance();
+            }
+        }
+        
+        public void CalculateTotals()
+        {
+            TotalDebit = _journalEntryLines.Where(l => l.IsDebit).Sum(l => l.Amount.Amount);
+            TotalCredit = _journalEntryLines.Where(l => !l.IsDebit).Sum(l => l.Amount.Amount);
         }
         
         public void SubmitForApproval()
@@ -160,12 +235,33 @@ namespace FinTech.Core.Domain.Entities.Accounting
             
             AddDomainEvent(new JournalEntryRejectedEvent(Id, JournalEntryNumber, rejectedBy, reason));
         }
+
+        public void MarkAsRejected(string rejectedBy, string reason)
+        {
+             Status = JournalEntryStatus.Rejected;
+             RejectedBy = rejectedBy;
+             RejectedDate = DateTime.UtcNow;
+             Notes = reason;
+             LastModifiedDate = DateTime.UtcNow;
+        }
         
         public void Post(string postedBy)
         {
             if (Status != JournalEntryStatus.Approved)
                 throw new InvalidOperationException($"Cannot post journal entry in {Status} status");
                 
+            Status = JournalEntryStatus.Posted;
+            PostedBy = postedBy;
+            PostedDate = DateTime.UtcNow;
+            LastModifiedDate = DateTime.UtcNow;
+            
+            AddDomainEvent(new JournalEntryPostedEvent(Id, JournalEntryNumber, postedBy));
+        }
+
+        // Added to support PeriodClosingService
+        public void MarkAsPosted(string postedBy)
+        {
+            // Direct state transition for system processes
             Status = JournalEntryStatus.Posted;
             PostedBy = postedBy;
             PostedDate = DateTime.UtcNow;
@@ -216,6 +312,8 @@ namespace FinTech.Core.Domain.Entities.Accounting
             
             // Update original entry
             this.Status = JournalEntryStatus.Reversed;
+            this.ReversedBy = postedBy;
+            this.ReversedDate = DateTime.UtcNow;
             this.LastModifiedDate = DateTime.UtcNow;
             
             AddDomainEvent(new JournalEntryReversedEvent(Id, JournalEntryNumber, reversalEntry.Id, reversalEntry.JournalEntryNumber, postedBy));
@@ -246,9 +344,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
                 // Journal should be balanced: Total Debits = Total Credits
                 if (Math.Abs(totalDebits - totalCredits) > 0.01m) // Allow small rounding differences
                 {
-                    throw new InvalidOperationException(
-                        $"Journal entry is not balanced for currency {currency}. " +
-                        $"Total Debits: {totalDebits}, Total Credits: {totalCredits}");
+                    throw new InvalidOperationException($"Journal entry is not balanced. Debits: {totalDebits}, Credits: {totalCredits}");
                 }
             }
         }
@@ -259,13 +355,19 @@ namespace FinTech.Core.Domain.Entities.Accounting
     /// </summary>
     public class JournalEntryLine : BaseEntity
     {
-        public string JournalEntryId { get; private set; }
-        public string AccountId { get; private set; }
-        public ChartOfAccount Account { get; private set; }
-        public Money Amount { get; private set; }
+        public string JournalEntryId { get; private set; } = string.Empty;
+        public string AccountId { get; private set; } = string.Empty;
+        public ChartOfAccount Account { get; private set; } = default!;
+        public Money Amount { get; private set; } = default!;
         public bool IsDebit { get; private set; }
-        public string Description { get; private set; }
-        public string Reference { get; private set; }
+        public string? Description { get; private set; }
+        public string? Reference { get; private set; }
+        
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public decimal DebitAmount => IsDebit ? Amount.Amount : 0;
+        
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public decimal CreditAmount => !IsDebit ? Amount.Amount : 0;
         
         // Required by EF Core
         private JournalEntryLine() { }
@@ -275,8 +377,8 @@ namespace FinTech.Core.Domain.Entities.Accounting
             string accountId,
             Money amount,
             bool isDebit,
-            string description = null,
-            string reference = null)
+            string? description = null,
+            string? reference = null)
         {
             JournalEntryId = journalEntryId;
             AccountId = accountId;
