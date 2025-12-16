@@ -15,7 +15,7 @@ namespace FinTech.Infrastructure.Jobs
         /// </summary>
         public static void RegisterRecurringJobs(IServiceProvider serviceProvider)
         {
-            // var logger = serviceProvider.GetRequiredService<ILogger<DailyDelinquencyCheckJob>>();
+            var logger = serviceProvider.GetRequiredService<ILogger<object>>();
 
             
             try

@@ -51,6 +51,7 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(j => j.LastModifiedBy)
                 .HasMaxLength(100);
                 
+            /*
             builder.Property(j => j.LastModifiedAt);
                 
             builder.Property(j => j.ApprovedBy)
@@ -78,8 +79,9 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 .HasMaxLength(100);
                 
             builder.Property(j => j.ReversedAt);
+            */
                 
-            // Foreign key references
+            /*
             builder.Property(j => j.FinancialPeriodId)
                 .HasMaxLength(50)
                 .IsRequired();
@@ -89,7 +91,9 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 
             builder.Property(j => j.OriginalJournalEntryId)
                 .HasMaxLength(50);
+            */
                 
+            /*
             // Relationships
             builder.HasOne(j => j.FinancialPeriod)
                 .WithMany()
@@ -113,6 +117,7 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 .WithOne(l => l.JournalEntry)
                 .HasForeignKey(l => l.JournalEntryId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             // Add indexes
             builder.HasIndex(j => j.JournalEntryNumber)

@@ -14,6 +14,8 @@ namespace FinTech.Core.Application.DTOs.GeneralLedger.Journal
         public decimal Amount { get; set; }
         public string CurrencyCode { get; set; }
         public bool IsDebit { get; set; }
+        public decimal DebitAmount { get; set; }
+        public decimal CreditAmount { get; set; }
         public string Description { get; set; }
         public string Reference { get; set; }
     }

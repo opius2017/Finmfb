@@ -11,7 +11,7 @@ namespace FinTech.Core.Domain.Entities.Identity
         public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }
@@ -80,9 +80,9 @@ namespace FinTech.Core.Domain.Entities.Identity
         public DateTime ExpiresAt { get; set; }
 
         // Added properties to match usage
-        public string? UserId { get; set; }
+        public Guid UserId { get; set; }
         public string? VerificationCode { get; set; }
-        public MfaMethod Method { get; set; }
+        public string Method { get; set; }
         public bool IsUsed { get; set; }
         public string? IpAddress { get; set; }
         public string? DeviceId { get; set; }
@@ -117,7 +117,7 @@ namespace FinTech.Core.Domain.Entities.Identity
         public DateTime? RevokedAt { get; set; }
 
         // Added properties to match usage
-        public string? UserId { get; set; }
+        public Guid UserId { get; set; }
         public string? DeviceId { get; set; } // Separate from Id? Or alias? Service asks for DeviceId. 
         public string? Country { get; set; }
         public string? City { get; set; }
@@ -135,7 +135,7 @@ namespace FinTech.Core.Domain.Entities.Identity
         public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         
         [ForeignKey("UserId")]
         public virtual ApplicationUser User { get; set; }

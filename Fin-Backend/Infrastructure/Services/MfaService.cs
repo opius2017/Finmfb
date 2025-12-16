@@ -814,9 +814,9 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user != null && devices.Count > 0)
                 {
-                    await _notificationService.SendSecurityAlertEmail(
+                    await _notificationService.SendSecurityAlertEmailAsync(
+                        user.Id.ToString(),
                         user.Email,
-                        user.UserName,
                         "All Other Devices Signed Out",
                         $"You have signed out from all devices except your current one. {devices.Count} device(s) were affected. If you did not perform this action, please secure your account immediately."
                     );
@@ -893,7 +893,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
             try
             {
                 var existingPreferences = await _context.SecurityPreferences
-                    .FirstOrDefaultAsync(p => p.UserId == userId);
+                    .FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
                 
                 if (existingPreferences != null)
                 {
@@ -906,10 +906,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 else
                 {
                     // Create new preferences
-                    _context.SecurityPreferences.Add(new SecurityPreferences
+                    _context.SecurityPreferences.Add(new UserSecurityPreferences
                     {
                         Id = Guid.NewGuid().ToString(),
-                        UserId = userId,
+                        UserId = Guid.Parse(userId),
                         EmailNotificationsEnabled = preferences.EmailNotificationsEnabled,
                         LoginNotificationsEnabled = preferences.LoginNotificationsEnabled,
                         UnusualActivityNotificationsEnabled = preferences.UnusualActivityNotificationsEnabled,
@@ -932,7 +932,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
             try
             {
                 var preferences = await _context.SecurityPreferences
-                    .FirstOrDefaultAsync(p => p.UserId == userId);
+                    .FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
                 
                 if (preferences == null)
                 {

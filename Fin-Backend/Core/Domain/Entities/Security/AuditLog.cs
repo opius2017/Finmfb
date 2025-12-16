@@ -43,6 +43,8 @@ public class AuditLog : BaseEntity
     
     [StringLength(500)]
     public string? Description { get; set; }
+
+    public string? Changes { get; set; }
     
     [Required]
     public Guid TenantId { get; set; }

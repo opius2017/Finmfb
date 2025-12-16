@@ -2,6 +2,7 @@ using FinTech.Core.Domain.Entities.Accounting;
 using FinTech.Core.Domain.Repositories.Accounting;
 using FinTech.Infrastructure.Data;
 using FinTech.Infrastructure.Repositories.Accounting;
+using FinTech.Infrastructure.Repositories;
 using FinTech.Core.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -61,7 +61,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
         public string? ReversedBy { get; private set; }
         public DateTime? ReversedDate { get; private set; }
         public bool IsSystemGenerated => EntryType == JournalEntryType.SystemGenerated;
-        public string? OriginalJournalEntryId { get; private set; } 
+        public string? OriginalJournalEntryId { get; private set; }
         
         public Guid TenantId { get; private set; }
         public decimal TotalDebit { get; private set; }

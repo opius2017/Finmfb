@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Generic;
 // using FinTech.Core.Application.Interfaces.Integration;
 using FinTech.Core.Domain.Entities.Loans;
+using FinTech.Core.Application.DTOs.GeneralLedger.Journal;
 
 namespace FinTech.Infrastructure.Services.Integration
 {
@@ -27,7 +28,7 @@ namespace FinTech.Infrastructure.Services.Integration
             _chartOfAccountService = chartOfAccountService;
         }
 
-        public async Task ProcessLoanDisbursementAsync(int loanId, decimal amount, string reference, string description)
+        public async Task ProcessLoanDisbursementAsync(string loanId, decimal amount, string reference, string description)
         {
             try
             {
@@ -76,7 +77,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessLoanRepaymentAsync(int loanId, decimal principalAmount, decimal interestAmount, string reference, string description)
+        public async Task ProcessLoanRepaymentAsync(string loanId, decimal principalAmount, decimal interestAmount, string reference, string description)
         {
             try
             {
@@ -135,7 +136,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessLoanWriteOffAsync(int loanId, decimal amount, string reference, string description)
+        public async Task ProcessLoanWriteOffAsync(string loanId, decimal amount, string reference, string description)
         {
             try
             {
@@ -184,7 +185,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessLoanInterestAccrualAsync(int loanId, decimal amount, string reference, string description)
+        public async Task ProcessLoanInterestAccrualAsync(string loanId, decimal amount, string reference, string description)
         {
             try
             {
@@ -233,7 +234,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessLoanFeeChargeAsync(int loanId, decimal amount, string feeType, string reference, string description)
+        public async Task ProcessLoanFeeChargeAsync(string loanId, decimal amount, string feeType, string reference, string description)
         {
             try
             {
@@ -297,7 +298,7 @@ namespace FinTech.Infrastructure.Services.Integration
                 // Create journal entry for loan disbursement
                 var journalEntry = new
                 {
-                    Description = $"Loan disbursement for {loanAccount.AccountNumber} - {loanAccount.CustomerName}",
+                    Description = $"Loan disbursement for {loanAccount.AccountNumber}",
                     Reference = transaction.TransactionReference,
                     TransactionDate = transaction.TransactionDate,
                     Lines = new List<object>
@@ -332,9 +333,8 @@ namespace FinTech.Infrastructure.Services.Integration
                 var loanReceivableAccountId = await _chartOfAccountService.GetLoanReceivableAccountIdAsync();
                 var interestIncomeAccountId = await _chartOfAccountService.GetInterestIncomeAccountIdAsync();
 
-                // Split payment between principal and interest
-                var principalAmount = transaction.PrincipalAmount ?? transaction.Amount;
-                var interestAmount = transaction.InterestAmount ?? 0m;
+                var principalAmount = transaction.PrincipalAmount;
+                var interestAmount = transaction.InterestAmount;
 
                 var lines = new List<object>
                 {
@@ -357,7 +357,7 @@ namespace FinTech.Infrastructure.Services.Integration
                 // Create journal entry for loan repayment
                 var journalEntry = new
                 {
-                    Description = $"Loan repayment for {loanAccount.AccountNumber} - {loanAccount.CustomerName}",
+                    Description = $"Loan repayment for {loanAccount.AccountNumber}",
                     Reference = transaction.TransactionReference,
                     TransactionDate = transaction.TransactionDate,
                     Lines = lines
@@ -434,7 +434,7 @@ namespace FinTech.Infrastructure.Services.Integration
                 // Create journal entry for loan write-off
                 var journalEntry = new
                 {
-                    Description = $"Loan write-off for {loanAccount.AccountNumber} - {loanAccount.CustomerName}",
+                    Description = $"Loan write-off for {loanAccount.AccountNumber}",
                     Reference = $"WO-{loanAccount.Id}-{DateTime.UtcNow:yyyyMMdd}",
                     TransactionDate = DateTime.UtcNow,
                     Lines = new List<object>
@@ -473,7 +473,7 @@ namespace FinTech.Infrastructure.Services.Integration
                 // Create journal entry for fee charge
                 var journalEntry = new
                 {
-                    Description = $"{feeType} fee for loan {loanAccount.AccountNumber} - {loanAccount.CustomerName}",
+                    Description = $"{feeType} fee for loan {loanAccount.AccountNumber}",
                     Reference = $"FEE-{loanAccount.Id}-{DateTime.UtcNow:yyyyMMdd}",
                     TransactionDate = DateTime.UtcNow,
                     Lines = new List<object>
@@ -499,9 +499,9 @@ namespace FinTech.Infrastructure.Services.Integration
         private decimal CalculateDailyInterest(LoanAccount loanAccount)
         {
             // Calculate daily interest: (Principal * Annual Rate) / 365
-            var annualRate = loanAccount.InterestRate / 100m;
+            var annualRate = (loanAccount.Loan?.InterestRate ?? 0m) / 100m;
             var dailyRate = annualRate / 365m;
-            return loanAccount.PrincipalAmount * dailyRate;
+            return (loanAccount.Loan?.PrincipalAmount ?? 0m) * dailyRate;
         }
     }
 }

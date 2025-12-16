@@ -16,7 +16,7 @@ namespace FinTech.Core.Domain.Entities.FixedAssets
         public string GLAccountAccumDepreciation { get; set; } = string.Empty;
         public string GLAccountDisposalGain { get; set; } = string.Empty;
         public string GLAccountDisposalLoss { get; set; } = string.Empty;
-        public virtual ICollection<FixedAsset> Assets { get; set; } = new List<FixedAsset>();
+        public virtual ICollection<Asset> Assets { get; set; } = new List<Asset>();
 
         // Additional properties for Compatibility
         public string? TenantId { get; set; }

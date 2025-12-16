@@ -22,7 +22,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             AccountClassification classification, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.ChartOfAccounts
+            return await _context.CoreChartOfAccounts
                 .Where(a => a.Classification == classification)
                 .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
@@ -32,7 +32,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             AccountType accountType, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.ChartOfAccounts
+            return await _context.CoreChartOfAccounts
                 .Where(a => a.AccountType == accountType)
                 .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
@@ -42,7 +42,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string parentAccountId, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.ChartOfAccounts
+            return await _context.CoreChartOfAccounts
                 .Where(a => a.ParentAccountId == parentAccountId)
                 .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
@@ -52,7 +52,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string accountNumber, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.ChartOfAccounts
+            return await _context.CoreChartOfAccounts
                 .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber, cancellationToken);
         }
         
@@ -60,7 +60,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string prefix,
             CancellationToken cancellationToken = default)
         {
-            return await _context.ChartOfAccounts
+            return await _context.CoreChartOfAccounts
                 .Where(a => a.AccountNumber.StartsWith(prefix))
                 .OrderByDescending(a => a.AccountNumber)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -70,14 +70,14 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string accountNumber, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.ChartOfAccounts
+            return await _context.CoreChartOfAccounts
                 .AnyAsync(a => a.AccountNumber == accountNumber, cancellationToken);
         }
         
         public async Task<IReadOnlyList<ChartOfAccount>> GetActiveAccountsAsync(
             CancellationToken cancellationToken = default)
         {
-            return await _context.ChartOfAccounts
+            return await _context.CoreChartOfAccounts
                 .Where(a => a.Status == FinTech.Core.Domain.Enums.AccountStatus.Active)
                 .OrderBy(a => a.AccountNumber)
                 .ToListAsync(cancellationToken);
@@ -94,7 +94,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             int? maxResults = null,
             CancellationToken cancellationToken = default)
         {
-            var query = _context.ChartOfAccounts
+            IQueryable<ChartOfAccount> query = _context.CoreChartOfAccounts
                 .Where(a => 
                     a.AccountNumber.Contains(searchTerm) || 
                     a.AccountName.Contains(searchTerm) || 

@@ -26,5 +26,8 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public ICollection<ClientDevice> Devices { get; set; } = new List<ClientDevice>();
         public NotificationPreferences? NotificationPreferences { get; set; }
         public DashboardPreferences? DashboardPreferences { get; set; }
+        public virtual ICollection<SavedPayee> SavedPayees { get; set; } = new List<SavedPayee>();
+        public virtual ICollection<SavedTransferTemplate> SavedTransferTemplates { get; set; } = new List<SavedTransferTemplate>();
+        public virtual ICollection<ClientDocument> Documents { get; set; } = new List<ClientDocument>();
     }
 }

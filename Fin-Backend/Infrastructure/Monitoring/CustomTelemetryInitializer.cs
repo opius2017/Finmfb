@@ -22,11 +22,13 @@ namespace FinTech.Infrastructure.Monitoring
             telemetry.Context.Cloud.RoleName = _roleName;
             telemetry.Context.Cloud.RoleInstance = _roleInstance;
             
+            /*
             if (string.IsNullOrEmpty(telemetry.Context.GetInternalContext().SdkVersion))
             {
                 var version = typeof(CustomTelemetryInitializer).Assembly.GetName().Version;
                 telemetry.Context.GetInternalContext().SdkVersion = $"fintech-webapi:{version}";
             }
+            */
             
             // Add custom properties to all telemetry
             telemetry.Context.GlobalProperties["Environment"] = _environment;

@@ -27,7 +27,7 @@ namespace FinTech.Infrastructure.Services.Integration
         }
 
         public async Task ProcessSalaryPaymentAsync(
-            int employeeId, 
+            string employeeId, 
             decimal grossAmount, 
             decimal taxAmount, 
             decimal pensionAmount, 
@@ -217,7 +217,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessBonusPaymentAsync(int employeeId, decimal amount, string reference, string description)
+        public async Task ProcessBonusPaymentAsync(string employeeId, decimal amount, string reference, string description)
         {
             try
             {

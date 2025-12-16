@@ -32,9 +32,12 @@ namespace FinTech.Core.Application.Interfaces.Services.Accounting
         Task<string?> GetLoanWriteOffAccountIdAsync(CancellationToken cancellationToken = default);
         Task<string?> GetBankAccountIdForCustomerAsync(string customerId, CancellationToken cancellationToken = default);
         Task<string?> GetInterestIncomeAccountIdAsync(CancellationToken cancellationToken = default);
-        Task<string?> GetFeeIncomeAccountIdAsync(CancellationToken cancellationToken = default);
+
         Task<string?> GetInterestReceivableAccountIdAsync(CancellationToken cancellationToken = default);
         Task<string?> GetBadDebtExpenseAccountIdAsync(CancellationToken cancellationToken = default);
+        Task<string?> GetLoanLossProvisionAccountIdAsync(CancellationToken cancellationToken = default);
+        Task<string?> GetFeeReceivableAccountIdAsync(CancellationToken cancellationToken = default);
+        Task<string?> GetFeeIncomeAccountIdAsync(string? feeType = null, CancellationToken cancellationToken = default);
         Task<string?> GetFixedAssetAccountIdAsync(string assetCategory, CancellationToken cancellationToken = default);
         Task<string?> GetAccumulatedDepreciationAccountIdAsync(string assetCategory, CancellationToken cancellationToken = default);
         Task<string?> GetDepreciationExpenseAccountIdAsync(string assetCategory, CancellationToken cancellationToken = default);

@@ -72,6 +72,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 
         [MaxLength(100)]
         public string? Category { get; set; }
+
+        public virtual ClientPortalProfile? ClientPortalProfile { get; set; }
+        [NotMapped] public string? Reference { get => CustomerReferenceNumber; set => CustomerReferenceNumber = value; }
     }
 
     /// <summary>
@@ -133,6 +136,16 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 
         [MaxLength(50)]
         public string? TransferType { get; set; }
+
+        public Guid ClientPortalProfileId { get; set; }
+        public virtual ClientPortalProfile? ClientPortalProfile { get; set; }
+        [NotMapped] public string? FromAccountNumber { get => SourceAccountNumber; set => SourceAccountNumber = value; }
+        [NotMapped] public string? ToAccountNumber { get => DestinationAccountNumber; set => DestinationAccountNumber = value; }
+        [NotMapped] public string? ToBankName { get => DestinationBankName; set => DestinationBankName = value; }
+        [NotMapped] public string? ToBankCode { get => DestinationBankCode; set => DestinationBankCode = value; }
+        public string Currency { get; set; } = "NGN";
+        public string Reference { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -180,5 +193,10 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         [MaxLength(50)]
         public string Status { get; set; } = "Pending"; // Pending, Verified, Rejected, Expired
+
+        public virtual ClientPortalProfile? ClientPortalProfile { get; set; }
+        public string FileName { get; set; } = string.Empty;
+        public string StorageProvider { get; set; } = string.Empty;
+        public string StorageReference { get; set; } = string.Empty;
     }
 }

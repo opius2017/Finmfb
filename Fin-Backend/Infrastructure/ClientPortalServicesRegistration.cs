@@ -21,7 +21,7 @@ namespace FinTech.Infrastructure
             // Register supporting services
             services.AddScoped<IAzureBlobStorageService, AzureBlobStorageServiceV2>();
             services.AddScoped<IFileStorageService, AzureBlobStorageService>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<FinTech.Core.Application.Interfaces.IEmailService, EmailService>();
             services.AddScoped<ISmsService, SmsService>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
             

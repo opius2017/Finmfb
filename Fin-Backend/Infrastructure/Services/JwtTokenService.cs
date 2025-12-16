@@ -47,10 +47,10 @@ namespace FinTech.Infrastructure.Services
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id),
+                new Claim("uid", user.Id.ToString()),
                 new Claim("username", user.UserName)
             };
 
@@ -91,7 +91,7 @@ namespace FinTech.Infrastructure.Services
         {
             return new RefreshToken
             {
-                UserId = userId,
+                UserId = Guid.Parse(userId),
                 Token = GenerateRefreshTokenString(),
                 JwtId = jwtId,
                 CreatedAt = DateTime.UtcNow,

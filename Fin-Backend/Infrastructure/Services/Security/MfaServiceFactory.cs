@@ -1,5 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using FinTech.Infrastructure.Services;
+using FinTech.Core.Application.Interfaces.Services;
 
 namespace FinTech.Infrastructure.Services.Security
 {
@@ -18,7 +20,7 @@ namespace FinTech.Infrastructure.Services.Security
             {
                 "email" => _serviceProvider.GetRequiredService<EmailMfaService>(),
                 "sms" => _serviceProvider.GetRequiredService<SmsMfaService>(),
-                "app" => _serviceProvider.GetRequiredService<AppMfaService>(), // Need to create AppMfaService too
+                "app" => _serviceProvider.GetRequiredService<AppBasedMfaService>(),
                 _ => throw new ArgumentException($"Unsupported MFA method: {method}")
             };
         }

@@ -1,7 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using System;
+using FinTech.Infrastructure.Messaging.Handlers;
+using FinTech.Infrastructure.Messaging.Events;
 
 namespace FinTech.Infrastructure.Messaging
 {

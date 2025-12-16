@@ -23,7 +23,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string journalNumber, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Include(j => j.JournalEntryLines)
                     .ThenInclude(l => l.Account)
                 .FirstOrDefaultAsync(j => j.JournalEntryNumber == journalNumber, cancellationToken);
@@ -33,7 +33,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             JournalEntryStatus status, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Where(j => j.Status == status)
                 .OrderByDescending(j => j.EntryDate)
                 .ToListAsync(cancellationToken);
@@ -44,7 +44,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             DateTime endDate, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Where(j => j.EntryDate >= startDate && j.EntryDate <= endDate)
                 .OrderByDescending(j => j.EntryDate)
                 .ToListAsync(cancellationToken);
@@ -54,7 +54,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string financialPeriodId, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Where(j => j.FinancialPeriodId == financialPeriodId)
                 .OrderByDescending(j => j.EntryDate)
                 .ToListAsync(cancellationToken);
@@ -64,7 +64,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string accountId, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Include(j => j.JournalEntryLines)
                 .Where(j => j.JournalEntryLines.Any(l => l.AccountId == accountId))
                 .OrderByDescending(j => j.EntryDate)
@@ -74,7 +74,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
         public async Task<IReadOnlyList<JournalEntry>> GetPendingApprovalsAsync(
             CancellationToken cancellationToken = default)
         {
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Where(j => j.Status == JournalEntryStatus.Pending)
                 .OrderByDescending(j => j.EntryDate)
                 .ToListAsync(cancellationToken);
@@ -114,7 +114,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             }
             
             // Find the latest journal entry number for this type, year, and month
-            var latestJournalEntry = await _context.JournalEntries
+            var latestJournalEntry = await _context.CoreJournalEntries
                 .Where(j => 
                     j.JournalEntryNumber.StartsWith($"{prefix}-{year}-{month:D2}-") && 
                     j.EntryType == entryType)
@@ -140,7 +140,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             string financialPeriodId, 
             CancellationToken cancellationToken = default)
         {
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Where(j => j.FinancialPeriodId == financialPeriodId && j.Status != JournalEntryStatus.Posted)
                 .OrderBy(j => j.EntryDate)
                 .ToListAsync(cancellationToken);
@@ -164,7 +164,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             // I'll assume ExternalReference for now as it's common.
             // Actually, the interface parameter is `referenceType`.
             // Let's assume there is a field `Reference` or `ReferenceType`.
-            return await _context.JournalEntries
+            return await _context.CoreJournalEntries
                 .Where(j => j.FinancialPeriodId == financialPeriodId && j.Reference == referenceType)
                 .OrderByDescending(j => j.EntryDate)
                 .ToListAsync(cancellationToken);

@@ -54,10 +54,12 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(f => f.ClosedDate);
                 
             // Navigation for financial periods
+            /*
             builder.HasMany(f => f.FinancialPeriods)
                 .WithOne(p => p.FiscalYear)
                 .HasForeignKey(p => p.FiscalYearId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             // Add indexes
             builder.HasIndex(f => f.Code)

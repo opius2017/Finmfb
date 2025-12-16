@@ -16,8 +16,10 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 .HasMaxLength(50)
                 .IsRequired();
                 
+            /*
             builder.Property(l => l.LineNumber)
                 .IsRequired();
+            */
                 
             builder.Property(l => l.Description)
                 .HasMaxLength(255);
@@ -40,22 +42,28 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(l => l.LastModifiedBy)
                 .HasMaxLength(100);
                 
+            /*
             builder.Property(l => l.LastModifiedAt);
+            */
                 
             // Foreign key references
+            /*
             builder.Property(l => l.JournalEntryId)
                 .HasMaxLength(50)
                 .IsRequired();
+            */
                 
             builder.Property(l => l.AccountId)
                 .HasMaxLength(50)
                 .IsRequired();
                 
             // Relationships
+            /*
             builder.HasOne(l => l.JournalEntry)
                 .WithMany(j => j.JournalEntryLines)
                 .HasForeignKey(l => l.JournalEntryId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             builder.HasOne(l => l.Account)
                 .WithMany()

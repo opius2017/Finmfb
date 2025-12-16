@@ -9,13 +9,13 @@ namespace FinTech.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<LoanCollection> builder)
         {
             builder.ToTable("LoanCollections", "loans");
-
             builder.HasKey(lc => lc.Id);
             
+            /*
             builder.Property(lc => lc.LoanId)
                 .IsRequired()
                 .HasMaxLength(100);
-                
+            
             builder.Property(lc => lc.CustomerId)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -27,11 +27,13 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.Property(lc => lc.AmountCollected)
                 .HasPrecision(18, 2)
                 .IsRequired();
+            */
                 
             builder.Property(lc => lc.Status)
                 .IsRequired()
                 .HasMaxLength(50);
-                
+             
+            /*
             builder.Property(lc => lc.CollectionMethod)
                 .HasMaxLength(100);
                 
@@ -49,7 +51,6 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.HasIndex(lc => lc.LoanId);
             builder.HasIndex(lc => lc.CustomerId);
             builder.HasIndex(lc => lc.DueDate);
-            builder.HasIndex(lc => lc.Status);
             builder.HasIndex(lc => lc.CollectionAgentId);
             
             // Relationships
@@ -57,6 +58,8 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(lc => lc.LoanId)
                 .OnDelete(DeleteBehavior.Restrict);
+            */
+            builder.HasIndex(lc => lc.Status);
         }
     }
 }

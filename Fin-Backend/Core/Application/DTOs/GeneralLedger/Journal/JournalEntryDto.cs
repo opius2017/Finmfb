@@ -8,6 +8,7 @@ namespace FinTech.Core.Application.DTOs.GeneralLedger.Journal
         public string Id { get; set; }
         public string JournalEntryNumber { get; set; }
         public DateTime EntryDate { get; set; }
+        public DateTime TransactionDate { get; set; }
         public string Description { get; set; }
         public int Status { get; set; }
         public int EntryType { get; set; }
@@ -23,5 +24,7 @@ namespace FinTech.Core.Application.DTOs.GeneralLedger.Journal
         public string RecurrencePattern { get; set; }
         public string Notes { get; set; }
         public IEnumerable<JournalEntryLineDto> JournalEntryLines { get; set; }
+        public string Source { get; set; }
+        public IEnumerable<JournalEntryLineDto> Lines { get; set; }
     }
 }

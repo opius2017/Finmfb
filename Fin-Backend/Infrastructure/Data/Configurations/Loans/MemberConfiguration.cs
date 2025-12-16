@@ -77,10 +77,12 @@ namespace FinTech.Infrastructure.Data.Configurations.Loans
                 .HasForeignKey("CustomerId")
                 .OnDelete(DeleteBehavior.Restrict);
             
+            /*
             builder.HasMany(m => m.GuarantorObligations)
                 .WithOne()
                 .HasForeignKey("MemberId")
                 .OnDelete(DeleteBehavior.Restrict);
+            */
             
             // Indexes
             builder.HasIndex(m => m.Email);

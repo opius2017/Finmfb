@@ -12,9 +12,11 @@ namespace FinTech.Infrastructure.Persistence.Configurations
 
             builder.HasKey(lc => lc.Id);
             
+/*
             builder.Property(lc => lc.LoanId)
                 .IsRequired()
                 .HasMaxLength(100);
+*/
                 
             builder.Property(lc => lc.CollateralType)
                 .IsRequired()
@@ -23,12 +25,16 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.Property(lc => lc.Description)
                 .HasMaxLength(500);
                 
+/*
             builder.Property(lc => lc.Value)
                 .HasPrecision(18, 2)
                 .IsRequired();
+*/
                 
+/*
             builder.Property(lc => lc.OwnerName)
                 .HasMaxLength(150);
+*/
                 
             builder.Property(lc => lc.RegistrationNumber)
                 .HasMaxLength(100);
@@ -40,6 +46,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
                 
+/*
             builder.Property(lc => lc.ApprovedBy)
                 .HasMaxLength(100);
                 
@@ -51,15 +58,19 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 
             builder.Property(lc => lc.RejectionReason)
                 .HasMaxLength(500);
+*/
                 
-            builder.HasIndex(lc => lc.LoanId);
+// builder.HasIndex(lc => lc.LoanId);
             builder.HasIndex(lc => lc.Status);
             
+            // Relationships
+/*
             // Relationships
             builder.HasOne<Loan>()
                 .WithMany()
                 .HasForeignKey(lc => lc.LoanId)
                 .OnDelete(DeleteBehavior.Restrict);
+*/
         }
     }
 }

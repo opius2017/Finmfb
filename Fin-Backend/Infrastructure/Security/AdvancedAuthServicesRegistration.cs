@@ -1,9 +1,11 @@
 using FinTech.Infrastructure.Services;
-using FinTech.Core.Application.Common.Settings;
+using FinTech.Application.Common.Settings; // Corrected namespace
 using FinTech.Core.Application.Interfaces;
 using FinTech.Core.Application.Interfaces.Repositories;
+using FinTech.Core.Application.Interfaces.Services; // Added for IAdvancedAuthService
 using FinTech.Core.Application.DTOs.Auth;
 using FinTech.Infrastructure.Repositories;
+using FinTech.Infrastructure.Services.Security; // Added for MfaServiceFactory
 
 using FinTech.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,16 +33,18 @@ namespace FinTech.Infrastructure.Security
             // Configure social login settings
             services.Configure<SocialLoginSettings>(configuration.GetSection("SocialLoginSettings"));
 
-            // Register JWT service
-            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            // Register JWT service (No Interface)
+            services.AddScoped<JwtTokenService>();
             
             // Register repositories
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IMfaSettingsRepository, MfaSettingsRepository>();
+            services.AddScoped<IMfaChallengeRepository, MfaChallengeRepository>(); // Added
             services.AddScoped<IBackupCodeRepository, BackupCodeRepository>();
-            services.AddScoped<IUserDeviceRepository, UserDeviceRepository>();
+            services.AddScoped<ITrustedDeviceRepository, TrustedDeviceRepository>(); // Fixed from UserDeviceRepository
+            services.AddScoped<ILoginAttemptRepository, LoginAttemptRepository>(); // Added
             services.AddScoped<ISecurityActivityRepository, SecurityActivityRepository>();
-            services.AddScoped<IUserSocialLoginRepository, UserSocialLoginRepository>();
+            services.AddScoped<ISocialLoginProfileRepository, SocialLoginProfileRepository>();
             services.AddScoped<IUserSecurityPreferencesRepository, UserSecurityPreferencesRepository>();
             
             // Register MFA providers (Concrete classes used by Factory)
@@ -48,7 +52,8 @@ namespace FinTech.Infrastructure.Security
             services.AddScoped<EmailMfaService>();
             services.AddScoped<SmsMfaService>();
             
-            // Register MFA factory
+            // Register MFA factories
+            services.AddScoped<MfaServiceFactory>();
             services.AddScoped<IMfaProviderFactory, MfaProviderFactory>();
             
             // Register MFA service

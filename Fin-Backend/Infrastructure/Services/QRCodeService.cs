@@ -82,8 +82,8 @@ namespace FinTech.Infrastructure.Services
                 
                 var qrCodeImage = qrCode.GetGraphic(
                     pixelsPerModule,
-                    darkColorHex,
-                    lightColorHex);
+                    HexToBytes(darkColorHex),
+                    HexToBytes(lightColorHex));
 
                 _logger.LogInformation("Successfully generated colored QR code for voucher: {VoucherCode}", voucherCode);
 
@@ -194,6 +194,22 @@ namespace FinTech.Infrastructure.Services
             }
 
             return true;
+        }
+
+        private byte[] HexToBytes(string hex)
+        {
+            hex = hex.Replace("#", "");
+            if (hex.Length == 6)
+            {
+                return new byte[] 
+                { 
+                    Convert.ToByte(hex.Substring(0, 2), 16), 
+                    Convert.ToByte(hex.Substring(2, 2), 16), 
+                    Convert.ToByte(hex.Substring(4, 2), 16),
+                    255 // Alpha
+                };
+            }
+            return new byte[] { 0, 0, 0, 255 }; // Default black
         }
     }
 }

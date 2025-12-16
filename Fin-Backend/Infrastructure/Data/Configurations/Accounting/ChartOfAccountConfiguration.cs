@@ -30,12 +30,15 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(c => c.AccountType)
                 .IsRequired();
                 
+            /*
             builder.Property(c => c.AccountClassification)
                 .IsRequired();
+            */
                 
             builder.Property(c => c.Status)
                 .IsRequired();
                 
+            /*
             builder.Property(c => c.IsSystemAccount)
                 .HasDefaultValue(false)
                 .IsRequired();
@@ -47,6 +50,7 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(c => c.IsControlAccount)
                 .HasDefaultValue(false)
                 .IsRequired();
+            */
                 
             builder.Property(c => c.RequiresReconciliation)
                 .HasDefaultValue(false)
@@ -62,7 +66,9 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(c => c.LastModifiedBy)
                 .HasMaxLength(100);
                 
+            /*
             builder.Property(c => c.LastModifiedAt);
+            */
                 
             // Add indexes
             builder.HasIndex(c => c.AccountNumber)
@@ -70,7 +76,9 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 
             builder.HasIndex(c => c.AccountType);
             
+            /*
             builder.HasIndex(c => c.AccountClassification);
+            */
             
             builder.HasIndex(c => c.Status);
         }

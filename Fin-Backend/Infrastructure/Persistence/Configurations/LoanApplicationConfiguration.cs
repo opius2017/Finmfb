@@ -37,7 +37,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.Property(la => la.ApprovedAmount)
                 .HasPrecision(18, 2);
                 
-            builder.Property(la => la.ApprovedTerm);
+// builder.Property(la => la.ApprovedTerm);
                 
             builder.Property(la => la.InterestRate)
                 .HasPrecision(18, 4);

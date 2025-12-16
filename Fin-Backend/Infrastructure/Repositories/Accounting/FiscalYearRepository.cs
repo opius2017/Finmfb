@@ -114,7 +114,7 @@ namespace FinTech.Infrastructure.Repositories.Accounting
             var allPeriodsClosed = fiscalYear.FinancialPeriods.All(p => p.Status == FinancialPeriodStatus.Closed);
             
             // Check if there are no pending journal entries for this fiscal year
-            var hasPendingJournalEntries = await _context.JournalEntries
+            var hasPendingJournalEntries = await _context.CoreJournalEntries
                 .AnyAsync(j => 
                     j.Status == JournalEntryStatus.Pending && 
                     fiscalYear.FinancialPeriods.Any(p => p.Id == j.FinancialPeriodId),

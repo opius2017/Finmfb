@@ -8,6 +8,7 @@ using FinTech.Core.Domain.Common;
 using FinTech.Core.Domain.Entities.Security;
 using FinTech.Core.Domain.Enums;
 using FinTech.Infrastructure.Data.Auditing;
+using FinTech.Core.Domain.Entities.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -52,8 +53,9 @@ namespace FinTech.Infrastructure.Data.Interceptors
             if (context == null) return;
 
             var auditEntries = new List<AuditEntry>();
-            var userId = _currentUserService.UserId?.ToString() ?? "System";
             var tenantId = _currentUserService.TenantId;
+            var userId = _currentUserService.UserId ?? string.Empty;
+            // var userIdGuid = Guid.TryParse(userId, out var uid) ? uid : Guid.Empty;
 
             foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())
             {
@@ -165,6 +167,7 @@ namespace FinTech.Infrastructure.Data.Interceptors
                     EntityName = entry.EntityName,
                     // EntityId logic...
                     Action = entry.Action,
+                    AuditAction = entry.Action switch { "Added" => AuditAction.Create, "Modified" => AuditAction.Update, "Deleted" => AuditAction.Delete, _ => AuditAction.Update },
                     UserId = Guid.TryParse(entry.UserId, out var uid) ? uid : Guid.Empty,
                     Changes = JsonConvert.SerializeObject(entry.Changes),
                     Timestamp = DateTime.UtcNow

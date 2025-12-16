@@ -102,7 +102,7 @@ namespace FinTech.Infrastructure.BackgroundServices
                     }
 
                     // Process the event
-                    await domainEventService.PublishAsync(domainEvent, stoppingToken);
+                    await domainEventService.PublishAsync((FinTech.Core.Domain.Common.DomainEvent)domainEvent, stoppingToken);
                     
                     // Mark as processed
                     message.ProcessedAt = DateTime.UtcNow;

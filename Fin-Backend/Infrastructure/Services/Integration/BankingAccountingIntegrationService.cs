@@ -24,7 +24,7 @@ namespace FinTech.Infrastructure.Services.Integration
             _chartOfAccountService = chartOfAccountService;
         }
 
-        public async Task ProcessDepositAsync(int accountId, decimal amount, string reference, string description)
+        public async Task ProcessDepositAsync(string accountId, decimal amount, string reference, string description)
         {
             try
             {
@@ -32,7 +32,8 @@ namespace FinTech.Infrastructure.Services.Integration
                 
                 // Get the bank account and cash account from chart of accounts
                 var bankAccountId = await GetBankAccountIdForCustomerAccountAsync(accountId);
-                var cashAccountId = await _chartOfAccountService.GetCashAccountIdAsync();
+                var cashAccountId = await _chartOfAccountService.GetCashAccountIdAsync() 
+                    ?? throw new InvalidOperationException("Cash account not configured");
                 
                 // Create journal entry lines
                 var journalLines = new List<JournalEntryLineDto>
@@ -73,7 +74,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessWithdrawalAsync(int accountId, decimal amount, string reference, string description)
+        public async Task ProcessWithdrawalAsync(string accountId, decimal amount, string reference, string description)
         {
             try
             {
@@ -81,7 +82,8 @@ namespace FinTech.Infrastructure.Services.Integration
                 
                 // Get the bank account and cash account from chart of accounts
                 var bankAccountId = await GetBankAccountIdForCustomerAccountAsync(accountId);
-                var cashAccountId = await _chartOfAccountService.GetCashAccountIdAsync();
+                var cashAccountId = await _chartOfAccountService.GetCashAccountIdAsync() 
+                    ?? throw new InvalidOperationException("Cash account not configured");
                 
                 // Create journal entry lines
                 var journalLines = new List<JournalEntryLineDto>
@@ -122,7 +124,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessTransferAsync(int fromAccountId, int toAccountId, decimal amount, string reference, string description)
+        public async Task ProcessTransferAsync(string fromAccountId, string toAccountId, decimal amount, string reference, string description)
         {
             try
             {
@@ -172,7 +174,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessFeeChargeAsync(int accountId, decimal amount, string feeType, string reference, string description)
+        public async Task ProcessFeeChargeAsync(string accountId, decimal amount, string feeType, string reference, string description)
         {
             try
             {
@@ -181,7 +183,8 @@ namespace FinTech.Infrastructure.Services.Integration
                 
                 // Get the accounts from chart of accounts
                 var bankAccountId = await GetBankAccountIdForCustomerAccountAsync(accountId);
-                var feeIncomeAccountId = await _chartOfAccountService.GetFeeIncomeAccountIdAsync(feeType);
+                var feeIncomeAccountId = await _chartOfAccountService.GetFeeIncomeAccountIdAsync(feeType)
+                    ?? throw new InvalidOperationException($"Fee income account not configured for {feeType}");
                 
                 // Create journal entry lines
                 var journalLines = new List<JournalEntryLineDto>
@@ -222,7 +225,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessInterestPaymentAsync(int accountId, decimal amount, string reference, string description)
+        public async Task ProcessInterestPaymentAsync(string accountId, decimal amount, string reference, string description)
         {
             try
             {
@@ -231,7 +234,8 @@ namespace FinTech.Infrastructure.Services.Integration
                 
                 // Get the accounts from chart of accounts
                 var bankAccountId = await GetBankAccountIdForCustomerAccountAsync(accountId);
-                var interestExpenseAccountId = await _chartOfAccountService.GetInterestExpenseAccountIdAsync();
+                var interestExpenseAccountId = await _chartOfAccountService.GetInterestExpenseAccountIdAsync()
+                    ?? throw new InvalidOperationException("Interest expense account not configured");
                 
                 // Create journal entry lines
                 var journalLines = new List<JournalEntryLineDto>
@@ -273,12 +277,13 @@ namespace FinTech.Infrastructure.Services.Integration
         }
 
         // Helper method to get the corresponding GL account for a customer bank account
-        private async Task<int> GetBankAccountIdForCustomerAccountAsync(int customerAccountId)
+        private async Task<string> GetBankAccountIdForCustomerAccountAsync(string customerAccountId)
         {
             // In a real implementation, this would look up the mapping between
             // a customer's bank account and the corresponding GL account
             // For now, we'll use a placeholder implementation
-            return await _chartOfAccountService.GetBankAccountIdForCustomerAsync(customerAccountId);
+            var accountId = await _chartOfAccountService.GetBankAccountIdForCustomerAsync(customerAccountId);
+            return accountId ?? throw new InvalidOperationException($"No GL account found for customer account {customerAccountId}");
         }
     }
 }

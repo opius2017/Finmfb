@@ -6,6 +6,7 @@ public class RefreshToken : BaseEntity
 {
     public Guid UserId { get; set; }
     public string Token { get; set; } = string.Empty;
+    public string JwtId { get; set; } = string.Empty;
     public string DeviceId { get; set; } = string.Empty;
     public string IpAddress { get => CreatedByIp; set => CreatedByIp = value; }
     public DateTime ExpiresAt { get; set; }

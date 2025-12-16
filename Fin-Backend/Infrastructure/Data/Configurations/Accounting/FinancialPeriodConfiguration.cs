@@ -52,10 +52,12 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 .IsRequired();
                 
             // Relationships
+            /*
             builder.HasOne(p => p.FiscalYear)
                 .WithMany(f => f.FinancialPeriods)
                 .HasForeignKey(p => p.FiscalYearId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             // Add indexes
             builder.HasIndex(p => p.FiscalYearId);

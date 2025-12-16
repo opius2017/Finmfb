@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using SecurityActivity = FinTech.Core.Domain.Entities.Identity.SecurityActivity;
 
 namespace FinTech.Infrastructure.Repositories
 {
@@ -178,9 +179,11 @@ namespace FinTech.Infrastructure.Repositories
             
             if (settings == null)
             {
+                if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID");
+
                 settings = new UserMfaSettings
                 {
-                    UserId = userId,
+                    UserId = userGuid,
                     IsEnabled = true,
                     Method = method,
                     SecretKey = sharedKey,
@@ -208,7 +211,8 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<UserMfaSettings> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.FirstOrDefaultAsync(ms => ms.UserId == userId);
+            if (!Guid.TryParse(userId, out var userGuid)) return null;
+            return await _dbSet.FirstOrDefaultAsync(ms => ms.UserId == userGuid);
         }
     }
 
@@ -228,7 +232,8 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task DeleteAllForUserAsync(string userId)
         {
-            var codes = await _dbSet.Where(bc => bc.UserId == userId).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return;
+            var codes = await _dbSet.Where(bc => bc.UserId == userGuid).ToListAsync();
             _dbSet.RemoveRange(codes);
             await _context.SaveChangesAsync();
         }
@@ -239,6 +244,8 @@ namespace FinTech.Infrastructure.Repositories
             // Delete existing backup codes for the user
             await DeleteAllForUserAsync(userId);
             
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<BackupCode>();
+
             var codes = new List<BackupCode>();
             var now = DateTime.UtcNow;
             
@@ -249,7 +256,7 @@ namespace FinTech.Infrastructure.Repositories
                 
                 var backupCode = new BackupCode
                 {
-                    UserId = userId,
+                    UserId = userGuid,
                     Code = code,
                     IsUsed = false,
                     CreatedAt = now
@@ -267,19 +274,22 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<BackupCode>> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(bc => bc.UserId == userId).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<BackupCode>();
+            return await _dbSet.Where(bc => bc.UserId == userGuid).ToListAsync();
         }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<BackupCode>> GetUnusedByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(bc => bc.UserId == userId && !bc.IsUsed).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<BackupCode>();
+            return await _dbSet.Where(bc => bc.UserId == userGuid && !bc.IsUsed).ToListAsync();
         }
 
         /// <inheritdoc/>
         public async Task<bool> MarkAsUsedAsync(string userId, string code)
         {
-            var backupCode = await _dbSet.FirstOrDefaultAsync(bc => bc.UserId == userId && bc.Code == code && !bc.IsUsed);
+            if (!Guid.TryParse(userId, out var userGuid)) return false;
+            var backupCode = await _dbSet.FirstOrDefaultAsync(bc => bc.UserId == userGuid && bc.Code == code && !bc.IsUsed);
             if (backupCode == null)
             {
                 return false;
@@ -295,7 +305,8 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<bool> ValidateCodeAsync(string userId, string code)
         {
-            return await _dbSet.AnyAsync(bc => bc.UserId == userId && bc.Code == code && !bc.IsUsed);
+            if (!Guid.TryParse(userId, out var userGuid)) return false;
+            return await _dbSet.AnyAsync(bc => bc.UserId == userGuid && bc.Code == code && !bc.IsUsed);
         }
         
         /// <summary>
@@ -338,12 +349,13 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<MfaChallenge> CreateChallengeAsync(string userId, string method, string ipAddress, string deviceId, int expiresInMinutes = 15)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID");
             var now = DateTime.UtcNow;
             var verificationCode = GenerateVerificationCode();
             
             var challenge = new MfaChallenge
             {
-                UserId = userId,
+                UserId = userGuid,
                 VerificationCode = verificationCode,
                 Method = method,
                 CreatedAt = now,
@@ -367,14 +379,16 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<MfaChallenge>> GetActiveByUserIdAsync(string userId)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<MfaChallenge>();
             var now = DateTime.UtcNow;
-            return await _dbSet.Where(mc => mc.UserId == userId && !mc.IsUsed && mc.ExpiresAt > now).ToListAsync();
+            return await _dbSet.Where(mc => mc.UserId == userGuid && !mc.IsUsed && mc.ExpiresAt > now).ToListAsync();
         }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<MfaChallenge>> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(mc => mc.UserId == userId).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<MfaChallenge>();
+            return await _dbSet.Where(mc => mc.UserId == userGuid).ToListAsync();
         }
 
         /// <inheritdoc/>
@@ -386,9 +400,11 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<bool> MarkAsUsedAsync(string code, string userId)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return false;
+
             var challenge = await _dbSet.FirstOrDefaultAsync(mc => 
                 mc.VerificationCode == code && 
-                mc.UserId == userId && 
+                mc.UserId == userGuid && 
                 !mc.IsUsed && 
                 mc.ExpiresAt > DateTime.UtcNow);
                 
@@ -407,11 +423,12 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<bool> ValidateChallengeAsync(string code, string userId, string ipAddress)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return false;
             var now = DateTime.UtcNow;
             
             return await _dbSet.AnyAsync(mc => 
                 mc.VerificationCode == code && 
-                mc.UserId == userId && 
+                mc.UserId == userGuid && 
                 !mc.IsUsed && 
                 mc.ExpiresAt > now);
         }
@@ -476,9 +493,10 @@ namespace FinTech.Infrastructure.Repositories
             }
             
             // Create new trusted device
+            if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID");
             var device = new TrustedDevice
             {
-                UserId = userId,
+                UserId = userGuid,
                 DeviceId = deviceId,
                 DeviceName = deviceName,
                 DeviceType = deviceType,
@@ -505,19 +523,22 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<TrustedDevice>> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(td => td.UserId == userId).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<TrustedDevice>();
+            return await _dbSet.Where(td => td.UserId == userGuid).ToListAsync();
         }
 
         /// <inheritdoc/>
         public async Task<bool> IsDeviceTrustedAsync(string userId, string deviceId)
         {
-            return await _dbSet.AnyAsync(td => td.UserId == userId && td.DeviceId == deviceId);
+            if (!Guid.TryParse(userId, out var userGuid)) return false;
+            return await _dbSet.AnyAsync(td => td.UserId == userGuid && td.DeviceId == deviceId);
         }
 
         /// <inheritdoc/>
         public async Task RemoveTrustedDeviceAsync(string userId, string deviceId)
         {
-            var device = await _dbSet.FirstOrDefaultAsync(td => td.UserId == userId && td.DeviceId == deviceId);
+            if (!Guid.TryParse(userId, out var userGuid)) return;
+            var device = await _dbSet.FirstOrDefaultAsync(td => td.UserId == userGuid && td.DeviceId == deviceId);
             if (device != null)
             {
                 await DeleteAsync(device);
@@ -527,7 +548,8 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task UpdateLastUsedAsync(string userId, string deviceId)
         {
-            var device = await _dbSet.FirstOrDefaultAsync(td => td.UserId == userId && td.DeviceId == deviceId);
+            if (!Guid.TryParse(userId, out var userGuid)) return;
+            var device = await _dbSet.FirstOrDefaultAsync(td => td.UserId == userGuid && td.DeviceId == deviceId);
             if (device != null)
             {
                 device.LastUsedAt = DateTime.UtcNow;
@@ -582,7 +604,8 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<LoginAttempt>> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(la => la.UserId == userId)
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<LoginAttempt>();
+            return await _dbSet.Where(la => la.UserId == userGuid)
                 .OrderByDescending(la => la.AttemptTime)
                 .ToListAsync();
         }
@@ -590,8 +613,9 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<LoginAttempt>> GetByUserIdAndTimeRangeAsync(string userId, DateTime startTime, DateTime endTime)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<LoginAttempt>();
             return await _dbSet.Where(la => 
-                la.UserId == userId && 
+                la.UserId == userGuid &&  
                 la.AttemptTime >= startTime && 
                 la.AttemptTime <= endTime)
                 .OrderByDescending(la => la.AttemptTime)
@@ -620,10 +644,11 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<LoginAttempt> RecordLoginAttemptAsync(string username, string userId, bool success, string failureReason, string ipAddress, string userAgent, string loginMethod, string? country = null, string? city = null)
         {
+            Guid.TryParse(userId, out var userGuid); // Optional if UserId is nullable in LoginAttempt
             var attempt = new LoginAttempt
             {
                 Username = username,
-                UserId = userId,
+                UserId = userGuid != Guid.Empty ? userGuid : null,
                 Success = success,
                 FailureReason = failureReason,
                 IpAddress = ipAddress,
@@ -658,7 +683,7 @@ namespace FinTech.Infrastructure.Repositories
             
             if (existingProfile != null)
             {
-                if (existingProfile.UserId != userId)
+                if (existingProfile.UserId != Guid.Parse(userId))
                 {
                     throw new InvalidOperationException("This social account is already linked to a different user.");
                 }
@@ -669,7 +694,7 @@ namespace FinTech.Infrastructure.Repositories
             
             var profile = new SocialLoginProfile
             {
-                UserId = userId,
+                UserId = Guid.Parse(userId),
                 Provider = provider,
                 ProviderKey = providerKey,
                 ProviderDisplayName = providerDisplayName,
@@ -691,14 +716,16 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<IEnumerable<SocialLoginProfile>> GetByUserIdAsync(string userId)
         {
-            return await _dbSet.Where(slp => slp.UserId == userId).ToListAsync();
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<SocialLoginProfile>();
+            return await _dbSet.Where(slp => slp.UserId == userGuid).ToListAsync();
         }
 
         /// <inheritdoc/>
         public async Task RemoveSocialLoginAsync(string userId, string provider)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return;
             var profile = await _dbSet.FirstOrDefaultAsync(slp => 
-                slp.UserId == userId && 
+                slp.UserId == userGuid && 
                 slp.Provider == provider);
                 
             if (profile != null)
@@ -710,8 +737,9 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task UpdateLastUsedAsync(string userId, string provider)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return;
             var profile = await _dbSet.FirstOrDefaultAsync(slp => 
-                slp.UserId == userId && 
+                slp.UserId == userGuid && 
                 slp.Provider == provider);
                 
             if (profile != null)
@@ -830,9 +858,10 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<bool> MarkAsReadAsync(string alertId, string userId)
         {
+            if (!Guid.TryParse(userId, out var userGuid)) return false;
             var alert = await _dbSet.FirstOrDefaultAsync(sa => 
                 sa.Id == alertId && 
-                sa.UserId == userId && 
+                sa.UserId == userGuid && 
                 !sa.IsRead);
                 
             if (alert == null)
@@ -864,14 +893,15 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<UserSecurityPreferences> GetByUserIdAsync(string userId)
         {
-            var preferences = await _dbSet.FirstOrDefaultAsync(usp => usp.UserId == userId);
+            if (!Guid.TryParse(userId, out var userGuid)) return null;
+            var preferences = await _dbSet.FirstOrDefaultAsync(usp => usp.UserId == userGuid);
             
             if (preferences == null)
             {
                 // Create default preferences if none exist
                 preferences = new UserSecurityPreferences
                 {
-                    UserId = userId,
+                    UserId = userGuid,
                     NotifyOnNewLogin = true,
                     NotifyOnSuspiciousActivity = true,
                     UseLocationBasedSecurity = true,
@@ -893,11 +923,12 @@ namespace FinTech.Infrastructure.Repositories
         /// <inheritdoc/>
         public async Task<UserSecurityPreferences> UpdatePreferencesAsync(string userId, UserSecurityPreferences preferences)
         {
-            var existingPreferences = await _dbSet.FirstOrDefaultAsync(usp => usp.UserId == userId);
+            if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid User ID");
+            var existingPreferences = await _dbSet.FirstOrDefaultAsync(usp => usp.UserId == userGuid);
             
             if (existingPreferences == null)
             {
-                preferences.UserId = userId;
+                preferences.UserId = userGuid;
                 return await AddAsync(preferences);
             }
             
@@ -914,6 +945,54 @@ namespace FinTech.Infrastructure.Repositories
             existingPreferences.UsePasswordlessLogin = preferences.UsePasswordlessLogin;
             
             return await UpdateAsync(existingPreferences);
+        }
+    }
+
+    /// <summary>
+    /// Repository implementation for security activities
+    /// </summary>
+    public class SecurityActivityRepository : BaseAuthRepository<SecurityActivity>, ISecurityActivityRepository
+    {
+        public SecurityActivityRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+
+        public async Task<SecurityActivity> LogActivityAsync(string userId, string eventType, string details, string ipAddress, string userAgent)
+        {
+            if (!Guid.TryParse(userId, out var userGuid)) return null;
+
+            var activity = new SecurityActivity
+            {
+                UserId = userGuid, // Guid
+                EventType = eventType,
+                Details = details,
+                IpAddress = ipAddress,
+                DeviceInfo = userAgent,
+                Timestamp = DateTime.UtcNow,
+                Status = "Success",
+                Location = "Unknown" 
+            };
+            
+            return await AddAsync(activity);
+        }
+
+        public async Task<IEnumerable<SecurityActivity>> GetRecentActivityAsync(string userId, int count = 10)
+        {
+            if (!Guid.TryParse(userId, out var userGuid)) return new List<SecurityActivity>();
+            
+            return await _dbSet.Where(a => a.UserId == userGuid)
+                .OrderByDescending(a => a.Timestamp)
+                .Take(count)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<SecurityActivity>> GetByUserIdAsync(string userId)
+        {
+             if (!Guid.TryParse(userId, out var userGuid)) return new List<SecurityActivity>();
+            
+            return await _dbSet.Where(a => a.UserId == userGuid)
+                .OrderByDescending(a => a.Timestamp)
+                .ToListAsync();
         }
     }
 }

@@ -262,9 +262,12 @@ namespace FinTech.Core.Application.Services.Accounting
         public Task<string?> GetLoanWriteOffAccountIdAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
         public Task<string?> GetBankAccountIdForCustomerAsync(string customerId, CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
         public Task<string?> GetInterestIncomeAccountIdAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
-        public Task<string?> GetFeeIncomeAccountIdAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
+
         public Task<string?> GetInterestReceivableAccountIdAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
         public Task<string?> GetBadDebtExpenseAccountIdAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
+        public Task<string?> GetLoanLossProvisionAccountIdAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
+        public Task<string?> GetFeeReceivableAccountIdAsync(CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
+        public Task<string?> GetFeeIncomeAccountIdAsync(string? feeType = null, CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
         public Task<string?> GetFixedAssetAccountIdAsync(string assetCategory, CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
         public Task<string?> GetAccumulatedDepreciationAccountIdAsync(string assetCategory, CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);
         public Task<string?> GetDepreciationExpenseAccountIdAsync(string assetCategory, CancellationToken cancellationToken = default) => Task.FromResult<string?>(null);

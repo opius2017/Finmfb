@@ -43,5 +43,10 @@ namespace FinTech.Infrastructure.Data.Auditing
         /// Dictionary of property changes with property names as keys
         /// </summary>
         public Dictionary<string, object> Changes { get; set; }
+
+        /// <summary>
+        /// The EntityEntry from EF Core change tracker
+        /// </summary>
+        public Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry Entry { get; set; }
     }
 }

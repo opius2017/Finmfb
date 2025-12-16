@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 
 namespace FinTech.Infrastructure.Documentation
 {
@@ -93,12 +95,11 @@ namespace FinTech.Infrastructure.Documentation
             // Register versioning options
             services.AddApiVersioning(options =>
             {
-                options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+                options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 options.ReportApiVersions = true;
-            });
-
-            services.AddVersionedApiExplorer(options =>
+            })
+            .AddApiExplorer(options =>
             {
                 options.GroupNameFormat = "'v'VVV";
                 options.SubstituteApiVersionInUrl = true;
@@ -113,7 +114,8 @@ namespace FinTech.Infrastructure.Documentation
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
             var apiDescription = context.ApiDescription;
-            operation.Deprecated |= apiDescription.IsDeprecated();
+            var isDeprecated = apiDescription.ActionDescriptor.EndpointMetadata.OfType<ObsoleteAttribute>().Any();
+            operation.Deprecated |= isDeprecated;
 
             if (operation.Parameters == null)
                 return;

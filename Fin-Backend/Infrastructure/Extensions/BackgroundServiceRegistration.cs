@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using FinTech.Infrastructure.Services.Background;
+using FinTech.Infrastructure.Services;
 
 namespace FinTech.Infrastructure.Extensions
 {

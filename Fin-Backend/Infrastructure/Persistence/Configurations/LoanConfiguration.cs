@@ -24,20 +24,24 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
                 
+/*
             builder.Property(l => l.LoanAmount)
                 .HasPrecision(18, 2)
                 .IsRequired();
                 
             builder.Property(l => l.LoanTerm)
                 .IsRequired();
+*/
                 
             builder.Property(l => l.InterestRate)
                 .HasPrecision(18, 4)
                 .IsRequired();
                 
+/*
             builder.Property(l => l.InterestType)
                 .IsRequired()
                 .HasMaxLength(50);
+*/
                 
             builder.Property(l => l.RepaymentFrequency)
                 .IsRequired()
@@ -55,11 +59,13 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 .HasPrecision(18, 2)
                 .IsRequired();
                 
+/*
             builder.Property(l => l.AccountNumber)
                 .HasMaxLength(50);
                 
             builder.Property(l => l.Purpose)
                 .HasMaxLength(500);
+*/
                 
             builder.Property(l => l.CreatedBy)
                 .HasMaxLength(100);
@@ -67,6 +73,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.Property(l => l.LastModifiedBy)
                 .HasMaxLength(100);
                 
+/*
             builder.Property(l => l.ApprovedBy)
                 .HasMaxLength(100);
                 
@@ -75,10 +82,11 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 
             builder.Property(l => l.ClosureReason)
                 .HasMaxLength(500);
+*/
                 
             builder.HasIndex(l => l.CustomerId);
             builder.HasIndex(l => l.Status);
-            builder.HasIndex(l => l.AccountNumber).IsUnique();
+// builder.HasIndex(l => l.AccountNumber).IsUnique();
             
             // Relationships
             builder.HasOne<LoanProduct>()

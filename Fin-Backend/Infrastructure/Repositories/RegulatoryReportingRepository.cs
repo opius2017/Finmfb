@@ -44,7 +44,7 @@ namespace FinTech.Infrastructure.Data
             return await _context.RegulatoryReportTemplates
                 .Include(t => t.Sections)
                     .ThenInclude(s => s.Fields)
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .FirstOrDefaultAsync(t => t.Id == id.ToString());
         }
 
         public async Task<IEnumerable<RegulatoryReportTemplate>> GetAllTemplatesAsync()
@@ -105,7 +105,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<IEnumerable<RegulatoryReportSection>> GetSectionsByTemplateIdAsync(Guid templateId)
         {
             return await _context.RegulatoryReportSections
-                .Where(s => s.ReportTemplateId == templateId)
+                .Where(s => s.ReportTemplateId == templateId.ToString())
                 .OrderBy(s => s.DisplayOrder)
                 .ToListAsync();
         }
@@ -146,7 +146,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<IEnumerable<RegulatoryReportField>> GetFieldsBySectionIdAsync(Guid sectionId)
         {
             return await _context.RegulatoryReportFields
-                .Where(f => f.SectionId == sectionId)
+                .Where(f => f.SectionId == sectionId.ToString())
                 .OrderBy(f => f.DisplayOrder)
                 .ToListAsync();
         }
@@ -180,7 +180,7 @@ namespace FinTech.Infrastructure.Data
                 .Include(s => s.ReportTemplate)
                 .Include(s => s.ReportData)
                     .ThenInclude(d => d.Field)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id.ToString());
         }
 
         public async Task<IEnumerable<RegulatoryReportSubmission>> GetSubmissionsByTemplateIdAsync(Guid templateId, DateTime? fromDate = null, DateTime? toDate = null)
@@ -228,7 +228,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<IEnumerable<RegulatoryReportData>> GetReportDataBySubmissionIdAsync(Guid submissionId)
         {
             return await _context.RegulatoryReportData
-                .Where(d => d.SubmissionId == submissionId)
+                .Where(d => d.SubmissionId == submissionId.ToString())
                 .Include(d => d.Field)
                 .ToListAsync();
         }
@@ -236,7 +236,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<RegulatoryReportData> GetReportDataBySubmissionAndFieldIdAsync(Guid submissionId, Guid fieldId)
         {
             return await _context.RegulatoryReportData
-                .FirstOrDefaultAsync(d => d.SubmissionId == submissionId && d.FieldId == fieldId);
+                .FirstOrDefaultAsync(d => d.SubmissionId == submissionId.ToString() && d.FieldId == fieldId.ToString());
         }
 
         public async Task<bool> DeleteReportDataAsync(Guid id)
@@ -252,7 +252,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<bool> DeleteAllReportDataForSubmissionAsync(Guid submissionId)
         {
             var dataItems = await _context.RegulatoryReportData
-                .Where(d => d.SubmissionId == submissionId)
+                .Where(d => d.SubmissionId == submissionId.ToString())
                 .ToListAsync();
 
             if (!dataItems.Any())
@@ -283,7 +283,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<IEnumerable<RegulatoryReportValidation>> GetValidationsBySubmissionIdAsync(Guid submissionId)
         {
             return await _context.RegulatoryReportValidations
-                .Where(v => v.SubmissionId == submissionId)
+                .Where(v => v.SubmissionId == submissionId.ToString())
                 .Include(v => v.Field)
                 .ToListAsync();
         }
@@ -301,7 +301,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<bool> DeleteAllValidationsForSubmissionAsync(Guid submissionId)
         {
             var validations = await _context.RegulatoryReportValidations
-                .Where(v => v.SubmissionId == submissionId)
+                .Where(v => v.SubmissionId == submissionId.ToString())
                 .ToListAsync();
 
             if (!validations.Any())
@@ -332,7 +332,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<RegulatoryReportSchedule> GetScheduleByTemplateIdAsync(Guid templateId)
         {
             return await _context.RegulatoryReportSchedules
-                .FirstOrDefaultAsync(s => s.ReportTemplateId == templateId);
+                .FirstOrDefaultAsync(s => s.ReportTemplateId == templateId.ToString());
         }
 
         public async Task<IEnumerable<RegulatoryReportSchedule>> GetAllSchedulesAsync()
@@ -345,7 +345,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<IEnumerable<RegulatoryReportSchedule>> GetSchedulesDueByDateAsync(DateTime dueDate)
         {
             return await _context.RegulatoryReportSchedules
-                .Where(s => s.NextGenerationDate.Date <= dueDate.Date)
+                .Where(s => s.NextGenerationDate.Value.Date <= dueDate.Date)
                 .Include(s => s.ReportTemplate)
                 .ToListAsync();
         }

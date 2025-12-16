@@ -8,6 +8,8 @@ using FinTech.Infrastructure.Services;
 // using FinTech.Infrastructure.Services.Notifications; // Removed invalid namespace
 using FinTech.Core.Application.Services;
 using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Application.Settings;
+using FinTech.Core.Application.Common.Interfaces;
 
 namespace FinTech.Infrastructure.Extensions
 {

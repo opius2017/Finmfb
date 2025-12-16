@@ -18,6 +18,8 @@ public class Asset : BaseEntity
 
     [NotMapped]
     public string AssetCode { get => AssetNumber; set => AssetNumber = value; }
+
+    public string? TenantId { get; set; }
     
     /// <summary>
     /// Name of the asset

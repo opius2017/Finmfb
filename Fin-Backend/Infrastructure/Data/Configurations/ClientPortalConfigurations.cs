@@ -10,6 +10,7 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(p => p.Id);
             
+            /*
             builder.HasOne(p => p.User)
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
@@ -30,6 +31,7 @@ namespace FinTech.Infrastructure.Data.Configurations
                 
             builder.Property(p => p.PushNotificationToken)
                 .HasMaxLength(255);
+            */
         }
     }
     
@@ -39,6 +41,7 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(p => p.Id);
             
+            /*
             builder.HasOne(p => p.ClientPortalProfile)
                 .WithOne(c => c.NotificationPreferences)
                 .HasForeignKey<NotificationPreferences>(p => p.ClientPortalProfileId)
@@ -46,6 +49,7 @@ namespace FinTech.Infrastructure.Data.Configurations
                 
             builder.Property(p => p.TransactionAlertThreshold)
                 .HasColumnType("decimal(18, 2)");
+            */
                 
             builder.Property(p => p.LowBalanceThreshold)
                 .HasColumnType("decimal(18, 2)");
@@ -58,15 +62,18 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(p => p.Id);
             
+            /*
             builder.HasOne(p => p.ClientPortalProfile)
                 .WithOne(c => c.DashboardPreferences)
                 .HasForeignKey<DashboardPreferences>(p => p.ClientPortalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             builder.Property(p => p.Layout)
                 .IsRequired()
                 .HasMaxLength(50);
                 
+            /*
             // Store arrays as JSON
             builder.Property(p => p.VisibleWidgets)
                 .HasConversion(
@@ -77,6 +84,7 @@ namespace FinTech.Infrastructure.Data.Configurations
                 .HasConversion(
                     v => string.Join(',', v),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+            */
         }
     }
     
@@ -275,10 +283,12 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(t => t.Id);
             
+            /*
             builder.HasOne(t => t.ClientPortalProfile)
                 .WithMany(c => c.SupportTickets)
                 .HasForeignKey(t => t.ClientPortalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             builder.Property(t => t.TicketNumber)
                 .IsRequired()
@@ -315,10 +325,12 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(m => m.Id);
             
+            /*
             builder.HasOne(m => m.ClientSupportTicket)
                 .WithMany(t => t.Messages)
                 .HasForeignKey(m => m.ClientSupportTicketId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             builder.Property(m => m.Message)
                 .IsRequired()
@@ -336,6 +348,7 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(a => a.Id);
             
+            /*
             builder.HasOne(a => a.ClientSupportTicket)
                 .WithMany(t => t.Attachments)
                 .HasForeignKey(a => a.ClientSupportTicketId)
@@ -352,6 +365,7 @@ namespace FinTech.Infrastructure.Data.Configurations
             builder.Property(a => a.FilePath)
                 .IsRequired()
                 .HasMaxLength(1000);
+            */
         }
     }
     
@@ -361,10 +375,12 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(g => g.Id);
             
+            /*
             builder.HasOne(g => g.ClientPortalProfile)
                 .WithMany(c => c.SavingsGoals)
                 .HasForeignKey(g => g.ClientPortalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             builder.Property(g => g.GoalName)
                 .IsRequired()
@@ -379,6 +395,7 @@ namespace FinTech.Infrastructure.Data.Configurations
             builder.Property(g => g.CurrentAmount)
                 .HasColumnType("decimal(18, 2)");
                 
+            /*
             builder.Property(g => g.Currency)
                 .IsRequired()
                 .HasMaxLength(3);
@@ -401,6 +418,7 @@ namespace FinTech.Infrastructure.Data.Configurations
                 
             builder.Property(g => g.DestinationAccountNumber)
                 .HasMaxLength(50);
+            */
         }
     }
     
@@ -418,19 +436,23 @@ namespace FinTech.Infrastructure.Data.Configurations
             builder.Property(t => t.Amount)
                 .HasColumnType("decimal(18, 2)");
                 
+            /*
             builder.Property(t => t.Currency)
                 .IsRequired()
                 .HasMaxLength(3);
+            */
                 
             builder.Property(t => t.TransactionType)
                 .IsRequired()
                 .HasMaxLength(20);
                 
+            /*
             builder.Property(t => t.SourceAccountNumber)
                 .HasMaxLength(50);
                 
             builder.Property(t => t.DestinationAccountNumber)
                 .HasMaxLength(50);
+            */
                 
             builder.Property(t => t.Reference)
                 .HasMaxLength(100);
@@ -447,10 +469,12 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(n => n.Id);
             
+            /*
             builder.HasOne(n => n.ClientPortalProfile)
                 .WithMany()
                 .HasForeignKey(n => n.ClientPortalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
+            */
                 
             builder.Property(n => n.NotificationType)
                 .IsRequired()

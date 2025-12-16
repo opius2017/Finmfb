@@ -33,6 +33,12 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// Reference number for the submission
         /// </summary>
         public string ReferenceNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Submission reference (alias for ReferenceNumber)
+        /// </summary>
+        [NotMapped]
+        public string SubmissionReference { get => ReferenceNumber; set => ReferenceNumber = value; }
         
         /// <summary>
         /// Status of the submission

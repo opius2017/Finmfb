@@ -26,7 +26,7 @@ namespace FinTech.Infrastructure.Services.Integration
         }
 
         public async Task ProcessAssetAcquisitionAsync(
-            int assetId, 
+            string assetId, 
             decimal acquisitionCost, 
             decimal taxAmount, 
             string assetCategory, 
@@ -96,7 +96,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessAssetDepreciationAsync(int assetId, decimal depreciationAmount, string period, string reference, string description)
+        public async Task ProcessAssetDepreciationAsync(string assetId, decimal depreciationAmount, string period, string reference, string description)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace FinTech.Infrastructure.Services.Integration
         }
 
         public async Task ProcessAssetDisposalAsync(
-            int assetId, 
+            string assetId, 
             decimal disposalProceeds, 
             decimal netBookValue, 
             decimal gainLoss, 
@@ -251,7 +251,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessAssetRevaluationAsync(int assetId, decimal revaluationAmount, string reference, string description)
+        public async Task ProcessAssetRevaluationAsync(string assetId, decimal revaluationAmount, string reference, string description)
         {
             try
             {
@@ -336,7 +336,7 @@ namespace FinTech.Infrastructure.Services.Integration
             }
         }
 
-        public async Task ProcessAssetImpairmentAsync(int assetId, decimal impairmentAmount, string reference, string description)
+        public async Task ProcessAssetImpairmentAsync(string assetId, decimal impairmentAmount, string reference, string description)
         {
             try
             {
@@ -390,14 +390,14 @@ namespace FinTech.Infrastructure.Services.Integration
         }
 
         // Helper methods
-        private async Task<string> GetAssetCategoryAsync(int assetId)
+        private async Task<string> GetAssetCategoryAsync(string assetId)
         {
             // In a real implementation, this would fetch the asset category from the asset repository
             // For now, we'll return a placeholder
             return "Equipment";
         }
 
-        private async Task<decimal> GetAssetAcquisitionCostAsync(int assetId)
+        private async Task<decimal> GetAssetAcquisitionCostAsync(string assetId)
         {
             // In a real implementation, this would fetch the acquisition cost from the asset repository
             // For now, we'll return a placeholder
