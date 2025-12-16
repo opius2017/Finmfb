@@ -85,7 +85,7 @@ namespace FinTech.Infrastructure.Repositories
             return await _dbContext.Assets
                 .Include(a => a.AssetCategory)
                 .Where(a => a.IsDepreciable && 
-                       a.AcquisitionDate.AddMonths(a.UsefulLifeYears * 12) <= thresholdDate &&
+                       a.AcquisitionDate.AddMonths((int)a.UsefulLifeYears * 12) <= thresholdDate &&
                        a.Status == AssetStatus.Active)
                 .ToListAsync();
         }

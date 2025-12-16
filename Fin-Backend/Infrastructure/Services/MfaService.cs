@@ -18,7 +18,7 @@ using FinTech.Infrastructure.Data;
 using FinTech.Infrastructure.Data;
 using FinTech.Infrastructure.Services.Security;
 
-namespace FinTech.WebAPI.Infrastructure.Services
+namespace FinTech.Infrastructure.Services
 {
     public class MfaService : IMfaService
     {
@@ -959,7 +959,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
-                var preferences = await _context.SecurityPreferences
+                UserSecurityPreferences? preferences = await _context.SecurityPreferences
                     .FirstOrDefaultAsync(p => p.UserId == Guid.Parse(userId));
                 
                 if (preferences == null)

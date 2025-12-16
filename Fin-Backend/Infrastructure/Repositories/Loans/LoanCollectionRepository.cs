@@ -143,7 +143,7 @@ namespace FinTech.Infrastructure.Repositories.Loans
             try
             {
                 return await _context.LoanCollections
-                    .Where(lc => lc.CollectionAgentId == agentId)
+                    .Where(lc => lc.CollectionAgentId == Guid.Parse(agentId))
                     .AsNoTracking()
                     .ToListAsync();
             }

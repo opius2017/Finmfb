@@ -15,7 +15,9 @@ namespace FinTech.Core.Domain.Entities.Loans
         public int DaysOverdue { get; set; }
         public decimal OverdueAmount { get; set; }
         public CollectionStatus Status { get; set; }
-    public string? AssignedTo { get; set; }
+        public string? AssignedTo { get; set; }
+        public Guid? CollectionAgentId { get; set; }
+        public DateTime DueDate { get; set; }
         public DateTime? ResolutionDate { get; set; }
     public string? ResolutionNotes { get; set; }
         public CollectionPriority Priority { get; set; }

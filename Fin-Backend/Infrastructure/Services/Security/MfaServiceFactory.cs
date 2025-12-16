@@ -5,7 +5,7 @@ using FinTech.Core.Application.Interfaces.Services;
 
 namespace FinTech.Infrastructure.Services.Security
 {
-    public class MfaServiceFactory
+    public class MfaServiceFactory : IMfaProviderFactory
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -14,13 +14,13 @@ namespace FinTech.Infrastructure.Services.Security
             _serviceProvider = serviceProvider;
         }
 
-        public IMfaProvider GetMfaService(string method)
+        public FinTech.Core.Application.Interfaces.Services.IMfaProvider GetMfaProvider(string method)
         {
             return method.ToLower() switch
             {
-                "email" => _serviceProvider.GetRequiredService<EmailMfaService>(),
-                "sms" => _serviceProvider.GetRequiredService<SmsMfaService>(),
-                "app" => _serviceProvider.GetRequiredService<AppBasedMfaService>(),
+                "email" => (FinTech.Core.Application.Interfaces.Services.IMfaProvider)_serviceProvider.GetRequiredService<EmailMfaService>(),
+                "sms" => (FinTech.Core.Application.Interfaces.Services.IMfaProvider)_serviceProvider.GetRequiredService<SmsMfaService>(),
+                "app" => (FinTech.Core.Application.Interfaces.Services.IMfaProvider)_serviceProvider.GetRequiredService<AppMfaService>(),
                 _ => throw new ArgumentException($"Unsupported MFA method: {method}")
             };
         }

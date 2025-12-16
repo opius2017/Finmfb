@@ -2,6 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Email;
+using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Interfaces;
 using Microsoft.Extensions.Logging;
 

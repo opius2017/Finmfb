@@ -128,10 +128,10 @@ namespace FinTech.Infrastructure.Services
                         {
                             MemberNumber = memberNumber,
                             LoanNumber = loanNumber,
-                            ActualAmount = amount,
-                            PayrollReference = payrollRef,
-                            DeductionStatus = status ?? "SUCCESS",
-                            RowNumber = row
+                            Amount = amount,
+                            PayrollReference = payrollRef
+                            // DeductionStatus = status ?? "SUCCESS",
+                            // RowNumber = row
                         };
 
                         records.Add(record);

@@ -121,11 +121,11 @@ namespace FinTech.Infrastructure.Services
                 deviceInfo.Location?.Region);
 
             // Send notification about new trusted device
-            await _notificationService.SendSecurityAlertAsync(
+            await _notificationService.SendSecurityAlertEmailAsync(
+                user.Id.ToString(),
                 user.Email,
                 "New Trusted Device",
-                "A new device has been added to your trusted devices list.",
-                $"Device: {deviceInfo.DeviceName} ({deviceInfo.DeviceType}) - {deviceInfo.Browser} on {deviceInfo.OperatingSystem}");
+                $"A new device has been added to your trusted devices list.\nDevice: {deviceInfo.DeviceName} ({deviceInfo.DeviceType}) - {deviceInfo.Browser} on {deviceInfo.OperatingSystem}");
 
             return trustedDevice.DeviceId;
         }
@@ -142,7 +142,7 @@ namespace FinTech.Infrastructure.Services
                     // Record failed login attempt
                     await _loginAttemptRepository.RecordLoginAttemptAsync(
                         request.Username,
-                        null,
+                        user.Id.ToString(),
                         false,
                         "User not found",
                         request.DeviceInfo?.ClientIp,
@@ -166,7 +166,7 @@ namespace FinTech.Infrastructure.Services
                 {
                     await _loginAttemptRepository.RecordLoginAttemptAsync(
                         request.Username,
-                        user.Id,
+                        user.Id.ToString(),
                         false,
                         "Account locked for security reasons",
                         request.DeviceInfo?.ClientIp,
@@ -196,7 +196,7 @@ namespace FinTech.Infrastructure.Services
             {
                 await _loginAttemptRepository.RecordLoginAttemptAsync(
                     request.Username,
-                    user.Id,
+                    user.Id.ToString(),
                     false,
                     "Account locked out due to failed login attempts",
                     request.DeviceInfo?.ClientIp,
@@ -222,15 +222,15 @@ namespace FinTech.Infrastructure.Services
                 {
                     // Send notification about suspicious login attempts
                     await _notificationService.SendSuspiciousActivityAlertAsync(
+                        user.Id.ToString(),
                         user.Email,
                         "Multiple failed login attempts",
                         request.DeviceInfo?.ClientIp,
-                        $"{request.DeviceInfo?.Location?.City}, {request.DeviceInfo?.Location?.Country}",
                         $"{request.DeviceInfo?.DeviceType} - {request.DeviceInfo?.Browser} on {request.DeviceInfo?.OperatingSystem}",
-                        DateTime.UtcNow);
+                        $"{request.DeviceInfo?.Location?.City}, {request.DeviceInfo?.Location?.Country}");
 
                     await _securityAlertRepository.CreateAlertAsync(
-                        user.Id,
+                        user.Id.ToString(),
                         "Failed Login Attempts",
                         "Multiple failed login attempts detected",
                         $"There have been {failedLoginCount} failed login attempts in the last 30 minutes.",
@@ -241,7 +241,7 @@ namespace FinTech.Infrastructure.Services
 
                 await _loginAttemptRepository.RecordLoginAttemptAsync(
                     request.Username,
-                    user.Id,
+                    user.Id.ToString(),
                     false,
                     "Invalid password",
                     request.DeviceInfo?.ClientIp,
@@ -264,20 +264,20 @@ namespace FinTech.Infrastructure.Services
                 bool isTrusted = false;
                 if (!string.IsNullOrEmpty(request.DeviceInfo?.DeviceId))
                 {
-                    isTrusted = await _trustedDeviceRepository.IsDeviceTrustedAsync(user.Id, request.DeviceInfo.DeviceId);
+                    isTrusted = await _trustedDeviceRepository.IsDeviceTrustedAsync(user.Id.ToString(), request.DeviceInfo.DeviceId);
                 }
 
                 // Only require MFA if the device is not trusted
                 if (!isTrusted)
                 {
                     // Check if we should require MFA for suspicious login
-                    var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id);
+                    var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id.ToString());
                     bool requireMfa = true;
 
                     if (securityPreferences.UseLocationBasedSecurity)
                     {
                         // Get recent successful logins from different locations
-                        var recentLogins = await _loginAttemptRepository.GetByUserIdAsync(user.Id);
+                        var recentLogins = await _loginAttemptRepository.GetByUserIdAsync(user.Id.ToString());
                         var successfulLogins = recentLogins
                             .Where(la => la.Success && !string.IsNullOrEmpty(la.Country))
                             .OrderByDescending(la => la.AttemptTime)
@@ -296,12 +296,12 @@ namespace FinTech.Infrastructure.Services
                     if (requireMfa)
                     {
                         // Initiate MFA challenge
-                        var mfaChallenge = await InitiateMfaChallengeAsync(user.Id);
+                        var mfaChallenge = await InitiateMfaChallengeAsync(user.Id.ToString());
                         if (mfaChallenge.Succeeded)
                         {
                             await _loginAttemptRepository.RecordLoginAttemptAsync(
                                 request.Username,
-                                user.Id,
+                                user.Id.ToString(),
                                 true,
                                 null,
                                 request.DeviceInfo?.ClientIp,
@@ -315,8 +315,8 @@ namespace FinTech.Infrastructure.Services
                                 Succeeded = true,
                                 RequiresMfa = true,
                                 MfaChallengeId = mfaChallenge.ChallengeId,
-                                UserId = user.Id,
-                                Username = user.UserName,
+                                UserId = user.Id.ToString(),
+                                UserName = user.UserName,
                                 Email = user.Email
                             };
                         }
@@ -352,8 +352,8 @@ namespace FinTech.Infrastructure.Services
             }
 
             // Verify the code
-            var mfaService = _mfaServiceFactory.GetMfaService(mfaSettings.Method);
-            if (!mfaService.ValidateCode(mfaSettings.SharedKey, code))
+            var mfaService = _mfaServiceFactory.GetMfaProvider(mfaSettings.Method);
+            if (!mfaService.ValidateCode(mfaSettings.SecretKey, code))
             {
                 // Try backup code
                 if (!await _backupCodeRepository.ValidateCodeAsync(userId, code))
@@ -373,11 +373,11 @@ namespace FinTech.Infrastructure.Services
             await _userManager.UpdateAsync(user);
 
             // Send notification
-            await _notificationService.SendSecurityAlertAsync(
+            await _notificationService.SendSecurityAlertEmailAsync(
+                user.Id.ToString(),
                 user.Email,
                 "MFA Disabled",
-                "Two-factor authentication has been disabled for your account.",
-                "If you did not make this change, please contact support immediately as your account may be compromised.");
+                "Two-factor authentication has been disabled for your account. If you did not make this change, please contact support immediately as your account may be compromised.");
 
             return true;
         }
@@ -396,7 +396,7 @@ namespace FinTech.Infrastructure.Services
             var codes = backupCodes.Select(bc => bc.Code).ToList();
 
             // Send notification
-            await _notificationService.SendBackupCodesGeneratedEmailAsync(user.Email);
+            await _notificationService.SendBackupCodesGeneratedEmailAsync(user.Id.ToString(), user.UserName, user.Email);
 
             return codes;
         }
@@ -417,7 +417,7 @@ namespace FinTech.Infrastructure.Services
                 .Take(limit)
                 .Select(la => new AuthHistoryItem
                 {
-                    Id = la.Id,
+                    Id = la.Id.ToString(),
                     UserId = la.UserId,
                     LoginTime = la.AttemptTime,
                     IpAddress = la.IpAddress,
@@ -429,10 +429,7 @@ namespace FinTech.Infrastructure.Services
                         Country = la.Country,
                         City = la.City
                     },
-                    Device = new DeviceInfo
-                    {
-                        Browser = la.UserAgent
-                    }
+                    Device = la.UserAgent
                 })
                 .ToList();
         }
@@ -505,7 +502,7 @@ namespace FinTech.Infrastructure.Services
             else if (mfaSettings.Method.ToLower() == "email")
             {
                 // Send verification code via email
-                var emailMfaService = _mfaServiceFactory.GetMfaService("email") as EmailMfaService;
+                var emailMfaService = _mfaServiceFactory.GetMfaProvider("email") as EmailMfaService;
                 verificationCode = await emailMfaService.SendMfaCodeAsync(mfaSettings.RecoveryEmail);
                 
                 // Mask the email address
@@ -514,7 +511,7 @@ namespace FinTech.Infrastructure.Services
             else if (mfaSettings.Method.ToLower() == "sms")
             {
                 // Send verification code via SMS
-                var smsMfaService = _mfaServiceFactory.GetMfaService("sms") as SmsMfaService;
+                var smsMfaService = _mfaServiceFactory.GetMfaProvider("sms") as SmsMfaService;
                 verificationCode = await smsMfaService.SendMfaCodeAsync(mfaSettings.RecoveryPhone);
                 
                 // Mask the phone number
@@ -552,7 +549,7 @@ namespace FinTech.Infrastructure.Services
                 };
             }
 
-            var mfaService = _mfaServiceFactory.GetMfaService(method.ToString());
+            var mfaService = _mfaServiceFactory.GetMfaProvider(method.ToString());
             string secretKey = mfaService.GenerateSecretKey();
             string verificationCode = null;
 
@@ -623,12 +620,12 @@ namespace FinTech.Infrastructure.Services
             }
 
             // Check if the user has security preferences that allow password reset
-            var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id);
+            var securityPreferences = await _securityPreferencesRepository.GetByUserIdAsync(user.Id.ToString());
             if (!securityPreferences.AllowPasswordReset)
             {
                 // If password reset is disabled, log the attempt but don't allow it
                 await _securityAlertRepository.CreateAlertAsync(
-                    user.Id,
+                    user.Id.ToString(),
                     "Password Reset Attempt",
                     "Password reset attempted but is disabled in security preferences",
                     "Password reset has been disabled for this account in security preferences.",
@@ -648,7 +645,7 @@ namespace FinTech.Infrastructure.Services
             
             // Create a security alert for the password reset
             await _securityAlertRepository.CreateAlertAsync(
-                user.Id,
+                user.Id.ToString(),
                 "Password Reset Requested",
                 "A password reset has been requested for your account",
                 "If you did not request this password reset, please contact support immediately.",
@@ -760,12 +757,12 @@ namespace FinTech.Infrastructure.Services
                 }
 
                 // Update last used date
-                await _socialLoginRepository.UpdateLastUsedAsync(user.Id, provider);
+                await _socialLoginRepository.UpdateLastUsedAsync(user.Id.ToString(), provider);
                 
                 // Record login attempt
                 await _loginAttemptRepository.RecordLoginAttemptAsync(
                     user.UserName,
-                    user.Id,
+                    user.Id.ToString(),
                     true,
                     null,
                     null,
@@ -785,7 +782,7 @@ namespace FinTech.Infrastructure.Services
                 {
                     // Link the social profile to the existing user
                     await _socialLoginRepository.AddSocialLoginAsync(
-                        user.Id,
+                        user.Id.ToString(),
                         provider,
                         providerUserInfo.Id,
                         providerSettings.DisplayName);
@@ -793,7 +790,7 @@ namespace FinTech.Infrastructure.Services
                     // Record login attempt
                     await _loginAttemptRepository.RecordLoginAttemptAsync(
                         user.UserName,
-                        user.Id,
+                        user.Id.ToString(),
                         true,
                         null,
                         null,
@@ -833,7 +830,7 @@ namespace FinTech.Infrastructure.Services
 
                     // Link the social profile to the new user
                     await _socialLoginRepository.AddSocialLoginAsync(
-                        user.Id,
+                        user.Id.ToString(),
                         provider,
                         providerUserInfo.Id,
                         providerSettings.DisplayName);
@@ -841,7 +838,7 @@ namespace FinTech.Infrastructure.Services
                     // Record login attempt
                     await _loginAttemptRepository.RecordLoginAttemptAsync(
                         user.UserName,
-                        user.Id,
+                        user.Id.ToString(),
                         true,
                         null,
                         null,
@@ -1024,7 +1021,7 @@ namespace FinTech.Infrastructure.Services
             await _userManager.AddToRoleAsync(user, "User");
 
             // Create default security preferences
-            await _securityPreferencesRepository.GetByUserIdAsync(user.Id);
+            await _securityPreferencesRepository.GetByUserIdAsync(user.Id.ToString());
 
             // Check if email confirmation is required
             var requiresEmailConfirmation = _userManager.Options.SignIn.RequireConfirmedEmail;
@@ -1042,7 +1039,7 @@ namespace FinTech.Infrastructure.Services
             return new RegistrationResult
             {
                 Succeeded = true,
-                UserId = user.Id,
+                UserId = user.Id.ToString(),
                 RequiresEmailConfirmation = requiresEmailConfirmation,
                 EmailConfirmationToken = emailConfirmationToken
             };
@@ -1060,11 +1057,11 @@ namespace FinTech.Infrastructure.Services
             await _trustedDeviceRepository.RemoveTrustedDeviceAsync(userId, deviceId);
             
             // Send notification about removed trusted device
-            await _notificationService.SendSecurityAlertAsync(
+            await _notificationService.SendSecurityAlertEmailAsync(
+                user.Id.ToString(),
                 user.Email,
                 "Trusted Device Removed",
-                "A device has been removed from your trusted devices list.",
-                "If you did not make this change, please contact support immediately as your account may be compromised.");
+                "A device has been removed from your trusted devices list. If you did not make this change, please contact support immediately as your account may be compromised.");
 
             return true;
         }
@@ -1129,7 +1126,7 @@ namespace FinTech.Infrastructure.Services
             // we'll retrieve it from a request to the InitiateMfaSetupAsync method
             
             // For simplicity, we'll assume app-based MFA for this example
-            var mfaService = _mfaServiceFactory.GetMfaService("app");
+            var mfaService = _mfaServiceFactory.GetMfaProvider("app");
             
             // For app-based MFA, we would validate the code against the shared key
             // For email/SMS MFA, we would validate against the sent verification code
@@ -1169,7 +1166,7 @@ namespace FinTech.Infrastructure.Services
 
             // Get the MFA challenge
             var challenge = await _mfaChallengeRepository.GetByIdAsync(challengeId);
-            if (challenge == null || challenge.UserId != userId || challenge.IsUsed || challenge.ExpiresAt < DateTime.UtcNow)
+            if (challenge.UserId != Guid.Parse(userId))
             {
                 return new AuthResult
                 {
@@ -1193,8 +1190,8 @@ namespace FinTech.Infrastructure.Services
             bool isCodeValid = false;
             
             // Try primary MFA method
-            var mfaService = _mfaServiceFactory.GetMfaService(mfaSettings.Method);
-            isCodeValid = mfaService.ValidateCode(mfaSettings.SharedKey, code);
+            var mfaService = _mfaServiceFactory.GetMfaProvider(mfaSettings.Method);
+            isCodeValid = mfaService.ValidateCode(mfaSettings.SecretKey, code);
             
             // If primary method fails, try backup code
             if (!isCodeValid)
@@ -1459,7 +1456,7 @@ namespace FinTech.Infrastructure.Services
 
             return new SecurityDashboardDto
             {
-                UserId = user.Id,
+                UserId = user.Id.ToString(),
                 LastLogin = user.LastLoginAt ?? DateTime.UtcNow,
                 ActiveSessions = activeSessions,
                 MfaEnabled = user.IsMfaEnabled,
@@ -1583,3 +1580,7 @@ namespace FinTech.Infrastructure.Services
 
     }
 }
+
+
+
+

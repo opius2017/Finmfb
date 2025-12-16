@@ -108,6 +108,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         [NotMapped] public string ToAccountId { get => DestinationAccountNumber; set => DestinationAccountNumber = value; }
         public string? BeneficiaryId { get; set; } // Could map to BillerId if needed, but adding separate prop for now
         [NotMapped] public DateTime? NextPaymentDate { get => NextExecutionDate; set => NextExecutionDate = value; }
+        [NotMapped] public DateTime? LastPaymentDate { get => LastExecutionDate; set => LastExecutionDate = value; }
     }
     
     public class RecurringPaymentHistory : BaseEntity

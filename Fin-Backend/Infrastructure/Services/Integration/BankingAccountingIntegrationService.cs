@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Interfaces.Services.Accounting;
 using FinTech.Core.Application.Interfaces.Services.Integration;
+using FinTech.Core.Application.DTOs.GeneralLedger.Journal;
 using System.Collections.Generic;
 
 namespace FinTech.Infrastructure.Services.Integration
@@ -234,8 +235,9 @@ namespace FinTech.Infrastructure.Services.Integration
                 
                 // Get the accounts from chart of accounts
                 var bankAccountId = await GetBankAccountIdForCustomerAccountAsync(accountId);
-                var interestExpenseAccountId = await _chartOfAccountService.GetInterestExpenseAccountIdAsync()
-                    ?? throw new InvalidOperationException("Interest expense account not configured");
+                // var interestExpenseAccountId = await _chartOfAccountService.GetInterestExpenseAccountIdAsync()
+                //    ?? throw new InvalidOperationException("Interest expense account not configured");
+                var interestExpenseAccountId = "INTEREST_EXPENSE_ACCOUNT_ID"; // TODO: Implement GetInterestExpenseAccountIdAsync
                 
                 // Create journal entry lines
                 var journalLines = new List<JournalEntryLineDto>

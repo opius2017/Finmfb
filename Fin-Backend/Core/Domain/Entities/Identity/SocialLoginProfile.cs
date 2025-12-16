@@ -7,6 +7,7 @@ public class SocialLoginProfile : BaseEntity
     public Guid UserId { get; set; }
     public string Provider { get; set; } = string.Empty; // Google, Facebook, Microsoft, etc.
     public string ProviderKey { get; set; } = string.Empty;
+    public string? ProviderDisplayName { get; set; }
     public string? Email { get; set; }
     public string? DisplayName { get; set; }
     public string? ProfilePictureUrl { get; set; }

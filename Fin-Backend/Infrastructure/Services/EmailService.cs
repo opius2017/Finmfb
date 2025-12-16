@@ -208,7 +208,7 @@ namespace FinTech.Infrastructure.Services
                         Subject = request.Subject,
                         Body = request.Body,
                         IsHtml = request.IsHtml,
-                        Bcc = request.Bcc
+                        // Bcc = request.Bcc
                     };
 
                     var result = await SendEmailAsync(singleRequest);

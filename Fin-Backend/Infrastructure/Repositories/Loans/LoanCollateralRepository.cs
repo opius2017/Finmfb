@@ -29,7 +29,7 @@ namespace FinTech.Infrastructure.Repositories.Loans
 
         public async Task<IEnumerable<LoanCollateral>> GetByLoanIdAsync(string loanId)
         {
-            var collaterals = _collaterals.FindAll(c => c.LoanId == loanId);
+            var collaterals = _collaterals.FindAll(c => c.LoanId == Guid.Parse(loanId));
             return await Task.FromResult(collaterals);
         }
 

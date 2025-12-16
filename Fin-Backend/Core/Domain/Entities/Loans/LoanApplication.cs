@@ -110,6 +110,7 @@ public class LoanApplication : BaseEntity
 
     // Navigation properties
     public virtual ICollection<Guarantor> Guarantors { get; set; } = new List<Guarantor>();
+    public virtual ICollection<LoanCollateral> Collaterals { get; set; } = new List<LoanCollateral>();
     public virtual ICollection<CommitteeReview> CommitteeReviews { get; set; } = new List<CommitteeReview>();
     public virtual Loan? Loan { get; set; }
 

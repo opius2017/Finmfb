@@ -366,6 +366,16 @@ namespace FinTech.Core.Application.DTOs.Auth
         public string Email { get; set; } = string.Empty;
         
         /// <summary>
+        /// Gets or sets whether email confirmation is required
+        /// </summary>
+        public bool RequiresEmailConfirmation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the email confirmation token
+        /// </summary>
+        public string? EmailConfirmationToken { get; set; }
+        
+        /// <summary>
         /// Gets or sets the error messages if registration failed
         /// </summary>
         public List<string> Errors { get; set; } = new();
@@ -403,15 +413,30 @@ namespace FinTech.Core.Application.DTOs.Auth
     public class AuthHistoryItem
     {
         /// <summary>
-        /// Gets or sets the login date
+        /// Gets or sets the record ID
         /// </summary>
-        public DateTime LoginDate { get; set; }
+        public string Id { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the user ID
+        /// </summary>
+        public string UserId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the login date and time
+        /// </summary>
+        public DateTime LoginTime { get; set; }
         
         /// <summary>
         /// Gets or sets the IP address
         /// </summary>
         public string IpAddress { get; set; } = string.Empty;
         
+        /// <summary>
+        /// Gets or sets the user agent
+        /// </summary>
+        public string UserAgent { get; set; } = string.Empty;
+
         /// <summary>
         /// Gets or sets the browser
         /// </summary>
@@ -435,8 +460,13 @@ namespace FinTech.Core.Application.DTOs.Auth
         /// <summary>
         /// Gets or sets whether the login was successful
         /// </summary>
-        public bool Successful { get; set; }
+        public bool Success { get; set; }
         
+        /// <summary>
+        /// Gets or sets the login method
+        /// </summary>
+        public string LoginMethod { get; set; } = string.Empty;
+
         /// <summary>
         /// Gets or sets whether MFA was used
         /// </summary>

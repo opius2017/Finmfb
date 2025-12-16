@@ -47,11 +47,11 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             */
                 
             // Foreign key references
-            /*
+            
             builder.Property(l => l.JournalEntryId)
                 .HasMaxLength(50)
                 .IsRequired();
-            */
+            
                 
             builder.Property(l => l.AccountId)
                 .HasMaxLength(50)

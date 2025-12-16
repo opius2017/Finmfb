@@ -3,6 +3,7 @@ using FinTech.Core.Application.Services;
 using FinTech.Core.Application.Services.ClientPortal;
 using FinTech.Infrastructure.Services;
 using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Application.Common.Settings;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FinTech.Infrastructure
@@ -21,7 +22,7 @@ namespace FinTech.Infrastructure
             // Register supporting services
             services.AddScoped<IAzureBlobStorageService, AzureBlobStorageServiceV2>();
             services.AddScoped<IFileStorageService, AzureBlobStorageService>();
-            services.AddScoped<FinTech.Core.Application.Interfaces.IEmailService, EmailService>();
+            services.AddScoped<FinTech.Core.Application.Interfaces.IEmailService, FinTech.Infrastructure.Services.EmailService>();
             services.AddScoped<ISmsService, SmsService>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
             

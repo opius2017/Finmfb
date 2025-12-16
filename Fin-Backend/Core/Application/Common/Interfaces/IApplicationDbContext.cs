@@ -122,6 +122,7 @@ public interface IApplicationDbContext
     DbSet<BillPayment> BillPayments { get; }
     DbSet<ExternalTransfer> ExternalTransfers { get; }
     DbSet<RecurringPayment> RecurringPayments { get; }
+    DbSet<RecurringPaymentHistory> RecurringPaymentHistory { get; }
 
     DbSet<ClientPortalActivity> ClientPortalActivities { get; }
     DbSet<SavedPayee> SavedPayees { get; }

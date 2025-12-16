@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Extensions.Http;
@@ -17,7 +18,7 @@ namespace FinTech.Infrastructure.Resilience
         public static IServiceCollection AddResiliencePolicies(this IServiceCollection services)
         {
             // Define a retry policy with exponential backoff
-            static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(ILogger logger, int retryCount = 3)
+            static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy(int retryCount = 3)
             {
                 return HttpPolicyExtensions
                     .HandleTransientHttpError() // HttpRequestException, 5XX and 408 status codes
@@ -28,6 +29,7 @@ namespace FinTech.Infrastructure.Resilience
                         onRetry: (outcome, timespan, retryAttempt, context) =>
                         {
                             // Log retry attempts
+                            /*
                             if (logger != null)
                             {
                                 logger.LogWarning("Retrying request {RequestUri} due to {Reason}. Attempt {Attempt}",
@@ -35,11 +37,12 @@ namespace FinTech.Infrastructure.Resilience
                                     outcome?.Exception?.Message ?? $"Status code {outcome?.Result?.StatusCode}",
                                     retryAttempt);
                             }
+                            */
                         });
             }
 
             // Define a circuit breaker policy
-            static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy(ILogger logger, int exceptionsAllowedBeforeBreaking = 5)
+            static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy(int exceptionsAllowedBeforeBreaking = 5)
             {
                 return HttpPolicyExtensions
                     .HandleTransientHttpError() // HttpRequestException, 5XX and 408 status codes
@@ -49,26 +52,32 @@ namespace FinTech.Infrastructure.Resilience
                         durationOfBreak: TimeSpan.FromSeconds(30),
                         onBreak: (outcome, timespan, context) =>
                         {
+                            /*
                             if (logger != null)
                             {
                                 logger.LogWarning("Circuit breaker opened for {Duration}ms due to {Reason}",
                                     timespan.TotalMilliseconds,
                                     outcome?.Exception?.Message ?? $"Status code {outcome?.Result?.StatusCode}");
                             }
+                            */
                         },
                         onReset: (context) =>
                         {
+                            /*
                             if (logger != null)
                             {
                                 logger.LogInformation("Circuit breaker reset");
                             }
+                            */
                         },
-                        onHalfOpen: (context) =>
+                        onHalfOpen: () =>
                         {
+                            /*
                             if (logger != null)
                             {
                                 logger.LogInformation("Circuit breaker half-open");
                             }
+                            */
                         });
             }
 
@@ -86,11 +95,13 @@ namespace FinTech.Infrastructure.Resilience
                     maxQueuingActions: 10,
                     onBulkheadRejectedAsync: context =>
                     {
+                        /*
                         var logger = context.GetLogger();
                         if (logger != null)
                         {
                             logger.LogWarning("Bulkhead rejected request");
                         }
+                        */
                         return System.Threading.Tasks.Task.CompletedTask;
                     });
             }

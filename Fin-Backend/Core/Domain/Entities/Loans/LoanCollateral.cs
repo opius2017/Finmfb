@@ -12,6 +12,9 @@ namespace FinTech.Core.Domain.Entities.Loans
         public Guid LoanApplicationId { get; set; }
         public virtual LoanApplication LoanApplication { get; set; } = null!;
 
+        public Guid? LoanId { get; set; }
+        public virtual Loan? Loan { get; set; }
+
         [Required]
         [StringLength(100)]
         public string CollateralType { get; set; } = string.Empty;

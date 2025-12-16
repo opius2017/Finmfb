@@ -46,6 +46,7 @@ public class GeneralLedgerEntry : BaseEntity
     public string? Reference { get; set; }
     
     public Guid? DocumentId { get; set; }
+    public string? FinancialPeriodId { get; set; }
     
     [Required]
     public TransactionStatus Status { get; set; } = TransactionStatus.Pending;

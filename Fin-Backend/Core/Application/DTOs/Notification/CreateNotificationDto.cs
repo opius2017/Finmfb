@@ -10,6 +10,7 @@ namespace FinTech.Core.Application.DTOs.Notification
         public string Message { get; set; }
         public string NotificationType { get; set; }
         public string Action { get; set; }
+        public NotificationPriority Priority { get; set; }
         public NotificationChannel[] DeliveryChannels { get; set; }
     }
 }

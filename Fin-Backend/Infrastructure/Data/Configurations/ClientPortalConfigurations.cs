@@ -132,23 +132,26 @@ namespace FinTech.Infrastructure.Data.Configurations
         {
             builder.HasKey(a => a.Id);
             
-            builder.HasOne(a => a.ClientPortalSession)
-                .WithMany(s => s.Activities)
-                .HasForeignKey(a => a.ClientPortalSessionId)
+            builder.HasOne(a => a.Session)
+                .WithMany()
+                .HasForeignKey(a => a.SessionId)
                 .OnDelete(DeleteBehavior.Cascade);
                 
             builder.Property(a => a.ActivityType)
                 .IsRequired()
                 .HasMaxLength(50);
                 
-            builder.Property(a => a.Page)
-                .HasMaxLength(255);
+            builder.Property(a => a.Description)
+                .HasMaxLength(500);
                 
-            builder.Property(a => a.Action)
-                .HasMaxLength(100);
-                
-            builder.Property(a => a.Details)
+            builder.Property(a => a.AdditionalData)
                 .HasMaxLength(1000);
+                
+            builder.Property(a => a.IpAddress)
+                .HasMaxLength(45);
+                
+            builder.Property(a => a.UserAgent)
+                .HasMaxLength(500);
         }
     }
     

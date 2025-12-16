@@ -127,7 +127,7 @@ namespace FinTech.Infrastructure.Repositories.Loans
             try
             {
                 return await _context.LoanTransactions
-                    .Where(lt => lt.LoanId == loanId)
+                    .Where(lt => lt.LoanId == Guid.Parse(loanId))
                     .OrderBy(lt => lt.TransactionDate)
                     .AsNoTracking()
                     .ToListAsync();
@@ -144,7 +144,7 @@ namespace FinTech.Infrastructure.Repositories.Loans
             try
             {
                 return await _context.LoanRepaymentSchedules
-                    .Where(lrs => lrs.LoanId == loanId)
+                    .Where(lrs => lrs.LoanId == Guid.Parse(loanId))
                     .OrderBy(lrs => lrs.DueDate)
                     .AsNoTracking()
                     .ToListAsync();

@@ -9,9 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using FinTech.Core.Application.Common.Interfaces;
 using FinTech.Core.Application.Services;
-using FinTech.Core.Domain.Entities.ClientPortal;
 using FinTech.Core.Application.Interfaces;
+using FinTech.Core.Domain.Entities.ClientPortal;
+using FinTech.Core.Domain.Enums.Notifications;
 using FinTech.Infrastructure.Data;
+using FinTech.Core.Application.Services.ClientPortal;
 
 namespace FinTech.Infrastructure.Services.Background
 {
@@ -64,7 +66,7 @@ namespace FinTech.Infrastructure.Services.Background
 
                 // Find due recurring payments
                 var duePayments = await dbContext.RecurringPayments
-                    .Where(p => p.Status == "Active" && p.NextPaymentDate.Date <= now)
+                    .Where(p => p.Status == "Active" && p.NextPaymentDate != null && p.NextPaymentDate <= now)
                     .ToListAsync();
 
                 if (duePayments.Any())
@@ -82,11 +84,11 @@ namespace FinTech.Infrastructure.Services.Background
                             var historyRecord = new RecurringPaymentHistory
                             {
                                 RecurringPaymentId = payment.Id,
-                                ProcessedDate = DateTime.UtcNow,
+                                ExecutionDate = DateTime.UtcNow,
                                 Amount = payment.Amount,
                                 Status = result.Success ? "Success" : "Failed",
-                                ReferenceNumber = result.TransactionReference,
-                                ErrorMessage = result.Success ? null : result.ErrorMessage
+                                ReferenceNumber = result.TransactionReference ?? string.Empty,
+                                FailureReason = result.Success ? null : result.ErrorMessage
                             };
 
                             dbContext.RecurringPaymentHistory.Add(historyRecord);
@@ -125,42 +127,53 @@ namespace FinTech.Infrastructure.Services.Background
             }
         }
 
-        private async Task<PaymentResult> ProcessPaymentAsync(RecurringPayment payment, IClientPaymentService paymentService)
+        private async Task<PaymentProcessingResult> ProcessPaymentAsync(RecurringPayment payment, IClientPaymentService paymentService)
         {
             try
             {
-                // This is a simplified example - actual implementation would depend on payment type
                 switch (payment.PaymentType)
                 {
                     case "BillPayment":
-                        return await paymentService.ProcessBillPaymentAsync(
+                        if (!payment.BillerId.HasValue) return new PaymentProcessingResult { Success = false, ErrorMessage = "BillerId is missing" };
+                        var billResult = await paymentService.ProcessBillPaymentAsync(
                             payment.CustomerId,
                             payment.FromAccountId,
-                            payment.BillerId,
+                            payment.BillerId.Value,
                             payment.Amount,
-                            payment.Reference,
+                            payment.Reference ?? "Recurring Bill",
                             true);
+                        return new PaymentProcessingResult { Success = billResult.Success, TransactionReference = billResult.ReferenceNumber, ErrorMessage = billResult.Message };
                     
                     case "Transfer":
-                        return await paymentService.ProcessTransferAsync(
+                        if (!Guid.TryParse(payment.ToAccountId, out var toAccountId)) 
+                             return new PaymentProcessingResult { Success = false, ErrorMessage = "Invalid ToAccountId" };
+                        
+                        var transferResult = await paymentService.ProcessTransferAsync(
                             payment.CustomerId,
                             payment.FromAccountId,
-                            payment.ToAccountId,
+                            toAccountId,
                             payment.Amount,
-                            payment.Reference,
+                            payment.Reference ?? "Recurring Transfer",
                             true);
+                        // Fix: Property names matching PaymentResult (ReferenceNumber, Message)
+                        return new PaymentProcessingResult { Success = transferResult.Success, TransactionReference = transferResult.ReferenceNumber, ErrorMessage = transferResult.Message };
                     
                     case "ExternalTransfer":
-                        return await paymentService.ProcessExternalTransferAsync(
+                        if (!Guid.TryParse(payment.BeneficiaryId, out var beneficiaryId)) 
+                             return new PaymentProcessingResult { Success = false, ErrorMessage = "Invalid BeneficiaryId" };
+
+                        var extResult = await paymentService.ProcessExternalTransferAsync(
                             payment.CustomerId,
                             payment.FromAccountId,
-                            payment.BeneficiaryId,
+                            beneficiaryId,
                             payment.Amount,
-                            payment.Reference,
+                            payment.Reference ?? "Recurring External Transfer",
                             true);
+                        // Fix: Property names matching PaymentResult
+                        return new PaymentProcessingResult { Success = extResult.Success, TransactionReference = extResult.ReferenceNumber, ErrorMessage = extResult.Message };
                     
                     default:
-                        return new PaymentResult
+                        return new PaymentProcessingResult
                         {
                             Success = false,
                             ErrorMessage = "Unsupported payment type"
@@ -170,7 +183,7 @@ namespace FinTech.Infrastructure.Services.Background
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error processing payment");
-                return new PaymentResult
+                return new PaymentProcessingResult
                 {
                     Success = false,
                     ErrorMessage = "Payment processing failed: " + ex.Message
@@ -180,7 +193,8 @@ namespace FinTech.Infrastructure.Services.Background
 
         private DateTime CalculateNextPaymentDate(RecurringPayment payment)
         {
-            var baseDate = payment.NextPaymentDate;
+            if (!payment.NextPaymentDate.HasValue) return DateTime.MaxValue;
+            var baseDate = payment.NextPaymentDate.Value;
             
             switch (payment.Frequency)
             {
@@ -216,7 +230,7 @@ namespace FinTech.Infrastructure.Services.Background
             Guid customerId,
             RecurringPayment payment,
             bool success,
-            string errorMessage)
+            string? errorMessage)
         {
             try
             {
@@ -230,22 +244,17 @@ namespace FinTech.Infrastructure.Services.Background
                 
                 string type = success ? "payment" : "payment_failed";
                 
-                var metadata = new Dictionary<string, string>
+                var notificationDto = new FinTech.Core.Application.DTOs.ClientPortal.CreateNotificationDto
                 {
-                    { "paymentId", payment.Id.ToString() },
-                    { "amount", payment.Amount.ToString() },
-                    { "currency", payment.Currency },
-                    { "paymentName", payment.PaymentName },
-                    { "status", success ? "Success" : "Failed" }
+                    CustomerId = customerId,
+                    Title = title,
+                    Message = message,
+                    NotificationType = type,
+                    // Priority = NotificationPriority.High, // Removed if not in ClientPortal DTO
+                    DeliveryChannels = new[] { NotificationChannel.InApp, NotificationChannel.Email }
                 };
                 
-                await notificationService.SendNotificationAsync(
-                    customerId,
-                    title,
-                    message,
-                    type,
-                    metadata
-                );
+                await notificationService.CreateNotificationAsync(notificationDto);
             }
             catch (Exception ex)
             {
@@ -254,10 +263,10 @@ namespace FinTech.Infrastructure.Services.Background
         }
     }
 
-    public class PaymentResult
+    public class PaymentProcessingResult
     {
         public bool Success { get; set; }
-        public string TransactionReference { get; set; }
-        public string ErrorMessage { get; set; }
+        public string? TransactionReference { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 }

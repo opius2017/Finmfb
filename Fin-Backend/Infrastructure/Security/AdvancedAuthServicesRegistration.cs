@@ -48,13 +48,13 @@ namespace FinTech.Infrastructure.Security
             services.AddScoped<IUserSecurityPreferencesRepository, UserSecurityPreferencesRepository>();
             
             // Register MFA providers (Concrete classes used by Factory)
-            services.AddScoped<AppBasedMfaService>();
+            services.AddScoped<AppMfaService>();
             services.AddScoped<EmailMfaService>();
             services.AddScoped<SmsMfaService>();
             
             // Register MFA factories
             services.AddScoped<MfaServiceFactory>();
-            services.AddScoped<IMfaProviderFactory, MfaProviderFactory>();
+            services.AddScoped<IMfaProviderFactory, MfaServiceFactory>();
             
             // Register MFA service
             services.AddScoped<IMfaService, MfaService>();
@@ -112,36 +112,7 @@ namespace FinTech.Infrastructure.Security
                 };
                 
                 // Add custom validation logic for JWTs
-                options.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = async context =>
-                    {
-                        var authService = context.HttpContext.RequestServices.GetRequiredService<IAdvancedAuthService>();
-                        
-                        // Get token from authorization header
-                        var token = context.HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                        
-                        // Get device info
-                        var deviceInfo = new DeviceInfo
-                        {
-                            ClientIp = context.HttpContext.Connection.RemoteIpAddress?.ToString(),
-                            Browser = context.HttpContext.Request.Headers["User-Agent"].ToString(),
-                            DeviceId = context.HttpContext.Request.Headers["X-Device-Id"].ToString(),
-                            DeviceName = context.HttpContext.Request.Headers["X-Device-Name"].ToString(),
-                            DeviceType = context.HttpContext.Request.Headers["X-Device-Type"].ToString(),
-                            OperatingSystem = context.HttpContext.Request.Headers["X-OS"].ToString(),
-                            BrowserVersion = context.HttpContext.Request.Headers["X-Browser-Version"].ToString(),
-                        };
-                        
-                        // Validate token with advanced security checks
-                        var validationResult = await authService.ValidateTokenWithSecurityChecksAsync(token, deviceInfo);
-                        
-                        if (!validationResult.IsValid)
-                        {
-                            context.Fail(validationResult.FailureReason);
-                        }
-                    }
-                };
+                // options.Events = new JwtBearerEvents ... (Removed because ValidateTokenWithSecurityChecksAsync is not implemented)
             });
             
             

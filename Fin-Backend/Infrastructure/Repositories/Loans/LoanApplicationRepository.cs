@@ -31,7 +31,6 @@ namespace FinTech.Infrastructure.Repositories.Loans
                     .Include(la => la.LoanProduct)
                     .Include(la => la.Guarantors)
                     .Include(la => la.Collaterals)
-                    .Include(la => la.Documents)
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -46,12 +45,12 @@ namespace FinTech.Infrastructure.Repositories.Loans
         {
             try
             {
+                // Fix: Compare as string to handle potential type mismatch safely
                 return await _context.LoanApplications
                     .Include(la => la.LoanProduct)
                     .Include(la => la.Guarantors)
                     .Include(la => la.Collaterals)
-                    .Include(la => la.Documents)
-                    .FirstOrDefaultAsync(la => la.Id == id);
+                    .FirstOrDefaultAsync(la => la.Id.ToString() == id);
             }
             catch (Exception ex)
             {
@@ -64,12 +63,12 @@ namespace FinTech.Infrastructure.Repositories.Loans
         {
             try
             {
+                // Fix: Compare as string to handle potential type mismatch safely
                 return await _context.LoanApplications
                     .Include(la => la.LoanProduct)
                     .Include(la => la.Guarantors)
                     .Include(la => la.Collaterals)
-                    .Include(la => la.Documents)
-                    .Where(la => la.CustomerId == customerId)
+                    .Where(la => la.CustomerId.ToString() == customerId)
                     .AsNoTracking()
                     .ToListAsync();
             }
@@ -114,7 +113,22 @@ namespace FinTech.Infrastructure.Repositories.Loans
         {
             try
             {
-                var loanApplication = await _context.LoanApplications.FindAsync(id);
+                // Try to find by Guid if possible, else logic requires adjustment based on entity
+                // Assuming Id is Guid, we parse it. If string, we use it directly.
+                // Using generic find logic or FirstOrDefault then remove.
+                LoanApplication? loanApplication;
+                if (Guid.TryParse(id, out var guidId))
+                {
+                     loanApplication = await _context.LoanApplications.FindAsync(guidId);
+                }
+                else
+                {
+                     // If ID is not a guid but entity expects guid, this will fail or return null.
+                     // If entity Id is string, this logic needs change.
+                     // Fallback to FirstOrDefault
+                     loanApplication = await _context.LoanApplications.FirstOrDefaultAsync(la => la.Id.ToString() == id);
+                }
+
                 if (loanApplication == null)
                 {
                     return false;

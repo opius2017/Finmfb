@@ -299,11 +299,11 @@ namespace FinTech.Infrastructure.Repositories
                                     where account.CurrencyCode != baseCurrency.Code
                                           && account.CurrencyCode != null
                                           && ledger.FinancialPeriodId == financialPeriodId
-                                    group ledger by new { account.Id, account.AccountNumber, account.AccountName, account.CurrencyCode } into g
+                                    group ledger by new { account.Id, account.AccountCode, account.AccountName, account.CurrencyCode } into g
                                     select new ForeignCurrencyBalance
                                     {
                                         AccountId = g.Key.Id,
-                                        AccountNumber = g.Key.AccountNumber,
+                                        AccountNumber = g.Key.AccountCode,
                                         AccountName = g.Key.AccountName,
                                         CurrencyCode = g.Key.CurrencyCode,
                                         ForeignAmount = g.Sum(l => l.Amount),

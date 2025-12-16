@@ -51,26 +51,29 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(j => j.LastModifiedBy)
                 .HasMaxLength(100);
                 
-            /*
-            builder.Property(j => j.LastModifiedAt);
+            builder.Property(j => j.LastModifiedDate);
                 
             builder.Property(j => j.ApprovedBy)
                 .HasMaxLength(100);
                 
-            builder.Property(j => j.ApprovedAt);
+            builder.Property(j => j.ApprovalDate);
                 
             builder.Property(j => j.RejectedBy)
                 .HasMaxLength(100);
                 
-            builder.Property(j => j.RejectedAt);
+            builder.Property(j => j.RejectedDate);
                 
+            /*
             builder.Property(j => j.RejectionReason)
                 .HasMaxLength(500);
+            */
+            builder.Property(j => j.Notes)
+                .HasMaxLength(2000);
                 
             builder.Property(j => j.PostedBy)
                 .HasMaxLength(100);
                 
-            builder.Property(j => j.PostedAt);
+            builder.Property(j => j.PostedDate);
                 
             builder.Property(j => j.ReversalReason)
                 .HasMaxLength(500);
@@ -78,20 +81,19 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(j => j.ReversedBy)
                 .HasMaxLength(100);
                 
-            builder.Property(j => j.ReversedAt);
-            */
+            builder.Property(j => j.ReversedDate);
                 
-            /*
+            
             builder.Property(j => j.FinancialPeriodId)
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired(false);
                 
             builder.Property(j => j.ReversalJournalEntryId)
                 .HasMaxLength(50);
                 
             builder.Property(j => j.OriginalJournalEntryId)
                 .HasMaxLength(50);
-            */
+            
                 
             /*
             // Relationships
