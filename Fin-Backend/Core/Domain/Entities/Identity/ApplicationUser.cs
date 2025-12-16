@@ -21,6 +21,10 @@ public class ApplicationUser : IdentityUser<Guid>
     public Guid? CustomerId { get; set; }
     public string? LastLoginIp { get; set; }
 
+    public bool IsSecurityLocked { get; set; }
+    public DateTime? SecurityLockoutEnd { get; set; }
+    public string? SecurityLockoutReason { get; set; }
+
     // Navigation properties
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public virtual UserMfaSettings? MfaSettings { get; set; }

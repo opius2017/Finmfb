@@ -46,6 +46,8 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID format");
+
                 // Generate a new secret key
                 var secretKey = GenerateSecretKey();
                 
@@ -65,7 +67,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 
                 // Create or update MFA settings
                 var existingSettings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (existingSettings != null)
                 {
@@ -88,7 +90,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
                     var newSettings = new UserMfaSettings
                     {
                         Id = Guid.NewGuid().ToString(),
-                        UserId = userId,
+                        UserId = userGuid,
                         SecretKey = secretKey,
                         IsEnabled = false,
                         CreatedAt = DateTime.UtcNow
@@ -134,8 +136,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return false;
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (settings == null || string.IsNullOrEmpty(settings.SecretKey))
                 {
@@ -165,8 +169,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID format");
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (settings == null)
                 {
@@ -213,8 +219,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return false;
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId && m.IsEnabled);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid && m.IsEnabled);
                 
                 if (settings == null)
                 {
@@ -269,8 +277,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return false;
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId && m.IsEnabled);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid && m.IsEnabled);
                 
                 if (settings == null)
                 {
@@ -343,8 +353,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return true;
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (settings == null)
                 {
@@ -368,7 +380,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 // Check recent login patterns (IP address range, time of day, etc.)
                 var recentActivities = await _context.SecurityActivities
                     .Where(a => 
-                        a.UserId == userId && 
+                        a.UserId == userGuid && 
                         a.EventType == "login_success" &&
                         a.Timestamp > DateTime.UtcNow.AddDays(-30))
                     .ToListAsync();
@@ -388,8 +400,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return false;
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId && m.IsEnabled);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid && m.IsEnabled);
                 
                 if (settings == null)
                 {
@@ -455,8 +469,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID format");
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId && m.IsEnabled);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid && m.IsEnabled);
                 
                 if (settings == null)
                 {
@@ -531,8 +547,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID format");
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId && m.IsEnabled);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid && m.IsEnabled);
                 
                 if (settings == null)
                 {
@@ -611,8 +629,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) throw new ArgumentException("Invalid user ID format");
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (settings == null)
                 {
@@ -620,7 +640,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
                     settings = new UserMfaSettings
                     {
                         Id = Guid.NewGuid().ToString(),
-                        UserId = userId,
+                        UserId = userGuid,
                         IsEnabled = false,
                         CreatedAt = DateTime.UtcNow
                     };
@@ -682,8 +702,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return new List<TrustedDeviceDto>();
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (settings == null)
                 {
@@ -719,8 +741,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return false;
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (settings == null)
                 {
@@ -778,8 +802,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return false;
+
                 var settings = await _context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId == userGuid);
                 
                 if (settings == null)
                 {
@@ -839,7 +865,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 var activity = new SecurityActivity
                 {
                     Id = Guid.NewGuid().ToString(),
-                    UserId = activityDto.UserId,
+                    UserId = Guid.Parse(activityDto.UserId),
                     EventType = activityDto.EventType,
                     Timestamp = activityDto.Timestamp,
                     IpAddress = activityDto.IpAddress,
@@ -863,8 +889,10 @@ namespace FinTech.WebAPI.Infrastructure.Services
         {
             try
             {
+                if (!Guid.TryParse(userId, out var userGuid)) return new List<SecurityActivityDto>();
+
                 var activities = await _context.SecurityActivities
-                    .Where(a => a.UserId == userId)
+                    .Where(a => a.UserId == userGuid)
                     .OrderByDescending(a => a.Timestamp)
                     .Take(limit)
                     .ToListAsync();
@@ -872,7 +900,7 @@ namespace FinTech.WebAPI.Infrastructure.Services
                 return activities.Select(a => new SecurityActivityDto
                 {
                     Id = a.Id,
-                    UserId = a.UserId,
+                    UserId = a.UserId.ToString(),
                     EventType = a.EventType,
                     Timestamp = a.Timestamp,
                     IpAddress = a.IpAddress,
