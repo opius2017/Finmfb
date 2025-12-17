@@ -1,5 +1,6 @@
 using FinTech.Core.Application.Services.Loans;
-using FinTech.Core.Domain.Entities.Auth;
+using FinTech.Core.Application.Interfaces.Loans;
+using FinTech.Core.Domain.Entities.Identity;
 using FinTech.Core.Domain.Entities.Loans;
 using FinTech.Core.Domain.Repositories;
 using FinTech.Infrastructure.Data;
@@ -7,6 +8,9 @@ using FinTech.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using FinTech.Core.Application.Common.Interfaces;
+using FinTech.Infrastructure;
+using Microsoft.AspNetCore.Identity;
 
 namespace FinTech.Configuration
 {
@@ -40,7 +44,11 @@ namespace FinTech.Configuration
             services.AddScoped<IMonthlyThresholdService, MonthlyThresholdService>();
             services.AddScoped<ILoanDisbursementService, LoanDisbursementService>();
             services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
+            services.AddScoped<ILoanRepaymentService, LoanRepaymentService>();
             services.AddScoped<IDelinquencyManagementService, DelinquencyManagementService>();
+
+            // Notification Services
+            services.AddNotificationServices(configuration);
 
             // Logging
             services.AddLogging();
@@ -53,6 +61,21 @@ namespace FinTech.Configuration
         /// </summary>
         public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // Identity Configuration
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options => 
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
             // JWT Configuration would go here
             // services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //     .AddJwtBearer(options => { ... });

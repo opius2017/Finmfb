@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
-using FinTech.Core.Application.Services.Loans;
+using FinTech.Core.Application.Interfaces.Loans;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

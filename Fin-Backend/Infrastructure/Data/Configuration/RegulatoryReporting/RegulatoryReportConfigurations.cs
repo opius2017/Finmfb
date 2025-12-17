@@ -71,8 +71,7 @@ namespace FinTech.Infrastructure.Data.Configuration.RegulatoryReporting
             builder.Property(e => e.Description)
                 .HasMaxLength(1000);
                 
-            builder.Property(e => e.ValidationRules)
-                .HasColumnType("nvarchar(max)");
+
                 
             // Relationships
             builder.HasMany(e => e.Fields)

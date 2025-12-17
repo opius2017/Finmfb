@@ -1,0 +1,7 @@
+C:\Users\opius\Desktop\projectFin\Finmfb\FinTech.Tests\bin\Debug\net8.0\CoverletSourceRootsMapping_FinTech.Tests
+C:\Users\opius\Desktop\projectFin\Finmfb\FinTech.Tests\obj\Debug\net8.0\FinTech.Tests.csproj.AssemblyReference.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\FinTech.Tests\obj\Debug\net8.0\FinTech.Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\opius\Desktop\projectFin\Finmfb\FinTech.Tests\obj\Debug\net8.0\FinTech.Tests.AssemblyInfoInputs.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\FinTech.Tests\obj\Debug\net8.0\FinTech.Tests.AssemblyInfo.cs
+C:\Users\opius\Desktop\projectFin\Finmfb\FinTech.Tests\obj\Debug\net8.0\FinTech.Tests.csproj.CoreCompileInputs.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\FinTech.Tests\obj\Debug\net8.0\FinTech.Tests.sourcelink.json

@@ -186,7 +186,7 @@ namespace FinTech.Infrastructure.Data
         public async Task<IEnumerable<RegulatoryReportSubmission>> GetSubmissionsByTemplateIdAsync(Guid templateId, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var query = _context.RegulatoryReportSubmissions
-                .Where(s => s.ReportTemplateId == templateId.ToString());
+                .Where(s => s.ReportTemplateId == templateId);
 
             if (fromDate.HasValue)
                 query = query.Where(s => s.ReportingPeriodStart >= fromDate.Value);

@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
-using FinTech.Core.Application.Services.Loans;
+using FinTech.Core.Application.Interfaces.Loans;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -89,7 +89,7 @@ namespace FinTech.Controllers.Loans
         /// Gets repayment schedule for a loan
         /// </summary>
         [HttpGet("schedule/{loanId}")]
-        [ProducesResponseType(typeof(System.Collections.Generic.List<RepaymentScheduleItem>), 200)]
+        [ProducesResponseType(typeof(List<RepaymentScheduleItem>), 200)]
         public async Task<IActionResult> GetRepaymentSchedule(string loanId)
         {
             try

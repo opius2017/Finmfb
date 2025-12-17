@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using MediatR;
 using FinTech.Core.Application.Features.Loans.Commands.CreateLoan;
 using FinTech.Core.Application.Features.Loans.Queries.GetLoan;

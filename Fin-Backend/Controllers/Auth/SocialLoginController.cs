@@ -1,6 +1,4 @@
-using FinTech.WebAPI.Application.DTOs.Auth;
-using FinTech.WebAPI.Application.DTOs.Common;
-using FinTech.WebAPI.Application.Interfaces;
+using FinTech.Core.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,6 +9,9 @@ using FinTech.Core.Application.DTOs.Social;
 using FinTech.Core.Application.DTOs.Common;
 using FinTech.Core.Application.Interfaces;
 using FinTech.Core.Application.Common.Models;
+using FinTech.Core.Application.DTOs.Auth;
+using SocialLoginProviderDto = FinTech.Core.Application.DTOs.Auth.SocialLoginProviderDto;
+using LinkedSocialAccountDto = FinTech.Core.Application.DTOs.Auth.LinkedSocialAccountDto;
 
 namespace FinTech.Controllers.Auth
 {

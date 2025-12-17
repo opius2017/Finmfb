@@ -6,7 +6,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 {
     public class ClientDevice : BaseEntity
     {
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; } = string.Empty;
         public ClientPortalProfile? ClientPortalProfile { get; set; }
         public string? DeviceId { get; set; }
         public string? DeviceType { get; set; }

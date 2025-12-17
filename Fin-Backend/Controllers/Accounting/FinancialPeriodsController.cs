@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Accounting;
+using FinTech.Core.Application.Interfaces.Accounting;
 using FinTech.Core.Application.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Accounting;
 using FinTech.Core.Domain.Entities.Accounting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -243,7 +245,8 @@ namespace FinTech.Controllers.Accounting.Accounting
                     return NotFound($"Financial period with ID {id} not found");
                 }
 
-                var result = await _periodClosingService.ExecuteMonthEndClosingAsync(id, User.Identity?.Name);
+                // Mapping ExecuteMonthEndClosingAsync to InitiatePeriodClosingAsync as the service is generic
+                var result = await _periodClosingService.InitiatePeriodClosingAsync(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -268,7 +271,8 @@ namespace FinTech.Controllers.Accounting.Accounting
                     return NotFound($"Financial period with ID {id} not found");
                 }
 
-                var result = await _periodClosingService.ExecuteQuarterEndClosingAsync(id, User.Identity?.Name);
+                // Mapping ExecuteQuarterEndClosingAsync to InitiatePeriodClosingAsync
+                var result = await _periodClosingService.InitiatePeriodClosingAsync(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -293,7 +297,8 @@ namespace FinTech.Controllers.Accounting.Accounting
                     return NotFound($"Financial period with ID {id} not found");
                 }
 
-                var result = await _periodClosingService.ExecuteYearEndClosingAsync(id, User.Identity?.Name);
+                // Mapping ExecuteYearEndClosingAsync to InitiatePeriodClosingAsync
+                var result = await _periodClosingService.InitiatePeriodClosingAsync(id);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -339,7 +344,7 @@ namespace FinTech.Controllers.Accounting.Accounting
                     return NotFound($"Financial period with ID {id} not found");
                 }
 
-                var checkResult = await _periodClosingService.CheckClosingPrerequisitesAsync(id);
+                var checkResult = await _periodClosingService.ValidatePeriodClosingAsync(id);
                 return Ok(checkResult);
             }
             catch (Exception ex)

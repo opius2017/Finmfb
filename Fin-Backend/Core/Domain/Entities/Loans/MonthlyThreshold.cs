@@ -44,6 +44,8 @@ namespace FinTech.Core.Domain.Entities.Loans
             TotalApplicationsRegistered = 0;
             TotalApplicationsQueued = 0;
             Status = ThresholdStatus.Open;
+            ClosedBy = string.Empty;
+            Notes = string.Empty;
         }
         
         /// <summary>
@@ -164,7 +166,7 @@ namespace FinTech.Core.Domain.Entities.Loans
             Status = ThresholdStatus.Closed;
             ClosedAt = DateTime.UtcNow;
             ClosedBy = closedBy ?? throw new ArgumentNullException(nameof(closedBy));
-            Notes = notes;
+            Notes = notes ?? string.Empty;
         }
         
         /// <summary>
@@ -177,7 +179,7 @@ namespace FinTech.Core.Domain.Entities.Loans
             
             Status = RemainingAmount > 0 ? ThresholdStatus.Open : ThresholdStatus.Exhausted;
             ClosedAt = null;
-            ClosedBy = null;
+            ClosedBy = string.Empty;
         }
         
         /// <summary>

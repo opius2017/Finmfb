@@ -52,8 +52,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(20);
                 
-            builder.Property(lp => lp.RequiredDocuments)
-                .HasMaxLength(1000);
+
                 
             builder.Property(lp => lp.EligibilityCriteria)
                 .HasMaxLength(1000);

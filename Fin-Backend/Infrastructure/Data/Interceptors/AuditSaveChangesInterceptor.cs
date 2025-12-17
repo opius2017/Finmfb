@@ -54,7 +54,7 @@ namespace FinTech.Infrastructure.Data.Interceptors
 
             var auditEntries = new List<AuditEntry>();
             var tenantId = _currentUserService.TenantId;
-            var userId = _currentUserService.UserId ?? string.Empty;
+            var userId = _currentUserService.UserId?.ToString() ?? string.Empty;
             // var userIdGuid = Guid.TryParse(userId, out var uid) ? uid : Guid.Empty;
 
             foreach (var entry in context.ChangeTracker.Entries<BaseEntity>())

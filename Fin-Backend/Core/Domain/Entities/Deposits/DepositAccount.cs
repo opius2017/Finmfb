@@ -19,7 +19,7 @@ public class DepositAccount : BaseEntity
     [Required]
     public Guid ProductId { get; set; }
     public virtual DepositProduct Product { get; set; } = null!;
-    public virtual DepositProduct? DepositProduct { get; set; }
+    // public virtual DepositProduct? DepositProduct { get; set; }
     
     [Required]
     [Column(TypeName = "decimal(18,2)")]

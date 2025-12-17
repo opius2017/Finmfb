@@ -125,4 +125,24 @@ namespace FinTech.Core.Application.DTOs.Auth
     {
         public string CurrentDeviceId { get; set; } = string.Empty;
     }
+    public class MfaLoginRequestDto
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string ChallengeId { get; set; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
+        public bool RememberDevice { get; set; }
+    }
+
+    public class MfaBackupLoginRequestDto
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string BackupCode { get; set; } = string.Empty;
+        public bool RememberDevice { get; set; }
+    }
+
+    public class MfaStatusResponseDto
+    {
+        public bool IsEnabled { get; set; }
+        public DateTime? LastVerified { get; set; }
+    }
 }

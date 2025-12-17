@@ -111,6 +111,7 @@ namespace FinTech.Core.Application.DTOs.Accounting
     
     public class AssetDisposalDto
     {
+        public int AssetId { get; set; }
         public string FinancialPeriodId { get; set; } = string.Empty;
         public DateTime DisposalDate { get; set; }
         public string DisposalType { get; set; } = string.Empty;
@@ -197,4 +198,23 @@ namespace FinTech.Core.Application.DTOs.Accounting
         UnderMaintenance,
         Disposed
     }
+
+    public class AssetRevaluationDto
+    {
+        public int AssetId { get; set; }
+        public decimal NewValue { get; set; }
+        public DateTime RevaluationDate { get; set; }
+        public string Reason { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
+    }
+
+    public class AssetDepreciationDto
+    {
+        public int AssetId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
+        public decimal DepreciationAmount { get; set; }
+        public DateTime DepreciationDate { get; set; }
+        public string Notes { get; set; } = string.Empty;
+    }
 }
+

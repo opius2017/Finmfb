@@ -14,8 +14,11 @@ namespace FinTech.Infrastructure
         public static IServiceCollection AddNotificationServices(this IServiceCollection services, IConfiguration configuration)
         {
             // Register notification services
+            // Register notification services
             services.AddScoped<INotificationService, NotificationService>();
-            services.AddScoped<FinTech.Core.Application.Interfaces.IEmailService, FinTech.Infrastructure.Services.EmailService>();
+            services.AddScoped<FinTech.Infrastructure.Services.EmailService>();
+            services.AddScoped<FinTech.Core.Application.Interfaces.IEmailService>(sp => sp.GetRequiredService<FinTech.Infrastructure.Services.EmailService>());
+            services.AddScoped<FinTech.Core.Application.Common.Interfaces.IEmailService>(sp => sp.GetRequiredService<FinTech.Infrastructure.Services.EmailService>());
             services.AddScoped<ISmsService, SmsService>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
             

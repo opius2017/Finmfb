@@ -5,24 +5,11 @@ using System.Threading.Tasks;
 using FinTech.Core.Domain.Entities.Accounting;
 using FinTech.Core.Domain.Repositories.Accounting;
 using FinTech.Core.Domain.Repositories;
+using FinTech.Core.Application.Interfaces.Accounting;
 
 namespace FinTech.Core.Application.Services.Accounting
 {
-    public interface IFinancialPeriodService
-    {
-        Task<FinancialPeriod> GetByIdAsync(string id, CancellationToken cancellationToken = default);
-        Task<FinancialPeriod> GetCurrentPeriodAsync(CancellationToken cancellationToken = default);
-        Task<FinancialPeriod> GetByNameAsync(string periodName, string fiscalYearId, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<FinancialPeriod>> GetByFiscalYearAsync(string fiscalYearId, CancellationToken cancellationToken = default);
-        Task<FinancialPeriod> GetByDateAsync(DateTime date, CancellationToken cancellationToken = default);
-        Task<IReadOnlyList<FinancialPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default);
-        Task<string> CreatePeriodAsync(FinancialPeriod period, CancellationToken cancellationToken = default);
-        Task UpdatePeriodAsync(FinancialPeriod period, CancellationToken cancellationToken = default);
-        Task OpenPeriodAsync(string id, string modifiedBy, CancellationToken cancellationToken = default);
-        Task ClosePeriodAsync(string id, string modifiedBy, CancellationToken cancellationToken = default);
-        Task<bool> IsPeriodValidForPostingAsync(string periodId, CancellationToken cancellationToken = default);
-        Task<FinancialPeriod> GetNextPeriodAsync(string currentPeriodId, CancellationToken cancellationToken = default);
-    }
+
 
     public class FinancialPeriodService : IFinancialPeriodService
     {
@@ -68,6 +55,11 @@ namespace FinTech.Core.Application.Services.Accounting
         public async Task<IReadOnlyList<FinancialPeriod>> GetOpenPeriodsAsync(CancellationToken cancellationToken = default)
         {
             return await _financialPeriodRepository.GetOpenPeriodsAsync(cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<FinancialPeriod>> GetAllPeriodsAsync(CancellationToken cancellationToken = default)
+        {
+            return await _financialPeriodRepository.GetAllAsync(cancellationToken);
         }
 
         public async Task<string> CreatePeriodAsync(FinancialPeriod period, CancellationToken cancellationToken = default)

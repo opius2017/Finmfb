@@ -11,19 +11,19 @@ namespace FinTech.Core.Application.DTOs.Transaction
         /// Unique identifier for the transaction
         /// </summary>
         /// <example>t1u2v3w4-x5y6-7z8a-9b0c-d1e2f3g4h5i6</example>
-        public string TransactionId { get; set; }
+        public string TransactionId { get; set; } = string.Empty;
 
         /// <summary>
         /// Account ID
         /// </summary>
         /// <example>a1b2c3d4-e5f6-7g8h-9i0j-k1l2m3n4o5p6</example>
-        public string AccountId { get; set; }
+        public string AccountId { get; set; } = string.Empty;
 
         /// <summary>
         /// Type of transaction
         /// </summary>
         /// <example>Credit</example>
-        public string TransactionType { get; set; }
+        public string TransactionType { get; set; } = string.Empty;
 
         /// <summary>
         /// Transaction amount
@@ -35,13 +35,13 @@ namespace FinTech.Core.Application.DTOs.Transaction
         /// Currency code
         /// </summary>
         /// <example>NGN</example>
-        public string Currency { get; set; }
+        public string Currency { get; set; } = string.Empty;
 
         /// <summary>
         /// Transaction description
         /// </summary>
         /// <example>Salary payment</example>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Date and time of the transaction
@@ -53,6 +53,6 @@ namespace FinTech.Core.Application.DTOs.Transaction
         /// Transaction status
         /// </summary>
         /// <example>Completed</example>
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
 }

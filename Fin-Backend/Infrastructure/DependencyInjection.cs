@@ -41,6 +41,7 @@ namespace FinTech.Infrastructure
             // services.AddScoped<MonthlyDeductionScheduleJob>();
 
             // Configure Hangfire
+            /*
             services.AddHangfire(config => config
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -62,6 +63,7 @@ namespace FinTech.Infrastructure
                 options.WorkerCount = Environment.ProcessorCount * 2;
                 options.Queues = new[] { "default", "critical", "low" };
             });
+            */
 
             return services;
         }

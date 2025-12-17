@@ -131,7 +131,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             try
             {
                 return await _dbContext.ClientSessions
-                    .Where(s => s.ClientPortalProfileId == profileId)
+                    .Where(s => s.ClientPortalProfileId == profileId.ToString())
                     .OrderByDescending(s => s.LoginTime)
                     .Take(limit)
                     .ToListAsync();
@@ -152,7 +152,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 var session = new ClientSession
                 {
-                    ClientPortalProfileId = profileId,
+                    ClientPortalProfileId = profileId.ToString(),
                     SessionId = Guid.NewGuid().ToString(),
                     LoginTime = DateTime.UtcNow,
                     IpAddress = ipAddress,
@@ -219,7 +219,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             try
             {
                 return await _dbContext.ClientDocuments
-                    .Where(d => d.ClientPortalProfileId == profileId)
+                    .Where(d => d.ClientPortalProfileId == profileId.ToString())
                     .OrderByDescending(d => d.CreatedOn)
                     .ToListAsync();
             }
@@ -253,7 +253,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             try
             {
                 return await _dbContext.ClientSupportTickets
-                    .Where(t => t.ClientPortalProfileId == profileId)
+                    .Where(t => t.ClientPortalProfileId == profileId.ToString())
                     .Include(t => t.Messages)
                     .OrderByDescending(t => t.CreatedOn)
                     .ToListAsync();
@@ -340,7 +340,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             try
             {
                 return await _dbContext.SavingsGoals
-                    .Where(g => g.ClientPortalProfileId == profileId)
+                    .Where(g => g.ClientPortalProfileId == profileId.ToString())
                     .Include(g => g.Transactions)
                     .OrderByDescending(g => g.CreatedOn)
                     .ToListAsync();
@@ -392,7 +392,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             try
             {
                 return await _dbContext.SavedPayees
-                    .Where(p => p.ClientPortalProfileId == profileId)
+                    .Where(p => p.ClientPortalProfileId == profileId.ToString())
                     .OrderByDescending(p => p.IsFavorite)
                     .ThenByDescending(p => p.LastUsed)
                     .ToListAsync();

@@ -1,9 +1,11 @@
-using FinTech.WebAPI.Application.DTOs.Auth;
-using FinTech.WebAPI.Application.DTOs.Common;
-using FinTech.WebAPI.Application.Interfaces;
+using FinTech.Core.Application.DTOs.Auth;
+using FinTech.Core.Application.DTOs.Common;
+using FinTech.Core.Application.Common.Models;
+using FinTech.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -333,14 +335,14 @@ namespace FinTech.Controllers.Auth
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<BaseResponse<RegisterResponse>>> Register([FromBody] RegisterRequest request)
+        public async Task<ActionResult<BaseResponse<RegistrationResult>>> Register([FromBody] RegistrationRequest request)
         {
             try
             {
                 // Validate request
                 if (!ModelState.IsValid)
                 {
-                    return BadRequest(new BaseResponse<RegisterResponse>
+                    return BadRequest(new BaseResponse<RegistrationResult>
                     {
                         Success = false,
                         Message = "Invalid registration request"
@@ -408,7 +410,7 @@ namespace FinTech.Controllers.Auth
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during registration");
-                return StatusCode(500, new BaseResponse<RegisterResponse>
+                return StatusCode(500, new BaseResponse<RegistrationResult>
                 {
                     Success = false,
                     Message = "An error occurred during registration"
@@ -499,7 +501,7 @@ namespace FinTech.Controllers.Auth
                 var context = HttpContext.RequestServices.GetService(typeof(FinTech.Infrastructure.Data.ApplicationDbContext)) as FinTech.Infrastructure.Data.ApplicationDbContext;
                 
                 var settings = await context.UserMfaSettings
-                    .FirstOrDefaultAsync(m => m.UserId == userId);
+                    .FirstOrDefaultAsync(m => m.UserId.ToString() == userId);
                 
                 if (settings == null || !settings.IsEnabled)
                 {

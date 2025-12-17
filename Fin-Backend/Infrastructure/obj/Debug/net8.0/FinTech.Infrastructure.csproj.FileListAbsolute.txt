@@ -4,3 +4,17 @@ C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\ne
 C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\FinTech.Infrastructure.AssemblyInfo.cs
 C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\FinTech.Infrastructure.csproj.CoreCompileInputs.cache
 C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\FinTech.Infrastructure.sourcelink.json
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Infrastructure.deps.json
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Infrastructure.runtimeconfig.json
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Infrastructure.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Infrastructure.pdb
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Core.Application.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Core.Domain.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Core.Application.pdb
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\bin\Debug\net8.0\FinTech.Core.Domain.pdb
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\FinTech..E972E59F.Up2Date
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\FinTech.Infrastructure.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\refint\FinTech.Infrastructure.dll
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\FinTech.Infrastructure.pdb
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\FinTech.Infrastructure.genruntimeconfig.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\obj\Debug\net8.0\ref\FinTech.Infrastructure.dll

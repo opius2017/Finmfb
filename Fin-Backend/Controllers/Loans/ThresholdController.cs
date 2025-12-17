@@ -41,7 +41,7 @@ namespace FinTech.Controllers.Loans
             if (month < 1 || month > 12)
                 return BadRequest("Month must be between 1 and 12");
             
-            var threshold = await _thresholdService.GetThresholdInfoAsync(month, year);
+            var threshold = await _thresholdService.GetMonthlyThresholdInfoAsync(month, year);
             return Ok(threshold);
         }
         
@@ -55,7 +55,7 @@ namespace FinTech.Controllers.Loans
         [HttpGet("{year}/{month}/check")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> CheckThreshold(
+        public async Task<ActionResult<ThresholdCheckResult>> CheckThreshold(
             int year,
             int month,
             [FromQuery] decimal amount)
@@ -66,15 +66,8 @@ namespace FinTech.Controllers.Loans
             if (amount <= 0)
                 return BadRequest("Amount must be greater than zero");
             
-            // Note: IMonthlyThresholdService.CheckAvailabilityAsync usually takes just amount, 
-            // but if it needs date context, it uses current date or configured date. 
-            // Assuming simplified check for now or adapting to available method.
-            // If the service interface signature for CheckAvailabilityAsync is `Task<bool> CheckAvailabilityAsync(decimal amount)`, 
-            // we use that. If we strictly need year/month check, implementation might differ.
-            // Based on previous view of IMonthlyThresholdService, it has CheckAvailabilityAsync(decimal amount).
-            
-            var result = await _thresholdService.CheckAvailabilityAsync(amount);
-            return Ok(new { Available = result });
+            var result = await _thresholdService.CheckThresholdAsync(amount, month, year);
+            return Ok(result);
         }
         
         /// <summary>
@@ -104,7 +97,7 @@ namespace FinTech.Controllers.Loans
             
             try
             {
-                var threshold = await _thresholdService.SetMonthlyThresholdAsync(month, year, request.MaximumAmount);
+                var threshold = await _thresholdService.SetMonthlyThresholdAsync(month, year, request.MaximumAmount, User?.Identity?.Name ?? "system");
                 return Ok(threshold);
             }
             catch (InvalidOperationException ex)

@@ -130,6 +130,11 @@ namespace FinTech.Core.Domain.Entities.Accounting
         {
              OriginalJournalEntryId = originalId;
         }
+
+        public void SetFinancialPeriodId(string financialPeriodId)
+        {
+            FinancialPeriodId = financialPeriodId;
+        }
         
         public void AddJournalLine(
             string accountId,

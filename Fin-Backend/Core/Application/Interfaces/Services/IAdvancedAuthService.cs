@@ -22,8 +22,12 @@ namespace FinTech.Core.Application.Interfaces.Services
         Task<bool> InitiatePasswordResetAsync(string email);
         Task<bool> VerifyPasswordResetAsync(PasswordResetVerificationRequest request);
         Task<List<AuthHistoryItem>> GetAuthHistoryAsync(string userId, int limit = 10);
+        List<SocialLoginProviderDto> GetSocialLoginProviders();
         Task<SocialLoginInitiationResult> InitiateSocialLoginAsync(string provider, string returnUrl);
-        Task<AuthResult> ProcessSocialLoginCallbackAsync(string provider, string code, string state);
+        Task<AuthResult> ProcessSocialLoginCallbackAsync(string provider, string code, string state, DeviceInfo deviceInfo = null);
+        Task<bool> LinkSocialLoginAsync(string userId, string provider, string accessToken, string tokenSecret);
+        Task<bool> UnlinkSocialLoginAsync(string userId, string provider);
+        Task<List<LinkedSocialAccountDto>> GetLinkedSocialAccountsAsync(string userId);
         Task<string> AddTrustedDeviceAsync(string userId, DeviceInfo deviceInfo);
         Task<bool> IsTrustedDeviceAsync(string userId, string deviceId);
         Task<bool> RemoveTrustedDeviceAsync(string userId, string deviceId);

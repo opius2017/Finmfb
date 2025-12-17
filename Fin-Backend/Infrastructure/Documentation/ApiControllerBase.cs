@@ -68,6 +68,26 @@ namespace FinTech.Infrastructure.Documentation
 
             return StatusCode((int)statusCode, response);
         }
+        /// <summary>
+        /// Creates an error response with data
+        /// </summary>
+        /// <typeparam name="T">Type of data being returned</typeparam>
+        /// <param name="message">Error message</param>
+        /// <param name="data">Data to return</param>
+        /// <param name="statusCode">HTTP status code</param>
+        /// <returns>An ActionResult with the error and data</returns>
+        protected ActionResult<ApiResponse<T>> Error<T>(string message, T data, HttpStatusCode statusCode = HttpStatusCode.BadRequest)
+        {
+            var response = new ApiResponse<T>
+            {
+                Success = false,
+                Data = data,
+                Message = message,
+                Timestamp = DateTime.UtcNow
+            };
+
+            return StatusCode((int)statusCode, response);
+        }
     }
 
     /// <summary>

@@ -18,8 +18,8 @@ namespace FinTech.Core.Domain.Entities.Payroll
         public string PaymentMethod { get; set; }
         
         // properties required by integration service
-        public string PayrollRunId { get; set; }
-        public string PayPeriod { get; set; }
+        public string PayrollRunId { get; set; } = string.Empty;
+        public string PayPeriod { get; set; } = string.Empty;
         public DateTime PaymentDate { get; set; }
         public decimal GrossSalary { get; set; }
         public decimal PensionAmount { get; set; }

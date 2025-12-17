@@ -83,7 +83,7 @@ namespace FinTech.Infrastructure.Services.Background
                             // Create history record
                             var historyRecord = new RecurringPaymentHistory
                             {
-                                RecurringPaymentId = payment.Id,
+                                RecurringPaymentId = Guid.Parse(payment.Id),
                                 ExecutionDate = DateTime.UtcNow,
                                 Amount = payment.Amount,
                                 Status = result.Success ? "Success" : "Failed",

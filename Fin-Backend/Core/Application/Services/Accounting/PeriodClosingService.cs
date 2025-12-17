@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FinTech.Core.Domain.Entities.Accounting;
 using FinTech.Core.Domain.Repositories.Accounting;
 using FinTech.Core.Application.Interfaces.Services;
+using FinTech.Core.Application.DTOs.Accounting;
 
 namespace FinTech.Core.Application.Services.Accounting
 {
@@ -515,19 +516,6 @@ namespace FinTech.Core.Application.Services.Accounting
         }
     }
 
-    // DTOs
-    public class PeriodClosingStatusDto
-    {
-        public string FinancialPeriodId { get; set; }
-        public string FinancialPeriodName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public string ClosingStatus { get; set; }
-        public bool IsClosed { get; set; }
-        public DateTime? ClosedAt { get; set; }
-        public string ClosedBy { get; set; }
-        public List<string> ValidationErrors { get; set; }
-        public bool CanRollBack { get; set; }
-    }
+
 }
 

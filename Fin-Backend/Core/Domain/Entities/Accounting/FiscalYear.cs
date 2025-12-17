@@ -25,9 +25,9 @@ namespace FinTech.Core.Domain.Entities.Accounting
         public DateTime CreatedAt { get => CreatedDate; set => CreatedDate = value; }
         public DateTime? LastModifiedAt { get => LastModifiedDate; set => LastModifiedDate = value; }
         
-        private List<FinancialPeriod> _periods = new List<FinancialPeriod>();
-        public IReadOnlyCollection<FinancialPeriod> Periods => _periods.AsReadOnly();
-        public ICollection<FinancialPeriod> FinancialPeriods { get; set; } = new List<FinancialPeriod>();
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public IReadOnlyCollection<FinancialPeriod> Periods => FinancialPeriods.ToList().AsReadOnly();
+        public virtual ICollection<FinancialPeriod> FinancialPeriods { get; set; } = new List<FinancialPeriod>();
         
         // Required by EF Core
         private FiscalYear() 
@@ -35,7 +35,6 @@ namespace FinTech.Core.Domain.Entities.Accounting
             Code = string.Empty;
             Name = string.Empty;
             ClosedBy = string.Empty;
-            FinancialPeriods = new List<FinancialPeriod>();
         }
         
         public FiscalYear(
@@ -64,7 +63,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
             if (period.StartDate < StartDate || period.EndDate > EndDate)
                 throw new ArgumentException("Period dates must be within fiscal year dates");
                 
-            _periods.Add(period);
+            FinancialPeriods.Add(period);
         }
         
         public void CloseYear(string closedBy)
@@ -73,7 +72,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
                 throw new InvalidOperationException($"Fiscal year {Year} is already closed");
                 
             // Check if all periods are closed
-            foreach (var period in _periods)
+            foreach (var period in FinancialPeriods)
             {
                 if (!period.IsClosed)
                     throw new InvalidOperationException($"Cannot close fiscal year when period {period.PeriodCode} is still open");

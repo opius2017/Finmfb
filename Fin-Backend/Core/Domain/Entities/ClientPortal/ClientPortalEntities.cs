@@ -14,7 +14,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     /// </summary>
     public class SavedPayee : BaseEntity, IAuditable
     {
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; } = string.Empty;
         [Required]
         public Guid UserId { get; set; }
         
@@ -137,7 +137,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         [MaxLength(50)]
         public string? TransferType { get; set; }
 
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; } = string.Empty;
         public virtual ClientPortalProfile? ClientPortalProfile { get; set; }
         [NotMapped] public string? FromAccountNumber { get => SourceAccountNumber; set => SourceAccountNumber = value; }
         [NotMapped] public string? ToAccountNumber { get => DestinationAccountNumber; set => DestinationAccountNumber = value; }
@@ -153,7 +153,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     /// </summary>
     public class ClientDocument : BaseEntity, IAuditable
     {
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; } = string.Empty;
         [Required]
         public Guid UserId { get; set; }
         

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
 using FinTech.Core.Application.Services.Accounting;
 using FinTech.Core.Domain.Entities.Accounting;
 using Microsoft.AspNetCore.Authorization;

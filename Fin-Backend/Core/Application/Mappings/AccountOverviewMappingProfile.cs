@@ -12,19 +12,19 @@ namespace FinTech.Core.Application.Mappings
         {
             // Account Mappings
             CreateMap<DepositAccount, AccountDto>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.DepositProduct.ProductName))
-                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.DepositProduct.ProductType))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.Product.ProductType))
                 .ForMember(dest => dest.AvailableBalance, opt => opt.MapFrom(src => src.CurrentBalance - src.LienAmount));
 
             CreateMap<DepositAccount, AccountDetailDto>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.DepositProduct.ProductName))
-                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.DepositProduct.ProductType))
-                .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.DepositProduct.Description))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.Product.ProductType))
+                .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.Product.Description))
                 .ForMember(dest => dest.AvailableBalance, opt => opt.MapFrom(src => src.CurrentBalance - src.LienAmount))
-                .ForMember(dest => dest.InterestRate, opt => opt.MapFrom(src => src.DepositProduct.InterestRate))
-                .ForMember(dest => dest.InterestPaymentFrequency, opt => opt.MapFrom(src => src.DepositProduct.InterestPostingFrequency))
-                .ForMember(dest => dest.MinimumBalance, opt => opt.MapFrom(src => src.DepositProduct.MinimumBalance))
-                .ForMember(dest => dest.MonthlyServiceCharge, opt => opt.MapFrom(src => src.DepositProduct.MaintenanceFee));
+                .ForMember(dest => dest.InterestRate, opt => opt.MapFrom(src => src.Product.InterestRate))
+                .ForMember(dest => dest.InterestPaymentFrequency, opt => opt.MapFrom(src => src.Product.InterestPostingFrequency))
+                .ForMember(dest => dest.MinimumBalance, opt => opt.MapFrom(src => src.Product.MinimumBalance))
+                .ForMember(dest => dest.MonthlyServiceCharge, opt => opt.MapFrom(src => src.Product.MaintenanceFee));
 
             // Transaction Mappings
             CreateMap<DepositTransaction, TransactionDto>()

@@ -30,7 +30,7 @@ namespace FinTech.Core.Application.Interfaces
         /// <summary>
         /// Validates a MFA code during login
         /// </summary>
-        Task<bool> ValidateMfaCodeAsync(string userId, string code, MfaDeviceInfoDto deviceInfo = null);
+        Task<bool> ValidateMfaCodeAsync(string userId, string code, MfaDeviceInfoDto? deviceInfo = null);
 
         /// <summary>
         /// Validates a backup code during account recovery

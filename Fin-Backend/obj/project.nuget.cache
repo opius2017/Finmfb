@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "mxJlORp/FP8=",
+  "dgSpecHash": "MmskMtxQ6h8=",
   "success": true,
   "projectFilePath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj",
   "expectedPackageFiles": [
@@ -46,6 +46,7 @@
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.aspnetcore.http.extensions\\2.1.1\\microsoft.aspnetcore.http.extensions.2.1.1.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.aspnetcore.http.features\\2.1.1\\microsoft.aspnetcore.http.features.2.1.1.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\8.0.0\\microsoft.aspnetcore.identity.entityframeworkcore.8.0.0.nupkg.sha512",
+    "C:\\Users\\opius\\.nuget\\packages\\microsoft.aspnetcore.mvc.versioning\\5.1.0\\microsoft.aspnetcore.mvc.versioning.5.1.0.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.aspnetcore.webutilities\\2.1.1\\microsoft.aspnetcore.webutilities.2.1.1.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\opius\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",

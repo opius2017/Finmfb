@@ -12,6 +12,8 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
 
             builder.HasKey(f => f.Id);
             
+            builder.Ignore(f => f.Periods);
+
             builder.Property(f => f.Id)
                 .HasMaxLength(50)
                 .IsRequired();

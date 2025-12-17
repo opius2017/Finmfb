@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
-using FinTech.Core.Application.Services.Loans;
+using FinTech.Core.Application.Interfaces.Loans;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -72,7 +73,7 @@ namespace FinTech.Controllers.Loans
         /// Gets threshold breach alerts
         /// </summary>
         [HttpGet("threshold-alerts")]
-        [ProducesResponseType(typeof(System.Collections.Generic.List<ThresholdAlert>), 200)]
+        [ProducesResponseType(typeof(List<ThresholdAlert>), 200)]
         public async Task<IActionResult> GetThresholdAlerts()
         {
             try

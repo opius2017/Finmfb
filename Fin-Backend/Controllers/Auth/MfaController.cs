@@ -1,7 +1,8 @@
 using FinTech.Core.Application.Common;
-using FinTech.WebAPI.Application.DTOs.Auth;
-using FinTech.WebAPI.Application.DTOs.Common;
-using FinTech.WebAPI.Application.Interfaces;
+using FinTech.Core.Application.Common.Models;
+using FinTech.Core.Application.DTOs.Auth;
+using FinTech.Core.Application.DTOs.Common;
+using FinTech.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ namespace FinTech.Controllers.Auth
                 // Generate MFA setup
                 var response = await _mfaService.GenerateMfaSetupAsync(userId);
                 
-                return Ok(BaseResponse<MfaSetupResponseDto>.Success(response, "MFA setup generated successfully"));
+                return Ok(BaseResponse<MfaSetupResponseDto>.SuccessResponse(response, "MFA setup generated successfully"));
             }
             catch (Exception ex)
             {
@@ -81,7 +82,7 @@ namespace FinTech.Controllers.Auth
                     // Enable MFA
                     await _mfaService.EnableMfaAsync(userId, request.Secret);
                     
-                    return Ok(BaseResponse<bool>.Success(true, "MFA setup verified and enabled successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "MFA setup verified and enabled successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Invalid verification code"));
@@ -115,7 +116,7 @@ namespace FinTech.Controllers.Auth
                 
                 if (result)
                 {
-                    return Ok(BaseResponse<bool>.Success(true, "MFA disabled successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "MFA disabled successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Invalid verification code"));
@@ -153,7 +154,7 @@ namespace FinTech.Controllers.Auth
                 
                 if (isValid)
                 {
-                    return Ok(BaseResponse<bool>.Success(true, "MFA code validated successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "MFA code validated successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Invalid verification code"));
@@ -195,7 +196,7 @@ namespace FinTech.Controllers.Auth
                         Status = "success"
                     });
                     
-                    return Ok(BaseResponse<bool>.Success(true, "Backup code validated successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "Backup code validated successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Invalid backup code"));
@@ -227,7 +228,7 @@ namespace FinTech.Controllers.Auth
                 // Regenerate backup codes
                 var backupCodes = await _mfaService.RegenerateBackupCodesAsync(userId, request.Code);
                 
-                return Ok(BaseResponse<List<string>>.Success(backupCodes, "Backup codes regenerated successfully"));
+                return Ok(BaseResponse<List<string>>.SuccessResponse(backupCodes, "Backup codes regenerated successfully"));
             }
             catch (Exception ex)
             {
@@ -256,7 +257,7 @@ namespace FinTech.Controllers.Auth
                 // Create challenge
                 var response = await _mfaService.CreateMfaChallengeAsync(userId, request.Operation);
                 
-                return Ok(BaseResponse<MfaChallengeResponseDto>.Success(response, "MFA challenge created successfully"));
+                return Ok(BaseResponse<MfaChallengeResponseDto>.SuccessResponse(response, "MFA challenge created successfully"));
             }
             catch (Exception ex)
             {
@@ -281,7 +282,7 @@ namespace FinTech.Controllers.Auth
                 
                 if (isValid)
                 {
-                    return Ok(BaseResponse<bool>.Success(true, "Challenge verified successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "Challenge verified successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Invalid verification code or expired challenge"));
@@ -313,7 +314,7 @@ namespace FinTech.Controllers.Auth
                 // Add trusted device
                 var deviceId = await _mfaService.AddTrustedDeviceAsync(userId, request);
                 
-                return Ok(BaseResponse<string>.Success(deviceId, "Trusted device added successfully"));
+                return Ok(BaseResponse<string>.SuccessResponse(deviceId, "Trusted device added successfully"));
             }
             catch (Exception ex)
             {
@@ -349,7 +350,7 @@ namespace FinTech.Controllers.Auth
                     }
                 }
                 
-                return Ok(BaseResponse<List<TrustedDeviceDto>>.Success(devices, "Trusted devices retrieved successfully"));
+                return Ok(BaseResponse<List<TrustedDeviceDto>>.SuccessResponse(devices, "Trusted devices retrieved successfully"));
             }
             catch (Exception ex)
             {
@@ -375,7 +376,7 @@ namespace FinTech.Controllers.Auth
                 
                 if (result)
                 {
-                    return Ok(BaseResponse<bool>.Success(true, "Trusted device revoked successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "Trusted device revoked successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Failed to revoke trusted device"));
@@ -404,7 +405,7 @@ namespace FinTech.Controllers.Auth
                 
                 if (result)
                 {
-                    return Ok(BaseResponse<bool>.Success(true, "All trusted devices except current revoked successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "All trusted devices except current revoked successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Failed to revoke trusted devices"));
@@ -431,7 +432,7 @@ namespace FinTech.Controllers.Auth
                 // Get security activity
                 var activities = await _mfaService.GetSecurityActivityAsync(userId, limit);
                 
-                return Ok(BaseResponse<List<SecurityActivityDto>>.Success(activities, "Security activity retrieved successfully"));
+                return Ok(BaseResponse<List<SecurityActivityDto>>.SuccessResponse(activities, "Security activity retrieved successfully"));
             }
             catch (Exception ex)
             {
@@ -455,7 +456,7 @@ namespace FinTech.Controllers.Auth
                 // Get security preferences
                 var preferences = await _mfaService.GetSecurityPreferencesAsync(userId);
                 
-                return Ok(BaseResponse<SecurityPreferencesDto>.Success(preferences, "Security preferences retrieved successfully"));
+                return Ok(BaseResponse<SecurityPreferencesDto>.SuccessResponse(preferences, "Security preferences retrieved successfully"));
             }
             catch (Exception ex)
             {
@@ -486,7 +487,7 @@ namespace FinTech.Controllers.Auth
                 
                 if (result)
                 {
-                    return Ok(BaseResponse<bool>.Success(true, "Security preferences updated successfully"));
+                    return Ok(BaseResponse<bool>.SuccessResponse(true, "Security preferences updated successfully"));
                 }
                 
                 return BadRequest(BaseResponse<bool>.Failure("Failed to update security preferences"));

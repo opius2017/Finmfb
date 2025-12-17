@@ -11,7 +11,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         [Key]
         public Guid Id { get; set; }
         
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; } = string.Empty;
         
         [Required]
         public Guid CustomerId { get; set; }

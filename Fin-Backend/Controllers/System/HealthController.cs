@@ -1,5 +1,8 @@
 using FinTech.Infrastructure.Documentation;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -61,7 +64,7 @@ namespace FinTech.Controllers.System
                 {
                     Name = entry.Key,
                     Status = entry.Value.Status.ToString(),
-                    Description = entry.Value.Description,
+                    Description = entry.Value.Description ?? string.Empty,
                     Duration = entry.Value.Duration.TotalMilliseconds,
                     Tags = entry.Value.Tags.ToList(),
                     Data = entry.Value.Data.ToDictionary(
@@ -117,7 +120,7 @@ namespace FinTech.Controllers.System
             }
             else
             {
-                return StatusCode(StatusCodes.Status503ServiceUnavailable, Error<ReadinessStatusDto>("System is not ready to serve requests", response));
+                return Error("System is not ready to serve requests", response, HttpStatusCode.ServiceUnavailable);
             }
         }
 

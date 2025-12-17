@@ -24,13 +24,14 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(l => l.Description)
                 .HasMaxLength(255);
                 
-            builder.Property(l => l.DebitAmount)
-                .HasPrecision(19, 4)
+            builder.Property(l => l.IsDebit)
                 .IsRequired();
-                
-            builder.Property(l => l.CreditAmount)
-                .HasPrecision(19, 4)
-                .IsRequired();
+
+            builder.OwnsOne(l => l.Amount, nav =>
+            {
+                nav.Property(m => m.Amount).HasColumnName("Amount").HasPrecision(19, 4);
+                nav.Property(m => m.Currency).HasColumnName("Currency").HasMaxLength(10);
+            });
                 
             builder.Property(l => l.CreatedBy)
                 .HasMaxLength(100)

@@ -7,6 +7,7 @@ using MediatR;
 using FinTech.Core.Application.Interfaces.Services;
 using FinTech.Core.Application.Services;
 using FinTech.Core.Application.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Accounting;
 using FinTech.Core.Application.Interfaces.Loans;
 using FinTech.Core.Application.Services.Loans;
 

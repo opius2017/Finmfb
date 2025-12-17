@@ -10,6 +10,7 @@ namespace FinTech.Core.Domain.Entities.Common
     {
         private readonly List<DomainEvent> _domainEvents = new List<DomainEvent>();
         
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
         public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
         
         public void AddDomainEvent(DomainEvent domainEvent)

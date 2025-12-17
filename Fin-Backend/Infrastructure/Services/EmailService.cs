@@ -16,7 +16,7 @@ namespace FinTech.Infrastructure.Services
     /// <summary>
     /// Email service for sending transactional emails, statements, and marketing communications
     /// </summary>
-    public class EmailService : IEmailService
+    public class EmailService : IEmailService, FinTech.Core.Application.Common.Interfaces.IEmailService
     {
         private readonly ILogger<EmailService> _logger;
         private readonly EmailSettings _settings;
@@ -279,6 +279,63 @@ namespace FinTech.Infrastructure.Services
             var maskedUsername = parts[0].Substring(0, 2) + new string('*', parts[0].Length - 2);
             
             return $"{maskedUsername}@{parts[1]}";
+        }
+    
+        // Implementation of FinTech.Core.Application.Common.Interfaces.IEmailService
+
+        public async Task<bool> SendEmailAsync(string to, string subject, string body, bool isHtml = false)
+        {
+            var request = new EmailRequest 
+            { 
+                To = to, 
+                Subject = subject, 
+                Body = body, 
+                IsHtml = isHtml 
+            };
+            var result = await SendEmailAsync(request);
+            return result.Success;
+        }
+
+        public async Task<bool> SendEmailWithTemplateAsync(string to, string templateName, object templateData)
+        {
+            var dict = new Dictionary<string, string>();
+            
+            if (templateData is Dictionary<string, string> dictionary)
+            {
+                dict = dictionary;
+            }
+            else if (templateData != null)
+            {
+                try 
+                {
+                    // Simple property mapping using reflection or JSON
+                    var json = System.Text.Json.JsonSerializer.Serialize(templateData);
+                    var dictJson = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                    
+                    if (dictJson != null)
+                    {
+                        foreach(var kvp in dictJson)
+                        {
+                            dict[kvp.Key] = kvp.Value?.ToString() ?? "";
+                        }
+                    }
+                }
+                catch
+                {
+                    // Fallback or log error
+                    _logger.LogWarning("Failed to convert template data object to dictionary for email template {TemplateName}", templateName);
+                }
+            }
+
+            var request = new TemplatedEmailRequest 
+            { 
+                To = to, 
+                TemplateName = templateName, 
+                TemplateData = dict 
+            };
+            
+            var result = await SendTemplatedEmailAsync(request);
+            return result.Success;
         }
     }
 }

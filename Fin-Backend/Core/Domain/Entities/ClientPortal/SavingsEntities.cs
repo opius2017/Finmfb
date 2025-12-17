@@ -12,7 +12,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     /// </summary>
     public class SavingsGoal : BaseEntity, IAuditable
     {
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; } = string.Empty;
         [Required]
         public Guid UserId { get; set; }
         

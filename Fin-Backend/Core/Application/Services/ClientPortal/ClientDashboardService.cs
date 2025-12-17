@@ -95,7 +95,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 {
                     AccountId = Guid.Parse(a.Id),
                     AccountNumber = a.AccountNumber,
-                    AccountType = a.DepositProduct?.ProductType.ToString() ?? "Unknown",
+                    AccountType = a.Product?.ProductType.ToString() ?? "Unknown",
                     Currency = a.CurrencyCode,
                     CurrentBalance = a.CurrentBalance,
                     AvailableBalance = a.AvailableBalance,

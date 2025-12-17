@@ -15,7 +15,7 @@ namespace FinTech.Core.Application.Common.Interfaces
 
     public interface IPushNotificationService
     {
-        Task<bool> SendPushNotificationAsync(string token, string title, string body, string data = null);
-        Task<bool> SendPushNotificationToTopicAsync(string topic, string title, string body, string data = null);
+        Task<bool> SendPushNotificationAsync(string token, string title, string body, string? data = null);
+        Task<bool> SendPushNotificationToTopicAsync(string topic, string title, string body, string? data = null);
     }
 }

@@ -33,4 +33,8 @@ public class ApplicationUser : IdentityUser<Guid>
     public virtual ICollection<SocialLoginProfile> SocialLoginProfiles { get; set; } = new List<SocialLoginProfile>();
     public virtual ICollection<SecurityAlert> SecurityAlerts { get; set; } = new List<SecurityAlert>();
     public virtual UserSecurityPreferences? SecurityPreferences { get; set; }
+
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public Guid? TenantId { get; set; }
+    public virtual Tenant? Tenant { get; set; }
 }

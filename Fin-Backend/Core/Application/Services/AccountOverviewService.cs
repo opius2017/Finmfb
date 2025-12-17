@@ -41,8 +41,8 @@ namespace FinTech.Core.Application.Services
             {
                 return await _dbContext.DepositAccounts
                     .Where(a => a.CustomerId == customerId && a.Status == AccountStatus.Active)
-                    .Include(a => a.DepositProduct)
-                    .OrderBy(a => a.DepositProduct.ProductName)
+                    .Include(a => a.Product)
+                    .OrderBy(a => a.Product.ProductName)
                     .ToListAsync();
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ namespace FinTech.Core.Application.Services
             try
             {
                 var account = await _dbContext.DepositAccounts
-                    .Include(a => a.DepositProduct)
+                    .Include(a => a.Product)
                     .Include(a => a.Customer)
                     .FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
 
@@ -148,13 +148,13 @@ namespace FinTech.Core.Application.Services
                     TotalBalance = accounts.Sum(a => a.CurrentBalance),
                     TotalSavings = accounts
                         // FinTech Best Practice: Convert enum to string for comparison
-                        .Where(a => a.DepositProduct.ProductType.ToString() == "SavingsAccount")
+                        .Where(a => a.Product.ProductType.ToString() == "SavingsAccount")
                         .Sum(a => a.CurrentBalance),
                     TotalCurrent = accounts
-                        .Where(a => a.DepositProduct.ProductType.ToString() == "CurrentAccount")
+                        .Where(a => a.Product.ProductType.ToString() == "CurrentAccount")
                         .Sum(a => a.CurrentBalance),
                     TotalFixed = accounts
-                        .Where(a => a.DepositProduct.ProductType.ToString() == "FixedDeposit" || a.DepositProduct.ProductType.ToString() == "FixedDeposit")
+                        .Where(a => a.Product.ProductType.ToString() == "FixedDeposit" || a.Product.ProductType.ToString() == "FixedDeposit")
                         .Sum(a => a.CurrentBalance),
                     AccountCount = accounts.Count(),
                     LastUpdateTime = DateTime.UtcNow

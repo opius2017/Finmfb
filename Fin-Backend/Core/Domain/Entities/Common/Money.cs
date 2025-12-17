@@ -1,8 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace FinTech.Core.Domain.Entities.Common
 {
     /// <summary>
     /// Money value object to represent currency amounts
     /// </summary>
+    [Owned]
     public class Money
     {
         public decimal Amount { get; private set; }

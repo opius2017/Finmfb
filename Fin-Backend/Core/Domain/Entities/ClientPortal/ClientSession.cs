@@ -7,7 +7,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 {
     public class ClientSession : BaseEntity
     {
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; } = string.Empty;
         public ClientPortalProfile? ClientPortalProfile { get; set; }
         public string SessionId { get; set; } = string.Empty;
         public DateTime LoginTime { get; set; }

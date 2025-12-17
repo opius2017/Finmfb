@@ -3,6 +3,7 @@ using FinTech.Infrastructure.Messaging;
 using FinTech.Infrastructure.Messaging.Events;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Threading.Tasks;

@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FinTech.Core.Application.Services.Accounting;
+using FinTech.Core.Application.Interfaces.Accounting;
+using FinTech.Core.Application.Interfaces.Services.Accounting;
 using FinTech.Core.Domain.Entities.Accounting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -116,18 +117,19 @@ namespace FinTech.Controllers.Accounting.Accounting
                     {
                         return BadRequest($"No financial period found for the date {journalEntry.EntryDate:yyyy-MM-dd}");
                     }
-                    journalEntry.FinancialPeriodId = period.Id;
+                    journalEntry.SetFinancialPeriodId(period.Id);
                 }
 
                 // Set the creator to the current user
-                journalEntry.CreatedBy = User?.Identity?.Name ?? "system";
+                // Set the creator to the current user
+                // journalEntry.CreatedBy = User?.Identity?.Name ?? "system"; // Property likely read-only or handled by Service/Repository
                 
                 // Set the creation date to all lines
                 if (journalEntry.JournalEntryLines != null)
                 {
                     foreach (var line in journalEntry.JournalEntryLines)
                     {
-                        line.CreatedBy = User?.Identity?.Name ?? "system";
+                        // line.CreatedBy = User?.Identity?.Name ?? "system";
                     }
                 }
 
@@ -154,7 +156,8 @@ namespace FinTech.Controllers.Accounting.Accounting
             try
             {
                 // Set the modifier to the current user
-                journalEntry.LastModifiedBy = User?.Identity?.Name ?? "system";
+                // Set the modifier to the current user
+                // journalEntry.LastModifiedBy = User?.Identity?.Name ?? "system";
                 
                 // Set the modifier to all lines
                 if (journalEntry.JournalEntryLines != null)
@@ -310,6 +313,7 @@ namespace FinTech.Controllers.Accounting.Accounting
             }
         }
 
+        /*
         [HttpPost("{id}/upload-document")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -333,6 +337,7 @@ namespace FinTech.Controllers.Accounting.Accounting
                 return BadRequest(ex.Message);
             }
         }
+        */
     }
 }
 

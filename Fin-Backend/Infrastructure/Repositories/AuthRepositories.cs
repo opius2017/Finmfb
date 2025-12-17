@@ -475,7 +475,7 @@ namespace FinTech.Infrastructure.Repositories
         {
             var existingDevice = await GetByDeviceIdAsync(deviceId);
             
-            if (existingDevice != null && existingDevice.UserId == userId)
+            if (existingDevice != null && existingDevice.UserId.ToString() == userId)
             {
                 // Update existing device
                 existingDevice.DeviceName = deviceName;
@@ -859,8 +859,11 @@ namespace FinTech.Infrastructure.Repositories
         public async Task<bool> MarkAsReadAsync(string alertId, string userId)
         {
             if (!Guid.TryParse(userId, out var userGuid)) return false;
+            
+            if (!Guid.TryParse(alertId, out var alertGuid)) return false;
+
             var alert = await _dbSet.FirstOrDefaultAsync(sa => 
-                sa.Id == alertId && 
+                sa.Id == alertGuid.ToString() && 
                 sa.UserId == userGuid && 
                 !sa.IsRead);
                 

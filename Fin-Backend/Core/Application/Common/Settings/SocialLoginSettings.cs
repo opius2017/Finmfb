@@ -62,5 +62,10 @@ namespace FinTech.Application.Common.Settings
         /// Gets or sets the scope
         /// </summary>
         public string Scope { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the icon URL
+        /// </summary>
+        public string IconUrl { get; set; } = string.Empty;
     }
 }

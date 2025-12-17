@@ -112,7 +112,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 var session = new ClientSession
                 {
-                    ClientPortalProfileId = Guid.Parse(clientProfile.Id), // Convert string Id to Guid
+                    ClientPortalProfileId = clientProfile.Id,
                     Token = refreshToken,
                     IpAddress = ipAddress,
                     UserAgent = userAgent,
@@ -121,12 +121,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 _context.ClientSessions.Add(session);
                 await _context.SaveChangesAsync(CancellationToken.None);
 
-                var existingDevice = await _context.ClientDevices.FirstOrDefaultAsync(d => d.ClientPortalProfileId == Guid.Parse(clientProfile.Id) && d.DeviceId == deviceId);
+                var existingDevice = await _context.ClientDevices.FirstOrDefaultAsync(d => d.ClientPortalProfileId == clientProfile.Id && d.DeviceId == deviceId);
                 if (existingDevice == null)
                 {
                     var newDevice = new ClientDevice
                     {
-                        ClientPortalProfileId = Guid.Parse(clientProfile.Id),
+                        ClientPortalProfileId = clientProfile.Id,
                         DeviceId = deviceId,
                         DeviceType = "Unknown", // Or use a library to parse user agent
                         IsActive = true,
@@ -168,7 +168,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 var loginResponse = new LoginResponse
                 {
                     Token = jwt,
-                    RequiresTwoFactor = requiresTwoFactor,
+                    RequiresMfa = requiresTwoFactor,
                     // RefreshToken = refreshToken, // Assuming LoginResponse might need update or property mapping
                     // ExpiresAt = expiresAt
                 };
@@ -192,7 +192,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     return BaseResponse<bool>.Failure("Client profile not found");
                 }
 
-                var session = await _context.ClientSessions.FirstOrDefaultAsync(s => s.ClientPortalProfileId == Guid.Parse(profile.Id) && s.Token == sessionToken);
+                var session = await _context.ClientSessions.FirstOrDefaultAsync(s => s.ClientPortalProfileId == profile.Id && s.Token == sessionToken);
                 if (session != null)
                 {
                     _context.ClientSessions.Remove(session);
@@ -255,7 +255,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     return BaseResponse<bool>.Failure("Client profile not found");
                 }
 
-                var session = await _context.ClientSessions.FirstOrDefaultAsync(s => s.ClientPortalProfileId == Guid.Parse(profile.Id) && s.Token == sessionToken && s.ExpiresAt > DateTime.UtcNow);
+                var session = await _context.ClientSessions.FirstOrDefaultAsync(s => s.ClientPortalProfileId == profile.Id && s.Token == sessionToken && s.ExpiresAt > DateTime.UtcNow);
                 if (session == null)
                 {
                     return BaseResponse<bool>.Failure("Invalid or expired session");

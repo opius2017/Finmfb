@@ -1,18 +1,19 @@
 using FinTech.Core.Application.Interfaces;
 using FinTech.Core.Application.Common;
 using FinTech.Core.Application.DTOs.Security;
-using FinTech.WebAPI.Application.DTOs.Auth;
-using FinTech.WebAPI.Application.Common.DTOs;
-using FinTech.WebAPI.Application.Interfaces;
-using FinTech.Infrastructure.Security.Authentication;
+using FinTech.Core.Application.DTOs.Auth;
+using FinTech.Core.Application.Common.DTOs;
+using FinTech.Core.Application.Interfaces.Services;
+using SecurityDashboardDto = FinTech.Core.Application.DTOs.Auth.SecurityDashboardDto;
+using ClientSessionDto = FinTech.Core.Application.DTOs.Auth.ClientSessionDto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using SecurityActivityDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityActivityDto;
-using SecurityPreferencesDto = FinTech.WebAPI.Application.DTOs.Auth.SecurityPreferencesDto;
+using SecurityActivityDto = FinTech.Core.Application.DTOs.Auth.SecurityActivityDto;
+using SecurityPreferencesDto = FinTech.Core.Application.DTOs.Auth.SecurityPreferencesDto;
 using FinTech.Core.Application.Common.Models;
 
 namespace FinTech.Controllers.Auth
@@ -54,7 +55,7 @@ namespace FinTech.Controllers.Auth
                 
                 var dashboard = await _authService.GetSecurityDashboardAsync(userId);
                 
-                return Ok(BaseResponse<SecurityDashboardDto>.Success(dashboard, "Security dashboard retrieved successfully"));
+                return Ok(BaseResponse<SecurityDashboardDto>.SuccessResponse(dashboard, "Security dashboard retrieved successfully"));
             }
             catch (Exception ex)
             {
@@ -82,7 +83,7 @@ namespace FinTech.Controllers.Auth
                 
                 var history = await _mfaService.GetSecurityActivityAsync(userId, limit);
                 
-                return Ok(BaseResponse<List<SecurityActivityDto>>.Success(history, "Security audit history retrieved successfully"));
+                return Ok(BaseResponse<List<SecurityActivityDto>>.SuccessResponse(history, "Security audit history retrieved successfully"));
             }
             catch (Exception ex)
             {
@@ -96,7 +97,7 @@ namespace FinTech.Controllers.Auth
         /// </summary>
         /// <returns>List of active sessions</returns>
         [HttpGet("active-sessions")]
-        public async Task<ActionResult<BaseResponse<List<ActiveSessionDto>>>> GetActiveSessions()
+        public async Task<ActionResult<BaseResponse<List<ClientSessionDto>>>> GetActiveSessions()
         {
             try
             {
@@ -104,17 +105,17 @@ namespace FinTech.Controllers.Auth
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Unauthorized(BaseResponse<List<ActiveSessionDto>>.Failure("User not authenticated"));
+                    return Unauthorized(BaseResponse<List<ClientSessionDto>>.Failure("User not authenticated"));
                 }
                 
                 var sessions = await _authService.GetActiveSessionsAsync(userId);
                 
-                return Ok(BaseResponse<List<ActiveSessionDto>>.Success(sessions, "Active sessions retrieved successfully"));
+                return Ok(BaseResponse<List<ClientSessionDto>>.SuccessResponse(sessions, "Active sessions retrieved successfully"));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error retrieving active sessions");
-                return StatusCode(500, BaseResponse<List<ActiveSessionDto>>.Failure("An error occurred while retrieving active sessions"));
+                return StatusCode(500, BaseResponse<List<ClientSessionDto>>.Failure("An error occurred while retrieving active sessions"));
             }
         }
 
@@ -148,7 +149,7 @@ namespace FinTech.Controllers.Auth
                     return BadRequest(BaseResponse<bool>.Failure("Failed to revoke sessions"));
                 }
                 
-                return Ok(BaseResponse<bool>.Success(true, "All sessions except current revoked successfully"));
+                return Ok(BaseResponse<bool>.SuccessResponse(true, "All sessions except current revoked successfully"));
             }
             catch (Exception ex)
             {
@@ -193,7 +194,7 @@ namespace FinTech.Controllers.Auth
                     return BadRequest(BaseResponse<bool>.Failure("Failed to revoke session"));
                 }
                 
-                return Ok(BaseResponse<bool>.Success(true, "Session revoked successfully"));
+                return Ok(BaseResponse<bool>.SuccessResponse(true, "Session revoked successfully"));
             }
             catch (Exception ex)
             {
@@ -220,7 +221,7 @@ namespace FinTech.Controllers.Auth
                 
                 var preferences = await _mfaService.GetSecurityPreferencesAsync(userId);
                 
-                return Ok(BaseResponse<SecurityPreferencesDto>.Success(preferences, "Security preferences retrieved successfully"));
+                return Ok(BaseResponse<SecurityPreferencesDto>.SuccessResponse(preferences, "Security preferences retrieved successfully"));
             }
             catch (Exception ex)
             {
@@ -258,7 +259,7 @@ namespace FinTech.Controllers.Auth
                     return BadRequest(BaseResponse<bool>.Failure("Failed to update security preferences"));
                 }
                 
-                return Ok(BaseResponse<bool>.Success(true, "Security preferences updated successfully"));
+                return Ok(BaseResponse<bool>.SuccessResponse(true, "Security preferences updated successfully"));
             }
             catch (Exception ex)
             {
@@ -273,7 +274,7 @@ namespace FinTech.Controllers.Auth
         /// <param name="request">The password change request</param>
         /// <returns>Success or failure</returns>
         [HttpPost("change-password")]
-        public async Task<ActionResult<BaseResponse<bool>>> ChangePassword([FromBody] UpdatePasswordDto request)
+        public async Task<ActionResult<BaseResponse<bool>>> ChangePassword([FromBody] ChangePasswordRequestDto request)
         {
             try
             {
@@ -296,7 +297,7 @@ namespace FinTech.Controllers.Auth
                     return BadRequest(BaseResponse<bool>.Failure(string.Join(", ", result.Errors)));
                 }
                 
-                return Ok(BaseResponse<bool>.Success(true, "Password changed successfully"));
+                return Ok(BaseResponse<bool>.SuccessResponse(true, "Password changed successfully"));
             }
             catch (Exception ex)
             {

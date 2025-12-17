@@ -28,6 +28,26 @@ namespace FinTech.Core.Application.Interfaces.Loans
     /// </summary>
     public interface ILoanService
     {
+        // Existing methods (keep or align?)
+        // The existing methods were:
+        // CreateLoanAccountAsync (Guid arg)
+        // DisburseLoanAsync (Guid arg) - Overload exists!
+        // ProcessRepaymentAsync (Guid arg) - Different name?
+        // GenerateRepaymentScheduleAsync (Guid arg) - Different return type?
+        
+        // New methods matching LoanService.cs implementation
+        Task<IEnumerable<Loan>> GetAllLoansAsync();
+        Task<Loan> GetLoanByIdAsync(string id);
+        Task<IEnumerable<Loan>> GetLoansByCustomerIdAsync(string customerId);
+        Task<Loan> DisburseLoanAsync(string id, decimal amount, string disbursedTo, string reference, string description);
+        Task<LoanTransaction> RecordRepaymentAsync(string loanId, decimal amount, decimal principalAmount, decimal interestAmount, decimal feesAmount, decimal penaltyAmount, string reference, string description);
+        Task<LoanTransaction> WriteOffLoanAsync(string id, string reason, string approvedBy);
+        Task<Loan> RescheduleLoanAsync(string id, DateTime newEndDate, string reason, string approvedBy);
+        Task<IEnumerable<LoanTransaction>> GetLoanTransactionsAsync(string loanId);
+        Task<IEnumerable<LoanRepaymentSchedule>> GetLoanRepaymentScheduleAsync(string loanId);
+        Task<LoanStatement> GenerateLoanStatementAsync(string loanId, DateTime fromDate, DateTime toDate);
+
+        // Explicit interface implementation methods from LoanService.cs (if we want to expose them directly)
         Task<FinTech.Core.Domain.Entities.Loans.LoanAccount> CreateLoanAccountAsync(FinTech.Core.Application.DTOs.Loans.CreateLoanAccountRequest request);
         Task<bool> DisburseLoanAsync(Guid loanAccountId, decimal amount, string disbursedBy);
         Task<bool> ProcessRepaymentAsync(Guid loanAccountId, decimal amount, string processedBy);

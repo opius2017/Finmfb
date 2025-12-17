@@ -43,11 +43,13 @@ namespace FinTech.Core.Domain.Entities.Currency
         /// <summary>
         /// Navigation property for exchange rates where this currency is the source
         /// </summary>
+        [System.ComponentModel.DataAnnotations.Schema.InverseProperty("FromCurrency")]
         public virtual ICollection<ExchangeRate> FromExchangeRates { get; set; } = new List<ExchangeRate>();
         
         /// <summary>
         /// Navigation property for exchange rates where this currency is the target
         /// </summary>
+        [System.ComponentModel.DataAnnotations.Schema.InverseProperty("ToCurrency")]
         public virtual ICollection<ExchangeRate> ToExchangeRates { get; set; } = new List<ExchangeRate>();
     }
 

@@ -40,9 +40,9 @@ namespace FinTech.Core.Domain.Entities.Loans
         public string RecordedBy => RegisteredBy;
         
         // Navigation properties
-        public virtual Loan Loan { get; private set; }
-        public virtual LoanApplication Application { get; private set; }
-        public virtual Member Member { get; private set; }
+        public virtual Loan? Loan { get; private set; }
+        public virtual LoanApplication? Application { get; private set; }
+        public virtual Member? Member { get; private set; }
         
         private LoanRegister() 
         {
@@ -93,6 +93,7 @@ namespace FinTech.Core.Domain.Entities.Loans
             LoanType = loanType ?? "NORMAL";
             RegisteredBy = registeredBy ?? throw new ArgumentNullException(nameof(registeredBy));
             Status = "REGISTERED";
+            Notes = string.Empty;
         }
         
         /// <summary>

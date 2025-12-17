@@ -2,6 +2,8 @@ using FinTech.Infrastructure.Documentation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;

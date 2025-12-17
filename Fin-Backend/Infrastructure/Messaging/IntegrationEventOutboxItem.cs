@@ -1,5 +1,7 @@
 using System;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace FinTech.Infrastructure.Messaging
 {
     /// <summary>
@@ -8,6 +10,7 @@ namespace FinTech.Infrastructure.Messaging
     /// </summary>
     public class IntegrationEventOutboxItem
     {
+        [Key]
         public Guid EventId { get; set; }
         public string EventTypeFullName { get; set; } = string.Empty;
         public string EventTypeName { get; set; } = string.Empty;

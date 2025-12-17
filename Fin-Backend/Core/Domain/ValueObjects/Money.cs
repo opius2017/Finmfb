@@ -1,10 +1,13 @@
 using FinTech.Core.Domain.Common;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace FinTech.Core.Domain.ValueObjects;
 
 /// <summary>
 /// Money value object with currency support
 /// </summary>
+[Owned]
 public sealed class Money : ValueObject
 {
     public decimal Amount { get; private set; }

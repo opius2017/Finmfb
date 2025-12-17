@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using FinTech.Core.Application.DTOs.Loans;
-using FinTech.Core.Application.Services.Loans;
+using FinTech.Core.Application.Interfaces.Loans;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -93,7 +93,7 @@ namespace FinTech.Controllers.Loans
         /// Gets loan register
         /// </summary>
         [HttpGet("loan-register")]
-        [ProducesResponseType(typeof(System.Collections.Generic.List<LoanRegisterEntry>), 200)]
+        [ProducesResponseType(typeof(List<LoanRegisterEntry>), 200)]
         public async Task<IActionResult> GetLoanRegister(
             [FromQuery] DateTime? fromDate,
             [FromQuery] DateTime? toDate,
@@ -146,7 +146,7 @@ namespace FinTech.Controllers.Loans
             try
             {
                 var csv = await _registerService.ExportLoanRegisterAsync(fromDate, toDate);
-                return File(System.Text.Encoding.UTF8.GetBytes(csv), "text/csv", "loan-register.csv");
+                return File(global::System.Text.Encoding.UTF8.GetBytes(csv), "text/csv", "loan-register.csv");
             }
             catch (Exception ex)
             {

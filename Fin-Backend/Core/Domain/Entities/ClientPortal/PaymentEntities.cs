@@ -100,7 +100,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public virtual Customer? Customer { get; set; }
         public virtual DepositAccount? SourceAccount { get; set; }
         public virtual Biller? Biller { get; set; }
-        public virtual ICollection<RecurringPaymentHistory> PaymentHistory { get; set; }
+        public virtual ICollection<RecurringPaymentHistory> PaymentHistory { get; set; } = new List<RecurringPaymentHistory>();
 
         // Added properties/aliases to resolve build errors
         [NotMapped] public Guid FromAccountId { get => SourceAccountId; set => SourceAccountId = value; }

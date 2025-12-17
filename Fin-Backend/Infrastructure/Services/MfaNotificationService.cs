@@ -6,18 +6,19 @@ using FinTech.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using System.Globalization;
 using FinTech.Core.Application.DTOs.Email;
+using FinTech.Core.Domain.Entities.Identity;
 
 namespace FinTech.Infrastructure.Services
 {
     public class MfaNotificationService : IMfaNotificationService
     {
         private readonly IEmailService _emailService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<MfaNotificationService> _logger;
 
         public MfaNotificationService(
             IEmailService emailService,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<MfaNotificationService> logger)
         {
             _emailService = emailService;

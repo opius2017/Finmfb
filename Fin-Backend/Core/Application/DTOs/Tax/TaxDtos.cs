@@ -67,27 +67,27 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type code (e.g., VAT, WHT, CIT)
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type name (e.g., Value Added Tax)
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Description of the tax type
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         /// <summary>
         /// The liability account where collected tax is recorded
         /// </summary>
-        public string LiabilityAccountId { get; set; }
+        public string LiabilityAccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// The receivable account where claimable tax is recorded
         /// </summary>
-        public string ReceivableAccountId { get; set; }
+        public string ReceivableAccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether the tax is collected from customers or paid to vendors
@@ -113,17 +113,17 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Unique identifier for the tax type
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type name (e.g., Value Added Tax)
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Description of the tax type
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether the tax type is active
@@ -133,12 +133,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// The liability account where collected tax is recorded
         /// </summary>
-        public string LiabilityAccountId { get; set; }
+        public string LiabilityAccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// The receivable account where claimable tax is recorded
         /// </summary>
-        public string ReceivableAccountId { get; set; }
+        public string ReceivableAccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether the tax is collected from customers or paid to vendors
@@ -164,7 +164,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Unique identifier for the tax rate
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type ID this rate belongs to
@@ -179,7 +179,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Rate name or description
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Rate percentage value
@@ -230,7 +230,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Rate name or description
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Rate percentage value
@@ -271,12 +271,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Unique identifier for the tax rate
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// Rate name or description
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Rate percentage value
@@ -418,7 +418,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Reason for exemption, if applicable
         /// </summary>
-        public string ExemptionReason { get; set; }
+        public string ExemptionReason { get; set; } = string.Empty;
         
         /// <summary>
         /// Transaction date used for tax calculation
@@ -428,7 +428,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Account ID for recording this tax
         /// </summary>
-        public string TaxAccountId { get; set; }
+        public string TaxAccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// Calculation notes or messages
@@ -525,7 +525,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Liability account ID for recording WHT
         /// </summary>
-        public string WhtLiabilityAccountId { get; set; }
+        public string WhtLiabilityAccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// Calculation notes or messages
@@ -541,7 +541,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Unique identifier for the tax transaction
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type ID
@@ -581,27 +581,27 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Description of the transaction
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         /// <summary>
         /// Reference to related source transaction
         /// </summary>
-        public string SourceTransactionId { get; set; }
+        public string SourceTransactionId { get; set; } = string.Empty;
         
         /// <summary>
         /// Source transaction type
         /// </summary>
-        public string SourceTransactionType { get; set; }
+        public string SourceTransactionType { get; set; } = string.Empty;
         
         /// <summary>
         /// Financial period ID
         /// </summary>
-        public string FinancialPeriodId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
         
         /// <summary>
         /// Journal entry ID for this tax transaction
         /// </summary>
-        public string JournalEntryId { get; set; }
+        public string JournalEntryId { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether the tax is paid/settled
@@ -621,12 +621,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Party name (customer or vendor)
         /// </summary>
-        public string PartyName { get; set; }
+        public string PartyName { get; set; } = string.Empty;
         
         /// <summary>
         /// Party tax ID number
         /// </summary>
-        public string PartyTaxId { get; set; }
+        public string PartyTaxId { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -642,7 +642,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax rate ID
         /// </summary>
-        public string TaxRateId { get; set; }
+        public string TaxRateId { get; set; } = string.Empty;
         
         /// <summary>
         /// Applied tax rate
@@ -667,22 +667,22 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Description of the transaction
         /// </summary>
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         
         /// <summary>
         /// Reference to related source transaction
         /// </summary>
-        public string SourceTransactionId { get; set; }
+        public string SourceTransactionId { get; set; } = string.Empty;
         
         /// <summary>
         /// Source transaction type
         /// </summary>
-        public string SourceTransactionType { get; set; }
+        public string SourceTransactionType { get; set; } = string.Empty;
         
         /// <summary>
         /// Financial period ID
         /// </summary>
-        public string FinancialPeriodId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
         
         /// <summary>
         /// Customer or vendor ID related to this transaction
@@ -692,12 +692,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Party name (customer or vendor)
         /// </summary>
-        public string PartyName { get; set; }
+        public string PartyName { get; set; } = string.Empty;
         
         /// <summary>
         /// Party tax ID number
         /// </summary>
-        public string PartyTaxId { get; set; }
+        public string PartyTaxId { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether to automatically create journal entries
@@ -728,7 +728,7 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Financial period ID (alternative to date range)
         /// </summary>
-        public string FinancialPeriodId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
         
         /// <summary>
         /// Whether to include only settled transactions
@@ -738,12 +738,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// How to group the report data (by date, tax type, etc.)
         /// </summary>
-        public string GroupBy { get; set; }
+        public string GroupBy { get; set; } = string.Empty;
         
         /// <summary>
         /// Report format (detailed or summary)
         /// </summary>
-        public string Format { get; set; }
+        public string Format { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -754,12 +754,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Report title
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         
         /// <summary>
         /// Report period description
         /// </summary>
-        public string PeriodDescription { get; set; }
+        public string PeriodDescription { get; set; } = string.Empty;
         
         /// <summary>
         /// Start date of the report period
@@ -820,12 +820,12 @@ namespace FinTech.Core.Application.DTOs.Tax
         /// <summary>
         /// Tax type code (e.g., VAT, WHT)
         /// </summary>
-        public string TaxTypeCode { get; set; }
+        public string TaxTypeCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Tax type name
         /// </summary>
-        public string TaxTypeName { get; set; }
+        public string TaxTypeName { get; set; } = string.Empty;
         
         /// <summary>
         /// Total taxable amount for this tax type
