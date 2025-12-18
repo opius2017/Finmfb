@@ -135,7 +135,7 @@ export const ChartWidget: React.FC<ChartWidgetProps> = ({ config }) => {
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              label={({ name, percent }: any) => `${name}: ${(percent * 100).toFixed(0)}%`}
               outerRadius={config.type === 'donut' ? 80 : 100}
               innerRadius={config.type === 'donut' ? 50 : 0}
               fill="#8884d8"

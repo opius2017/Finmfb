@@ -12,13 +12,12 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     /// </summary>
     public sealed class ClientPortalActivity : BaseEntity, IAuditable
     {
-        public Guid ClientPortalProfileId { get; private set; }
+        public string? ClientPortalProfileId { get; private set; }
         
         [Required]
         public Guid UserId { get; set; }
         
-        [Required]
-        public Guid SessionId { get; set; }
+        public string? SessionId { get; set; }
         
         // Navigation property
         public ClientSession? Session { get; set; }
@@ -63,9 +62,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 
         // Private constructor for Factory
         private ClientPortalActivity(
-            Guid clientPortalProfileId,
+            string? clientPortalProfileId,
             Guid userId,
-            Guid sessionId,
+            string? sessionId,
             string activityType,
             string description,
             string ipAddress,
@@ -88,9 +87,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         }
 
         public static ClientPortalActivity Create(
-            Guid clientPortalProfileId,
+            string? clientPortalProfileId,
             Guid userId,
-            Guid sessionId,
+            string? sessionId,
             string activityType,
             string description,
             string ipAddress,

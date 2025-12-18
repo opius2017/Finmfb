@@ -99,7 +99,7 @@ class RealtimeService {
   /**
    * Generic subscribe method
    */
-  private subscribe(event: string, callback: EventCallback): () => void {
+  public subscribe(event: string, callback: (data: any) => void): () => void {
     if (!this.subscribers.has(event)) {
       this.subscribers.set(event, new Set());
     }

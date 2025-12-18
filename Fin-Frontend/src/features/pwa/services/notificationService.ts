@@ -20,7 +20,7 @@ export class NotificationService {
       
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: this.urlBase64ToUint8Array(this.getVapidPublicKey()),
+        applicationServerKey: this.urlBase64ToUint8Array(this.getVapidPublicKey()) as any,
       });
 
       await this.sendSubscriptionToServer(subscription);

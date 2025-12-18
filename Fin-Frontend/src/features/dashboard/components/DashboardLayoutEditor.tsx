@@ -190,7 +190,7 @@ export const DashboardLayoutEditor: React.FC<DashboardLayoutEditorProps> = ({
                   size="sm"
                   variant="ghost"
                   icon={<Upload className="h-4 w-4" />}
-                  as="span"
+
                 >
                   Import
                 </Button>

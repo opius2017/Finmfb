@@ -62,7 +62,10 @@ export class SyncService {
   async registerBackgroundSync(): Promise<void> {
     if ('serviceWorker' in navigator && 'sync' in ServiceWorkerRegistration.prototype) {
       const registration = await navigator.serviceWorker.ready;
-      await registration.sync.register('sync-transactions');
+      const reg = registration as any;
+      if (reg.sync) {
+        await reg.sync.register('sync-transactions');
+      }
     }
   }
 

@@ -1,8 +1,0 @@
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\obj\Debug\net8.0\Fin-Backend.Tests.csproj.AssemblyReference.cache
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\obj\Debug\net8.0\MvcTestingAppManifest.json
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\obj\Debug\net8.0\Fin-Backend.Tests.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\obj\Debug\net8.0\Fin-Backend.Tests.AssemblyInfoInputs.cache
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\obj\Debug\net8.0\Fin-Backend.Tests.AssemblyInfo.cs
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\obj\Debug\net8.0\Fin-Backend.Tests.csproj.CoreCompileInputs.cache
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\obj\Debug\net8.0\Fin-Backend.Tests.sourcelink.json
-C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend.Tests\bin\Debug\net8.0\CoverletSourceRootsMapping_Fin-Backend.Tests

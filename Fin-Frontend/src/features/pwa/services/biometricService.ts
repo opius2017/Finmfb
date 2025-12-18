@@ -19,13 +19,13 @@ export class BiometricService {
       
       const credential = await navigator.credentials.create({
         publicKey: {
-          challenge: this.base64ToBuffer(challenge),
+          challenge: this.base64ToBuffer(challenge) as any,
           rp: {
             name: 'Soar-Fin+',
             id: window.location.hostname,
           },
           user: {
-            id: this.stringToBuffer(username),
+            id: this.stringToBuffer(username) as any,
             name: username,
             displayName: username,
           },
@@ -65,10 +65,10 @@ export class BiometricService {
 
       const credential = await navigator.credentials.get({
         publicKey: {
-          challenge: this.base64ToBuffer(challenge),
+          challenge: this.base64ToBuffer(challenge) as any,
           allowCredentials: [{
             type: 'public-key',
-            id: this.base64ToBuffer(credentialId),
+            id: this.base64ToBuffer(credentialId) as any,
           }],
           userVerification: 'required',
           timeout: 60000,

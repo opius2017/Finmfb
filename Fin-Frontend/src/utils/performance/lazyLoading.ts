@@ -1,3 +1,4 @@
+import React from 'react';
 // Lazy Loading Utilities
 export class LazyLoader {
   private observer: IntersectionObserver | null = null;

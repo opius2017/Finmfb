@@ -1,9 +1,8 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fin-Backend.Tests", "Fin-Backend.Tests\Fin-Backend.Tests.csproj", "{8C0B9671-D8FB-BABD-1FC0-0E2EBAE3C866}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinTech.Tests", "FinTech.Tests\FinTech.Tests.csproj", "{48C6D79C-7C54-B533-BABB-978B1BFC506C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinTech.WebAPI", "Fin-Backend\FinTech.WebAPI.csproj", "{8A3878E6-F1A2-0106-01B2-D4F69061978A}"
@@ -24,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C0B9671-D8FB-BABD-1FC0-0E2EBAE3C866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C0B9671-D8FB-BABD-1FC0-0E2EBAE3C866}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C0B9671-D8FB-BABD-1FC0-0E2EBAE3C866}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C0B9671-D8FB-BABD-1FC0-0E2EBAE3C866}.Release|Any CPU.Build.0 = Release|Any CPU
 		{48C6D79C-7C54-B533-BABB-978B1BFC506C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{48C6D79C-7C54-B533-BABB-978B1BFC506C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48C6D79C-7C54-B533-BABB-978B1BFC506C}.Release|Any CPU.ActiveCfg = Release|Any CPU

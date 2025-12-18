@@ -22,9 +22,9 @@ namespace FinTech.Core.Application.Features.ClientPortal.Commands.CreateActivity
         public async Task<Guid> Handle(CreateClientPortalActivityCommand request, CancellationToken cancellationToken)
         {
             var activity = ClientPortalActivity.Create(
-                request.ClientPortalProfileId,
+                request.ClientPortalProfileId.ToString(),
                 request.UserId,
-                request.SessionId,
+                request.SessionId.ToString(),
                 request.ActivityType,
                 request.Description,
                 request.IpAddress ?? "0.0.0.0",

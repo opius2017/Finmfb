@@ -134,7 +134,7 @@ export const StatementUpload: React.FC<StatementUploadProps> = ({
                   accept=".csv,.xlsx,.xls,.pdf,.ofx,.mt940,.sta"
                   onChange={handleFileInputChange}
                 />
-                <Button variant="primary" as="span">
+                <Button variant="primary">
                   Select File
                 </Button>
               </label>

@@ -71,16 +71,16 @@ export const RetentionPolicies: React.FC = () => {
   };
 
   return (
-    <div className=\"p-6\">
-      <div className=\"flex items-center justify-between mb-6\">
-        <h1 className=\"text-2xl font-bold\">Document Retention Policies</h1>
-        <div className=\"flex space-x-3\">
-          <Button variant=\"outline\" onClick={handleExecuteActions} disabled={loading}>
-            <Clock className=\"w-4 h-4 mr-2\" />
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Document Retention Policies</h1>
+        <div className="flex space-x-3">
+          <Button variant="outline" onClick={handleExecuteActions} disabled={loading}>
+            <Clock className="w-4 h-4 mr-2" />
             Execute Actions
           </Button>
-          <Button variant=\"primary\" onClick={() => setShowCreateModal(true)}>
-            <Plus className=\"w-4 h-4 mr-2\" />
+          <Button variant="primary" onClick={() => setShowCreateModal(true)}>
+            <Plus className="w-4 h-4 mr-2" />
             Create Policy
           </Button>
         </div>
@@ -88,64 +88,64 @@ export const RetentionPolicies: React.FC = () => {
 
       {/* Summary Cards */}
       {report && (
-        <div className=\"grid grid-cols-1 md:grid-cols-5 gap-4 mb-6\">
-          <Card className=\"p-4\">
-            <div className=\"text-sm text-neutral-600 mb-1\">Total Documents</div>
-            <div className=\"text-2xl font-bold\">{report.totalDocuments.toLocaleString()}</div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <Card className="p-4">
+            <div className="text-sm text-neutral-600 mb-1">Total Documents</div>
+            <div className="text-2xl font-bold">{report.totalDocuments.toLocaleString()}</div>
           </Card>
-          <Card className=\"p-4\">
-            <div className=\"text-sm text-neutral-600 mb-1\">Active Retention</div>
-            <div className=\"text-2xl font-bold text-success-600\">{report.activeRetention.toLocaleString()}</div>
+          <Card className="p-4">
+            <div className="text-sm text-neutral-600 mb-1">Active Retention</div>
+            <div className="text-2xl font-bold text-success-600">{report.activeRetention.toLocaleString()}</div>
           </Card>
-          <Card className=\"p-4\">
-            <div className=\"text-sm text-neutral-600 mb-1\">Pending Archive</div>
-            <div className=\"text-2xl font-bold text-warning-600\">{report.pendingArchive.toLocaleString()}</div>
+          <Card className="p-4">
+            <div className="text-sm text-neutral-600 mb-1">Pending Archive</div>
+            <div className="text-2xl font-bold text-warning-600">{report.pendingArchive.toLocaleString()}</div>
           </Card>
-          <Card className=\"p-4\">
-            <div className=\"text-sm text-neutral-600 mb-1\">Pending Deletion</div>
-            <div className=\"text-2xl font-bold text-error-600\">{report.pendingDeletion.toLocaleString()}</div>
+          <Card className="p-4">
+            <div className="text-sm text-neutral-600 mb-1">Pending Deletion</div>
+            <div className="text-2xl font-bold text-error-600">{report.pendingDeletion.toLocaleString()}</div>
           </Card>
-          <Card className=\"p-4\">
-            <div className=\"text-sm text-neutral-600 mb-1\">Legal Hold</div>
-            <div className=\"text-2xl font-bold text-primary-600\">{report.onLegalHold.toLocaleString()}</div>
+          <Card className="p-4">
+            <div className="text-sm text-neutral-600 mb-1">Legal Hold</div>
+            <div className="text-2xl font-bold text-primary-600">{report.onLegalHold.toLocaleString()}</div>
           </Card>
         </div>
       )}
 
       {/* Policies List */}
-      <Card className=\"p-6 mb-6\">
-        <h2 className=\"text-lg font-semibold mb-4\">Retention Policies</h2>
+      <Card className="p-6 mb-6">
+        <h2 className="text-lg font-semibold mb-4">Retention Policies</h2>
         
         {loading ? (
-          <div className=\"text-center py-8\">
-            <div className=\"animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto\"></div>
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
           </div>
         ) : policies.length === 0 ? (
-          <div className=\"text-center py-8 text-neutral-600\">
-            <Shield className=\"w-12 h-12 mx-auto mb-3 text-neutral-400\" />
+          <div className="text-center py-8 text-neutral-600">
+            <Shield className="w-12 h-12 mx-auto mb-3 text-neutral-400" />
             <p>No retention policies configured</p>
           </div>
         ) : (
-          <div className=\"space-y-3\">
+          <div className="space-y-3">
             {policies.map((policy) => (
               <div
                 key={policy.id}
-                className=\"flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:bg-neutral-50\"
+                className="flex items-center justify-between p-4 border border-neutral-200 rounded-lg hover:bg-neutral-50"
               >
-                <div className=\"flex-1\">
-                  <div className=\"flex items-center space-x-3 mb-2\">
-                    <h3 className=\"font-semibold\">{policy.name}</h3>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h3 className="font-semibold">{policy.name}</h3>
                     <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getActionColor(policy.action)}`}>
                       {policy.action}
                     </span>
                     {!policy.isActive && (
-                      <span className=\"px-2 py-1 text-xs bg-neutral-200 text-neutral-700 rounded-full\">
+                      <span className="px-2 py-1 text-xs bg-neutral-200 text-neutral-700 rounded-full">
                         Inactive
                       </span>
                     )}
                   </div>
-                  <p className=\"text-sm text-neutral-600 mb-2\">{policy.description}</p>
-                  <div className=\"flex items-center space-x-4 text-xs text-neutral-500\">
+                  <p className="text-sm text-neutral-600 mb-2">{policy.description}</p>
+                  <div className="flex items-center space-x-4 text-xs text-neutral-500">
                     <span>Document Type: {policy.documentType}</span>
                     <span>•</span>
                     <span>Retention: {formatRetentionPeriod(policy.retentionPeriod, policy.retentionUnit)}</span>
@@ -153,16 +153,16 @@ export const RetentionPolicies: React.FC = () => {
                     <span>Priority: {policy.priority}</span>
                   </div>
                 </div>
-                <div className=\"flex items-center space-x-2\">
-                  <Button variant=\"ghost\" size=\"sm\">
-                    <Edit className=\"w-4 h-4\" />
+                <div className="flex items-center space-x-2">
+                  <Button variant="ghost" size="sm">
+                    <Edit className="w-4 h-4" />
                   </Button>
                   <Button
-                    variant=\"ghost\"
-                    size=\"sm\"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => handleDeletePolicy(policy.id)}
                   >
-                    <Trash2 className=\"w-4 h-4 text-error-600\" />
+                    <Trash2 className="w-4 h-4 text-error-600" />
                   </Button>
                 </div>
               </div>
@@ -173,25 +173,25 @@ export const RetentionPolicies: React.FC = () => {
 
       {/* Upcoming Actions */}
       {report && report.upcomingActions.length > 0 && (
-        <Card className=\"p-6\">
-          <div className=\"flex items-center space-x-3 mb-4\">
-            <AlertTriangle className=\"w-6 h-6 text-warning-600\" />
-            <h2 className=\"text-lg font-semibold\">Upcoming Retention Actions</h2>
+        <Card className="p-6">
+          <div className="flex items-center space-x-3 mb-4">
+            <AlertTriangle className="w-6 h-6 text-warning-600" />
+            <h2 className="text-lg font-semibold">Upcoming Retention Actions</h2>
           </div>
 
-          <div className=\"space-y-2\">
+          <div className="space-y-2">
             {report.upcomingActions.slice(0, 10).map((action, index) => (
               <div
                 key={index}
-                className=\"flex items-center justify-between p-3 bg-neutral-50 rounded-lg\"
+                className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg"
               >
-                <div className=\"flex-1\">
-                  <div className=\"font-medium text-sm\">{action.documentName}</div>
-                  <div className=\"text-xs text-neutral-600\">
+                <div className="flex-1">
+                  <div className="font-medium text-sm">{action.documentName}</div>
+                  <div className="text-xs text-neutral-600">
                     Policy: {action.policyName}
                   </div>
                 </div>
-                <div className=\"text-right\">
+                <div className="text-right">
                   <div className={`text-sm font-medium ${
                     action.daysUntil <= 7 ? 'text-error-600' :
                     action.daysUntil <= 30 ? 'text-warning-600' :
@@ -199,7 +199,7 @@ export const RetentionPolicies: React.FC = () => {
                   }`}>
                     {action.daysUntil} days
                   </div>
-                  <div className=\"text-xs text-neutral-500\">
+                  <div className="text-xs text-neutral-500">
                     {action.action}
                   </div>
                 </div>

@@ -31,7 +31,7 @@ export class EncryptionService {
 
     return {
       encrypted: this.bufferToBase64(encryptedBuffer),
-      iv: this.bufferToBase64(iv),
+      iv: this.bufferToBase64(iv as any),
     };
   }
 

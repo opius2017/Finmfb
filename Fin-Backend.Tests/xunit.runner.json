@@ -1,6 +1,0 @@
-{
-  "xunit.methodDisplay": "method",
-  "xunit.methodDisplayOptions": "all",
-  "xunit.parallelizeAssembly": false,
-  "xunit.parallelizeTestCollections": false
-}

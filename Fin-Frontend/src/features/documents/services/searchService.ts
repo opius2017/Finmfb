@@ -8,7 +8,7 @@ export class SearchService {
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         if (value !== undefined) {
-          params.append(key, value.toString());
+          params.append(key, (value || '').toString());
         }
       });
     }

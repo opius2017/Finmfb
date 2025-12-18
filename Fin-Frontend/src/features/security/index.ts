@@ -2,11 +2,6 @@
 export * from './types/2fa.types';
 export * from './types/rbac.types';
 export * from './types/audit.types';
-export * from './types/monitoring.types';
-export * from './services/twoFactorService';
-export * from './services/rbacService';
-export * from './services/auditService';
-export * from './services/encryptionService';
-export * from './services/securityMonitoringService';
-export * from './components/TwoFactorSetup';
+// export * from './types/monitoring.types';
+export { TwoFactorSetup as TwoFactorSetupComponent } from './components/TwoFactorSetup';
 export * from './components/SecurityDashboard';

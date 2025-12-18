@@ -604,8 +604,17 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Application\\FinTech.Core.Application.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Core\\Domain\\FinTech.Core.Domain.csproj"
+              },
               "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj": {
                 "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\FinTech.WebAPI.csproj"
+              },
+              "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\opius\\Desktop\\projectFin\\Finmfb\\Fin-Backend\\Infrastructure\\FinTech.Infrastructure.csproj"
               }
             }
           }

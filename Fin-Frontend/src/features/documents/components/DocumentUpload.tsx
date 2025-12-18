@@ -121,7 +121,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadComplete
           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
         />
         <label htmlFor="file-upload">
-          <Button as="span" variant="primary">
+          <Button variant="primary">
             Browse Files
           </Button>
         </label>

@@ -4,7 +4,7 @@ import { Button } from '../../../design-system/components/Button';
 import { Card } from '../../../design-system/components/Card';
 import { ocrService } from '../services/ocrService';
 import { invoiceService } from '../services/invoiceService';
-import { VendorInvoice, OCRData } from '../types/invoice.types';
+import { VendorInvoice, CaptureMethod, OCRData } from '../types/invoice.types';
 
 interface InvoiceCaptureProps {
   onInvoiceCaptured: (invoice: Partial<VendorInvoice>) => void;
@@ -112,7 +112,7 @@ export const InvoiceCapture: React.FC<InvoiceCaptureProps> = ({
         total: parsedFields.total,
         subtotal: parsedFields.subtotal,
         taxAmount: parsedFields.taxAmount,
-        captureMethod: captureMethod || 'upload',
+        captureMethod: (captureMethod || 'upload') as CaptureMethod,
         ocrData: extractedData,
         status: 'pending-validation',
       };
@@ -250,7 +250,7 @@ export const InvoiceCapture: React.FC<InvoiceCaptureProps> = ({
                 }}
               />
               <label htmlFor="file-upload">
-                <Button as="span" variant="primary">
+                <Button variant="primary">
                   Browse Files
                 </Button>
               </label>

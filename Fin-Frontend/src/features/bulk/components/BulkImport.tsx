@@ -167,7 +167,7 @@ export const BulkImport: React.FC = () => {
               id="file-upload"
             />
             <label htmlFor="file-upload">
-              <Button variant="outline" as="span">
+              <Button variant="outline">
                 Choose File
               </Button>
             </label>

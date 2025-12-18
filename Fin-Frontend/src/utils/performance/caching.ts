@@ -14,7 +14,7 @@ export class CacheManager {
     // Remove oldest entry if cache is full
     if (this.cache.size >= this.maxSize) {
       const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
+      if (firstKey) this.cache.delete(firstKey);
     }
 
     const entry: CacheEntry = {

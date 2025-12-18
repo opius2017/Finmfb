@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
+using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,7 +78,7 @@ else
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 // CORS
 app.UseCors(app.Environment.IsDevelopment() ? "AllowAll" : "Production");
@@ -104,6 +106,54 @@ app.MapGet("/", () => new
     health = "/health"
 });
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var userManager = services.GetRequiredService<UserManager<FinTech.Core.Domain.Entities.Identity.ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+        if (!await roleManager.RoleExistsAsync("Admin"))
+        {
+            await roleManager.CreateAsync(new IdentityRole<Guid>("Admin"));
+        }
+
+        var adminEmail = "admin@soarmfb.ng";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            adminUser = new FinTech.Core.Domain.Entities.Identity.ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+                FirstName = "Admin",
+                LastName = "User",
+                CreatedBy = "System",
+                CreatedAt = DateTime.UtcNow,
+                IsActive = true
+            };
+            
+            var result = await userManager.CreateAsync(adminUser, "@Searhealth123");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+                Log.Information("Admin user seeded successfully.");
+            }
+            else
+            {
+                Log.Error("Failed to seed admin user: {Errors}", string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Log.Error(ex, "An error occurred while seeding the database.");
+    }
+}
+
 try
 {
     Log.Information("Starting Cooperative Loan Management System API");
@@ -122,3 +172,5 @@ finally
     Log.CloseAndFlush();
 }
 
+
+public partial class Program { }
