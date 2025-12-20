@@ -15,6 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using FinTech.Core.Domain.Entities.Identity;
 
 namespace FinTech.Controllers.Auth
 {
@@ -22,15 +23,15 @@ namespace FinTech.Controllers.Auth
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMfaService _mfaService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthController> _logger;
         
         public AuthController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
             IMfaService mfaService,
             IConfiguration configuration,
             ILogger<AuthController> logger)
@@ -75,7 +76,7 @@ namespace FinTech.Controllers.Auth
                     // Log failed login attempt for security
                     await _mfaService.LogSecurityActivityAsync(new SecurityActivityDto
                     {
-                        UserId = user.Id,
+                        UserId = user.Id.ToString(),
                         EventType = "login_failed",
                         Timestamp = DateTime.UtcNow,
                         IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0",
@@ -91,12 +92,12 @@ namespace FinTech.Controllers.Auth
                 }
                 
                 // Check if MFA is enabled for the user
-                var mfaSettings = await CheckMfaStatus(user.Id);
+                var mfaSettings = await CheckMfaStatus(user.Id.ToString());
                 
                 if (mfaSettings.IsEnabled)
                 {
                     // Generate MFA challenge
-                    var challenge = await _mfaService.CreateMfaChallengeAsync(user.Id, "login");
+                    var challenge = await _mfaService.CreateMfaChallengeAsync(user.Id.ToString(), "login");
                     
                     // Return response with MFA required
                     return Ok(new BaseResponse<LoginResponse>
@@ -107,7 +108,7 @@ namespace FinTech.Controllers.Auth
                         {
                             RequiresMfa = true,
                             MfaType = "totp", // Currently only supporting TOTP
-                            UserId = user.Id,
+                            UserId = user.Id.ToString(),
                             Email = user.Email,
                             Username = user.UserName,
                             MfaChallengeId = challenge.ChallengeId,
@@ -123,7 +124,7 @@ namespace FinTech.Controllers.Auth
                 var roles = await _userManager.GetRolesAsync(user);
                 
                 // Log successful login
-                await LogSuccessfulLogin(user.Id);
+                await LogSuccessfulLogin(user.Id.ToString());
                 
                 // Return response with token
                 return Ok(new BaseResponse<LoginResponse>
@@ -132,7 +133,7 @@ namespace FinTech.Controllers.Auth
                     Message = "Login successful",
                     Data = new LoginResponse
                     {
-                        UserId = user.Id,
+                        UserId = user.Id.ToString(),
                         Email = user.Email,
                         Username = user.UserName,
                         Token = token,
@@ -186,7 +187,7 @@ namespace FinTech.Controllers.Auth
                     // Log failed MFA attempt
                     await _mfaService.LogSecurityActivityAsync(new SecurityActivityDto
                     {
-                        UserId = user.Id,
+                        UserId = user.Id.ToString(),
                         EventType = "mfa_verification_failed",
                         Timestamp = DateTime.UtcNow,
                         IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0",
@@ -210,11 +211,11 @@ namespace FinTech.Controllers.Auth
                 // If requested, add current device as trusted
                 if (request.RememberDevice)
                 {
-                    await AddTrustedDevice(user.Id);
+                    await AddTrustedDevice(user.Id.ToString());
                 }
                 
                 // Log successful login
-                await LogSuccessfulLogin(user.Id);
+                await LogSuccessfulLogin(user.Id.ToString());
                 
                 // Return response with token
                 return Ok(new BaseResponse<LoginResponse>
@@ -223,7 +224,7 @@ namespace FinTech.Controllers.Auth
                     Message = "MFA verification successful",
                     Data = new LoginResponse
                     {
-                        UserId = user.Id,
+                        UserId = user.Id.ToString(),
                         Email = user.Email,
                         Username = user.UserName,
                         Token = token,
@@ -270,14 +271,14 @@ namespace FinTech.Controllers.Auth
                 }
                 
                 // Verify backup code
-                bool isValid = await _mfaService.ValidateBackupCodeAsync(user.Id, request.BackupCode);
+                bool isValid = await _mfaService.ValidateBackupCodeAsync(user.Id.ToString(), request.BackupCode);
                 
                 if (!isValid)
                 {
                     // Log failed backup code attempt
                     await _mfaService.LogSecurityActivityAsync(new SecurityActivityDto
                     {
-                        UserId = user.Id,
+                        UserId = user.Id.ToString(),
                         EventType = "backup_code_verification_failed",
                         Timestamp = DateTime.UtcNow,
                         IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0",
@@ -301,11 +302,11 @@ namespace FinTech.Controllers.Auth
                 // If requested, add current device as trusted
                 if (request.RememberDevice)
                 {
-                    await AddTrustedDevice(user.Id);
+                    await AddTrustedDevice(user.Id.ToString());
                 }
                 
                 // Log successful login
-                await LogSuccessfulLogin(user.Id);
+                await LogSuccessfulLogin(user.Id.ToString());
                 
                 // Return response with token
                 return Ok(new BaseResponse<LoginResponse>
@@ -314,7 +315,7 @@ namespace FinTech.Controllers.Auth
                     Message = "Backup code verification successful",
                     Data = new LoginResponse
                     {
-                        UserId = user.Id,
+                        UserId = user.Id.ToString(),
                         Email = user.Email,
                         Username = user.UserName,
                         Token = token,
@@ -361,11 +362,12 @@ namespace FinTech.Controllers.Auth
                 }
                 
                 // Create new user
-                var user = new IdentityUser
+                var user = new ApplicationUser
                 {
                     UserName = request.Email,
                     Email = request.Email,
-                    EmailConfirmed = true // For simplicity, consider adding email confirmation in production
+                    EmailConfirmed = true, // For simplicity, consider adding email confirmation in production
+                    TenantId = "default" // Assign a default tenant or handle tenant assignment logic
                 };
                 
                 var result = await _userManager.CreateAsync(user, request.Password);
@@ -387,7 +389,7 @@ namespace FinTech.Controllers.Auth
                 // Log registration
                 await _mfaService.LogSecurityActivityAsync(new SecurityActivityDto
                 {
-                    UserId = user.Id,
+                    UserId = user.Id.ToString(),
                     EventType = "registration",
                     Timestamp = DateTime.UtcNow,
                     IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0",
@@ -402,7 +404,7 @@ namespace FinTech.Controllers.Auth
                     Message = "Registration successful",
                     Data = new RegisterResponse
                     {
-                        UserId = user.Id,
+                        UserId = user.Id.ToString(),
                         Email = user.Email
                     }
                 });
@@ -462,13 +464,13 @@ namespace FinTech.Controllers.Auth
 
         #region Helper Methods
 
-        private async Task<string> GenerateJwtToken(IdentityUser user)
+        private async Task<string> GenerateJwtToken(ApplicationUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
             
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -480,12 +482,12 @@ namespace FinTech.Controllers.Auth
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
             
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddHours(3), // Token valid for 3 hours
                 signingCredentials: creds

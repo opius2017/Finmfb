@@ -33,7 +33,7 @@ public class Role : BaseEntity
     public string? DefaultDashboard { get; set; }
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
     
     public virtual ICollection<UserRole> UserRoles { get; set; } = [];
     public virtual ICollection<RolePermission> RolePermissions { get; set; } = [];

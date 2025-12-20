@@ -1,0 +1,3 @@
+Build started...
+Build succeeded.
+Unable to create a 'DbContext' of type 'ApplicationDbContext'. The exception 'Cannot create a relationship between 'RegulatoryReportTemplate.Sections' and 'RegulatoryReportSection.ReportTemplate' because a relationship already exists between 'RegulatoryReportTemplate.Sections' and 'RegulatoryReportSection.Template'. Navigations can only participate in a single relationship. If you want to override an existing relationship call 'Ignore' on the navigation 'RegulatoryReportSection.ReportTemplate' first in 'OnModelCreating'.' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728

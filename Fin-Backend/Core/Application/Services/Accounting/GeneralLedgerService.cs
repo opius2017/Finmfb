@@ -351,7 +351,7 @@ namespace FinTech.Core.Application.Services.Accounting
             var journalEntry = new JournalEntry(
                 journalNumber, DateTime.UtcNow, $"Loan Disbursement - {loanAccountId}", JournalEntryType.Standard,
                 reference: $"LOAN-DISB-{loanAccountId}", moduleSource: "LOANS",
-                tenantId: _currentUserService.TenantId ?? Guid.Empty, preparedBy: userId);
+                tenantId: _currentUserService.TenantId ?? string.Empty, preparedBy: userId);
 
             var loanRec = await GetAccountByNumberAsync("1200");
             var cash = await GetAccountByNumberAsync("1000");
@@ -368,7 +368,7 @@ namespace FinTech.Core.Application.Services.Accounting
             var journalEntry = new JournalEntry(
                 journalNumber, DateTime.UtcNow, $"Loan Repayment - {loanAccountId}", JournalEntryType.Standard,
                 reference: $"LOAN-REPAY-{loanAccountId}", moduleSource: "LOANS",
-                tenantId: _currentUserService.TenantId ?? Guid.Empty, preparedBy: userId);
+                tenantId: _currentUserService.TenantId ?? string.Empty, preparedBy: userId);
 
             var cash = await GetAccountByNumberAsync("1000");
             var loanRec = await GetAccountByNumberAsync("1200");
@@ -393,7 +393,7 @@ namespace FinTech.Core.Application.Services.Accounting
             var journalEntry = new JournalEntry(
                 journalNumber, DateTime.UtcNow, $"Customer {type} - {depositAccountId}", JournalEntryType.Standard,
                 reference: $"DEP-{type.ToUpper()}-{depositAccountId}", moduleSource: "DEPOSITS",
-                tenantId: _currentUserService.TenantId ?? Guid.Empty, preparedBy: userId);
+                tenantId: _currentUserService.TenantId ?? string.Empty, preparedBy: userId);
 
             var cash = await GetAccountByNumberAsync("1000");
             var customerDep = await GetAccountByNumberAsync("2100");

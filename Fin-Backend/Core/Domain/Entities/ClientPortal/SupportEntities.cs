@@ -9,12 +9,12 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class ClientSupportTicket
     {
         [Key]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         
         public string ClientPortalProfileId { get; set; } = string.Empty;
         
         [Required]
-        public Guid CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
         
         [Required]
         [StringLength(20)]
@@ -71,14 +71,14 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class ClientSupportMessage
     {
         [Key]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
-        public Guid TicketId { get; set; }
+        public string TicketId { get; set; } = string.Empty;
         
-        public Guid? CustomerId { get; set; }
+        public string? CustomerId { get; set; }
         
-        public Guid? StaffId { get; set; }
+        public string? StaffId { get; set; }
         
         [Required]
         [StringLength(100)]
@@ -114,16 +114,16 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         [NotMapped]
         public DateTime LastModifiedOn { get => LastModifiedDate; set => LastModifiedDate = value; }
         [NotMapped]
-        public Guid ClientSupportTicketId { get => TicketId; set => TicketId = value; }
+        public string ClientSupportTicketId { get => TicketId; set => TicketId = value; }
     }
 
     public class ClientSupportAttachment
     {
         [Key]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
-        public Guid TicketId { get; set; }
+        public string TicketId { get; set; } = string.Empty;
         
         [Required]
         [StringLength(255)]
@@ -157,7 +157,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class KnowledgeBaseCategory
     {
         [Key]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
         [StringLength(50)]
@@ -178,10 +178,10 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class KnowledgeBaseArticle
     {
         [Key]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
-        public Guid CategoryId { get; set; }
+        public string CategoryId { get; set; } = string.Empty;
         
         [Required]
         [StringLength(100)]
@@ -202,7 +202,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         
         public DateTime? LastUpdatedDate { get; set; }
         
-        public Guid LastUpdatedBy { get; set; }
+        public string LastUpdatedBy { get; set; } = string.Empty;
         
         public int ViewCount { get; set; }
         
@@ -221,7 +221,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class FrequentlyAskedQuestion
     {
         [Key]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
         [StringLength(50)]

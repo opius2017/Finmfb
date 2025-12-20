@@ -82,7 +82,7 @@ namespace FinTech.Infrastructure.Data.Interceptors
             context.SetAuditEntries(CreateAuditEntries(context, userId, tenantId));
         }
 
-        private List<AuditEntry> CreateAuditEntries(DbContext context, string userId, Guid? tenantId)
+        private List<AuditEntry> CreateAuditEntries(DbContext context, string userId, string? tenantId)
         {
             var auditEntries = new List<AuditEntry>();
 

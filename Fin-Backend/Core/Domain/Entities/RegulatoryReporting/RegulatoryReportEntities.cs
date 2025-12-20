@@ -48,11 +48,11 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         [MaxLength(20)]
         public string Version { get; set; } = "1.0";
         
-        public Guid? PreparedBy { get; set; }
+        public string? PreparedBy { get; set; }
         
-        public Guid? ReviewedBy { get; set; }
+        public string? ReviewedBy { get; set; }
         
-        public Guid? ApprovedBy { get; set; }
+        public string? ApprovedBy { get; set; }
         
         public DateTime? ReviewedDate { get; set; }
         
@@ -83,7 +83,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         
         public bool IsAmendment { get; set; }
         
-        public Guid? OriginalReportId { get; set; }
+        public string? OriginalReportId { get; set; }
         public RegulatoryReport? OriginalReport { get; set; }
         
         [MaxLength(50)]
@@ -105,12 +105,12 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         [MaxLength(1000)]
         public string? ValidationErrors { get; set; }
         
+        [MaxLength(2000)]
+        public string? AdditionalData { get; set; } // JSON for additional metadata
+        
         public DateTime? ValidationDate { get; set; }
         
         public bool IsValidated { get; set; }
-        
-        [MaxLength(2000)]
-        public string? AdditionalData { get; set; } // JSON for additional metadata
         
         // Navigation properties
         public virtual ICollection<RegulatoryReportSubmission> Submissions { get; set; } = new List<RegulatoryReportSubmission>();
@@ -125,7 +125,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
     public class RegulatoryReportSubmissionHistory : BaseEntity, IAuditable
     {
         [Required]
-        public Guid RegulatoryReportId { get; set; }
+        public string RegulatoryReportId { get; set; } = string.Empty;
         public RegulatoryReport? RegulatoryReport { get; set; }
         
         [Required]
@@ -136,7 +136,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         public DateTime ActionDate { get; set; }
         
         [Required]
-        public Guid PerformedBy { get; set; }
+        public string PerformedBy { get; set; } = string.Empty;
         
         [MaxLength(1000)]
         public string? Comments { get; set; }

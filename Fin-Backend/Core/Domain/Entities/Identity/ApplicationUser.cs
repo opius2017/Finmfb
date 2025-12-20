@@ -18,7 +18,7 @@ public class ApplicationUser : IdentityUser<Guid>
     public DateTime? LastModifiedAt { get; set; }
     public string? LastModifiedBy { get; set; }
     
-    public Guid? CustomerId { get; set; }
+    public string? CustomerId { get; set; }
     public string? LastLoginIp { get; set; }
 
     public bool IsSecurityLocked { get; set; }
@@ -35,6 +35,6 @@ public class ApplicationUser : IdentityUser<Guid>
     public virtual UserSecurityPreferences? SecurityPreferences { get; set; }
 
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-    public Guid? TenantId { get; set; }
+    public string? TenantId { get; set; }
     public virtual Tenant? Tenant { get; set; }
 }

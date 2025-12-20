@@ -1,0 +1,48 @@
+Using project 'C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\FinTech.Infrastructure.csproj'.
+Using startup project 'C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\FinTech.WebAPI.csproj'.
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\opius\AppData\Local\Temp\tmp31mlzl.tmp /verbosity:quiet /nologo C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\FinTech.Infrastructure.csproj
+dotnet msbuild /target:GetEFProjectMetadata /property:EFProjectMetadataFile=C:\Users\opius\AppData\Local\Temp\tmpsjj331.tmp /verbosity:quiet /nologo C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\FinTech.WebAPI.csproj
+Build started...
+dotnet build C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\FinTech.WebAPI.csproj /verbosity:quiet /nologo /p:PublishAot=false
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.81
+
+Build succeeded.
+dotnet exec --depsfile C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\bin\Debug\net8.0\FinTech.WebAPI.deps.json --additionalprobingpath C:\Users\opius\.nuget\packages --additionalprobingpath "C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages" --runtimeconfig C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\bin\Debug\net8.0\FinTech.WebAPI.runtimeconfig.json C:\Users\opius\.dotnet\tools\.store\dotnet-ef\9.0.9\dotnet-ef\9.0.9\tools\net8.0\any\tools\netcoreapp2.0\any\ef.dll migrations add FixSavingsGoalIdType --context ApplicationDbContext --assembly C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\bin\Debug\net8.0\FinTech.Infrastructure.dll --project C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\FinTech.Infrastructure.csproj --startup-assembly C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\bin\Debug\net8.0\FinTech.WebAPI.dll --startup-project C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\FinTech.WebAPI.csproj --project-dir C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\ --root-namespace FinTech.Infrastructure --language C# --framework net8.0 --nullable --working-dir C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure --verbose
+Using assembly 'FinTech.Infrastructure'.
+Using startup assembly 'FinTech.WebAPI'.
+Using application base 'C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\bin\Debug\net8.0'.
+Using working directory 'C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend'.
+Using root namespace 'FinTech.Infrastructure'.
+Using project directory 'C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\'.
+Remaining arguments: .
+Finding DbContext classes...
+Finding IDesignTimeDbContextFactory implementations...
+Finding application service provider in assembly 'FinTech.WebAPI'...
+Finding Microsoft.Extensions.Hosting service provider...
+Using environment 'Development'.
+Using application service provider from Microsoft.Extensions.Hosting.
+Found DbContext 'ApplicationDbContext'.
+Finding DbContext classes in the project...
+Found DbContext 'AccountingDbContext'.
+Found DbContext 'LoansDbContext'.
+Using DbContext factory 'ApplicationDbContextFactory'.
+Microsoft.EntityFrameworkCore.Design.OperationException: Unable to create a 'DbContext' of type 'ApplicationDbContext'. The exception 'C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\FinTech.WebAPI\' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728
+ ---> System.IO.DirectoryNotFoundException: C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\FinTech.WebAPI\
+   at Microsoft.Extensions.FileProviders.PhysicalFileProvider..ctor(String root, ExclusionFilters filters)
+   at Microsoft.Extensions.Configuration.FileConfigurationExtensions.SetBasePath(IConfigurationBuilder builder, String basePath)
+   at FinTech.Infrastructure.Data.ApplicationDbContextFactory.CreateDbContext(String[] args) in C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\Infrastructure\Data\ApplicationDbContextFactory.cs:line 29
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Design.Internal.DbContextOperations.CreateContext(String contextType)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.AddMigration(String name, String outputDir, String contextType, String namespace)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.AddMigrationImpl(String name, String outputDir, String contextType, String namespace)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.AddMigration.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.<>c__DisplayClass3_0`1.<Execute>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+Unable to create a 'DbContext' of type 'ApplicationDbContext'. The exception 'C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\FinTech.WebAPI\' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728

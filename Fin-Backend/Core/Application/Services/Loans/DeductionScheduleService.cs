@@ -395,7 +395,7 @@ namespace FinTech.Core.Application.Services.Loans
         private int CalculateInstallmentNumber(Loan loan)
         {
             // FinTech Best Practice: DisbursementDate is DateTime (non-nullable), remove .Value
-            if (loan.DisbursementDate == null) return 1;
+            if (loan.DisbursementDate == default) return 1;
             
             var monthsSinceDisbursement = ((DateTime.UtcNow.Year - loan.DisbursementDate.Year) * 12) +
                                          DateTime.UtcNow.Month - loan.DisbursementDate.Month;

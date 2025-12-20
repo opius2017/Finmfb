@@ -78,9 +78,9 @@ namespace FinTech.Core.Application.Services.Loans
             // Create register entry
             var registerEntry = new LoanRegister(
                 serialNumber,
-                Guid.Parse(loan.Id),
-                loan.LoanApplicationId.GetValueOrDefault(),
-                Guid.Parse(loan.MemberId),
+                loan.Id,
+                loan.LoanApplicationId?.ToString() ?? string.Empty,
+                loan.MemberId,
                 member.MemberNumber ?? "UNKNOWN",
                 $"{member.FirstName} {member.LastName}",
                 loan.PrincipalAmount,

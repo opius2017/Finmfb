@@ -15,26 +15,26 @@ namespace FinTech.Core.Application.Services.ClientPortal
 {
     public interface IClientPortalService
     {
-        Task<ClientPortalProfile> GetClientProfileAsync(Guid userId);
-        Task<ClientPortalProfile> CreateClientProfileAsync(Guid userId, Guid customerId);
+        Task<ClientPortalProfile> GetClientProfileAsync(string userId);
+        Task<ClientPortalProfile> CreateClientProfileAsync(string userId, string customerId);
         Task<ClientPortalProfile> UpdateClientProfileAsync(ClientPortalProfile profile);
-        Task<IEnumerable<ClientSession>> GetClientSessionsAsync(Guid profileId, int limit = 10);
-        Task<ClientSession> StartSessionAsync(Guid profileId, string ipAddress, string userAgent);
-        Task EndSessionAsync(Guid sessionId);
+        Task<IEnumerable<ClientSession>> GetClientSessionsAsync(string profileId, int limit = 10);
+        Task<ClientSession> StartSessionAsync(string profileId, string ipAddress, string userAgent);
+        Task EndSessionAsync(string sessionId);
 
-        Task<IEnumerable<ClientDocument>> GetClientDocumentsAsync(Guid profileId);
+        Task<IEnumerable<ClientDocument>> GetClientDocumentsAsync(string profileId);
         Task<ClientDocument> UploadDocumentAsync(ClientDocument document);
-        Task<IEnumerable<ClientSupportTicket>> GetSupportTicketsAsync(Guid profileId);
+        Task<IEnumerable<ClientSupportTicket>> GetSupportTicketsAsync(string profileId);
         Task<ClientSupportTicket> CreateSupportTicketAsync(ClientSupportTicket ticket);
         Task<ClientSupportTicket> UpdateSupportTicketAsync(ClientSupportTicket ticket);
         Task<ClientSupportMessage> AddSupportMessageAsync(ClientSupportMessage message);
-        Task<IEnumerable<SavingsGoal>> GetSavingsGoalsAsync(Guid profileId);
+        Task<IEnumerable<SavingsGoal>> GetSavingsGoalsAsync(string profileId);
         Task<SavingsGoal> CreateSavingsGoalAsync(SavingsGoal goal);
         Task<SavingsGoal> UpdateSavingsGoalAsync(SavingsGoal goal);
-        Task<IEnumerable<SavedPayee>> GetSavedPayeesAsync(Guid profileId);
+        Task<IEnumerable<SavedPayee>> GetSavedPayeesAsync(string profileId);
         Task<SavedPayee> CreateSavedPayeeAsync(SavedPayee payee);
         Task<SavedPayee> UpdateSavedPayeeAsync(SavedPayee payee);
-        Task<bool> DeleteSavedPayeeAsync(Guid payeeId);
+        Task<bool> DeleteSavedPayeeAsync(string payeeId);
     }
 
     public class ClientPortalService : IClientPortalService
@@ -48,7 +48,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             _logger = logger;
         }
 
-        public async Task<ClientPortalProfile> GetClientProfileAsync(Guid userId)
+        public async Task<ClientPortalProfile> GetClientProfileAsync(string userId)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<ClientPortalProfile> CreateClientProfileAsync(Guid userId, Guid customerId)
+        public async Task<ClientPortalProfile> CreateClientProfileAsync(string userId, string customerId)
         {
             try
             {
@@ -126,12 +126,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<IEnumerable<ClientSession>> GetClientSessionsAsync(Guid profileId, int limit = 10)
+        public async Task<IEnumerable<ClientSession>> GetClientSessionsAsync(string profileId, int limit = 10)
         {
             try
             {
                 return await _dbContext.ClientSessions
-                    .Where(s => s.ClientPortalProfileId == profileId.ToString())
+                    .Where(s => s.ClientPortalProfileId == profileId)
                     .OrderByDescending(s => s.LoginTime)
                     .Take(limit)
                     .ToListAsync();
@@ -144,7 +144,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
 
-        public async Task<ClientSession> StartSessionAsync(Guid profileId, string ipAddress, string userAgent)
+        public async Task<ClientSession> StartSessionAsync(string profileId, string ipAddress, string userAgent)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 var session = new ClientSession
                 {
-                    ClientPortalProfileId = profileId.ToString(),
+                    ClientPortalProfileId = profileId,
                     SessionId = Guid.NewGuid().ToString(),
                     LoginTime = DateTime.UtcNow,
                     IpAddress = ipAddress,
@@ -188,7 +188,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
 
-        public async Task EndSessionAsync(Guid sessionId)
+        public async Task EndSessionAsync(string sessionId)
         {
             try
             {
@@ -214,12 +214,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
 
-        public async Task<IEnumerable<ClientDocument>> GetClientDocumentsAsync(Guid profileId)
+        public async Task<IEnumerable<ClientDocument>> GetClientDocumentsAsync(string profileId)
         {
             try
             {
                 return await _dbContext.ClientDocuments
-                    .Where(d => d.ClientPortalProfileId == profileId.ToString())
+                    .Where(d => d.ClientPortalProfileId == profileId)
                     .OrderByDescending(d => d.CreatedOn)
                     .ToListAsync();
             }
@@ -248,12 +248,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<IEnumerable<ClientSupportTicket>> GetSupportTicketsAsync(Guid profileId)
+        public async Task<IEnumerable<ClientSupportTicket>> GetSupportTicketsAsync(string profileId)
         {
             try
             {
                 return await _dbContext.ClientSupportTickets
-                    .Where(t => t.ClientPortalProfileId == profileId.ToString())
+                    .Where(t => t.ClientPortalProfileId == profileId)
                     .Include(t => t.Messages)
                     .OrderByDescending(t => t.CreatedOn)
                     .ToListAsync();
@@ -335,12 +335,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<IEnumerable<SavingsGoal>> GetSavingsGoalsAsync(Guid profileId)
+        public async Task<IEnumerable<SavingsGoal>> GetSavingsGoalsAsync(string profileId)
         {
             try
             {
                 return await _dbContext.SavingsGoals
-                    .Where(g => g.ClientPortalProfileId == profileId.ToString())
+                    .Where(g => g.ClientPortalProfileId == profileId)
                     .Include(g => g.Transactions)
                     .OrderByDescending(g => g.CreatedOn)
                     .ToListAsync();
@@ -387,12 +387,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<IEnumerable<SavedPayee>> GetSavedPayeesAsync(Guid profileId)
+        public async Task<IEnumerable<SavedPayee>> GetSavedPayeesAsync(string profileId)
         {
             try
             {
                 return await _dbContext.SavedPayees
-                    .Where(p => p.ClientPortalProfileId == profileId.ToString())
+                    .Where(p => p.ClientPortalProfileId == profileId)
                     .OrderByDescending(p => p.IsFavorite)
                     .ThenByDescending(p => p.LastUsed)
                     .ToListAsync();
@@ -438,7 +438,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> DeleteSavedPayeeAsync(Guid payeeId)
+        public async Task<bool> DeleteSavedPayeeAsync(string payeeId)
         {
             try
             {

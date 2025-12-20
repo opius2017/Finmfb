@@ -6,7 +6,7 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 {
     public class RegulatoryReportTemplateDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string TemplateName { get; set; } = string.Empty;
         public string TemplateCode { get; set; }
         public string Description { get; set; }
@@ -45,7 +45,7 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class UpdateRegulatoryReportTemplateDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string TemplateName { get; set; }
         public string TemplateCode { get; set; }
         public string Description { get; set; }
@@ -59,8 +59,8 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class RegulatoryReportSectionDto
     {
-        public Guid Id { get; set; }
-        public Guid ReportTemplateId { get; set; }
+        public string Id { get; set; }
+        public string RegulatoryReportTemplateId { get; set; }
         public string SectionName { get; set; }
         public string SectionCode { get; set; }
         public string Description { get; set; }
@@ -72,7 +72,7 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class CreateRegulatoryReportSectionDto
     {
-        public Guid ReportTemplateId { get; set; }
+        public string RegulatoryReportTemplateId { get; set; }
         public string SectionName { get; set; }
         public string SectionCode { get; set; }
         public string Description { get; set; }
@@ -83,8 +83,8 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class UpdateRegulatoryReportSectionDto
     {
-        public Guid Id { get; set; }
-        public Guid ReportTemplateId { get; set; }
+        public string Id { get; set; }
+        public string RegulatoryReportTemplateId { get; set; }
         public string SectionName { get; set; }
         public string SectionCode { get; set; }
         public string Description { get; set; }
@@ -95,8 +95,8 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class RegulatoryReportFieldDto
     {
-        public Guid Id { get; set; }
-        public Guid SectionId { get; set; }
+        public string Id { get; set; }
+        public string SectionId { get; set; }
         public string FieldName { get; set; }
         public string FieldCode { get; set; }
         public string Description { get; set; }
@@ -111,7 +111,7 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class CreateRegulatoryReportFieldDto
     {
-        public Guid SectionId { get; set; }
+        public string SectionId { get; set; }
         public string FieldName { get; set; }
         public string FieldCode { get; set; }
         public string Description { get; set; }
@@ -126,8 +126,8 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class UpdateRegulatoryReportFieldDto
     {
-        public Guid Id { get; set; }
-        public Guid SectionId { get; set; }
+        public string Id { get; set; }
+        public string SectionId { get; set; }
         public string FieldName { get; set; }
         public string FieldCode { get; set; }
         public string Description { get; set; }
@@ -142,8 +142,8 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class RegulatoryReportSubmissionDto
     {
-        public Guid Id { get; set; }
-        public Guid ReportTemplateId { get; set; }
+        public string Id { get; set; }
+        public string RegulatoryReportTemplateId { get; set; }
         public string TemplateName { get; set; }
         public string TemplateCode { get; set; } = string.Empty;
         public RegulatoryBody RegulatoryBody { get; set; }
@@ -152,9 +152,9 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
         public DateTime ReportingPeriodEnd { get; set; }
         public DateTime SubmissionDate { get; set; }
         public DateTime? ApprovalDate { get; set; }
-        public Guid SubmittedById { get; set; }
+        public string SubmittedById { get; set; }
         public string SubmittedByName { get; set; } = string.Empty;
-        public Guid? ApprovedById { get; set; }
+        public string? ApprovedById { get; set; }
         public string ApprovedByName { get; set; } = string.Empty;
         public SubmissionStatus Status { get; set; }
         public string StatusName => Status.ToString();
@@ -173,32 +173,32 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class CreateRegulatoryReportSubmissionDto
     {
-        public Guid ReportTemplateId { get; set; }
+        public string RegulatoryReportTemplateId { get; set; }
         public DateTime ReportingPeriodStart { get; set; }
         public DateTime ReportingPeriodEnd { get; set; }
-        public Guid SubmittedById { get; set; }
+        public string SubmittedById { get; set; }
         public string Comments { get; set; } = string.Empty;
     }
 
     public class UpdateRegulatoryReportSubmissionStatusDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public SubmissionStatus Status { get; set; }
         public string Comments { get; set; }
     }
 
     public class ApproveRegulatoryReportSubmissionDto
     {
-        public Guid Id { get; set; }
-        public Guid ApprovedById { get; set; }
+        public string Id { get; set; }
+        public string ApprovedById { get; set; }
         public string Comments { get; set; }
     }
 
     public class RegulatoryReportDataDto
     {
-        public Guid Id { get; set; }
-        public Guid SubmissionId { get; set; }
-        public Guid FieldId { get; set; }
+        public string Id { get; set; }
+        public string SubmissionId { get; set; }
+        public string FieldId { get; set; }
         public string FieldName { get; set; } = string.Empty;
         public string FieldCode { get; set; } = string.Empty;
         public string SectionName { get; set; } = string.Empty;
@@ -212,7 +212,7 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class UpdateRegulatoryReportDataDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string Value { get; set; }
         public string Comments { get; set; }
         public bool HasException { get; set; }
@@ -221,9 +221,9 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class RegulatoryReportValidationDto
     {
-        public Guid Id { get; set; }
-        public Guid SubmissionId { get; set; }
-        public Guid? FieldId { get; set; }
+        public string Id { get; set; }
+        public string SubmissionId { get; set; }
+        public string? FieldId { get; set; }
         public string FieldName { get; set; } = string.Empty;
         public string FieldCode { get; set; } = string.Empty;
         public string ErrorMessage { get; set; } = string.Empty;
@@ -236,15 +236,15 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class ResolveRegulatoryReportValidationDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public bool IsResolved { get; set; }
         public string ResolutionComments { get; set; }
     }
 
     public class RegulatoryReportScheduleDto
     {
-        public Guid Id { get; set; }
-        public Guid ReportTemplateId { get; set; }
+        public string Id { get; set; }
+        public string RegulatoryReportTemplateId { get; set; }
         public string TemplateName { get; set; } = string.Empty;
         public string TemplateCode { get; set; } = string.Empty;
         public RegulatoryBody RegulatoryBody { get; set; }
@@ -262,7 +262,7 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class CreateRegulatoryReportScheduleDto
     {
-        public Guid ReportTemplateId { get; set; }
+        public string RegulatoryReportTemplateId { get; set; }
         public DateTime NextGenerationDate { get; set; }
         public DateTime NextSubmissionDeadline { get; set; }
         public bool IsAutoGenerate { get; set; }
@@ -273,7 +273,7 @@ namespace FinTech.Core.Application.DTOs.RegulatoryReporting
 
     public class UpdateRegulatoryReportScheduleDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public DateTime NextGenerationDate { get; set; }
         public DateTime NextSubmissionDeadline { get; set; }
         public bool IsAutoGenerate { get; set; }

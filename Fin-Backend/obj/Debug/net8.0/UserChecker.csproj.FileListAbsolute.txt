@@ -1,0 +1,6 @@
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\UserChecker.csproj.AssemblyReference.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\UserChecker.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\UserChecker.AssemblyInfoInputs.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\UserChecker.AssemblyInfo.cs
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\UserChecker.csproj.CoreCompileInputs.cache
+C:\Users\opius\Desktop\projectFin\Finmfb\Fin-Backend\obj\Debug\net8.0\UserChecker.sourcelink.json

@@ -9,7 +9,7 @@ namespace FinTech.Core.Application.Services
 {
     public interface IDormancyTrackingService
     {
-        Task<List<DormancyTrackingResult>> TrackDormantAccountsAsync(Guid tenantId, int dormancyDays = 90);
+        Task<List<DormancyTrackingResult>> TrackDormantAccountsAsync(string tenantId, int dormancyDays = 90);
     }
 
     public class DormancyTrackingResult
@@ -28,7 +28,7 @@ namespace FinTech.Core.Application.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<DormancyTrackingResult>> TrackDormantAccountsAsync(Guid tenantId, int dormancyDays = 90)
+        public async Task<List<DormancyTrackingResult>> TrackDormantAccountsAsync(string tenantId, int dormancyDays = 90)
         {
             var results = new List<DormancyTrackingResult>();
             var cutoffDate = DateTime.UtcNow.AddDays(-dormancyDays);

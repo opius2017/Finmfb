@@ -49,7 +49,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 
             // Relationships
             builder.HasOne(e => e.Template)
-                .WithMany()
+                .WithMany(t => t.Sections)
                 .HasForeignKey(e => e.RegulatoryReportTemplateId)
                 .OnDelete(DeleteBehavior.Cascade);
                 

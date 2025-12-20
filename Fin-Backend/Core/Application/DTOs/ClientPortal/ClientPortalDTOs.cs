@@ -6,9 +6,9 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Profile DTOs
     public class ClientPortalProfileDto
     {
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
-        public Guid CustomerId { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string CustomerId { get; set; } = string.Empty;
         public string PreferredLanguage { get; set; } = string.Empty;
         public string TimeZone { get; set; } = string.Empty;
         public bool DarkModeEnabled { get; set; }
@@ -39,7 +39,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Notification Preferences DTOs
     public class NotificationPreferencesDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public bool TransactionAlertsEnabled { get; set; }
         public decimal TransactionAlertThreshold { get; set; }
         public bool BalanceAlertsEnabled { get; set; }
@@ -79,7 +79,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Dashboard Preferences DTOs
     public class DashboardPreferencesDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public bool ShowAccountBalances { get; set; }
         public bool ShowRecentTransactions { get; set; }
         public bool ShowUpcomingPayments { get; set; }
@@ -101,15 +101,15 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
         public bool? ShowSavingsGoals { get; set; }
         public bool? ShowQuickActions { get; set; }
         public bool? ShowFinancialInsights { get; set; }
-        public string Layout { get; set; }
-        public string[] VisibleWidgets { get; set; }
-        public string[] WidgetOrder { get; set; }
+        public string? Layout { get; set; }
+        public string[]? VisibleWidgets { get; set; }
+        public string[]? WidgetOrder { get; set; }
     }
 
     // Session DTOs
     public class ClientPortalSessionDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string SessionId { get; set; } = string.Empty;
         public DateTime LoginTime { get; set; }
         public DateTime? LogoutTime { get; set; }
@@ -125,7 +125,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
 
     public class ClientPortalActivityDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string ActivityType { get; set; } = string.Empty;
         public string Page { get; set; } = string.Empty;
         public string Action { get; set; } = string.Empty;
@@ -136,7 +136,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Document DTOs
     public class ClientDocumentDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string DocumentType { get; set; } = string.Empty;
         public string DocumentName { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
@@ -162,7 +162,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Support Ticket DTOs
     public class ClientSupportTicketDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string TicketNumber { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
@@ -187,7 +187,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
 
     public class ClientSupportMessageDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public bool IsFromClient { get; set; }
         public string SenderName { get; set; } = string.Empty;
@@ -204,7 +204,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Savings Goal DTOs
     public class SavingsGoalDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string GoalName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal TargetAmount { get; set; }
@@ -239,7 +239,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
 
     public class SavingsGoalTransactionDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public string Currency { get; set; } = string.Empty;
         public string TransactionType { get; set; } = string.Empty;
@@ -254,7 +254,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Payee DTOs
     public class SavedPayeeDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string PayeeName { get; set; } = string.Empty;
         public string AccountNumber { get; set; } = string.Empty;
         public string BankName { get; set; } = string.Empty;
@@ -283,7 +283,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Transfer Template DTOs
     public class SavedTransferTemplateDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string TemplateName { get; set; } = string.Empty;
         public string FromAccountNumber { get; set; } = string.Empty;
         public string ToAccountNumber { get; set; } = string.Empty;
@@ -316,7 +316,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     // Notification DTOs
     public class ClientNotificationDto
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         public string NotificationType { get; set; } = string.Empty;
         public string Title { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;

@@ -20,7 +20,7 @@ public class ChartOfAccounts : BaseEntity
     [Required]
     public AccountCategory AccountCategory { get; set; }
     
-    public Guid? ParentAccountId { get; set; }
+    public string? ParentAccountId { get; set; }
     public virtual ChartOfAccounts? ParentAccount { get; set; }
     
     public virtual ICollection<ChartOfAccounts> SubAccounts { get; set; } = [];
@@ -42,5 +42,5 @@ public class ChartOfAccounts : BaseEntity
     public virtual ICollection<GeneralLedgerEntry> GeneralLedgerEntries { get; set; } = [];
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }

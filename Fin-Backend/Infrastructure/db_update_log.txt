@@ -1,0 +1,73 @@
+Build started...
+Build succeeded.
+Applying migration '20251219073108_RefactorTenantIds'.
+Failed executing DbCommand (72ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [loans].[LoanApplications] (
+    [Id] nvarchar(450) NOT NULL,
+    [ApplicationNumber] nvarchar(50) NOT NULL,
+    [MemberId] nvarchar(450) NOT NULL,
+    [LoanProductId] nvarchar(100) NOT NULL,
+    [LoanProductId1] nvarchar(450) NULL,
+    [RequestedAmount] decimal(18,2) NOT NULL,
+    [RequestedTenureMonths] int NOT NULL,
+    [RequestedTerm] int NOT NULL,
+    [Purpose] nvarchar(500) NOT NULL,
+    [AdditionalInformation] nvarchar(1000) NULL,
+    [Status] int NOT NULL,
+    [ApplicationDate] datetime2 NOT NULL,
+    [SubmittedDate] datetime2 NULL,
+    [UpdatedBy] nvarchar(450) NULL,
+    [ReviewedDate] datetime2 NULL,
+    [ReviewedBy] nvarchar(450) NULL,
+    [ApprovedDate] datetime2 NULL,
+    [ApprovedBy] nvarchar(100) NULL,
+    [ApprovedAmount] decimal(18,2) NULL,
+    [ApprovedTenureMonths] int NULL,
+    [ApprovedInterestRate] decimal(5,2) NULL,
+    [RejectedDate] datetime2 NULL,
+    [RejectedBy] nvarchar(100) NULL,
+    [RejectionReason] nvarchar(500) NULL,
+    [DisbursedDate] datetime2 NULL,
+    [DisbursedBy] nvarchar(450) NULL,
+    [ProcessingFee] decimal(18,2) NOT NULL,
+    [InsuranceFee] decimal(18,2) NOT NULL,
+    [OtherFees] decimal(18,2) NOT NULL,
+    [NetDisbursementAmount] decimal(18,2) NOT NULL,
+    [CurrentWorkflowStep] int NOT NULL,
+    [InternalNotes] nvarchar(1000) NULL,
+    [CustomerId] nvarchar(100) NOT NULL,
+    [InterestRate] decimal(18,4) NOT NULL,
+    [RepaymentPeriodMonths] int NOT NULL,
+    [PaymentFrequency] int NOT NULL,
+    [DisbursementDate] datetime2 NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [CreatedBy] nvarchar(100) NULL,
+    [LastModifiedDate] datetime2 NULL,
+    [LastModifiedBy] nvarchar(100) NULL,
+    CONSTRAINT [PK_LoanApplications] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LoanApplications_LoanProducts_LoanProductId] FOREIGN KEY ([LoanProductId]) REFERENCES [loans].[LoanProducts] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LoanApplications_LoanProducts_LoanProductId1] FOREIGN KEY ([LoanProductId1]) REFERENCES [loans].[LoanProducts] ([Id]),
+    CONSTRAINT [FK_LoanApplications_Members_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [Members] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LoanApplications_Members_MemberId] FOREIGN KEY ([MemberId]) REFERENCES [Members] ([Id]) ON DELETE CASCADE
+);
+Microsoft.Data.SqlClient.SqlException (0x80131904): Column 'loans.LoanProducts.Id' is not the same length or scale as referencing column 'LoanApplications.LoanProductId' in foreign key 'FK_LoanApplications_LoanProducts_LoanProductId'. Columns participating in a foreign key relationship must be defined with the same length and scale.
+Could not create constraint or index. See previous errors.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean isAsync, Int32 timeout, Boolean asyncWrite)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String methodName)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+ClientConnectionId:b91adb12-c167-48ac-8274-df494f3bd923
+Error Number:1753,State:0,Class:16
+Column 'loans.LoanProducts.Id' is not the same length or scale as referencing column 'LoanApplications.LoanProductId' in foreign key 'FK_LoanApplications_LoanProducts_LoanProductId'. Columns participating in a foreign key relationship must be defined with the same length and scale.
+Could not create constraint or index. See previous errors.

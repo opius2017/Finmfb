@@ -17,15 +17,10 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// Reference to the report template
         /// </summary>
         public string RegulatoryReportTemplateId { get; set; } = string.Empty;
-        [NotMapped]
-        public string ReportTemplateId { get => RegulatoryReportTemplateId; set => RegulatoryReportTemplateId = value; }
-        
         /// <summary>
         /// Navigation property for the report template
         /// </summary>
         public virtual RegulatoryReportTemplate? Template { get; set; }
-        [NotMapped]
-        public virtual RegulatoryReportTemplate? ReportTemplate { get => Template; set => Template = value; }
         
         /// <summary>
         /// Section code
@@ -80,7 +75,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Parent section ID for nested sections (null for top-level sections)
         /// </summary>
-        public int? ParentSectionId { get; set; }
+        public string? ParentSectionId { get; set; }
         
         /// <summary>
         /// Navigation property for the parent section

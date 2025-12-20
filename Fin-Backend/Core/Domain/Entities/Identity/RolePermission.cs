@@ -6,11 +6,11 @@ namespace FinTech.Core.Domain.Entities.Identity;
 public class RolePermission : BaseEntity
 {
     [Required]
-    public Guid RoleId { get; set; }
+    public string RoleId { get; set; } = string.Empty;
     public virtual Role? Role { get; set; }
     
     [Required]
-    public Guid PermissionId { get; set; }
+    public string PermissionId { get; set; } = string.Empty;
     public virtual Permission? Permission { get; set; }
     
     [Required]
@@ -20,5 +20,5 @@ public class RolePermission : BaseEntity
     public string? Conditions { get; set; }
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }

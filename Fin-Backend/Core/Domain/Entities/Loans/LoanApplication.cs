@@ -23,7 +23,7 @@ public class LoanApplication : BaseEntity
 
     [Required]
     [ForeignKey(nameof(LoanProduct))]
-    public Guid LoanProductId { get; set; }
+    public string LoanProductId { get; set; } = string.Empty;
 
     public LoanProduct? LoanProduct { get; set; }
 
@@ -115,7 +115,8 @@ public class LoanApplication : BaseEntity
     public virtual Loan? Loan { get; set; }
 
     // Missing properties required by Service Layer
-    public Guid CustomerId { get; set; } // Mapped from MemberId, ensuring type compatibility
+    [NotMapped]
+    public string CustomerId { get => MemberId; set => MemberId = value; }
     public decimal InterestRate { get; set; }
     public int RepaymentPeriodMonths { get; set; }
     public int PaymentFrequency { get; set; } // Assuming 1=Monthly, etc.
@@ -172,13 +173,17 @@ public class LoanApplication : BaseEntity
         return new Loan
         {
              // Mapping logic aligned with Loan entity definition
-             CustomerId = this.CustomerId.ToString(),
-             MemberId = this.CustomerId.ToString(), // MemberId is Required and string
+             // Assuming CustomerId should be mapped from MemberId or if CustomerId exists on Application
+             // Ideally Loan.CustomerId maps to Member's CustomerId or similar. For now using MemberId if CustomerId not present
+             // Usage of this.CustomerId implies it exists. I will use MemberId as safe fallback or if they are same.
+             // Wait, if this.CustomerId exists, I keep using it but toString might be redundant if it is string.
+             CustomerId = this.MemberId, // MemberId is string. If CustomerId exists use that.
+             MemberId = this.MemberId, // MemberId is Required and string
              LoanProductId = this.LoanProductId,
              PrincipalAmount = this.ApprovedAmount ?? this.RequestedAmount,
              InterestRate = this.ApprovedInterestRate ?? 0, // InterestRate is decimal not nullable
              TenureMonths = this.ApprovedTenureMonths ?? this.RequestedTenureMonths,
-             LoanApplicationId = Guid.TryParse(this.Id, out var appId) ? appId : Guid.Empty
+             LoanApplicationId = this.Id
         };
     }
 }

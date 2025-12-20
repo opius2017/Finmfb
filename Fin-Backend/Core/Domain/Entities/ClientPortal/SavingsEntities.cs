@@ -14,10 +14,10 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     {
         public string ClientPortalProfileId { get; set; } = string.Empty;
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         [Required]
-        public Guid AccountId { get; set; }
+        public string AccountId { get; set; } = string.Empty;
         
         [Required]
         [MaxLength(200)]
@@ -96,11 +96,11 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class SavingsGoalTransaction : BaseEntity, IAuditable
     {
         [Required]
-        public Guid SavingsGoalId { get; set; }
+        public string SavingsGoalId { get; set; } = string.Empty;
         public SavingsGoal? SavingsGoal { get; set; }
         
         [Required]
-        public Guid TransactionId { get; set; }
+        public string TransactionId { get; set; } = string.Empty;
         
         [Required]
         [Column(TypeName = "decimal(18,2)")]
@@ -133,8 +133,6 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         [MaxLength(50)]
         public string Status { get; set; } = "Completed"; // Pending, Completed, Failed, Reversed
         
-        public DateTime? ProcessedDate { get; set; }
-        
         [MaxLength(500)]
         public string? Notes { get; set; }
     }
@@ -145,7 +143,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class SavingsGoalMilestone : BaseEntity, IAuditable
     {
         [Required]
-        public Guid SavingsGoalId { get; set; }
+        public string SavingsGoalId { get; set; } = string.Empty;
         public SavingsGoal? SavingsGoal { get; set; }
         
         [Required]

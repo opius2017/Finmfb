@@ -42,17 +42,17 @@ public class AssetInventoryCount : BaseEntity
     /// <summary>
     /// Category of assets being counted
     /// </summary>
-    public Guid? AssetCategoryId { get; set; }
+    public string? AssetCategoryId { get; set; }
     
     /// <summary>
     /// Employee who authorized the inventory count
     /// </summary>
-    public Guid? AuthorizedById { get; set; }
+    public string? AuthorizedById { get; set; }
     
     /// <summary>
     /// Employee who performed the inventory count
     /// </summary>
-    public Guid PerformedById { get; set; }
+    public string PerformedById { get; set; } = string.Empty;
     
     /// <summary>
     /// Date when the count was completed

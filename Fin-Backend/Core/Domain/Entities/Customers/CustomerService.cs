@@ -7,7 +7,7 @@ namespace FinTech.Core.Domain.Entities.Customers;
 
 public class CustomerInquiry : BaseEntity
 {
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public CommunicationChannel Channel { get; set; }
     public string Category { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
@@ -19,7 +19,7 @@ public class CustomerInquiry : BaseEntity
     public string? RespondedBy { get; set; }
     public DateTime? RespondedDate { get; set; }
 
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 
     // Navigation properties
     public virtual Customer? Customer { get; set; }
@@ -28,7 +28,7 @@ public class CustomerInquiry : BaseEntity
 public class CustomerComplaint : BaseEntity
 {
     public string ComplaintNumber { get; set; } = string.Empty;
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public CommunicationChannel Channel { get; set; }
     public string Category { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
@@ -41,7 +41,7 @@ public class CustomerComplaint : BaseEntity
     public string? ResolvedBy { get; set; }
     public DateTime? ResolvedDate { get; set; }
 
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 
     // Navigation properties
     public virtual Customer? Customer { get; set; }
@@ -49,14 +49,14 @@ public class CustomerComplaint : BaseEntity
 
 public class CustomerCommunicationLog : BaseEntity
 {
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public CommunicationType CommunicationType { get; set; }
     public CommunicationChannel Channel { get; set; }
     public string Subject { get; set; } = string.Empty;
     public string Details { get; set; } = string.Empty;
     public DateTime CommunicationDate { get; set; }
     public string ContactedBy { get; set; } = string.Empty;
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 
     // Navigation properties
     public virtual Customer? Customer { get; set; }

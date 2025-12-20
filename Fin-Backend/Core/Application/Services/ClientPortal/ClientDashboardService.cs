@@ -15,9 +15,9 @@ namespace FinTech.Core.Application.Services.ClientPortal
 {
     public interface IClientDashboardService
     {
-        Task<ClientDashboardDto> GetDashboardDataAsync(Guid customerId);
-        Task<DashboardPreferencesDto> GetDashboardPreferencesAsync(Guid customerId);
-        Task<DashboardPreferencesDto> UpdateDashboardPreferencesAsync(Guid customerId, DashboardPreferencesUpdateDto preferencesDto);
+        Task<ClientDashboardDto> GetDashboardDataAsync(string customerId);
+        Task<DashboardPreferencesDto> GetDashboardPreferencesAsync(string customerId);
+        Task<DashboardPreferencesDto> UpdateDashboardPreferencesAsync(string customerId, DashboardPreferencesUpdateDto preferencesDto);
     }
 
     public class ClientDashboardService : IClientDashboardService
@@ -42,13 +42,13 @@ namespace FinTech.Core.Application.Services.ClientPortal
             _logger = logger;
         }
 
-        public async Task<ClientDashboardDto> GetDashboardDataAsync(Guid customerId)
+        public async Task<ClientDashboardDto> GetDashboardDataAsync(string customerId)
         {
             try
             {
                 // Get customer and preferences
                 var customer = await _context.Customers
-                    .FirstOrDefaultAsync(c => c.Id == customerId.ToString());
+                    .FirstOrDefaultAsync(c => c.Id == customerId);
 
                 if (customer == null)
                 {
@@ -72,7 +72,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     LastLoginDate = profile.LastLoginDate,
                     Preferences = new DashboardPreferencesDto
                     {
-                        Id = profile.DashboardPreferences?.Id != null ? Guid.Parse(profile.DashboardPreferences.Id) : Guid.Empty,
+                        Id = profile.DashboardPreferences?.Id,
                         ShowAccountBalances = profile.DashboardPreferences?.ShowAccountBalances ?? true,
                         ShowRecentTransactions = profile.DashboardPreferences?.ShowRecentTransactions ?? true,
                         ShowUpcomingPayments = profile.DashboardPreferences?.ShowUpcomingPayments ?? true,
@@ -93,7 +93,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 dashboardDto.AccountBalances = depositAccounts.Select(a => new AccountBalanceDto
                 {
-                    AccountId = Guid.Parse(a.Id),
+                    AccountId = a.Id,
                     AccountNumber = a.AccountNumber,
                     AccountType = a.Product?.ProductType.ToString() ?? "Unknown",
                     Currency = a.CurrencyCode,
@@ -106,20 +106,20 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 if (profile.DashboardPreferences?.ShowRecentTransactions ?? true)
                 {
                     var recentTransactions = await _context.DepositTransactions
-                        .Where(t => depositAccounts.Select(a => Guid.Parse(a.Id)).Contains(t.AccountId))
+                        .Where(t => depositAccounts.Select(a => a.Id).Contains(t.AccountId))
                         .OrderByDescending(t => t.TransactionDate)
                         .Take(5)
                         .ToListAsync();
 
                     dashboardDto.RecentTransactions = recentTransactions.Select(t => new TransactionSummaryDto
                     {
-                        Id = Guid.Parse(t.Id),
+                        Id = t.Id,
                         AccountId = t.AccountId,
-                        AccountNumber = depositAccounts.FirstOrDefault(a => Guid.Parse(a.Id) == t.AccountId)?.AccountNumber,
+                        AccountNumber = depositAccounts.FirstOrDefault(a => a.Id == t.AccountId)?.AccountNumber,
                         TransactionDate = t.TransactionDate,
                         Description = t.Description,
                         Amount = t.Amount,
-                        Currency = depositAccounts.FirstOrDefault(a => Guid.Parse(a.Id) == t.AccountId)?.CurrencyCode ?? "NGN",
+                        Currency = depositAccounts.FirstOrDefault(a => a.Id == t.AccountId)?.CurrencyCode ?? "NGN",
                         TransactionType = t.TransactionType.ToString(),
                         Category = t.Category,
                         Status = t.Status.ToString()
@@ -135,7 +135,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                     dashboardDto.LoanAccounts = loanAccounts.Select(l => new LoanAccountSummaryDto
                     {
-                        Id = Guid.Parse(l.Id),
+                        Id = l.Id,
                         LoanNumber = l.AccountNumber,
                         LoanType = l.AccountType,
                         PrincipalAmount = l.DebitTotal,
@@ -157,7 +157,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                     dashboardDto.UpcomingPayments = upcomingPayments.Select(p => new UpcomingPaymentDto
                     {
-                        Id = Guid.Parse(p.Id),
+                        Id = p.Id,
                         PaymentName = p.PaymentName,
                         Amount = p.Amount,
                         Currency = p.Currency,
@@ -178,7 +178,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                     dashboardDto.SavingsGoals = savingsGoals.Select(g => new SavingsGoalSummaryDto
                     {
-                        Id = Guid.Parse(g.Id),
+                        Id = g.Id,
                         GoalName = g.GoalName,
                         TargetAmount = g.TargetAmount,
                         CurrentAmount = g.CurrentAmount,
@@ -217,7 +217,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<DashboardPreferencesDto> GetDashboardPreferencesAsync(Guid customerId)
+        public async Task<DashboardPreferencesDto> GetDashboardPreferencesAsync(string customerId)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     // Create default preferences if none exist
                     var defaultPreferences = new DashboardPreferences
                     {
-                        ClientPortalProfileId = Guid.Parse(profile.Id),
+                        ClientPortalProfileId = profile.Id,
                         ShowAccountBalances = true,
                         ShowRecentTransactions = true,
                         ShowUpcomingPayments = true,
@@ -258,7 +258,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 return new DashboardPreferencesDto
                 {
-                    Id = Guid.Parse(profile.DashboardPreferences.Id),
+                    Id = profile.DashboardPreferences.Id,
                     ShowAccountBalances = profile.DashboardPreferences.ShowAccountBalances,
                     ShowRecentTransactions = profile.DashboardPreferences.ShowRecentTransactions,
                     ShowUpcomingPayments = profile.DashboardPreferences.ShowUpcomingPayments,
@@ -278,7 +278,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<DashboardPreferencesDto> UpdateDashboardPreferencesAsync(Guid customerId, DashboardPreferencesUpdateDto preferencesDto)
+        public async Task<DashboardPreferencesDto> UpdateDashboardPreferencesAsync(string customerId, DashboardPreferencesUpdateDto preferencesDto)
         {
             try
             {
@@ -296,7 +296,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     // Create preferences if none exist
                     profile.DashboardPreferences = new DashboardPreferences
                     {
-                        ClientPortalProfileId = Guid.Parse(profile.Id),
+                        ClientPortalProfileId = profile.Id,
                         CreatedAt = DateTime.UtcNow
                     };
 

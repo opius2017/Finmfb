@@ -735,7 +735,7 @@ namespace FinTech.Core.Application.Services.Loans
                 
                 var schedule = new LoanRepaymentSchedule
                 {
-                    LoanId = Guid.Parse(loan.Id), // FinTech Best Practice: Convert string to Guid
+                    LoanId = loan.Id,
                     InstallmentNumber = lastInstallmentNumber + i,
                     DueDate = nextDueDate.AddMonths(i - 1),
                     PrincipalAmount = principalPayment,

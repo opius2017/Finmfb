@@ -11,17 +11,17 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// ISO 4217 currency code (e.g., NGN, USD)
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency name (e.g., Nigerian Naira, US Dollar)
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency symbol (e.g., ₦, $)
         /// </summary>
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = string.Empty;
         
         /// <summary>
         /// Number of decimal places typically used (e.g., 2 for NGN, USD)
@@ -47,17 +47,17 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// ISO 4217 currency code (e.g., NGN, USD)
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency name (e.g., Nigerian Naira, US Dollar)
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency symbol (e.g., ₦, $)
         /// </summary>
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = string.Empty;
         
         /// <summary>
         /// Number of decimal places typically used (e.g., 2 for NGN, USD)
@@ -73,17 +73,17 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// ISO 4217 currency code (e.g., NGN, USD)
         /// </summary>
-        public string Code { get; set; }
+        public string Code { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency name (e.g., Nigerian Naira, US Dollar)
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         
         /// <summary>
         /// Currency symbol (e.g., ₦, $)
         /// </summary>
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = string.Empty;
         
         /// <summary>
         /// Number of decimal places typically used (e.g., 2 for NGN, USD)
@@ -104,17 +104,17 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Exchange rate ID
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// From currency code
         /// </summary>
-        public string FromCurrencyCode { get; set; }
+        public string FromCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// To currency code
         /// </summary>
-        public string ToCurrencyCode { get; set; }
+        public string ToCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Exchange rate date
@@ -134,7 +134,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Source of the exchange rate (e.g., "CBN", "Manual", "API")
         /// </summary>
-        public string Source { get; set; }
+        public string Source { get; set; } = string.Empty;
         
         /// <summary>
         /// When the exchange rate was last updated
@@ -150,12 +150,12 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// From currency code
         /// </summary>
-        public string FromCurrencyCode { get; set; }
+        public string FromCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// To currency code
         /// </summary>
-        public string ToCurrencyCode { get; set; }
+        public string ToCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Exchange rate date
@@ -170,7 +170,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Source of the exchange rate (e.g., "CBN", "Manual", "API")
         /// </summary>
-        public string Source { get; set; }
+        public string Source { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -181,17 +181,17 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Exchange rate ID
         /// </summary>
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         
         /// <summary>
         /// From currency code
         /// </summary>
-        public string FromCurrencyCode { get; set; }
+        public string FromCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// To currency code
         /// </summary>
-        public string ToCurrencyCode { get; set; }
+        public string ToCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Exchange rate date
@@ -206,7 +206,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Source of the exchange rate (e.g., "CBN", "Manual", "API")
         /// </summary>
-        public string Source { get; set; }
+        public string Source { get; set; } = string.Empty;
     }
 
     /// <summary>
@@ -222,7 +222,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Source currency code
         /// </summary>
-        public string FromCurrencyCode { get; set; }
+        public string FromCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Converted amount in target currency
@@ -232,7 +232,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Target currency code
         /// </summary>
-        public string ToCurrencyCode { get; set; }
+        public string ToCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Exchange rate used for conversion
@@ -253,7 +253,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// ID of the financial period for the revaluation
         /// </summary>
-        public string FinancialPeriodId { get; set; }
+        public string FinancialPeriodId { get; set; } = string.Empty;
         
         /// <summary>
         /// Revaluation date
@@ -263,7 +263,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Base currency code
         /// </summary>
-        public string BaseCurrencyCode { get; set; }
+        public string BaseCurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Total unrealized gain amount in base currency
@@ -283,7 +283,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Journal entry ID for the revaluation if posted
         /// </summary>
-        public string JournalEntryId { get; set; }
+        public string JournalEntryId { get; set; } = string.Empty;
         
         /// <summary>
         /// Detailed results by currency
@@ -299,7 +299,7 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Foreign currency code
         /// </summary>
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; set; } = string.Empty;
         
         /// <summary>
         /// Previous exchange rate
@@ -350,17 +350,17 @@ namespace FinTech.Core.Application.DTOs.Currency
         /// <summary>
         /// Account ID
         /// </summary>
-        public string AccountId { get; set; }
+        public string AccountId { get; set; } = string.Empty;
         
         /// <summary>
         /// Account number
         /// </summary>
-        public string AccountNumber { get; set; }
+        public string AccountNumber { get; set; } = string.Empty;
         
         /// <summary>
         /// Account name
         /// </summary>
-        public string AccountName { get; set; }
+        public string AccountName { get; set; } = string.Empty;
         
         /// <summary>
         /// Foreign currency balance

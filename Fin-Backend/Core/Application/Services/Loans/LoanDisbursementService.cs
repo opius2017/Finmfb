@@ -318,7 +318,7 @@ Thank you for your continued membership.
                 // Assuming BaseEntity generates ID if not set, or we can set it.
                 // LoanCommitteeService we removed explicit set. Here let's try removing it for safety.
                 LoanNumber = "PENDING", // Will be updated after registration
-                LoanApplicationId = Guid.Parse(application.Id), // LoanApplicationId is Guid
+                LoanApplicationId = application.Id,
                 MemberId = application.MemberId,
                 PrincipalAmount = principal,
                 InterestRate = application.InterestRate,

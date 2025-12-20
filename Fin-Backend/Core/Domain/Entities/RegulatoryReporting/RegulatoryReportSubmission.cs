@@ -16,18 +16,15 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Reference to the report template
         /// </summary>
-        public Guid RegulatoryReportTemplateId { get; set; }
-        
-        [NotMapped]
-        public Guid ReportTemplateId { get => RegulatoryReportTemplateId; set => RegulatoryReportTemplateId = value; }
+        /// <summary>
+        /// Reference to the report template
+        /// </summary>
+        public string RegulatoryReportTemplateId { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the report template
         /// </summary>
         public virtual RegulatoryReportTemplate? Template { get; set; }
-
-        [NotMapped]
-        public virtual RegulatoryReportTemplate? ReportTemplate { get => Template; set => Template = value; }
         
         /// <summary>
         /// Reference number for the submission
@@ -91,7 +88,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// User who prepared the report
         /// </summary>
-        public Guid PreparedById { get; set; }
+        public string PreparedById { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the user who prepared the report
@@ -99,37 +96,37 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Navigation property for the user who prepared the report
         /// </summary>
-        public virtual ApplicationUser? PreparedBy { get; set; }
+
         
         /// <summary>
         /// User who reviewed the report
         /// </summary>
-        public Guid ReviewedById { get; set; }
+        public string ReviewedById { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the user who reviewed the report
         /// </summary>
-        public virtual ApplicationUser? ReviewedBy { get; set; }
+
         
         /// <summary>
         /// User who approved the report
         /// </summary>
-        public Guid ApprovedById { get; set; }
+        public string ApprovedById { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the user who approved the report
         /// </summary>
-        public virtual ApplicationUser? ApprovedBy { get; set; }
+
         
         /// <summary>
         /// User who submitted the report
         /// </summary>
-        public Guid SubmittedById { get; set; }
+        public string SubmittedById { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the user who submitted the report
         /// </summary>
-        public virtual ApplicationUser? SubmittedBy { get; set; }
+
         
         /// <summary>
         /// Collection of report data sections in this submission

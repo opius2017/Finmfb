@@ -12,7 +12,7 @@ public class AssetTransfer : BaseEntity
     /// <summary>
     /// Reference to the asset
     /// </summary>
-    public Guid AssetId { get; set; }
+    public string AssetId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for the asset
@@ -52,12 +52,12 @@ public class AssetTransfer : BaseEntity
     /// <summary>
     /// Previous responsible employee before transfer
     /// </summary>
-    public Guid? SourceEmployeeId { get; set; }
+    public string? SourceEmployeeId { get; set; }
     
     /// <summary>
     /// New responsible employee after transfer
     /// </summary>
-    public Guid? DestinationEmployeeId { get; set; }
+    public string? DestinationEmployeeId { get; set; }
     
     /// <summary>
     /// Reason for the transfer
@@ -72,7 +72,7 @@ public class AssetTransfer : BaseEntity
     /// <summary>
     /// Employee who authorized the transfer
     /// </summary>
-    public Guid? AuthorizedById { get; set; }
+    public string? AuthorizedById { get; set; }
     
     /// <summary>
     /// Date when the transfer was authorized
@@ -82,7 +82,7 @@ public class AssetTransfer : BaseEntity
     /// <summary>
     /// Employee who initiated the transfer request
     /// </summary>
-    public Guid RequestedById { get; set; }
+    public string RequestedById { get; set; } = string.Empty;
     
     /// <summary>
     /// Any additional notes about the transfer

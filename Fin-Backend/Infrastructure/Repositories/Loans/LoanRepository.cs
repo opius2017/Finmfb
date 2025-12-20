@@ -144,7 +144,7 @@ namespace FinTech.Infrastructure.Repositories.Loans
             try
             {
                 return await _context.LoanRepaymentSchedules
-                    .Where(lrs => lrs.LoanId == Guid.Parse(loanId))
+                    .Where(lrs => lrs.LoanId == loanId)
                     .OrderBy(lrs => lrs.DueDate)
                     .AsNoTracking()
                     .ToListAsync();

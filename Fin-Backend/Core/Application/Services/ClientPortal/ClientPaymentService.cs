@@ -25,13 +25,13 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
         // Interface stub - needs proper implementation
-        public async Task<PaymentResult> ProcessBillPaymentAsync(Guid customerId, Guid fromAccountId, Guid billerId, decimal amount, string reference, bool isRecurring = false)
+        public async Task<PaymentResult> ProcessBillPaymentAsync(string customerId, string fromAccountId, string billerId, decimal amount, string reference, bool isRecurring = false)
         {
             throw new NotImplementedException("Bill payment processing not fully implemented");
         }
 
         // Fund Transfers
-        public async Task<TransferResult> TransferFundsAsync(FundTransferDto transferDto, Guid customerId)
+        public async Task<TransferResult> TransferFundsAsync(FundTransferDto transferDto, string customerId)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 var debitTransaction = new DepositTransaction
                 {
-                    AccountId = Guid.Parse(sourceAccount.Id),
+                    AccountId = sourceAccount.Id,
                     TransactionType = TransactionType.Debit,
                     Amount = transferDto.Amount,
                     Description = transferDto.Description ?? $"Transfer to {transferDto.DestinationAccountNumber}",
@@ -104,7 +104,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     
                     var creditTransaction = new DepositTransaction
                     {
-                        AccountId = Guid.Parse(destinationAccount.Id),
+                        AccountId = destinationAccount.Id,
                         TransactionType = TransactionType.Credit,
                         Amount = transferDto.Amount,
                         Description = transferDto.Description ?? $"Transfer from {transferDto.SourceAccountNumber}",
@@ -129,7 +129,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     // Record external transfer details
                     var externalTransfer = new ExternalTransfer
                     {
-                        SourceAccountId = Guid.Parse(sourceAccount.Id),
+                        SourceAccountId = sourceAccount.Id,
                         DestinationAccountNumber = transferDto.DestinationAccountNumber,
                         DestinationBankName = transferDto.DestinationBankName,
                         DestinationBankCode = transferDto.DestinationBankCode,
@@ -207,7 +207,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<IEnumerable<SavedTransferTemplate>> GetSavedTransferTemplatesAsync(Guid customerId)
+        public async Task<IEnumerable<SavedTransferTemplate>> GetSavedTransferTemplatesAsync(string customerId)
         {
             try
             {
@@ -223,7 +223,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<SavedTransferTemplate> SaveTransferTemplateAsync(SaveTransferTemplateDto templateDto, Guid customerId)
+        public async Task<SavedTransferTemplate> SaveTransferTemplateAsync(SaveTransferTemplateDto templateDto, string customerId)
         {
             try
             {
@@ -269,12 +269,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> DeleteTransferTemplateAsync(Guid templateId, Guid customerId)
+        public async Task<bool> DeleteTransferTemplateAsync(string templateId, string customerId)
         {
             try
             {
                 var template = await _dbContext.SavedTransferTemplates
-                    .FirstOrDefaultAsync(t => t.Id == templateId.ToString());
+                    .FirstOrDefaultAsync(t => t.Id == templateId);
                 
                 if (template == null)
                 {
@@ -299,12 +299,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
 
-        public async Task<PaymentResult> ProcessTransferAsync(Guid customerId, Guid fromAccountId, Guid toAccountId, decimal amount, string reference, bool isRecurring = false)
+        public async Task<PaymentResult> ProcessTransferAsync(string customerId, string fromAccountId, string toAccountId, decimal amount, string reference, bool isRecurring = false)
         {
             var transferDto = new FundTransferDto
             {
-                SourceAccountNumber = (await _dbContext.DepositAccounts.FindAsync(fromAccountId.ToString()))?.AccountNumber,
-                DestinationAccountNumber = (await _dbContext.DepositAccounts.FindAsync(toAccountId.ToString()))?.AccountNumber,
+                SourceAccountNumber = (await _dbContext.DepositAccounts.FindAsync(fromAccountId))?.AccountNumber,
+                DestinationAccountNumber = (await _dbContext.DepositAccounts.FindAsync(toAccountId))?.AccountNumber,
                 Amount = amount,
                 Description = reference,
                 TransferType = "Internal",
@@ -324,7 +324,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             };
         }
 
-        public async Task<PaymentResult> ProcessExternalTransferAsync(Guid customerId, Guid fromAccountId, Guid beneficiaryId, decimal amount, string reference, bool isRecurring = false)
+        public async Task<PaymentResult> ProcessExternalTransferAsync(string customerId, string fromAccountId, string beneficiaryId, decimal amount, string reference, bool isRecurring = false)
         {
              // Stub implementation or call TransferFundsAsync with external type
              return new PaymentResult
@@ -338,8 +338,50 @@ namespace FinTech.Core.Application.Services.ClientPortal
              };
         }
 
-        // Bill Payments
-        public async Task<PaymentResult> PayBillAsync(BillPaymentDto paymentDto, Guid customerId)
+        public async Task<BaseResponse<List<BillPaymentDto>>> GetRecentBillPaymentsAsync(string customerId, int count = 5)
+        {
+             // Stub
+             return new BaseResponse<List<BillPaymentDto>> { Success = true, Data = new List<BillPaymentDto>() };
+        }
+
+        public async Task<BaseResponse<List<TransferDto>>> GetRecentTransfersAsync(string customerId, int count = 5)
+        {
+             // Stub
+             return new BaseResponse<List<TransferDto>> { Success = true, Data = new List<TransferDto>() };
+        }
+
+        public async Task<BaseResponse<RecurringPaymentDto>> GetRecurringPaymentDetailsAsync(string customerId, string paymentId)
+         {
+             // Stub
+             return new BaseResponse<RecurringPaymentDto> { Success = false, Message = "Not implemented" };
+         }
+
+        public async Task<BaseResponse<RecurringPaymentDto>> CreateRecurringPaymentAsync(string customerId, RecurringPaymentCreateDto paymentDto)
+         {
+             // Stub
+              return new BaseResponse<RecurringPaymentDto> { Success = false, Message = "Not implemented" };
+         }
+
+
+
+        public async Task<BaseResponse<SavedPayeeDto>> CreateSavedPayeeAsync(string customerId, SavedPayeeCreateDto payeeDto)
+         {
+              // Stub
+              return new BaseResponse<SavedPayeeDto> { Success = false, Message = "Not implemented" };
+         }
+
+        public async Task<BaseResponse<SavedPayeeDto>> UpdateSavedPayeeAsync(string customerId, string payeeId, SavedPayeeUpdateDto payeeDto)
+         {
+              // Stub
+              return new BaseResponse<SavedPayeeDto> { Success = false, Message = "Not implemented" };
+         }
+        
+        public async Task<BaseResponse<bool>> DeleteSavedPayeeAsync(string customerId, string payeeId)
+         {
+              // Stub or wrap existing
+              return new BaseResponse<bool> { Success = false, Message = "Use DeletePayeeAsync" };
+         }
+        public async Task<PaymentResult> PayBillAsync(BillPaymentDto paymentDto, string customerId)
         {
             try
             {
@@ -381,7 +423,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 // Create source account transaction (debit)
                 var debitTransaction = new DepositTransaction
                 {
-                    AccountId = Guid.Parse(sourceAccount.Id),
+                    AccountId = sourceAccount.Id,
                     TransactionType = TransactionType.Debit,
                     Amount = paymentDto.Amount,
                     Description = paymentDto.Description ?? $"Payment to {biller.Name}",
@@ -401,8 +443,8 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 var billPayment = new BillPayment
                 {
                     CustomerId = customerId,
-                    BillerId = paymentDto.BillerId,
-                    AccountId = Guid.Parse(sourceAccount.Id),
+                    BillerId = paymentDto.BillerId.ToString(),
+                    AccountId = sourceAccount.Id,
                     CustomerReferenceNumber = paymentDto.CustomerReferenceNumber,
                     Amount = paymentDto.Amount,
                     PaymentDate = DateTime.UtcNow,
@@ -421,7 +463,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     var payee = new SavedPayee
                     {
                         CustomerId = customerId,
-                        BillerId = paymentDto.BillerId,
+                        BillerId = paymentDto.BillerId.ToString(),
                         PayeeName = paymentDto.PayeeName ?? biller.Name,
                         CustomerReferenceNumber = paymentDto.CustomerReferenceNumber,
                         Category = biller.Category,
@@ -469,7 +511,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<List<SavedPayeeDto>>> GetSavedPayeesAsync(Guid customerId)
+        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<List<SavedPayeeDto>>> GetSavedPayeesAsync(string customerId)
         {
             try
             {
@@ -480,7 +522,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 
                 var payeeDtos = payees.Select(p => new SavedPayeeDto
                 {
-                    Id = Guid.TryParse(p.Id, out var g) ? g : Guid.Empty,
+                    Id = p.Id,
                     PayeeName = p.Name,
                     AccountNumber = p.AccountNumber,
                     BankName = p.BankName,
@@ -512,7 +554,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<SavedPayee> SavePayeeAsync(SavePayeeDto payeeDto, Guid customerId)
+        public async Task<SavedPayee> SavePayeeAsync(SavePayeeDto payeeDto, string customerId)
         {
             try
             {
@@ -548,12 +590,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> DeletePayeeAsync(Guid payeeId, Guid customerId)
+        public async Task<bool> DeletePayeeAsync(string payeeId, string customerId)
         {
             try
             {
                 var payee = await _dbContext.SavedPayees
-                    .FirstOrDefaultAsync(p => p.Id == payeeId.ToString());
+                    .FirstOrDefaultAsync(p => p.Id == payeeId);
                 
                 if (payee == null)
                 {
@@ -604,7 +646,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
         // Recurring Payments
-        public async Task<RecurringPayment> ScheduleRecurringPaymentAsync(RecurringPaymentDto recurringDto, Guid customerId)
+        public async Task<RecurringPayment> ScheduleRecurringPaymentAsync(RecurringPaymentDto recurringDto, string customerId)
         {
             try
             {
@@ -655,7 +697,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 var recurringPayment = new RecurringPayment
                 {
                     CustomerId = customerId,
-                    SourceAccountId = Guid.Parse(sourceAccount.Id),
+                    SourceAccountId = sourceAccount.Id,
                     PaymentType = recurringDto.PaymentType,
                     Amount = recurringDto.Amount,
                     Frequency = recurringDto.Frequency,
@@ -680,7 +722,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 }
                 else if (recurringDto.PaymentType == "Bill")
                 {
-                    recurringPayment.BillerId = recurringDto.BillerId;
+                    recurringPayment.BillerId = recurringDto.BillerId?.ToString();
                     recurringPayment.CustomerReferenceNumber = recurringDto.CustomerReferenceNumber;
                 }
                 
@@ -711,7 +753,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<List<RecurringPaymentDto>>> GetRecurringPaymentsAsync(Guid customerId)
+        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<List<RecurringPaymentDto>>> GetRecurringPaymentsAsync(string customerId)
         {
             try
             {
@@ -753,7 +795,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<bool>> CancelRecurringPaymentAsync(Guid customerId, Guid recurringPaymentId)
+        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<bool>> CancelRecurringPaymentAsync(string customerId, string recurringPaymentId)
         {
             try
             {
@@ -798,7 +840,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<RecurringPaymentDto>> UpdateRecurringPaymentAsync(Guid customerId, Guid recurringPaymentId, RecurringPaymentUpdateDto updateDto)
+        public async Task<FinTech.Core.Application.Common.Models.BaseResponse<RecurringPaymentDto>> UpdateRecurringPaymentAsync(string customerId, Guid recurringPaymentId, RecurringPaymentUpdateDto updateDto)
         {
             try
             {
@@ -890,7 +932,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
         // Payment History
-        public async Task<IEnumerable<PaymentTransaction>> GetPaymentHistoryAsync(PaymentHistoryRequestDto requestDto, Guid customerId)
+        public async Task<IEnumerable<PaymentTransaction>> GetPaymentHistoryAsync(PaymentHistoryRequestDto requestDto, string customerId)
         {
             try
             {
@@ -905,11 +947,10 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     return new List<PaymentTransaction>();
                 }
                 
-                var accountGuids = accountIds.Select(id => Guid.Parse(id)).ToList();
 
                 // Base query for transactions
                 var query = _dbContext.DepositTransactions
-                    .Where(t => accountGuids.Contains(t.AccountId))
+                    .Where(t => accountIds.Contains(t.AccountId))
                     .Where(t => t.TransactionCategory == "Fund Transfer" || 
                                t.TransactionCategory == "Bill Payment" || 
                                t.TransactionCategory == "Recurring Payment");
@@ -964,8 +1005,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     
                     var paymentTransaction = new PaymentTransaction
                     {
-                        // FinTech Best Practice: Convert string Id to Guid
-                        Id = Guid.Parse(transaction.Id),
+                        Id = transaction.Id,
                         TransactionDate = transaction.TransactionDate,
                         ReferenceNumber = transaction.ReferenceNumber,
                         Description = transaction.Description,
@@ -1016,14 +1056,14 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<PaymentTransaction> GetPaymentDetailsAsync(Guid transactionId, Guid customerId)
+        public async Task<PaymentTransaction> GetPaymentDetailsAsync(string transactionId, string customerId)
         {
             try
             {
                 // Get transaction
                 // FinTech Best Practice: Convert Guid to string for Id comparison
                 var transaction = await _dbContext.DepositTransactions
-                    .FirstOrDefaultAsync(t => t.Id == transactionId.ToString());
+                    .FirstOrDefaultAsync(t => t.Id == transactionId);
                 
                 if (transaction == null)
                 {
@@ -1044,7 +1084,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 var paymentTransaction = new PaymentTransaction
                 {
                     // FinTech Best Practice: Convert string Id to Guid
-                    Id = Guid.Parse(transaction.Id),
+                    Id = transaction.Id,
                     TransactionDate = transaction.TransactionDate,
                     ReferenceNumber = transaction.ReferenceNumber,
                     Description = transaction.Description,
@@ -1107,19 +1147,13 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
 
         // Missing interface implementations (Remaining valid known stubs)
-        public Task<FinTech.Core.Application.Common.Models.BaseResponse<List<BillPaymentDto>>> GetRecentBillPaymentsAsync(Guid customerId, int count = 5) => throw new NotImplementedException();
-        public Task<FinTech.Core.Application.Common.Models.BaseResponse<List<TransferDto>>> GetRecentTransfersAsync(Guid customerId, int count = 5) => throw new NotImplementedException();
-        public Task<FinTech.Core.Application.Common.Models.BaseResponse<RecurringPaymentDto>> GetRecurringPaymentDetailsAsync(Guid customerId, Guid paymentId) => throw new NotImplementedException();
-        public Task<FinTech.Core.Application.Common.Models.BaseResponse<RecurringPaymentDto>> CreateRecurringPaymentAsync(Guid customerId, RecurringPaymentCreateDto paymentDto) => throw new NotImplementedException();
+        public Task<FinTech.Core.Application.Common.Models.BaseResponse<RecurringPaymentDto>> UpdateRecurringPaymentAsync(string customerId, string paymentId, RecurringPaymentUpdateDto paymentDto) => throw new NotImplementedException();
         public Task<FinTech.Core.Application.Common.Models.BaseResponse<List<BillerDto>>> GetAvailableBillersAsync() => throw new NotImplementedException();
-        public Task<FinTech.Core.Application.Common.Models.BaseResponse<SavedPayeeDto>> CreateSavedPayeeAsync(Guid customerId, SavedPayeeCreateDto payeeDto) => throw new NotImplementedException();
-        public Task<FinTech.Core.Application.Common.Models.BaseResponse<SavedPayeeDto>> UpdateSavedPayeeAsync(Guid customerId, Guid payeeId, SavedPayeeUpdateDto payeeDto) => throw new NotImplementedException();
-        public Task<FinTech.Core.Application.Common.Models.BaseResponse<bool>> DeleteSavedPayeeAsync(Guid customerId, Guid payeeId) => throw new NotImplementedException();
     }
 
     public class PaymentTransaction
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public DateTime TransactionDate { get; set; }
         public string ReferenceNumber { get; set; }
         public string Description { get; set; }

@@ -20,7 +20,7 @@ public class LoanAccount : BaseEntity
 
     public Loan? Loan { get; set; }
 
-    public Guid? CustomerId { get; set; } // Added to match usage
+    public string? CustomerId { get; set; } // Added to match usage
     public virtual Customer? Customer { get; set; } // Added to match usage
     public string TenantId { get; set; } = string.Empty; // Added to match usage
 

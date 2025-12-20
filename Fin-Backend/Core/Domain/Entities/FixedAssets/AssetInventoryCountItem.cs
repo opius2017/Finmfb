@@ -12,7 +12,7 @@ public class AssetInventoryCountItem : BaseEntity
     /// <summary>
     /// Reference to the inventory count
     /// </summary>
-    public Guid InventoryCountId { get; set; }
+    public string InventoryCountId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for the inventory count
@@ -22,7 +22,7 @@ public class AssetInventoryCountItem : BaseEntity
     /// <summary>
     /// Reference to the asset
     /// </summary>
-    public Guid AssetId { get; set; }
+    public string AssetId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for the asset

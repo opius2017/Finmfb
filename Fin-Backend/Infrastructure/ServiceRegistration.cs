@@ -23,6 +23,9 @@ namespace FinTech.Infrastructure
             // Register ApplicationDbContext as IApplicationDbContext
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
             
+            // Register Dashboard Service
+            services.AddScoped<FinTech.Core.Application.Interfaces.IDashboardService, FinTech.Core.Application.Services.Dashboard.DashboardService>();
+            
             // Register Cooperative Loan Management Services
             // Note: Services have been moved to Core and registered there.
 

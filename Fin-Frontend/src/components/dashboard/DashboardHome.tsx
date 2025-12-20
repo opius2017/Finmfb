@@ -1,6 +1,6 @@
-// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useGetDashboardOverviewQuery } from '../../services/dashboardApi';
 import StatsCard from '../common/StatsCard';
 import ChartContainer from '../common/ChartContainer';
@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 const DashboardHome: React.FC = () => {
+  const navigate = useNavigate();
   const { data: overview, isLoading, error } = useGetDashboardOverviewQuery();
 
   if (isLoading) {
@@ -69,6 +70,25 @@ const DashboardHome: React.FC = () => {
     },
   ];
 
+  const handleQuickAction = (action: string) => {
+    switch (action) {
+      case 'add-customer':
+        navigate('/customers'); // Ideally /customers/add if exists
+        break;
+      case 'open-account':
+        navigate('/dashboard/deposits'); // Or /deposits
+        break;
+      case 'process-transaction':
+        navigate('/dashboard/deposits'); // Or a transaction modal
+        break;
+      case 'view-reports':
+        navigate('/financial-reports');
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -91,7 +111,7 @@ const DashboardHome: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <StatsCard {...stat} />
+            <StatsCard {...stat} color={stat.color as any} />
           </motion.div>
         ))}
       </div>
@@ -114,7 +134,7 @@ const DashboardHome: React.FC = () => {
           xAxisKey="month"
           color="#059669"
         />
-        
+
         <ChartContainer
           title="Customer Growth"
           subtitle="New customer acquisitions this year"
@@ -142,19 +162,31 @@ const DashboardHome: React.FC = () => {
       >
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+          <button
+            onClick={() => handleQuickAction('add-customer')}
+            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+          >
             <Users className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
             <span className="text-sm font-medium text-gray-900">Add Customer</span>
           </button>
-          <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+          <button
+            onClick={() => handleQuickAction('open-account')}
+            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+          >
             <Wallet className="w-6 h-6 text-blue-600 mx-auto mb-2" />
             <span className="text-sm font-medium text-gray-900">Open Account</span>
           </button>
-          <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+          <button
+            onClick={() => handleQuickAction('process-transaction')}
+            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+          >
             <TrendingUp className="w-6 h-6 text-green-600 mx-auto mb-2" />
             <span className="text-sm font-medium text-gray-900">Process Transaction</span>
           </button>
-          <button className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center">
+          <button
+            onClick={() => handleQuickAction('view-reports')}
+            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors text-center"
+          >
             <Activity className="w-6 h-6 text-purple-600 mx-auto mb-2" />
             <span className="text-sm font-medium text-gray-900">View Reports</span>
           </button>

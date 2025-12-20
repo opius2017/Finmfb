@@ -20,7 +20,7 @@ export interface LoanApplication {
 
 export type LoanType = 'normal' | 'commodity' | 'car';
 
-export type LoanApplicationStatus = 
+export type LoanApplicationStatus =
   | 'draft'
   | 'submitted'
   | 'under_review'
@@ -104,7 +104,7 @@ export interface Loan {
   updatedAt: Date;
 }
 
-export type LoanStatus = 
+export type LoanStatus =
   | 'active'
   | 'current'
   | 'delinquent'
@@ -277,4 +277,13 @@ export interface LoanClearanceCertificate {
   clearanceDate: Date;
   issuedBy: string;
   certificateNumber: string;
+}
+
+export interface PortfolioReport {
+  totalPortfolioValue: number;
+  totalActiveLoans: number;
+  portfolioAtRisk: number;
+  par30: number;
+  par60: number;
+  par90: number;
 }

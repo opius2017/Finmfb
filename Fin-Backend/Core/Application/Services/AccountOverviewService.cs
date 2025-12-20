@@ -14,13 +14,13 @@ namespace FinTech.Core.Application.Services
 {
     public interface IAccountOverviewService
     {
-        Task<IEnumerable<DepositAccount>> GetClientAccountsAsync(Guid customerId);
+        Task<IEnumerable<DepositAccount>> GetClientAccountsAsync(string customerId);
         Task<DepositAccount> GetAccountDetailsAsync(string accountNumber);
         Task<decimal> GetAccountBalanceAsync(string accountNumber);
         Task<IEnumerable<DepositTransaction>> GetAccountTransactionsAsync(string accountNumber, DateTime startDate, DateTime endDate, int page = 1, int pageSize = 20);
         Task<byte[]> GenerateAccountStatementAsync(string accountNumber, DateTime startDate, DateTime endDate, string format = "pdf");
-        Task<AccountSummary> GetAccountSummaryAsync(Guid customerId);
-        Task<IEnumerable<DepositTransaction>> GetRecentTransactionsAsync(Guid customerId, int count = 5);
+        Task<AccountSummary> GetAccountSummaryAsync(string customerId);
+        Task<IEnumerable<DepositTransaction>> GetRecentTransactionsAsync(string customerId, int count = 5);
         Task<IEnumerable<AccountActivity>> GetAccountActivityAsync(string accountNumber, int days = 30);
     }
 
@@ -35,7 +35,7 @@ namespace FinTech.Core.Application.Services
             _logger = logger;
         }
 
-        public async Task<IEnumerable<DepositAccount>> GetClientAccountsAsync(Guid customerId)
+        public async Task<IEnumerable<DepositAccount>> GetClientAccountsAsync(string customerId)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<AccountSummary> GetAccountSummaryAsync(Guid customerId)
+        public async Task<AccountSummary> GetAccountSummaryAsync(string customerId)
         {
             try
             {
@@ -169,7 +169,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<IEnumerable<DepositTransaction>> GetRecentTransactionsAsync(Guid customerId, int count = 5)
+        public async Task<IEnumerable<DepositTransaction>> GetRecentTransactionsAsync(string customerId, int count = 5)
         {
             try
             {

@@ -12,13 +12,10 @@ namespace FinTech.Infrastructure.Persistence.Configurations
 
             builder.HasKey(la => la.Id);
             
-            builder.Property(la => la.CustomerId)
-                .IsRequired()
-                .HasMaxLength(100);
+
                 
             builder.Property(la => la.LoanProductId)
-                .IsRequired()
-                .HasMaxLength(100);
+                .IsRequired();
                 
             builder.Property(la => la.RequestedAmount)
                 .HasPrecision(18, 2)

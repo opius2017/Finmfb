@@ -16,7 +16,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     {
         public string ClientPortalProfileId { get; set; } = string.Empty;
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         [Required]
         [MaxLength(200)]
@@ -63,9 +63,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public bool IsFavorite { get; set; } = false;
 
         [NotMapped]
-        public Guid CustomerId { get { return UserId; } set { UserId = value; } }
+        public string CustomerId { get { return UserId; } set { UserId = value; } }
 
-        public Guid? BillerId { get; set; }
+        public string? BillerId { get; set; }
 
         [MaxLength(100)]
         public string? CustomerReferenceNumber { get; set; }
@@ -83,17 +83,17 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class SavedTransferTemplate : BaseEntity, IAuditable
     {
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         [Required]
         [MaxLength(200)]
         public string TemplateName { get; set; } = string.Empty;
         
         [Required]
-        public Guid FromAccountId { get; set; }
+        public string FromAccountId { get; set; } = string.Empty;
         
         [Required]
-        public Guid ToAccountId { get; set; }
+        public string ToAccountId { get; set; } = string.Empty;
         
         public decimal? DefaultAmount { get; set; }
         
@@ -114,7 +114,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public DateTime LastUsed { get; set; }
 
         [NotMapped]
-        public Guid CustomerId { get { return UserId; } set { UserId = value; } }
+        public string CustomerId { get { return UserId; } set { UserId = value; } }
 
         [MaxLength(50)]
         public string? SourceAccountNumber { get; set; }
@@ -155,7 +155,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     {
         public string ClientPortalProfileId { get; set; } = string.Empty;
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         [Required]
         [MaxLength(255)]

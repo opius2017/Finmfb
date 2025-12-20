@@ -1,0 +1,46 @@
+Build started...
+Build succeeded.
+Applying migration '20251219081217_RefactorTenantIds'.
+Failed executing DbCommand (96ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [BillPayments] (
+    [Id] nvarchar(450) NOT NULL,
+    [CustomerId] nvarchar(450) NOT NULL,
+    [BillerId] nvarchar(450) NOT NULL,
+    [AccountId] nvarchar(450) NOT NULL,
+    [CustomerReferenceNumber] nvarchar(max) NOT NULL,
+    [Amount] decimal(18,2) NOT NULL,
+    [PaymentDate] datetime2 NOT NULL,
+    [ReferenceNumber] nvarchar(max) NOT NULL,
+    [Description] nvarchar(max) NULL,
+    [Status] nvarchar(max) NOT NULL,
+    [ProcessedAt] datetime2 NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [CreatedBy] nvarchar(max) NULL,
+    [LastModifiedDate] datetime2 NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    CONSTRAINT [PK_BillPayments] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_BillPayments_Billers_BillerId] FOREIGN KEY ([BillerId]) REFERENCES [Billers] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_BillPayments_Customers_CustomerId] FOREIGN KEY ([CustomerId]) REFERENCES [Customers] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_BillPayments_DepositAccounts_AccountId] FOREIGN KEY ([AccountId]) REFERENCES [DepositAccounts] ([Id]) ON DELETE CASCADE
+);
+Microsoft.Data.SqlClient.SqlException (0x80131904): Introducing FOREIGN KEY constraint 'FK_BillPayments_DepositAccounts_AccountId' on table 'BillPayments' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.
+Could not create constraint or index. See previous errors.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean isAsync, Int32 timeout, Boolean asyncWrite)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String methodName)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+ClientConnectionId:77b0af8c-9c13-4a70-9ac1-a51b5daa247b
+Error Number:1785,State:0,Class:16
+Introducing FOREIGN KEY constraint 'FK_BillPayments_DepositAccounts_AccountId' on table 'BillPayments' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.
+Could not create constraint or index. See previous errors.

@@ -10,8 +10,8 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanApplicationRequest : BaseEntity
     {
-        public Guid CustomerId { get; set; }
-        public Guid LoanProductId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
+        public string LoanProductId { get; set; } = string.Empty;
         public decimal RequestedAmount { get; set; }
         public int RequestedTenor { get; set; }
         public string Purpose { get; set; } = string.Empty;
@@ -37,7 +37,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class LoanApplicationDocument : BaseEntity
     {
-        public Guid LoanApplicationRequestId { get; set; }
+        public string LoanApplicationRequestId { get; set; } = string.Empty;
         public string DocumentType { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
         public string FilePath { get; set; } = string.Empty;

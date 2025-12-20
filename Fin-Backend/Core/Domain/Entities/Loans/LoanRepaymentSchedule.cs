@@ -9,7 +9,7 @@ namespace FinTech.Core.Domain.Entities.Loans
     public class LoanRepaymentSchedule : BaseEntity
     {
         [Required]
-        public Guid LoanAccountId { get; set; }
+        public string LoanAccountId { get; set; } = string.Empty;
         public virtual LoanAccount LoanAccount { get; set; } = null!;
 
         public int InstallmentNumber { get; set; }
@@ -60,7 +60,7 @@ namespace FinTech.Core.Domain.Entities.Loans
 
         // FinTech Best Practice: Add LoanId as NotMapped alias for LoanAccountId for backward compatibility
         [NotMapped]
-        public Guid LoanId
+        public string LoanId
         {
             get => LoanAccountId;
             set => LoanAccountId = value;

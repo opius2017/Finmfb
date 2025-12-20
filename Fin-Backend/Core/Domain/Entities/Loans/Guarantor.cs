@@ -10,7 +10,7 @@ namespace FinTech.Core.Domain.Entities.Loans;
 public class Guarantor : BaseEntity
 {
     [ForeignKey(nameof(LoanApplication))]
-    public Guid? LoanApplicationId { get; set; }
+    public string? LoanApplicationId { get; set; }
 
     public LoanApplication? LoanApplication { get; set; }
 

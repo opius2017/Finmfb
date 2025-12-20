@@ -15,7 +15,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public string? ClientPortalProfileId { get; private set; }
         
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         
         public string? SessionId { get; set; }
         
@@ -45,7 +45,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 
         // Compatibility Properties (Legacy Support)
         [NotMapped]
-        public Guid CustomerId { get => UserId; set => UserId = value; }
+        public string CustomerId { get => UserId; set => UserId = value; }
 
         [NotMapped]
         public DateTime ActivityDate { get => Timestamp; set => Timestamp = value; }
@@ -63,7 +63,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         // Private constructor for Factory
         private ClientPortalActivity(
             string? clientPortalProfileId,
-            Guid userId,
+            string userId,
             string? sessionId,
             string activityType,
             string description,
@@ -88,7 +88,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 
         public static ClientPortalActivity Create(
             string? clientPortalProfileId,
-            Guid userId,
+            string userId,
             string? sessionId,
             string activityType,
             string description,

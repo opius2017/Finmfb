@@ -11,9 +11,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class NotificationPreferences : BaseEntity, IAuditable
     {
         [Required]
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; }
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         
         // Email preferences
         public bool EmailEnabled { get; set; } = true;
@@ -61,9 +61,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     public class DashboardPreferences : BaseEntity, IAuditable
     {
         [Required]
-        public Guid ClientPortalProfileId { get; set; }
+        public string ClientPortalProfileId { get; set; }
         [Required]
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         
         [MaxLength(50)]
         public string Theme { get; set; } = "Default"; // Default, Dark, Light

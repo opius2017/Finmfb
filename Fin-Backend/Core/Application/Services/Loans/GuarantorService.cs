@@ -64,8 +64,8 @@ namespace FinTech.Core.Application.Services.Loans
                 // FinTech Best Practice: Use GetAllAsync with LINQ instead of FindAsync
                 var allGuarantors = await _guarantorRepository.GetAllAsync();
                 var existing = allGuarantors.Where(g =>
-                    g.LoanApplicationId.ToString() == request.LoanApplicationId.ToString() && // FinTech Best Practice: Convert Guid to string
-                    g.MemberId.ToString() == request.MemberId.ToString());
+                    g.LoanApplicationId == request.LoanApplicationId && // FinTech Best Practice: Use string comparison
+                    g.MemberId == request.MemberId);
 
                 if (existing.Any())
                 {
@@ -75,7 +75,7 @@ namespace FinTech.Core.Application.Services.Loans
                 // FinTech Best Practice: Don't set Id directly, it's auto-generated
                 var guarantor = new Guarantor
                 {
-                    LoanApplicationId = Guid.Parse(request.LoanApplicationId), // FinTech Best Practice: Convert string to Guid
+                    LoanApplicationId = request.LoanApplicationId, // FinTech Best Practice: Use string
                     MemberId = request.MemberId,
                     GuaranteeAmount = request.GuaranteeAmount,
                     ConsentStatus = "PENDING",
@@ -379,7 +379,7 @@ namespace FinTech.Core.Application.Services.Loans
                 // Get active guarantees
                 foreach (var guarantee in approvedGuarantees)
                 {
-                    var loanApp = await _loanApplicationRepository.GetByIdAsync(guarantee.LoanApplicationId.ToString()); // FinTech Best Practice: Convert Guid to string
+                    var loanApp = await _loanApplicationRepository.GetByIdAsync(guarantee.LoanApplicationId); // FinTech Best Practice: Use string
                     if (loanApp != null)
                     {
                         var loans = (await _loanRepository.GetAllAsync()).Where(l => l.LoanApplicationId.ToString() == loanApp.Id);
@@ -421,7 +421,7 @@ namespace FinTech.Core.Application.Services.Loans
             {
                 // FinTech Best Practice: Use GetAllAsync with LINQ instead of FindAsync
                 var allGuarantors = await _guarantorRepository.GetAllAsync();
-                var guarantors = allGuarantors.Where(g => g.LoanApplicationId.ToString() == loanApplicationId);
+                var guarantors = allGuarantors.Where(g => g.LoanApplicationId == loanApplicationId);
                 var dtos = new List<GuarantorDto>();
 
                 foreach (var guarantor in guarantors)
@@ -452,7 +452,7 @@ namespace FinTech.Core.Application.Services.Loans
 
                 foreach (var guarantee in guarantees)
                 {
-                    var loanApp = await _loanApplicationRepository.GetByIdAsync(guarantee.LoanApplicationId?.ToString() ?? string.Empty);
+                    var loanApp = await _loanApplicationRepository.GetByIdAsync(guarantee.LoanApplicationId ?? string.Empty);
                     if (loanApp != null)
                     {
                         // FinTech Best Practice: Use GetAllAsync with LINQ instead of FindAsync
@@ -533,8 +533,8 @@ namespace FinTech.Core.Application.Services.Loans
             return new GuarantorDto
             {
                 // FinTech Best Practice: Convert Guid? to string for Id
-                Id = guarantor.LoanApplicationId?.ToString() ?? string.Empty,
-                LoanApplicationId = guarantor.LoanApplicationId?.ToString() ?? string.Empty, // FinTech Best Practice: Convert Guid? to string
+                Id = guarantor.LoanApplicationId ?? string.Empty,
+                LoanApplicationId = guarantor.LoanApplicationId ?? string.Empty, // FinTech Best Practice: Use string
                 MemberId = guarantor.MemberId,
                 MemberNumber = member.MemberNumber,
                 MemberName = $"{member.FirstName} {member.LastName}",

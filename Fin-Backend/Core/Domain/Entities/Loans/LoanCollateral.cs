@@ -12,7 +12,7 @@ namespace FinTech.Core.Domain.Entities.Loans
         public Guid LoanApplicationId { get; set; }
         public virtual LoanApplication LoanApplication { get; set; } = null!;
 
-        public Guid? LoanId { get; set; }
+        public string? LoanId { get; set; }
         public virtual Loan? Loan { get; set; }
 
         [Required]

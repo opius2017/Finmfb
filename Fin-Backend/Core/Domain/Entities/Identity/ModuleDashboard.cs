@@ -30,7 +30,7 @@ public class ModuleDashboard : BaseEntity
     public int SortOrder { get; set; } = 0;
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
     
     public virtual ICollection<UserDashboardPreference> UserPreferences { get; set; } = [];
 }

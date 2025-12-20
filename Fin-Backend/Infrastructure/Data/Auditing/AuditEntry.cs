@@ -37,7 +37,7 @@ namespace FinTech.Infrastructure.Data.Auditing
         /// <summary>
         /// The tenant ID in a multi-tenant context
         /// </summary>
-        public Guid? TenantId { get; set; }
+        public string? TenantId { get; set; }
         
         /// <summary>
         /// Dictionary of property changes with property names as keys

@@ -13,12 +13,12 @@ namespace FinTech.Core.Application.Services
 {
     public interface ITransactionManagementService
     {
-        Task<(IEnumerable<DepositTransaction> Transactions, int TotalCount)> SearchTransactionsAsync(TransactionSearchDto searchDto, Guid customerId);
+        Task<(IEnumerable<DepositTransaction> Transactions, int TotalCount)> SearchTransactionsAsync(TransactionSearchDto searchDto, string customerId);
         Task<IEnumerable<string>> GetTransactionCategoriesAsync(string accountNumber);
         Task<IEnumerable<string>> GetTransactionChannelsAsync(string accountNumber);
-        Task<byte[]> ExportTransactionsAsync(TransactionExportDto exportDto, Guid customerId);
+        Task<byte[]> ExportTransactionsAsync(TransactionExportDto exportDto, string customerId);
         Task<Dictionary<string, decimal>> GetCategoryBreakdownAsync(string accountNumber, DateTime startDate, DateTime endDate);
-        Task<IEnumerable<DepositTransaction>> GetLargestTransactionsAsync(Guid customerId, int count = 5);
+        Task<IEnumerable<DepositTransaction>> GetLargestTransactionsAsync(string customerId, int count = 5);
         Task<Dictionary<string, decimal>> GetMonthlySpendingAsync(string accountNumber, int months = 6);
     }
 
@@ -33,7 +33,7 @@ namespace FinTech.Core.Application.Services
             _logger = logger;
         }
 
-        public async Task<(IEnumerable<DepositTransaction> Transactions, int TotalCount)> SearchTransactionsAsync(TransactionSearchDto searchDto, Guid customerId)
+        public async Task<(IEnumerable<DepositTransaction> Transactions, int TotalCount)> SearchTransactionsAsync(TransactionSearchDto searchDto, string customerId)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<byte[]> ExportTransactionsAsync(TransactionExportDto exportDto, Guid customerId)
+        public async Task<byte[]> ExportTransactionsAsync(TransactionExportDto exportDto, string customerId)
         {
             try
             {
@@ -228,7 +228,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<IEnumerable<DepositTransaction>> GetLargestTransactionsAsync(Guid customerId, int count = 5)
+        public async Task<IEnumerable<DepositTransaction>> GetLargestTransactionsAsync(string customerId, int count = 5)
         {
             try
             {

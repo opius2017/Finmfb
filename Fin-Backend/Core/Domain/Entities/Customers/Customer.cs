@@ -116,7 +116,7 @@ public class Customer : BaseEntity
     
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 
     public virtual ICollection<CustomerDocument> Documents { get; set; } = new List<CustomerDocument>();
     

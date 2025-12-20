@@ -41,8 +41,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.Property(e => e.IsSubmittedToRegulator)
                 .HasDefaultValue(false);
                 
-            builder.Property(e => e.UploadedById)
-                .HasMaxLength(450);
+            builder.Property(e => e.UploadedById);
                 
             builder.Property(e => e.UploadTimestamp)
                 .IsRequired();
@@ -53,11 +52,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 .HasForeignKey(e => e.RegulatoryReportSubmissionId)
                 .OnDelete(DeleteBehavior.Cascade);
                 
-            builder.HasOne(e => e.UploadedBy)
-                .WithMany()
-                .HasForeignKey(e => e.UploadedById)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
+
                 
             // Indexes
             builder.HasIndex(e => e.RegulatoryReportSubmissionId);

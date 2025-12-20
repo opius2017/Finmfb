@@ -5,7 +5,7 @@ namespace FinTech.Core.Domain.Entities.Customers
 {
     public class CustomerDocument : BaseEntity
     {
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
         public virtual Customer? Customer { get; set; }
         public string DocumentType { get; set; } = string.Empty;
         public string DocumentUrl { get; set; } = string.Empty;

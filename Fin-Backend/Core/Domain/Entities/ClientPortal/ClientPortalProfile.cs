@@ -8,8 +8,8 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
 {
     public class ClientPortalProfile : BaseEntity
     {
-        public Guid CustomerId { get; set; }
-        public ApplicationUser? Customer { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
+        public FinTech.Core.Domain.Entities.CustomerManagement.Customer? Customer { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public bool IsLocked { get; set; }
         public DateTime? LockoutEnd { get; set; }
@@ -21,7 +21,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public string? ProfilePictureUrl { get; set; }
         public bool IsProfileComplete { get; set; }
 
-        public Guid UserId { get; set; } // Link to Identity User
+        public string UserId { get; set; } = string.Empty; // Link to Identity User
         public ICollection<ClientSession> Sessions { get; set; } = new List<ClientSession>();
         public ICollection<ClientDevice> Devices { get; set; } = new List<ClientDevice>();
         public NotificationPreferences? NotificationPreferences { get; set; }

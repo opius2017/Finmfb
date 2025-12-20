@@ -1,0 +1,49 @@
+Build started...
+Build succeeded.
+Applying migration '20251219075057_RefactorTenantIds'.
+Failed executing DbCommand (68ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [RegulatoryReportSections] (
+    [Id] nvarchar(450) NOT NULL,
+    [RegulatoryReportTemplateId] nvarchar(450) NOT NULL,
+    [ReportTemplateId] nvarchar(450) NOT NULL,
+    [SectionCode] nvarchar(50) NOT NULL,
+    [SectionName] nvarchar(255) NOT NULL,
+    [Description] nvarchar(1000) NULL,
+    [DisplayOrder] int NOT NULL DEFAULT 0,
+    [IsTable] bit NOT NULL DEFAULT CAST(0 AS bit),
+    [RowCount] int NULL,
+    [Instructions] nvarchar(1000) NULL,
+    [IsRequired] bit NOT NULL DEFAULT CAST(0 AS bit),
+    [IsHidden] bit NOT NULL DEFAULT CAST(0 AS bit),
+    [Metadata] nvarchar(max) NULL,
+    [ParentSectionId] nvarchar(450) NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [CreatedBy] nvarchar(max) NULL,
+    [LastModifiedDate] datetime2 NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    CONSTRAINT [PK_RegulatoryReportSections] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_RegulatoryReportSections_RegulatoryReportSections_ParentSectionId] FOREIGN KEY ([ParentSectionId]) REFERENCES [RegulatoryReportSections] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_RegulatoryReportSections_RegulatoryReportTemplates_RegulatoryReportTemplateId] FOREIGN KEY ([RegulatoryReportTemplateId]) REFERENCES [RegulatoryReportTemplates] ([Id]) ON DELETE CASCADE,
+    CONSTRAINT [FK_RegulatoryReportSections_RegulatoryReportTemplates_ReportTemplateId] FOREIGN KEY ([ReportTemplateId]) REFERENCES [RegulatoryReportTemplates] ([Id]) ON DELETE CASCADE
+);
+Microsoft.Data.SqlClient.SqlException (0x80131904): Introducing FOREIGN KEY constraint 'FK_RegulatoryReportSections_RegulatoryReportTemplates_ReportTemplateId' on table 'RegulatoryReportSections' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.
+Could not create constraint or index. See previous errors.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean isAsync, Int32 timeout, Boolean asyncWrite)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String methodName)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+ClientConnectionId:b6bac43a-0b43-45e7-b753-d2a022ddd73a
+Error Number:1785,State:0,Class:16
+Introducing FOREIGN KEY constraint 'FK_RegulatoryReportSections_RegulatoryReportTemplates_ReportTemplateId' on table 'RegulatoryReportSections' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY constraints.
+Could not create constraint or index. See previous errors.

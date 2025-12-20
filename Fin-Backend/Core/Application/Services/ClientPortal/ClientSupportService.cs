@@ -16,32 +16,32 @@ namespace FinTech.Core.Application.Services.ClientPortal
     public interface IClientSupportService
     {
         // Support Tickets
-        Task<IEnumerable<ClientSupportTicket>> GetClientTicketsAsync(Guid customerId);
-        Task<ClientSupportTicket> GetTicketDetailsAsync(Guid ticketId, Guid customerId);
-        Task<ClientSupportTicket> CreateSupportTicketAsync(SupportTicketDto ticketDto, Guid customerId);
-        Task<bool> UpdateTicketStatusAsync(Guid ticketId, string status, Guid customerId);
-        Task<bool> CloseTicketAsync(Guid ticketId, Guid customerId);
-        Task<bool> ReopenTicketAsync(Guid ticketId, Guid customerId);
+        Task<IEnumerable<ClientSupportTicket>> GetClientTicketsAsync(string customerId);
+        Task<ClientSupportTicket> GetTicketDetailsAsync(string ticketId, string customerId);
+        Task<ClientSupportTicket> CreateSupportTicketAsync(SupportTicketDto ticketDto, string customerId);
+        Task<bool> UpdateTicketStatusAsync(string ticketId, string status, string customerId);
+        Task<bool> CloseTicketAsync(string ticketId, string customerId);
+        Task<bool> ReopenTicketAsync(string ticketId, string customerId);
         
         // Support Messages
-        Task<IEnumerable<ClientSupportMessage>> GetTicketMessagesAsync(Guid ticketId, Guid customerId);
-        Task<ClientSupportMessage> AddTicketMessageAsync(TicketMessageDto messageDto, Guid ticketId, Guid customerId);
-        Task<bool> MarkMessageAsReadAsync(Guid messageId, Guid customerId);
+        Task<IEnumerable<ClientSupportMessage>> GetTicketMessagesAsync(string ticketId, string customerId);
+        Task<ClientSupportMessage> AddTicketMessageAsync(TicketMessageDto messageDto, string ticketId, string customerId);
+        Task<bool> MarkMessageAsReadAsync(string messageId, string customerId);
         
         // Support Attachments
-        Task<ClientSupportAttachment> AddTicketAttachmentAsync(TicketAttachmentDto attachmentDto, Guid ticketId, Guid customerId);
-        Task<ClientSupportAttachment> GetTicketAttachmentAsync(Guid attachmentId, Guid customerId);
-        Task<bool> DeleteTicketAttachmentAsync(Guid attachmentId, Guid customerId);
+        Task<ClientSupportAttachment> AddTicketAttachmentAsync(TicketAttachmentDto attachmentDto, string ticketId, string customerId);
+        Task<ClientSupportAttachment> GetTicketAttachmentAsync(string attachmentId, string customerId);
+        Task<bool> DeleteTicketAttachmentAsync(string attachmentId, string customerId);
         
         // Knowledge Base
         Task<IEnumerable<KnowledgeBaseArticle>> GetKnowledgeBaseArticlesAsync(string category = null);
-        Task<KnowledgeBaseArticle> GetKnowledgeBaseArticleAsync(Guid articleId);
+        Task<KnowledgeBaseArticle> GetKnowledgeBaseArticleAsync(string articleId);
         Task<IEnumerable<KnowledgeBaseArticle>> SearchKnowledgeBaseAsync(string searchTerm);
         Task<IEnumerable<KnowledgeBaseCategory>> GetKnowledgeBaseCategoriesAsync();
         
         // Frequently Asked Questions
         Task<IEnumerable<FrequentlyAskedQuestion>> GetFAQsAsync(string category = null);
-        Task<FrequentlyAskedQuestion> GetFAQAsync(Guid faqId);
+        Task<FrequentlyAskedQuestion> GetFAQAsync(string faqId);
         Task<IEnumerable<FrequentlyAskedQuestion>> SearchFAQsAsync(string searchTerm);
         Task<IEnumerable<string>> GetFAQCategoriesAsync();
     }
@@ -63,7 +63,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
         // Support Tickets
-        public async Task<IEnumerable<ClientSupportTicket>> GetClientTicketsAsync(Guid customerId)
+        public async Task<IEnumerable<ClientSupportTicket>> GetClientTicketsAsync(string customerId)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<ClientSupportTicket> GetTicketDetailsAsync(Guid ticketId, Guid customerId)
+        public async Task<ClientSupportTicket> GetTicketDetailsAsync(string ticketId, string customerId)
         {
             try
             {
@@ -107,13 +107,13 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<ClientSupportTicket> CreateSupportTicketAsync(SupportTicketDto ticketDto, Guid customerId)
+        public async Task<ClientSupportTicket> CreateSupportTicketAsync(SupportTicketDto ticketDto, string customerId)
         {
             try
             {
                 // Get customer information
                 var customer = await _dbContext.Customers
-                    .FirstOrDefaultAsync(c => c.Id == customerId.ToString());
+                    .FirstOrDefaultAsync(c => c.Id == customerId);
                 
                 if (customer == null)
                 {
@@ -177,7 +177,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> UpdateTicketStatusAsync(Guid ticketId, string status, Guid customerId)
+        public async Task<bool> UpdateTicketStatusAsync(string ticketId, string status, string customerId)
         {
             try
             {
@@ -230,18 +230,18 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> CloseTicketAsync(Guid ticketId, Guid customerId)
+        public async Task<bool> CloseTicketAsync(string ticketId, string customerId)
         {
             return await UpdateTicketStatusAsync(ticketId, "Closed", customerId);
         }
 
-        public async Task<bool> ReopenTicketAsync(Guid ticketId, Guid customerId)
+        public async Task<bool> ReopenTicketAsync(string ticketId, string customerId)
         {
             return await UpdateTicketStatusAsync(ticketId, "Open", customerId);
         }
 
         // Support Messages
-        public async Task<IEnumerable<ClientSupportMessage>> GetTicketMessagesAsync(Guid ticketId, Guid customerId)
+        public async Task<IEnumerable<ClientSupportMessage>> GetTicketMessagesAsync(string ticketId, string customerId)
         {
             try
             {
@@ -287,7 +287,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<ClientSupportMessage> AddTicketMessageAsync(TicketMessageDto messageDto, Guid ticketId, Guid customerId)
+        public async Task<ClientSupportMessage> AddTicketMessageAsync(TicketMessageDto messageDto, string ticketId, string customerId)
         {
             try
             {
@@ -307,7 +307,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 
                 // Get customer information
                 var customer = await _dbContext.Customers
-                    .FirstOrDefaultAsync(c => c.Id == customerId.ToString()); // FinTech Best Practice: Convert Guid to string
+                    .FirstOrDefaultAsync(c => c.Id == customerId); // FinTech Best Practice: Convert Guid to string
                 
                 if (customer == null)
                 {
@@ -345,7 +345,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> MarkMessageAsReadAsync(Guid messageId, Guid customerId)
+        public async Task<bool> MarkMessageAsReadAsync(string messageId, string customerId)
         {
             try
             {
@@ -382,7 +382,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
         // Support Attachments
-        public async Task<ClientSupportAttachment> AddTicketAttachmentAsync(TicketAttachmentDto attachmentDto, Guid ticketId, Guid customerId)
+        public async Task<ClientSupportAttachment> AddTicketAttachmentAsync(TicketAttachmentDto attachmentDto, string ticketId, string customerId)
         {
             try
             {
@@ -434,7 +434,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<ClientSupportAttachment> GetTicketAttachmentAsync(Guid attachmentId, Guid customerId)
+        public async Task<ClientSupportAttachment> GetTicketAttachmentAsync(string attachmentId, string customerId)
         {
             try
             {
@@ -461,7 +461,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> DeleteTicketAttachmentAsync(Guid attachmentId, Guid customerId)
+        public async Task<bool> DeleteTicketAttachmentAsync(string attachmentId, string customerId)
         {
             try
             {
@@ -530,7 +530,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<KnowledgeBaseArticle> GetKnowledgeBaseArticleAsync(Guid articleId)
+        public async Task<KnowledgeBaseArticle> GetKnowledgeBaseArticleAsync(string articleId)
         {
             try
             {
@@ -622,7 +622,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<FrequentlyAskedQuestion> GetFAQAsync(Guid faqId)
+        public async Task<FrequentlyAskedQuestion> GetFAQAsync(string faqId)
         {
             try
             {

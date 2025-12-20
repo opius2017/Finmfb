@@ -134,24 +134,24 @@ namespace FinTech.Infrastructure.Services.Background
                 switch (payment.PaymentType)
                 {
                     case "BillPayment":
-                        if (!payment.BillerId.HasValue) return new PaymentProcessingResult { Success = false, ErrorMessage = "BillerId is missing" };
+                        if (string.IsNullOrEmpty(payment.BillerId)) return new PaymentProcessingResult { Success = false, ErrorMessage = "BillerId is missing" };
                         var billResult = await paymentService.ProcessBillPaymentAsync(
                             payment.CustomerId,
                             payment.FromAccountId,
-                            payment.BillerId.Value,
+                            payment.BillerId,
                             payment.Amount,
                             payment.Reference ?? "Recurring Bill",
                             true);
                         return new PaymentProcessingResult { Success = billResult.Success, TransactionReference = billResult.ReferenceNumber, ErrorMessage = billResult.Message };
                     
                     case "Transfer":
-                        if (!Guid.TryParse(payment.ToAccountId, out var toAccountId)) 
+                        if (string.IsNullOrEmpty(payment.ToAccountId)) 
                              return new PaymentProcessingResult { Success = false, ErrorMessage = "Invalid ToAccountId" };
                         
                         var transferResult = await paymentService.ProcessTransferAsync(
                             payment.CustomerId,
                             payment.FromAccountId,
-                            toAccountId,
+                            payment.ToAccountId,
                             payment.Amount,
                             payment.Reference ?? "Recurring Transfer",
                             true);
@@ -159,13 +159,13 @@ namespace FinTech.Infrastructure.Services.Background
                         return new PaymentProcessingResult { Success = transferResult.Success, TransactionReference = transferResult.ReferenceNumber, ErrorMessage = transferResult.Message };
                     
                     case "ExternalTransfer":
-                        if (!Guid.TryParse(payment.BeneficiaryId, out var beneficiaryId)) 
+                        if (string.IsNullOrEmpty(payment.BeneficiaryId)) 
                              return new PaymentProcessingResult { Success = false, ErrorMessage = "Invalid BeneficiaryId" };
 
                         var extResult = await paymentService.ProcessExternalTransferAsync(
                             payment.CustomerId,
                             payment.FromAccountId,
-                            beneficiaryId,
+                            payment.BeneficiaryId,
                             payment.Amount,
                             payment.Reference ?? "Recurring External Transfer",
                             true);
@@ -227,7 +227,7 @@ namespace FinTech.Infrastructure.Services.Background
 
         private async Task SendPaymentNotificationAsync(
             INotificationService notificationService,
-            Guid customerId,
+            string customerId,
             RecurringPayment payment,
             bool success,
             string? errorMessage)

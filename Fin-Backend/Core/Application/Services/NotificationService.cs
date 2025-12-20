@@ -19,14 +19,14 @@ namespace FinTech.Core.Application.Services
     public interface INotificationService
     {
         // Core notification methods
-        Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(Guid customerId, NotificationFilterDto filter = null);
-        Task<NotificationDto> GetNotificationByIdAsync(Guid notificationId, Guid customerId);
-        Task<NotificationCountDto> GetNotificationCountsAsync(Guid customerId);
+        Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(string customerId, NotificationFilterDto filter = null);
+        Task<NotificationDto> GetNotificationByIdAsync(Guid notificationId, string customerId);
+        Task<NotificationCountDto> GetNotificationCountsAsync(string customerId);
         Task<NotificationDto> CreateNotificationAsync(CreateNotificationDto notificationDto);
-        Task<bool> MarkNotificationAsReadAsync(Guid notificationId, Guid customerId);
-        Task<bool> MarkAllNotificationsAsReadAsync(Guid customerId, string notificationType = null);
-        Task<bool> DismissNotificationAsync(Guid notificationId, Guid customerId);
-        Task<bool> DismissAllNotificationsAsync(Guid customerId, string notificationType = null);
+        Task<bool> MarkNotificationAsReadAsync(Guid notificationId, string customerId);
+        Task<bool> MarkAllNotificationsAsReadAsync(string customerId, string notificationType = null);
+        Task<bool> DismissNotificationAsync(Guid notificationId, string customerId);
+        Task<bool> DismissAllNotificationsAsync(string customerId, string notificationType = null);
         
         // Templated notifications
         Task<IEnumerable<NotificationTemplateDto>> GetNotificationTemplatesAsync(string notificationType = null);
@@ -59,7 +59,7 @@ namespace FinTech.Core.Application.Services
             _logger = logger;
         }
 
-        public async Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(Guid customerId, NotificationFilterDto filter = null)
+        public async Task<IEnumerable<NotificationDto>> GetUserNotificationsAsync(string customerId, NotificationFilterDto filter = null)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<NotificationDto> GetNotificationByIdAsync(Guid notificationId, Guid customerId)
+        public async Task<NotificationDto> GetNotificationByIdAsync(Guid notificationId, string customerId)
         {
             try
             {
@@ -144,7 +144,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<NotificationCountDto> GetNotificationCountsAsync(Guid customerId)
+        public async Task<NotificationCountDto> GetNotificationCountsAsync(string customerId)
         {
             try
             {
@@ -254,7 +254,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<bool> MarkNotificationAsReadAsync(Guid notificationId, Guid customerId)
+        public async Task<bool> MarkNotificationAsReadAsync(Guid notificationId, string customerId)
         {
             try
             {
@@ -284,7 +284,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<bool> MarkAllNotificationsAsReadAsync(Guid customerId, string notificationType = null)
+        public async Task<bool> MarkAllNotificationsAsReadAsync(string customerId, string notificationType = null)
         {
             try
             {
@@ -315,7 +315,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<bool> DismissNotificationAsync(Guid notificationId, Guid customerId)
+        public async Task<bool> DismissNotificationAsync(Guid notificationId, string customerId)
         {
             try
             {
@@ -344,7 +344,7 @@ namespace FinTech.Core.Application.Services
             }
         }
 
-        public async Task<bool> DismissAllNotificationsAsync(Guid customerId, string notificationType = null)
+        public async Task<bool> DismissAllNotificationsAsync(string customerId, string notificationType = null)
         {
             try
             {
@@ -574,7 +574,7 @@ namespace FinTech.Core.Application.Services
                 case NotificationChannel.Push:
                     // Get push notification token from client portal profile
                     var profile = _context.ClientPortalProfiles
-                        .FirstOrDefault(p => p.CustomerId == Guid.Parse(customer.Id));
+                        .FirstOrDefault(p => p.CustomerId == customer.Id);
                     // return profile?.PushNotificationToken;
                     return null;
                 default:

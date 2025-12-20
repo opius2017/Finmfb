@@ -11,7 +11,7 @@ public class AssetRevaluation : BaseEntity
     /// <summary>
     /// Reference to the asset
     /// </summary>
-    public Guid AssetId { get; set; }
+    public string AssetId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for the asset
@@ -61,7 +61,7 @@ public class AssetRevaluation : BaseEntity
     /// <summary>
     /// Employee who authorized the revaluation
     /// </summary>
-    public Guid? AuthorizedById { get; set; }
+    public string? AuthorizedById { get; set; }
     
     /// <summary>
     /// Whether this revaluation has been posted to the general ledger

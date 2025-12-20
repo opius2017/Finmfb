@@ -27,9 +27,9 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     
     public class BillPayment : BaseEntity
     {
-        public Guid CustomerId { get; set; }
-        public Guid BillerId { get; set; }
-        public Guid AccountId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
+        public string BillerId { get; set; } = string.Empty;
+        public string AccountId { get; set; } = string.Empty;
         public string CustomerReferenceNumber { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public DateTime PaymentDate { get; set; }
@@ -46,7 +46,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     
     public class ExternalTransfer : BaseEntity
     {
-        public Guid SourceAccountId { get; set; }
+        public string SourceAccountId { get; set; } = string.Empty;
         public string DestinationAccountNumber { get; set; } = string.Empty;
         public string DestinationBankName { get; set; } = string.Empty;
         public string DestinationBankCode { get; set; } = string.Empty;
@@ -58,7 +58,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public string? Description { get; set; }
         public DateTime InitiatedAt { get; set; }
         public DateTime? ProcessedAt { get; set; }
-        public Guid CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
         
         // Navigation properties
         public virtual DepositAccount? SourceAccount { get; set; }
@@ -67,8 +67,8 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
     
     public class RecurringPayment : BaseEntity
     {
-        public Guid CustomerId { get; set; }
-        public Guid SourceAccountId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
+        public string SourceAccountId { get; set; } = string.Empty;
         public string PaymentType { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public string Frequency { get; set; } = string.Empty;
@@ -93,7 +93,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public string TransferType { get; set; } = string.Empty;
         
         // For bill payments
-        public Guid? BillerId { get; set; }
+        public string? BillerId { get; set; }
         public string CustomerReferenceNumber { get; set; } = string.Empty;
         
         // Navigation properties
@@ -103,7 +103,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public virtual ICollection<RecurringPaymentHistory> PaymentHistory { get; set; } = new List<RecurringPaymentHistory>();
 
         // Added properties/aliases to resolve build errors
-        [NotMapped] public Guid FromAccountId { get => SourceAccountId; set => SourceAccountId = value; }
+        [NotMapped] public string FromAccountId { get => SourceAccountId; set => SourceAccountId = value; }
         public string? Reference { get; set; }
         [NotMapped] public string ToAccountId { get => DestinationAccountNumber; set => DestinationAccountNumber = value; }
         public string? BeneficiaryId { get; set; } // Could map to BillerId if needed, but adding separate prop for now

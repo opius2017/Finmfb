@@ -57,33 +57,11 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 
             // Relationships
             builder.HasOne(e => e.Template)
-                .WithMany()
+                .WithMany(t => t.Submissions) // Assuming Submissions collection exists on template?
                 .HasForeignKey(e => e.RegulatoryReportTemplateId)
                 .OnDelete(DeleteBehavior.Restrict);
                 
-            builder.HasOne(e => e.PreparedBy)
-                .WithMany()
-                .HasForeignKey(e => e.PreparedById)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
-                
-            builder.HasOne(e => e.ReviewedBy)
-                .WithMany()
-                .HasForeignKey(e => e.ReviewedById)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
-                
-            builder.HasOne(e => e.ApprovedBy)
-                .WithMany()
-                .HasForeignKey(e => e.ApprovedById)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
-                
-            builder.HasOne(e => e.SubmittedBy)
-                .WithMany()
-                .HasForeignKey(e => e.SubmittedById)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
+
                 
             // Indexes
             builder.HasIndex(e => e.ReferenceNumber)

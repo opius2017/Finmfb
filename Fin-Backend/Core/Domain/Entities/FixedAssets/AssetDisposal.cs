@@ -12,7 +12,7 @@ public class AssetDisposal : BaseEntity
     /// <summary>
     /// Reference to the asset
     /// </summary>
-    public Guid AssetId { get; set; }
+    public string AssetId { get; set; } = string.Empty;
     
     /// <summary>
     /// Navigation property for the asset
@@ -72,7 +72,7 @@ public class AssetDisposal : BaseEntity
     /// <summary>
     /// Employee who authorized the disposal
     /// </summary>
-    public Guid? AuthorizedById { get; set; }
+    public string? AuthorizedById { get; set; }
     
     /// <summary>
     /// Date when the disposal was authorized

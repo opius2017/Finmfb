@@ -1,0 +1,59 @@
+Build started...
+Build succeeded.
+Applying migration '20251219100802_RefactorTenantIds'.
+Failed executing DbCommand (263ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [loans].[LoanCreditChecks] (
+    [Id] nvarchar(450) NOT NULL,
+    [LoanId] nvarchar(100) NULL,
+    [LoanApplicationId] nvarchar(450) NULL,
+    [CustomerId] nvarchar(100) NOT NULL,
+    [CheckDate] datetime2 NOT NULL,
+    [CreditBureau] nvarchar(max) NULL,
+    [CreditBureauId] nvarchar(100) NULL,
+    [MaxEligibleAmount] decimal(18,2) NULL,
+    [ReferenceNumber] nvarchar(100) NULL,
+    [CreditScore] decimal(10,2) NULL,
+    [CreditRating] nvarchar(max) NULL,
+    [DebtToIncomeRatio] decimal(18,2) NULL,
+    [NumberOfDelinquencies] int NULL,
+    [NumberOfEnquiries] int NULL,
+    [TotalDebt] decimal(18,2) NULL,
+    [ReportSummary] nvarchar(max) NULL,
+    [ReportFilePath] nvarchar(max) NULL,
+    [PerformedBy] nvarchar(max) NULL,
+    [Result] int NOT NULL,
+    [Notes] nvarchar(max) NULL,
+    [ExistingLoans] decimal(6,0) NULL,
+    [OutstandingDebt] decimal(18,2) NULL,
+    [CheckedBy] nvarchar(100) NULL,
+    [Comments] nvarchar(1000) NULL,
+    [Status] nvarchar(50) NOT NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [CreatedBy] nvarchar(max) NULL,
+    [LastModifiedDate] datetime2 NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    CONSTRAINT [PK_LoanCreditChecks] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LoanCreditChecks_LoanApplications_LoanApplicationId] FOREIGN KEY ([LoanApplicationId]) REFERENCES [loans].[LoanApplications] ([Id]),
+    CONSTRAINT [FK_LoanCreditChecks_Loans_LoanId] FOREIGN KEY ([LoanId]) REFERENCES [loans].[Loans] ([Id]) ON DELETE NO ACTION
+);
+Microsoft.Data.SqlClient.SqlException (0x80131904): Column 'loans.Loans.Id' is not the same length or scale as referencing column 'LoanCreditChecks.LoanId' in foreign key 'FK_LoanCreditChecks_Loans_LoanId'. Columns participating in a foreign key relationship must be defined with the same length and scale.
+Could not create constraint or index. See previous errors.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean isAsync, Int32 timeout, Boolean asyncWrite)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String methodName)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+ClientConnectionId:11284231-0bd8-42b6-aec6-dcb232ec9c7d
+Error Number:1753,State:0,Class:16
+Column 'loans.Loans.Id' is not the same length or scale as referencing column 'LoanCreditChecks.LoanId' in foreign key 'FK_LoanCreditChecks_Loans_LoanId'. Columns participating in a foreign key relationship must be defined with the same length and scale.
+Could not create constraint or index. See previous errors.

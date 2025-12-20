@@ -13,9 +13,9 @@ namespace FinTech.Core.Domain.Entities.Loans
     public class LoanRegister : AuditableEntity
     {
         public string SerialNumber { get; private set; }
-        public Guid LoanId { get; private set; }
-        public Guid ApplicationId { get; private set; }
-        public Guid MemberId { get; private set; }
+        public string LoanId { get; private set; }
+        public string ApplicationId { get; private set; }
+        public string MemberId { get; private set; }
         public string MemberNumber { get; private set; }
         public string MemberName { get; private set; }
         public decimal PrincipalAmount { get; private set; }
@@ -47,6 +47,9 @@ namespace FinTech.Core.Domain.Entities.Loans
         private LoanRegister() 
         {
             SerialNumber = string.Empty;
+            LoanId = string.Empty;
+            ApplicationId = string.Empty;
+            MemberId = string.Empty;
             MemberNumber = string.Empty;
             MemberName = string.Empty;
             LoanType = string.Empty;
@@ -57,9 +60,9 @@ namespace FinTech.Core.Domain.Entities.Loans
         
         public LoanRegister(
             string serialNumber,
-            Guid loanId,
-            Guid applicationId,
-            Guid memberId,
+            string loanId,
+            string applicationId,
+            string memberId,
             string memberNumber,
             string memberName,
             decimal principalAmount,
@@ -75,9 +78,9 @@ namespace FinTech.Core.Domain.Entities.Loans
             int sequenceNumber)
         {
             SerialNumber = serialNumber ?? throw new ArgumentNullException(nameof(serialNumber));
-            LoanId = loanId;
-            ApplicationId = applicationId;
-            MemberId = memberId;
+            LoanId = loanId ?? throw new ArgumentNullException(nameof(loanId));
+            ApplicationId = applicationId ?? throw new ArgumentNullException(nameof(applicationId));
+            MemberId = memberId ?? throw new ArgumentNullException(nameof(memberId));
             MemberNumber = memberNumber ?? throw new ArgumentNullException(nameof(memberNumber));
             MemberName = memberName ?? throw new ArgumentNullException(nameof(memberName));
             PrincipalAmount = principalAmount;

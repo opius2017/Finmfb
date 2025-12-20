@@ -12,7 +12,7 @@ namespace FinTech.Core.Domain.Entities.ClientPortal
         public Guid Id { get; set; }
         
         [Required]
-        public Guid CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
         
         [Required]
         [StringLength(50)]

@@ -51,9 +51,9 @@ namespace FinTech.Controllers.Regulatory
         [HttpGet("templates/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RegulatoryReportTemplateDto>> GetTemplateById(Guid id)
+        public async Task<ActionResult<RegulatoryReportTemplateDto>> GetTemplateById(string id)
         {
-            var template = await _regulatoryReportingService.GetTemplateByIdAsync(id.ToString());
+            var template = await _regulatoryReportingService.GetTemplateByIdAsync(id);
             if (template == null)
             {
                 return NotFound();
@@ -80,14 +80,14 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<RegulatoryReportTemplateDto>> UpdateTemplate(Guid id, UpdateRegulatoryReportTemplateDto updateTemplateDto)
+        public async Task<ActionResult<RegulatoryReportTemplateDto>> UpdateTemplate(string id, UpdateRegulatoryReportTemplateDto updateTemplateDto)
         {
             if (id != updateTemplateDto.Id)
             {
                 return BadRequest("ID mismatch between URL and request body");
             }
             
-            var existingTemplate = await _regulatoryReportingService.GetTemplateByIdAsync(id.ToString());
+            var existingTemplate = await _regulatoryReportingService.GetTemplateByIdAsync(id);
             if (existingTemplate == null)
             {
                 return NotFound();
@@ -103,15 +103,15 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteTemplate(Guid id)
+        public async Task<ActionResult> DeleteTemplate(string id)
         {
-            var existingTemplate = await _regulatoryReportingService.GetTemplateByIdAsync(id.ToString());
+            var existingTemplate = await _regulatoryReportingService.GetTemplateByIdAsync(id);
             if (existingTemplate == null)
             {
                 return NotFound();
             }
             
-            await _regulatoryReportingService.DeleteTemplateAsync(id.ToString());
+            await _regulatoryReportingService.DeleteTemplateAsync(id);
             return NoContent();
         }
         
@@ -122,15 +122,15 @@ namespace FinTech.Controllers.Regulatory
         [HttpGet("templates/{templateId}/sections")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<RegulatoryReportSectionDto>>> GetSectionsByTemplateId(Guid templateId)
+        public async Task<ActionResult<IEnumerable<RegulatoryReportSectionDto>>> GetSectionsByTemplateId(string templateId)
         {
-            var template = await _regulatoryReportingService.GetTemplateByIdAsync(templateId.ToString());
+            var template = await _regulatoryReportingService.GetTemplateByIdAsync(templateId);
             if (template == null)
             {
                 return NotFound("Template not found");
             }
             
-            var sections = await _regulatoryReportingService.GetSectionsByTemplateIdAsync(templateId.ToString());
+            var sections = await _regulatoryReportingService.GetSectionsByTemplateIdAsync(templateId);
             return Ok(_mapper.Map<IEnumerable<RegulatoryReportSectionDto>>(sections));
         }
         
@@ -140,7 +140,7 @@ namespace FinTech.Controllers.Regulatory
         [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult<RegulatoryReportSectionDto>> CreateSection(CreateRegulatoryReportSectionDto createSectionDto)
         {
-            var template = await _regulatoryReportingService.GetTemplateByIdAsync(createSectionDto.ReportTemplateId.ToString());
+            var template = await _regulatoryReportingService.GetTemplateByIdAsync(createSectionDto.RegulatoryReportTemplateId);
             if (template == null)
             {
                 return BadRequest("Template not found");
@@ -150,7 +150,7 @@ namespace FinTech.Controllers.Regulatory
             var result = await _regulatoryReportingService.CreateSectionAsync(section);
             
             var resultDto = _mapper.Map<RegulatoryReportSectionDto>(result);
-            return CreatedAtAction(nameof(GetSectionsByTemplateId), new { templateId = result.ReportTemplateId }, resultDto);
+            return CreatedAtAction(nameof(GetSectionsByTemplateId), new { templateId = result.RegulatoryReportTemplateId }, resultDto);
         }
         
         [HttpPut("sections/{id}")]
@@ -158,7 +158,7 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<RegulatoryReportSectionDto>> UpdateSection(Guid id, UpdateRegulatoryReportSectionDto updateSectionDto)
+        public async Task<ActionResult<RegulatoryReportSectionDto>> UpdateSection(string id, UpdateRegulatoryReportSectionDto updateSectionDto)
         {
             if (id != updateSectionDto.Id)
             {
@@ -166,8 +166,8 @@ namespace FinTech.Controllers.Regulatory
             }
             
             // First get the existing section
-            var sections = await _regulatoryReportingService.GetSectionsByTemplateIdAsync(updateSectionDto.ReportTemplateId.ToString());
-            var existingSection = sections.FirstOrDefault(s => s.Id == id.ToString());
+            var sections = await _regulatoryReportingService.GetSectionsByTemplateIdAsync(updateSectionDto.RegulatoryReportTemplateId);
+            var existingSection = sections.FirstOrDefault(s => s.Id == id);
             
             if (existingSection == null)
             {
@@ -184,11 +184,11 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteSection(Guid id)
+        public async Task<ActionResult> DeleteSection(string id)
         {
             // We'll need to find the section first to confirm it exists
             // This is a simplification - in reality you'd need to query the repository
-            var deleted = await _regulatoryReportingService.DeleteSectionAsync(id.ToString());
+            var deleted = await _regulatoryReportingService.DeleteSectionAsync(id);
             
             if (!deleted)
             {
@@ -205,9 +205,9 @@ namespace FinTech.Controllers.Regulatory
         [HttpGet("sections/{sectionId}/fields")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<RegulatoryReportFieldDto>>> GetFieldsBySectionId(Guid sectionId)
+        public async Task<ActionResult<IEnumerable<RegulatoryReportFieldDto>>> GetFieldsBySectionId(string sectionId)
         {
-            var fields = await _regulatoryReportingService.GetFieldsBySectionIdAsync(sectionId.ToString());
+            var fields = await _regulatoryReportingService.GetFieldsBySectionIdAsync(sectionId);
             return Ok(_mapper.Map<IEnumerable<RegulatoryReportFieldDto>>(fields));
         }
         
@@ -229,7 +229,7 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<RegulatoryReportFieldDto>> UpdateField(Guid id, UpdateRegulatoryReportFieldDto updateFieldDto)
+        public async Task<ActionResult<RegulatoryReportFieldDto>> UpdateField(string id, UpdateRegulatoryReportFieldDto updateFieldDto)
         {
             if (id != updateFieldDto.Id)
             {
@@ -237,8 +237,8 @@ namespace FinTech.Controllers.Regulatory
             }
             
             // We'll need to find the field first to map to
-            var fields = await _regulatoryReportingService.GetFieldsBySectionIdAsync(updateFieldDto.SectionId.ToString());
-            var existingField = fields.FirstOrDefault(f => f.Id == id.ToString());
+            var fields = await _regulatoryReportingService.GetFieldsBySectionIdAsync(updateFieldDto.SectionId);
+            var existingField = fields.FirstOrDefault(f => f.Id == id);
             
             if (existingField == null)
             {
@@ -255,9 +255,9 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteField(Guid id)
+        public async Task<ActionResult> DeleteField(string id)
         {
-            var deleted = await _regulatoryReportingService.DeleteFieldAsync(id.ToString());
+            var deleted = await _regulatoryReportingService.DeleteFieldAsync(id);
             
             if (!deleted)
             {
@@ -276,14 +276,14 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RegulatoryReportSubmissionDto>> InitiateSubmission(InitiateReportSubmissionDto initiateDto)
         {
-            var template = await _regulatoryReportingService.GetTemplateByIdAsync(initiateDto.TemplateId.ToString());
+            var template = await _regulatoryReportingService.GetTemplateByIdAsync(initiateDto.TemplateId);
             if (template == null)
             {
                 return BadRequest("Template not found");
             }
             
             var submission = await _regulatoryReportingService.InitiateReportSubmissionAsync(
-                initiateDto.TemplateId.ToString(), 
+                initiateDto.TemplateId, 
                 initiateDto.ReportingPeriodStart, 
                 initiateDto.ReportingPeriodEnd);
             
@@ -294,9 +294,9 @@ namespace FinTech.Controllers.Regulatory
         [HttpGet("submissions/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RegulatoryReportSubmissionDto>> GetSubmissionById(Guid id)
+        public async Task<ActionResult<RegulatoryReportSubmissionDto>> GetSubmissionById(string id)
         {
-            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id.ToString());
+            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound();
@@ -308,11 +308,11 @@ namespace FinTech.Controllers.Regulatory
         [HttpGet("submissions/template/{templateId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<RegulatoryReportSubmissionDto>>> GetSubmissionsByTemplateId(
-            Guid templateId, 
+            string templateId, 
             [FromQuery] DateTime? fromDate, 
             [FromQuery] DateTime? toDate)
         {
-            var submissions = await _regulatoryReportingService.GetSubmissionsByTemplateIdAsync(templateId.ToString(), fromDate, toDate);
+            var submissions = await _regulatoryReportingService.GetSubmissionsByTemplateIdAsync(templateId, fromDate, toDate);
             return Ok(_mapper.Map<IEnumerable<RegulatoryReportSubmissionDto>>(submissions));
         }
         
@@ -328,45 +328,45 @@ namespace FinTech.Controllers.Regulatory
         [HttpPost("submissions/{id}/populate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<RegulatoryReportSubmissionDto>> PopulateSubmission(Guid id)
+        public async Task<ActionResult<RegulatoryReportSubmissionDto>> PopulateSubmission(string id)
         {
-            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id.ToString());
+            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound();
             }
             
-            var result = await _regulatoryReportingService.PopulateReportDataAsync(id.ToString());
+            var result = await _regulatoryReportingService.PopulateReportDataAsync(id);
             return Ok(_mapper.Map<RegulatoryReportSubmissionDto>(result));
         }
         
         [HttpPost("submissions/{id}/validate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<RegulatoryReportValidationDto>>> ValidateSubmission(Guid id)
+        public async Task<ActionResult<IEnumerable<RegulatoryReportValidationDto>>> ValidateSubmission(string id)
         {
-            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id.ToString());
+            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound();
             }
             
-            var validations = await _regulatoryReportingService.ValidateReportAsync(id.ToString());
+            var validations = await _regulatoryReportingService.ValidateReportAsync(id);
             return Ok(_mapper.Map<IEnumerable<RegulatoryReportValidationDto>>(validations));
         }
         
         [HttpPost("submissions/{id}/generate")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<string>> GenerateReportFile(Guid id)
+        public async Task<ActionResult<string>> GenerateReportFile(string id)
         {
-            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id.ToString());
+            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound();
             }
             
-            var filePath = await _regulatoryReportingService.GenerateReportFileAsync(id.ToString());
+            var filePath = await _regulatoryReportingService.GenerateReportFileAsync(id);
             return Ok(new { FilePath = filePath });
         }
         
@@ -374,9 +374,9 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RegulatoryReportSubmissionDto>> SubmitReport(Guid id)
+        public async Task<ActionResult<RegulatoryReportSubmissionDto>> SubmitReport(string id)
         {
-            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id.ToString());
+            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound();
@@ -384,7 +384,7 @@ namespace FinTech.Controllers.Regulatory
             
             try
             {
-                var result = await _regulatoryReportingService.SubmitReportAsync(id.ToString());
+                var result = await _regulatoryReportingService.SubmitReportAsync(id);
                 return Ok(_mapper.Map<RegulatoryReportSubmissionDto>(result));
             }
             catch (Exception ex)
@@ -398,9 +398,9 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<RegulatoryReportSubmissionDto>> ApproveSubmission(Guid id, [FromBody] ApproveReportDto approveDto)
+        public async Task<ActionResult<RegulatoryReportSubmissionDto>> ApproveSubmission(string id, [FromBody] ApproveReportDto approveDto)
         {
-            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id.ToString());
+            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound();
@@ -408,7 +408,7 @@ namespace FinTech.Controllers.Regulatory
             
             try
             {
-                var result = await _regulatoryReportingService.ApproveSubmissionAsync(id.ToString(), approveDto.ApproverId, approveDto.Comments);
+                var result = await _regulatoryReportingService.ApproveSubmissionAsync(id, approveDto.ApproverId, approveDto.Comments);
                 return Ok(_mapper.Map<RegulatoryReportSubmissionDto>(result));
             }
             catch (Exception ex)
@@ -422,9 +422,9 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<RegulatoryReportSubmissionDto>> RejectSubmission(Guid id, [FromBody] RejectReportDto rejectDto)
+        public async Task<ActionResult<RegulatoryReportSubmissionDto>> RejectSubmission(string id, [FromBody] RejectReportDto rejectDto)
         {
-            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id.ToString());
+            var submission = await _regulatoryReportingService.GetSubmissionByIdAsync(id);
             if (submission == null)
             {
                 return NotFound();
@@ -432,7 +432,7 @@ namespace FinTech.Controllers.Regulatory
             
             try
             {
-                var result = await _regulatoryReportingService.RejectSubmissionAsync(id.ToString(), rejectDto.Reason);
+                var result = await _regulatoryReportingService.RejectSubmissionAsync(id, rejectDto.Reason);
                 return Ok(_mapper.Map<RegulatoryReportSubmissionDto>(result));
             }
             catch (Exception ex)
@@ -451,7 +451,7 @@ namespace FinTech.Controllers.Regulatory
         [Authorize(Roles = "Admin,Manager")]
         public async Task<ActionResult<RegulatoryReportScheduleDto>> CreateSchedule(CreateRegulatoryReportScheduleDto createScheduleDto)
         {
-            var template = await _regulatoryReportingService.GetTemplateByIdAsync(createScheduleDto.ReportTemplateId.ToString());
+            var template = await _regulatoryReportingService.GetTemplateByIdAsync(createScheduleDto.RegulatoryReportTemplateId);
             if (template == null)
             {
                 return BadRequest("Template not found");
@@ -469,7 +469,7 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin,Manager")]
-        public async Task<ActionResult<RegulatoryReportScheduleDto>> UpdateSchedule(Guid id, UpdateRegulatoryReportScheduleDto updateScheduleDto)
+        public async Task<ActionResult<RegulatoryReportScheduleDto>> UpdateSchedule(string id, UpdateRegulatoryReportScheduleDto updateScheduleDto)
         {
             if (id != updateScheduleDto.Id)
             {
@@ -489,9 +489,9 @@ namespace FinTech.Controllers.Regulatory
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult> DeleteSchedule(Guid id)
+        public async Task<ActionResult> DeleteSchedule(string id)
         {
-            var deleted = await _regulatoryReportingService.DeleteScheduleAsync(id.ToString());
+            var deleted = await _regulatoryReportingService.DeleteScheduleAsync(id);
             
             if (!deleted)
             {

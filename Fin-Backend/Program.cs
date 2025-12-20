@@ -24,7 +24,7 @@ builder.Host.UseSerilog();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Use PascalCase
+        // options.JsonSerializerOptions.PropertyNamingPolicy = null; // Use default (CamelCase)
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
@@ -47,7 +47,9 @@ builder.Services.AddBackgroundJobServices(builder.Configuration);
 // builder.Services.AddSwaggerDocumentation(); // Commented out to reduce dependency issues if missing
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => {
+    c.CustomSchemaIds(type => type.FullName);
+});
 
 // Health Checks
 builder.Services.AddHealthChecks()

@@ -1,0 +1,4 @@
+Build started...
+Build succeeded.
+Applying migration '20251219121347_InitialCreate'.
+Done.

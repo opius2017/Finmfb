@@ -4,6 +4,6 @@ namespace FinTech.Core.Domain.Common
 {
     public interface ITenantEntity
     {
-        Guid TenantId { get; set; }
+        string TenantId { get; set; }
     }
 }

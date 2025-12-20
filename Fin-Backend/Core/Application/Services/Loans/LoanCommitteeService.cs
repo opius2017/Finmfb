@@ -54,7 +54,7 @@ namespace FinTech.Core.Application.Services.Loans
                 // Check if review already exists
                 // FinTech Best Practice: Convert Guid to string for comparison
                 var existing = await _reviewRepository.GetAll()
-                    .Where(r => r.LoanApplicationId.ToString() == request.LoanApplicationId)
+                    .Where(r => r.LoanApplicationId == request.LoanApplicationId)
                     .ToListAsync();
 
                 if (existing.Any())
@@ -68,7 +68,7 @@ namespace FinTech.Core.Application.Services.Loans
 
                 var review = new CommitteeReview
                 {
-                    LoanApplicationId = Guid.Parse(request.LoanApplicationId),
+                    LoanApplicationId = request.LoanApplicationId,
                     // MemberId = loanApp.MemberId, // MemberId not in CommitteeReview
                     ReviewStatus = "PENDING",
                     // FinTech Best Practice: Convert Guid to string for ReviewerId
@@ -300,7 +300,7 @@ namespace FinTech.Core.Application.Services.Loans
                 await _reviewRepository.UpdateAsync(review);
 
                 // Update loan application status
-                var loanApp = await _loanApplicationRepository.GetByIdAsync(review.LoanApplicationId.ToString());
+                var loanApp = await _loanApplicationRepository.GetByIdAsync(review.LoanApplicationId);
                 if (loanApp != null)
                 {
                     loanApp.Status = request.Decision == "APPROVED" ? 
@@ -503,7 +503,7 @@ namespace FinTech.Core.Application.Services.Loans
             MemberCreditProfileDto creditProfile,
             RepaymentScoreDto repaymentScore)
         {
-            var loanApp = await _loanApplicationRepository.GetByIdAsync(review.LoanApplicationId.ToString());
+            var loanApp = await _loanApplicationRepository.GetByIdAsync(review.LoanApplicationId);
             var member = loanApp != null ? await _memberRepository.GetByIdAsync(loanApp.MemberId) : null;
             
             if (member == null) throw new InvalidOperationException("Member not found for review");
@@ -511,7 +511,7 @@ namespace FinTech.Core.Application.Services.Loans
             return new CommitteeReviewDto
             {
                 Id = review.Id,
-                LoanApplicationId = review.LoanApplicationId.ToString(), // ID is Guid
+                LoanApplicationId = review.LoanApplicationId,
                 MemberId = loanApp.MemberId, // review.MemberId does not exist
                 MemberNumber = member.MemberNumber,
                 MemberName = $"{member.FirstName} {member.LastName}",

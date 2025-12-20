@@ -17,7 +17,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 
             builder.Property(lcc => lcc.CustomerId)
                 .IsRequired()
-                .HasMaxLength(100);
+                .HasMaxLength(450);
                 
             builder.Property(lcc => lcc.CreditBureauId)
                 .HasMaxLength(100);

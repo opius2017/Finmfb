@@ -23,14 +23,14 @@ namespace FinTech.Infrastructure.Services
     public class MfaService : IMfaService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<MfaService> _logger;
         private readonly IConfiguration _configuration;
         private readonly IMfaNotificationService _notificationService;
         
         public MfaService(
             ApplicationDbContext context,
-            UserManager<IdentityUser> userManager,
+            UserManager<ApplicationUser> userManager,
             ILogger<MfaService> logger,
             IConfiguration configuration,
             IMfaNotificationService notificationService)

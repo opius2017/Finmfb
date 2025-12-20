@@ -8,9 +8,9 @@ namespace FinTech.Core.Domain.Entities.Loans
     /// </summary>
     public class GuarantorConsent : AuditableEntity
     {
-        public Guid ApplicationId { get; private set; }
-        public Guid GuarantorMemberId { get; private set; }
-        public Guid ApplicantMemberId { get; private set; }
+        public string ApplicationId { get; private set; }
+        public string GuarantorMemberId { get; private set; }
+        public string ApplicantMemberId { get; private set; }
         public decimal GuaranteedAmount { get; private set; }
         public string ConsentToken { get; private set; }
         public GuarantorConsentStatus Status { get; private set; }
@@ -33,9 +33,9 @@ namespace FinTech.Core.Domain.Entities.Loans
         } // For EF Core
         
         public GuarantorConsent(
-            Guid applicationId,
-            Guid guarantorMemberId,
-            Guid applicantMemberId,
+            string applicationId,
+            string guarantorMemberId,
+            string applicantMemberId,
             decimal guaranteedAmount,
             int expiryHours = 72)
         {

@@ -7,7 +7,7 @@ namespace FinTech.Core.Domain.Entities.Identity;
 public class TenantModule : BaseEntity
 {
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
     public virtual Tenant? Tenant { get; set; }
     
     [Required]

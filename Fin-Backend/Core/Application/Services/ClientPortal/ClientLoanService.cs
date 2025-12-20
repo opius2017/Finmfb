@@ -25,7 +25,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             _logger = logger;
         }
 
-        public async Task<IEnumerable<LoanAccount>> GetClientLoansAsync(Guid customerId)
+        public async Task<IEnumerable<LoanAccount>> GetClientLoansAsync(string customerId)
         {
             try
             {
@@ -97,13 +97,13 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<LoanApplicationRequest> SubmitLoanApplicationAsync(LoanApplicationDto applicationDto, Guid customerId)
+        public async Task<LoanApplicationRequest> SubmitLoanApplicationAsync(LoanApplicationDto applicationDto, string customerId)
         {
             try
             {
                 // Validate loan product exists
                 var loanProduct = await _dbContext.LoanProducts
-                    .FirstOrDefaultAsync(p => p.Id == applicationDto.LoanProductId.ToString());
+                    .FirstOrDefaultAsync(p => p.Id == applicationDto.LoanProductId);
                 
                 if (loanProduct == null)
                 {
@@ -112,7 +112,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 
                 // Validate customer exists
                 var customer = await _dbContext.Customers
-                    .FirstOrDefaultAsync(c => c.Id == customerId.ToString());
+                    .FirstOrDefaultAsync(c => c.Id == customerId);
                     
                 if (customer == null)
                 {
@@ -169,7 +169,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<IEnumerable<LoanApplicationRequest>> GetClientLoanApplicationsAsync(Guid customerId)
+        public async Task<IEnumerable<LoanApplicationRequest>> GetClientLoanApplicationsAsync(string customerId)
         {
             try
             {
@@ -186,13 +186,13 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<LoanEligibility> CheckLoanEligibilityAsync(LoanEligibilityCheckDto checkDto, Guid customerId)
+        public async Task<LoanEligibility> CheckLoanEligibilityAsync(LoanEligibilityCheckDto checkDto, string customerId)
         {
             try
             {
                 // Get customer information
                 var customer = await _dbContext.Customers
-                    .FirstOrDefaultAsync(c => c.Id == customerId.ToString());
+                    .FirstOrDefaultAsync(c => c.Id == customerId);
                 
                 if (customer == null)
                 {
@@ -281,7 +281,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             {
                 // Get loan product
                 var loanProduct = await _dbContext.LoanProducts
-                    .FirstOrDefaultAsync(p => p.Id == simulationDto.LoanProductId.ToString());
+                    .FirstOrDefaultAsync(p => p.Id == simulationDto.LoanProductId);
                 
                 if (loanProduct == null)
                 {
@@ -357,7 +357,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<bool> MakeLoanRepaymentAsync(LoanRepaymentDto repaymentDto, Guid customerId)
+        public async Task<bool> MakeLoanRepaymentAsync(LoanRepaymentDto repaymentDto, string customerId)
         {
             try
             {
@@ -386,7 +386,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 // Create loan transaction
                 var transaction = new LoanTransaction
                 {
-                    LoanAccountId = Guid.Parse(loan.Id), // FinTech Best Practice: Convert string Id to Guid
+                    LoanAccountId = loan.Id, // FinTech Best Practice: Use string Id directly
                     TransactionDate = DateTime.UtcNow,
                     TransactionType = "Repayment",
                     Amount = repaymentDto.Amount,
@@ -420,47 +420,47 @@ namespace FinTech.Core.Application.Services.ClientPortal
         }
 
         // Interface method implementations wrapping existing methods with BaseResponse
-        Task<BaseResponse<List<ClientLoanDto>>> IClientLoanService.GetLoansAsync(Guid customerId)
+        Task<BaseResponse<List<ClientLoanDto>>> IClientLoanService.GetLoansAsync(string customerId)
         {
             return Task.FromResult(new BaseResponse<List<ClientLoanDto>> { Success = false, Message = "Use GetClientLoansAsync method" });
         }
 
-        Task<BaseResponse<ClientLoanDto>> IClientLoanService.GetLoanDetailsAsync(Guid customerId, Guid loanId)
+        Task<BaseResponse<ClientLoanDto>> IClientLoanService.GetLoanDetailsAsync(string customerId, Guid loanId)
         {
             return Task.FromResult(new BaseResponse<ClientLoanDto> { Success = false, Message = "Use GetLoanDetailsAsync(string) method" });
         }
 
-        Task<BaseResponse<List<LoanRepaymentScheduleDto>>> IClientLoanService.GetLoanRepaymentScheduleAsync(Guid customerId, Guid loanId)
+        Task<BaseResponse<List<LoanRepaymentScheduleDto>>> IClientLoanService.GetLoanRepaymentScheduleAsync(string customerId, Guid loanId)
         {
             return Task.FromResult(new BaseResponse<List<LoanRepaymentScheduleDto>> { Success = false, Message = "Use GetLoanRepaymentScheduleAsync(string) method" });
         }
 
-        Task<BaseResponse<List<LoanTransactionDto>>> IClientLoanService.GetLoanTransactionsAsync(Guid customerId, Guid loanId)
+        Task<BaseResponse<List<LoanTransactionDto>>> IClientLoanService.GetLoanTransactionsAsync(string customerId, Guid loanId)
         {
             return Task.FromResult(new BaseResponse<List<LoanTransactionDto>> { Success = false, Message = "Use GetLoanTransactionsAsync(string) method" });
         }
 
-        Task<BaseResponse<LoanPaymentDto>> IClientLoanService.MakeLoanPaymentAsync(Guid customerId, Guid loanId, LoanPaymentRequestDto paymentRequest)
+        Task<BaseResponse<LoanPaymentDto>> IClientLoanService.MakeLoanPaymentAsync(string customerId, Guid loanId, LoanPaymentRequestDto paymentRequest)
         {
             return Task.FromResult(new BaseResponse<LoanPaymentDto> { Success = false, Message = "Use MakeLoanRepaymentAsync method" });
         }
 
-        Task<BaseResponse<List<LoanProductDto>>> IClientLoanService.GetAvailableLoanProductsAsync(Guid customerId)
+        Task<BaseResponse<List<LoanProductDto>>> IClientLoanService.GetAvailableLoanProductsAsync(string customerId)
         {
             return Task.FromResult(new BaseResponse<List<LoanProductDto>> { Success = false, Message = "Loan product retrieval not implemented" });
         }
 
-        Task<BaseResponse<LoanApplicationDto>> IClientLoanService.SubmitLoanApplicationAsync(Guid customerId, LoanApplicationRequestDto applicationRequest)
+        Task<BaseResponse<LoanApplicationDto>> IClientLoanService.SubmitLoanApplicationAsync(string customerId, LoanApplicationRequestDto applicationRequest)
         {
             return Task.FromResult(new BaseResponse<LoanApplicationDto> { Success = false, Message = "Use SubmitLoanApplicationAsync method" });
         }
 
-        Task<BaseResponse<List<LoanApplicationDto>>> IClientLoanService.GetLoanApplicationsAsync(Guid customerId)
+        Task<BaseResponse<List<LoanApplicationDto>>> IClientLoanService.GetLoanApplicationsAsync(string customerId)
         {
             return Task.FromResult(new BaseResponse<List<LoanApplicationDto>> { Success = false, Message = "Use GetClientLoanApplicationsAsync method" });
         }
 
-        Task<BaseResponse<LoanApplicationDto>> IClientLoanService.GetLoanApplicationDetailsAsync(Guid customerId, Guid applicationId)
+        Task<BaseResponse<LoanApplicationDto>> IClientLoanService.GetLoanApplicationDetailsAsync(string customerId, Guid applicationId)
         {
             return Task.FromResult(new BaseResponse<LoanApplicationDto> { Success = false, Message = "Use GetLoanApplicationStatusAsync method" });
         }
@@ -476,7 +476,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
     public class LoanSimulation
     {
-        public Guid LoanProductId { get; set; }
+        public string LoanProductId { get; set; } = string.Empty;
         public string LoanProductName { get; set; }
         public decimal PrincipalAmount { get; set; }
         public decimal InterestRate { get; set; }

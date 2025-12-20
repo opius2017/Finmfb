@@ -13,6 +13,6 @@ namespace FinTech.Core.Application.DTOs.Account
         /// <example>My Updated Savings Account</example>
         [Required]
         [StringLength(100, MinimumLength = 3)]
-        public string AccountName { get; set; }
+        public string AccountName { get; set; } = string.Empty;
     }
 }

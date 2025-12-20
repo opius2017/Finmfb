@@ -11,7 +11,7 @@ public class CommitteeReview : BaseEntity
 {
     [Required]
     [ForeignKey(nameof(LoanApplication))]
-    public Guid LoanApplicationId { get; set; }
+    public string LoanApplicationId { get; set; } = string.Empty;
 
     public LoanApplication? LoanApplication { get; set; }
 

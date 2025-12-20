@@ -13,7 +13,10 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Reference to the report submission
         /// </summary>
-        public int RegulatoryReportSubmissionId { get; set; }
+        /// <summary>
+        /// Reference to the report submission
+        /// </summary>
+        public string RegulatoryReportSubmissionId { get; set; } = string.Empty;
         
         /// <summary>
         /// Navigation property for the report submission
@@ -68,7 +71,7 @@ namespace FinTech.Core.Domain.Entities.RegulatoryReporting
         /// <summary>
         /// Navigation property for the user who uploaded the attachment
         /// </summary>
-        public virtual ApplicationUser? UploadedBy { get; set; }
+
         
         /// <summary>
         /// Date and time when the attachment was uploaded

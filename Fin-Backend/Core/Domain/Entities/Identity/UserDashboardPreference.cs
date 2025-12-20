@@ -10,7 +10,7 @@ public class UserDashboardPreference : BaseEntity
     public virtual ApplicationUser? User { get; set; }
     
     [Required]
-    public Guid ModuleDashboardId { get; set; }
+    public string ModuleDashboardId { get; set; } = string.Empty;
     public virtual ModuleDashboard? ModuleDashboard { get; set; }
     
     [Required]
@@ -26,5 +26,5 @@ public class UserDashboardPreference : BaseEntity
     public int SortOrder { get; set; } = 0;
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }

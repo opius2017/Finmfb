@@ -9,7 +9,7 @@ namespace FinTech.Core.Application.Services
 {
     public interface IDepositSweepService
     {
-        Task<List<DepositSweepResult>> RunAutomatedSweepsAsync(Guid tenantId);
+        Task<List<DepositSweepResult>> RunAutomatedSweepsAsync(string tenantId);
     }
 
     public class DepositSweepResult
@@ -29,7 +29,7 @@ namespace FinTech.Core.Application.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<DepositSweepResult>> RunAutomatedSweepsAsync(Guid tenantId)
+        public async Task<List<DepositSweepResult>> RunAutomatedSweepsAsync(string tenantId)
         {
             var results = new List<DepositSweepResult>();
             var accounts = await _dbContext.DepositAccounts

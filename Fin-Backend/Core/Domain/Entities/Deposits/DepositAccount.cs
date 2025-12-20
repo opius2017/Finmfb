@@ -13,11 +13,11 @@ public class DepositAccount : BaseEntity
     public string AccountNumber { get; set; } = string.Empty;
     
     [Required]
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public virtual Customer Customer { get; set; } = null!;
     
     [Required]
-    public Guid ProductId { get; set; }
+    public string ProductId { get; set; } = string.Empty;
     public virtual DepositProduct Product { get; set; } = null!;
     // public virtual DepositProduct? DepositProduct { get; set; }
     
@@ -64,7 +64,7 @@ public class DepositAccount : BaseEntity
     public string CurrencyCode { get; set; } = "NGN";
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
     
     public virtual ICollection<DepositTransaction> Transactions { get; set; } = [];
 }

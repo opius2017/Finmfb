@@ -11,18 +11,16 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.ToTable("Loans", "loans");
 
             builder.HasKey(l => l.Id);
+            builder.Property(l => l.Id).HasMaxLength(100);
             
             builder.Property(l => l.CustomerId)
-                .IsRequired()
-                .HasMaxLength(100);
+                .IsRequired();
                 
             builder.Property(l => l.LoanApplicationId)
-                .IsRequired()
-                .HasMaxLength(100);
+                .IsRequired();
                 
             builder.Property(l => l.LoanProductId)
-                .IsRequired()
-                .HasMaxLength(100);
+                .IsRequired();
                 
 /*
             builder.Property(l => l.LoanAmount)

@@ -31,11 +31,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
                 .HasPrecision(18, 2)
                 .IsRequired();
                 
-            builder.Property(lp => lp.MinTerm)
-                .IsRequired();
-                
-            builder.Property(lp => lp.MaxTerm)
-                .IsRequired();
+
                 
             builder.Property(lp => lp.InterestType)
                 .IsRequired()

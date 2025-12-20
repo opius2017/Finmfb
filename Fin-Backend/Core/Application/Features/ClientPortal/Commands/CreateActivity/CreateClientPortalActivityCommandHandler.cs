@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FinTech.Core.Application.Features.ClientPortal.Commands.CreateActivity
 {
-    public class CreateClientPortalActivityCommandHandler : IRequestHandler<CreateClientPortalActivityCommand, Guid>
+    public class CreateClientPortalActivityCommandHandler : IRequestHandler<CreateClientPortalActivityCommand, string>
     {
         private readonly IApplicationDbContext _context;
         private readonly ILogger<CreateClientPortalActivityCommandHandler> _logger;
@@ -19,12 +19,12 @@ namespace FinTech.Core.Application.Features.ClientPortal.Commands.CreateActivity
             _logger = logger;
         }
 
-        public async Task<Guid> Handle(CreateClientPortalActivityCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(CreateClientPortalActivityCommand request, CancellationToken cancellationToken)
         {
             var activity = ClientPortalActivity.Create(
-                request.ClientPortalProfileId.ToString(),
+                request.ClientPortalProfileId,
                 request.UserId,
-                request.SessionId.ToString(),
+                request.SessionId,
                 request.ActivityType,
                 request.Description,
                 request.IpAddress ?? "0.0.0.0",
@@ -38,7 +38,7 @@ namespace FinTech.Core.Application.Features.ClientPortal.Commands.CreateActivity
             
             _logger.LogInformation("Client Portal Activity created with ID: {ActivityId}", activity.Id);
 
-            return Guid.Parse(activity.Id);
+            return activity.Id;
         }
     }
 }

@@ -20,7 +20,7 @@ public class LoanTransaction : BaseEntity
     public Loan? Loan { get; set; }
 
     [ForeignKey(nameof(LoanAccount))]
-    public Guid? LoanAccountId { get; set; }
+    public string? LoanAccountId { get; set; }
 
     public LoanAccount? LoanAccount { get; set; }
 
@@ -84,7 +84,7 @@ public class LoanTransaction : BaseEntity
     public string? Notes { get; set; }
 
     [ForeignKey(nameof(ReversalTransaction))]
-    public Guid? ReversalTransactionId { get; set; }
+    public string? ReversalTransactionId { get; set; }
 
     public LoanTransaction? ReversalTransaction { get; set; }
 

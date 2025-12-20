@@ -37,8 +37,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using FinTech.Infrastructure.Data.Auditing;
-using FinTech.Infrastructure.Data.Events;
-using FinTech.Infrastructure.Data.Messaging;
+
+
 using FinTech.Infrastructure.Messaging;
 using Newtonsoft.Json;
 
@@ -154,8 +154,8 @@ namespace FinTech.Infrastructure.Data
         public DbSet<DataAccessLog> DataAccessLogs { get; set; }
         
         // Domain Events Tracking
-        public DbSet<FinTech.Infrastructure.Data.Events.DomainEventRecord> DomainEventRecords { get; set; }
-        public DbSet<FinTech.Infrastructure.Data.Messaging.OutboxMessage> OutboxMessages { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Common.DomainEventRecord> DomainEventRecords { get; set; }
+        public DbSet<FinTech.Core.Domain.Entities.Common.OutboxMessage> OutboxMessages { get; set; }
         
         // Integration Events Tracking
         public DbSet<FinTech.Infrastructure.Messaging.IntegrationEventOutboxItem> IntegrationEventOutbox { get; set; }
@@ -287,11 +287,11 @@ namespace FinTech.Infrastructure.Data
                 if (typeof(FinTech.Core.Domain.Common.ITenantEntity).IsAssignableFrom(entityType.ClrType) && _currentUserService != null)
                 {
                     var tenantId = _currentUserService?.TenantId;
-                    if (tenantId.HasValue)
+                    if (!string.IsNullOrEmpty(tenantId))
                     {
                         var parameter = Expression.Parameter(entityType.ClrType, "e");
                         var property = Expression.Property(parameter, nameof(FinTech.Core.Domain.Common.ITenantEntity.TenantId));
-                        var tenantValue = Expression.Constant(tenantId.Value);
+                        var tenantValue = Expression.Constant(tenantId);
                         var expression = Expression.Equal(property, tenantValue);
                         var lambda = Expression.Lambda(expression, parameter);
                         

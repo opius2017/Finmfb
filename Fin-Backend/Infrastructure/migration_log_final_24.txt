@@ -1,0 +1,3 @@
+Build started...
+Build succeeded.
+Unable to create a 'DbContext' of type 'ApplicationDbContext'. The exception 'No backing field could be found for property 'JournalEntry.IsSystemGenerated' and the property does not have a setter.' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728

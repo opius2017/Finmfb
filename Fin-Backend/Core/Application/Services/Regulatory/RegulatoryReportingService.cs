@@ -56,7 +56,7 @@ namespace FinTech.Core.Application.Services.Regulatory
 
         public async Task<RegulatoryReportTemplate> GetTemplateByIdAsync(string id)
         {
-            return await _repository.GetTemplateByIdAsync(Guid.Parse(id));
+            return await _repository.GetTemplateByIdAsync(id);
         }
 
         public async Task<IEnumerable<RegulatoryReportTemplate>> GetAllTemplatesAsync()
@@ -74,7 +74,7 @@ namespace FinTech.Core.Application.Services.Regulatory
             try
             {
                 _logger.LogInformation("Deleting regulatory report template: {TemplateId}", id);
-                return await _repository.DeleteTemplateAsync(Guid.Parse(id));
+                return await _repository.DeleteTemplateAsync(id);
             }
             catch (Exception ex)
             {
@@ -92,7 +92,7 @@ namespace FinTech.Core.Application.Services.Regulatory
             try
             {
                 _logger.LogInformation("Creating new regulatory report section: {SectionName} for template {TemplateId}", 
-                    section.SectionName, section.ReportTemplateId);
+                    section.SectionName, section.RegulatoryReportTemplateId);
                 return await _repository.AddSectionAsync(section);
             }
             catch (Exception ex)
@@ -121,7 +121,7 @@ namespace FinTech.Core.Application.Services.Regulatory
             try
             {
                 _logger.LogInformation("Deleting regulatory report section: {SectionId}", id);
-                return await _repository.DeleteSectionAsync(Guid.Parse(id));
+                return await _repository.DeleteSectionAsync(id);
             }
             catch (Exception ex)
             {
@@ -132,7 +132,7 @@ namespace FinTech.Core.Application.Services.Regulatory
 
         public async Task<IEnumerable<RegulatoryReportSection>> GetSectionsByTemplateIdAsync(string templateId)
         {
-            return await _repository.GetSectionsByTemplateIdAsync(Guid.Parse(templateId));
+            return await _repository.GetSectionsByTemplateIdAsync(templateId);
         }
 
         #endregion
@@ -173,7 +173,7 @@ namespace FinTech.Core.Application.Services.Regulatory
             try
             {
                 _logger.LogInformation("Deleting regulatory report field: {FieldId}", id);
-                return await _repository.DeleteFieldAsync(Guid.Parse(id));
+                return await _repository.DeleteFieldAsync(id);
             }
             catch (Exception ex)
             {
@@ -184,7 +184,7 @@ namespace FinTech.Core.Application.Services.Regulatory
 
         public async Task<IEnumerable<RegulatoryReportField>> GetFieldsBySectionIdAsync(string sectionId)
         {
-            return await _repository.GetFieldsBySectionIdAsync(Guid.Parse(sectionId));
+            return await _repository.GetFieldsBySectionIdAsync(sectionId);
         }
 
         #endregion
@@ -195,7 +195,7 @@ namespace FinTech.Core.Application.Services.Regulatory
         {
             try
             {
-                var template = await _repository.GetTemplateWithSectionsAndFieldsAsync(Guid.Parse(templateId));
+                var template = await _repository.GetTemplateWithSectionsAndFieldsAsync(templateId);
                 if (template == null)
                 {
                     throw new Exception($"Template with ID {templateId} not found");
@@ -203,12 +203,12 @@ namespace FinTech.Core.Application.Services.Regulatory
 
                 var submission = new RegulatoryReportSubmission
                 {
-                    ReportTemplateId = Guid.Parse(templateId),
+                    RegulatoryReportTemplateId = templateId,
                     ReportingPeriodStart = reportingPeriodStart,
                     ReportingPeriodEnd = reportingPeriodEnd,
                     SubmissionDate = DateTime.UtcNow,
                     Status = SubmissionStatus.Draft,
-                    SubmittedById = Guid.Empty, // Set this from the authenticated user
+                    SubmittedById = string.Empty, // Set this from the authenticated user
                     ReportData = new List<RegulatoryReportData>()
                 };
 
@@ -250,7 +250,7 @@ namespace FinTech.Core.Application.Services.Regulatory
         {
             try
             {
-                var submission = await _repository.GetSubmissionWithDataAsync(Guid.Parse(submissionId));
+                var submission = await _repository.GetSubmissionWithDataAsync(submissionId);
                 if (submission == null)
                 {
                     throw new Exception($"Submission with ID {submissionId} not found");
@@ -316,14 +316,14 @@ namespace FinTech.Core.Application.Services.Regulatory
         {
             try
             {
-                var submission = await _repository.GetSubmissionWithDataAsync(Guid.Parse(submissionId));
+                var submission = await _repository.GetSubmissionWithDataAsync(submissionId);
                 if (submission == null)
                 {
                     throw new Exception($"Submission with ID {submissionId} not found");
                 }
 
                 // Clear any existing validations
-                await _repository.DeleteAllValidationsForSubmissionAsync(Guid.Parse(submissionId));
+                await _repository.DeleteAllValidationsForSubmissionAsync(submissionId);
 
                 var validations = new List<RegulatoryReportValidation>();
 
@@ -343,7 +343,7 @@ namespace FinTech.Core.Application.Services.Regulatory
                     {
                         var validation = new RegulatoryReportValidation
                         {
-                            SubmissionId = submissionId.ToString(),
+                            SubmissionId = submissionId,
                             FieldId = field.Id,
                             ErrorMessage = $"Required field '{field.FieldName}' has no value",
                             ErrorCode = "REQUIRED_FIELD",
@@ -396,8 +396,8 @@ namespace FinTech.Core.Application.Services.Regulatory
                     {
                         validations.Add(new RegulatoryReportValidation
                         {
-                            SubmissionId = submissionId.ToString(),
-                            FieldId = fieldId.ToString(),
+                            SubmissionId = submissionId,
+                            FieldId = fieldId,
                             ErrorMessage = $"Value must be at least {minLength} characters long",
                             ErrorCode = "MIN_LENGTH",
                             Severity = ValidationSeverity.Error,
@@ -412,8 +412,8 @@ namespace FinTech.Core.Application.Services.Regulatory
                     {
                         validations.Add(new RegulatoryReportValidation
                         {
-                            SubmissionId = submissionId.ToString(),
-                            FieldId = fieldId.ToString(),
+                            SubmissionId = submissionId,
+                            FieldId = fieldId,
                             ErrorMessage = $"Value must not exceed {maxLength} characters",
                             ErrorCode = "MAX_LENGTH",
                             Severity = ValidationSeverity.Error,
@@ -429,8 +429,8 @@ namespace FinTech.Core.Application.Services.Regulatory
                 _logger.LogError(ex, "Error validating field {FieldId} with rules: {Rules}", fieldId, validationRules);
                 validations.Add(new RegulatoryReportValidation
                 {
-                    SubmissionId = submissionId.ToString(),
-                    FieldId = fieldId.ToString(),
+                    SubmissionId = submissionId,
+                    FieldId = fieldId,
                     ErrorMessage = $"Error validating field: {ex.Message}",
                     ErrorCode = "VALIDATION_ERROR",
                     Severity = ValidationSeverity.Error,
@@ -446,16 +446,16 @@ namespace FinTech.Core.Application.Services.Regulatory
         {
             try
             {
-                var submission = await _repository.GetSubmissionWithDataAsync(Guid.Parse(submissionId));
+                var submission = await _repository.GetSubmissionWithDataAsync(submissionId);
                 if (submission == null)
                 {
                     throw new Exception($"Submission with ID {submissionId} not found");
                 }
 
                 // Determine the file format to generate
-                string fileFormat = submission.ReportTemplate.FileFormat.ToLower();
-                string fileName = $"{submission.ReportTemplate.TemplateCode}_{submission.ReportingPeriodEnd:yyyyMMdd}";
-                string filePath = Path.Combine("Regulatory_Reports", submission.ReportTemplate.RegulatoryBody.ToString(), fileName);
+                string fileFormat = submission.Template.FileFormat.ToLower();
+                string fileName = $"{submission.Template.TemplateCode}_{submission.ReportingPeriodEnd:yyyyMMdd}";
+                string filePath = Path.Combine("Regulatory_Reports", submission.Template.RegulatoryBody.ToString(), fileName);
 
                 // Create directory if it doesn't exist
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
@@ -544,7 +544,7 @@ namespace FinTech.Core.Application.Services.Regulatory
         {
             try
             {
-                var submission = await _repository.GetSubmissionByIdAsync(Guid.Parse(submissionId));
+                var submission = await _repository.GetSubmissionByIdAsync(submissionId);
                 if (submission == null)
                 {
                     throw new Exception($"Submission with ID {submissionId} not found");
@@ -557,7 +557,7 @@ namespace FinTech.Core.Application.Services.Regulatory
                 }
 
                 // Check for validation errors
-                var validations = await _repository.GetValidationsBySubmissionIdAsync(Guid.Parse(submissionId));
+                var validations = await _repository.GetValidationsBySubmissionIdAsync(submissionId);
                 var errors = validations.Where(v => v.Severity == ValidationSeverity.Error && !v.IsResolved).ToList();
                 
                 if (errors.Any())
@@ -586,12 +586,12 @@ namespace FinTech.Core.Application.Services.Regulatory
 
         public async Task<RegulatoryReportSubmission> GetSubmissionByIdAsync(string id)
         {
-            return await _repository.GetSubmissionByIdAsync(Guid.Parse(id));
+            return await _repository.GetSubmissionByIdAsync(id);
         }
 
         public async Task<IEnumerable<RegulatoryReportSubmission>> GetSubmissionsByTemplateIdAsync(string templateId, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            return await _repository.GetSubmissionsByTemplateIdAsync(Guid.Parse(templateId), fromDate, toDate);
+            return await _repository.GetSubmissionsByTemplateIdAsync(templateId, fromDate, toDate);
         }
 
         public async Task<IEnumerable<RegulatoryReportSubmission>> GetPendingSubmissionsAsync()
@@ -599,11 +599,11 @@ namespace FinTech.Core.Application.Services.Regulatory
             return await _repository.GetSubmissionsByStatusAsync(SubmissionStatus.PendingApproval);
         }
 
-        public async Task<RegulatoryReportSubmission> ApproveSubmissionAsync(string submissionId, Guid approverId, string comments)
+        public async Task<RegulatoryReportSubmission> ApproveSubmissionAsync(string submissionId, string approverId, string comments)
         {
             try
             {
-                var submission = await _repository.GetSubmissionByIdAsync(Guid.Parse(submissionId));
+                var submission = await _repository.GetSubmissionByIdAsync(submissionId);
                 if (submission == null)
                 {
                     throw new Exception($"Submission with ID {submissionId} not found");
@@ -634,7 +634,7 @@ namespace FinTech.Core.Application.Services.Regulatory
         {
             try
             {
-                var submission = await _repository.GetSubmissionByIdAsync(Guid.Parse(submissionId));
+                var submission = await _repository.GetSubmissionByIdAsync(submissionId);
                 if (submission == null)
                 {
                     throw new Exception($"Submission with ID {submissionId} not found");
@@ -662,7 +662,7 @@ namespace FinTech.Core.Application.Services.Regulatory
         {
             try
             {
-                _logger.LogInformation("Creating new regulatory report schedule for template: {TemplateId}", schedule.ReportTemplateId);
+                _logger.LogInformation("Creating new regulatory report schedule for template: {TemplateId}", schedule.RegulatoryReportTemplateId);
                 return await _repository.AddScheduleAsync(schedule);
             }
             catch (Exception ex)
@@ -691,7 +691,7 @@ namespace FinTech.Core.Application.Services.Regulatory
             try
             {
                 _logger.LogInformation("Deleting regulatory report schedule: {ScheduleId}", id);
-                return await _repository.DeleteScheduleAsync(Guid.Parse(id));
+                return await _repository.DeleteScheduleAsync(id);
             }
             catch (Exception ex)
             {

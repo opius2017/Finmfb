@@ -38,7 +38,7 @@ namespace FinTech.Core.Application.Interfaces.Services
         Task<RegulatoryReportSubmission> GetSubmissionByIdAsync(string id);
         Task<IEnumerable<RegulatoryReportSubmission>> GetSubmissionsByTemplateIdAsync(string templateId, DateTime? fromDate = null, DateTime? toDate = null);
         Task<IEnumerable<RegulatoryReportSubmission>> GetPendingSubmissionsAsync();
-        Task<RegulatoryReportSubmission> ApproveSubmissionAsync(string submissionId, Guid approverId, string comments);
+        Task<RegulatoryReportSubmission> ApproveSubmissionAsync(string submissionId, string approverId, string comments);
         Task<RegulatoryReportSubmission> RejectSubmissionAsync(string submissionId, string reason);
         
         // Schedule Management

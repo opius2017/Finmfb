@@ -8,11 +8,11 @@ namespace FinTech.Core.Domain.Entities.GeneralLedger;
 public class GeneralLedgerEntry : BaseEntity
 {
     [Required]
-    public Guid AccountId { get; set; }
+    public string AccountId { get; set; } = string.Empty;
     public virtual ChartOfAccounts? Account { get; set; }
     
     [Required]
-    public Guid TransactionId { get; set; }
+    public string TransactionId { get; set; } = string.Empty;
     
     [Required]
     [StringLength(50)]
@@ -45,7 +45,7 @@ public class GeneralLedgerEntry : BaseEntity
     [StringLength(100)]
     public string? Reference { get; set; }
     
-    public Guid? DocumentId { get; set; }
+    public string? DocumentId { get; set; }
     public string? FinancialPeriodId { get; set; }
     
     [Required]
@@ -56,5 +56,5 @@ public class GeneralLedgerEntry : BaseEntity
     public string? PostedBy { get; set; }
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }

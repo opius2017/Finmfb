@@ -1,0 +1,3 @@
+Build started...
+Build succeeded.
+Unable to create a 'DbContext' of type 'ApplicationDbContext'. The exception 'Cannot use table 'OutboxMessages' for entity type 'OutboxMessage' since it is being used for entity type 'OutboxMessage' and potentially other entity types, but there is no linking relationship. Add a foreign key to 'OutboxMessage' on the primary key properties and pointing to the primary key on another entity type mapped to 'OutboxMessages'.' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728

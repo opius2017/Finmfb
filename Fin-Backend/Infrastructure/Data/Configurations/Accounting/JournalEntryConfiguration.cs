@@ -16,6 +16,10 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
                 .HasMaxLength(50)
                 .IsRequired();
                 
+            builder.Property(j => j.TenantId)
+                .HasMaxLength(50)
+                .IsRequired();
+                
             builder.Property(j => j.JournalEntryNumber)
                 .HasMaxLength(50)
                 .IsRequired();
@@ -33,9 +37,7 @@ namespace FinTech.Infrastructure.Data.Configurations.Accounting
             builder.Property(j => j.Status)
                 .IsRequired();
                 
-            builder.Property(j => j.IsSystemGenerated)
-                .HasDefaultValue(false)
-                .IsRequired();
+
                 
             builder.Property(j => j.IsRecurring)
                 .HasDefaultValue(false)

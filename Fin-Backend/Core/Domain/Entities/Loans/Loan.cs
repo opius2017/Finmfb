@@ -26,12 +26,12 @@ public class Loan : BaseEntity
 
     [Required]
     [ForeignKey(nameof(LoanProduct))]
-    public Guid LoanProductId { get; set; }
+    public string LoanProductId { get; set; } = string.Empty;
 
     public LoanProduct? LoanProduct { get; set; }
 
     [ForeignKey(nameof(LoanApplication))]
-    public Guid? LoanApplicationId { get; set; }
+    public string? LoanApplicationId { get; set; }
 
     public LoanApplication? LoanApplication { get; set; }
 

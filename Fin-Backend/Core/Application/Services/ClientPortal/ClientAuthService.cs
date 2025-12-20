@@ -23,13 +23,13 @@ namespace FinTech.Core.Application.Services.ClientPortal
     public interface IClientAuthService
     {
         Task<BaseResponse<LoginResponse>> ClientLoginAsync(LoginRequest request, string ipAddress, string userAgent, string deviceId);
-        Task<BaseResponse<bool>> ClientLogoutAsync(Guid customerId, string sessionToken);
+        Task<BaseResponse<bool>> ClientLogoutAsync(string customerId, string sessionToken);
         Task<BaseResponse<string>> RefreshTokenAsync(string refreshToken, string ipAddress);
-        Task<BaseResponse<bool>> ValidateClientSessionAsync(Guid customerId, string sessionToken);
+        Task<BaseResponse<bool>> ValidateClientSessionAsync(string customerId, string sessionToken);
         Task<BaseResponse<bool>> SendPasswordResetLinkAsync(string email);
         Task<BaseResponse<bool>> ResetPasswordAsync(string email, string token, string newPassword);
-        Task<BaseResponse<bool>> VerifyTwoFactorCodeAsync(Guid customerId, string code);
-        Task<BaseResponse<bool>> SendTwoFactorCodeAsync(Guid customerId, string method);
+        Task<BaseResponse<bool>> VerifyTwoFactorCodeAsync(string customerId, string code);
+        Task<BaseResponse<bool>> SendTwoFactorCodeAsync(string customerId, string method);
     }
 
     public class ClientAuthService : IClientAuthService
@@ -79,7 +79,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     return BaseResponse<LoginResponse>.Failure("User is not authorized to access client portal");
                 }
 
-                var customerId = user.CustomerId ?? Guid.Empty; // Handle conversion from Guid? to Guid
+                var customerId = user.CustomerId ?? string.Empty; // Now string
                 var clientProfile = await _context.ClientPortalProfiles.FirstOrDefaultAsync(p => p.CustomerId == customerId);
 
                 if (clientProfile == null)
@@ -135,7 +135,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     _context.ClientDevices.Add(newDevice);
                     await _context.SaveChangesAsync(CancellationToken.None);
 
-                    await _notificationService.CreateNotificationAsync(new ClientPortalDtos.CreateNotificationDto // Ensure this DTO matches requirements
+                    await _notificationService.CreateNotificationAsync(new ClientPortalDtos.CreateNotificationDto
                     {
                         CustomerId = customerId,
                         Title = "New Device Login",
@@ -148,12 +148,12 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 bool requiresTwoFactor = clientProfile.TwoFactorEnabled;
                 if (requiresTwoFactor)
                 {
-                    await SendTwoFactorCodeAsync(customerId, clientProfile.TwoFactorMethod); // user.Id is already Guid
+                    await SendTwoFactorCodeAsync(customerId, clientProfile.TwoFactorMethod);
                 }
 
                 var userDto = new UserDto
                 {
-                    Id = user.Id, // user.Id is Guid
+                    Id = user.Id.ToString(),
                     Email = user.Email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
@@ -169,7 +169,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 {
                     Token = jwt,
                     RequiresMfa = requiresTwoFactor,
-                    // RefreshToken = refreshToken, // Assuming LoginResponse might need update or property mapping
+                    // RefreshToken = refreshToken, 
                     // ExpiresAt = expiresAt
                 };
 
@@ -182,7 +182,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<BaseResponse<bool>> ClientLogoutAsync(Guid customerId, string sessionToken)
+        public async Task<BaseResponse<bool>> ClientLogoutAsync(string customerId, string sessionToken)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     return BaseResponse<string>.Failure("Invalid or expired refresh token");
                 }
 
-                var user = await _userManager.FindByIdAsync(session.ClientPortalProfile.Customer.Id.ToString()); // FindByIdAsync takes string
+                var user = await _userManager.FindByIdAsync(session.ClientPortalProfile.Customer.Id.ToString());
                 if (user == null)
                 {
                     return BaseResponse<string>.Failure("User not found");
@@ -245,7 +245,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
             }
         }
 
-        public async Task<BaseResponse<bool>> ValidateClientSessionAsync(Guid customerId, string sessionToken)
+        public async Task<BaseResponse<bool>> ValidateClientSessionAsync(string customerId, string sessionToken)
         {
             try
             {
@@ -277,7 +277,6 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 var user = await _userManager.FindByEmailAsync(email);
                 if (user == null || !(await _userManager.GetRolesAsync(user)).Contains("Client"))
                 {
-                    // Don't reveal that the user does not exist or is not a client.
                     return BaseResponse<bool>.SuccessResponse(true, "If your email is registered, you will receive a password reset link shortly.");
                 }
 
@@ -287,7 +286,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 await _notificationService.CreateNotificationAsync(new ClientPortalDtos.CreateNotificationDto
                 {
-                    CustomerId = user.CustomerId ?? Guid.Empty,
+                    CustomerId = user.CustomerId ?? string.Empty,
                     Title = "Password Reset Request",
                     Message = $"You have requested to reset your password. Please click the link below to reset your password. If you did not request this, please ignore this email.<br><br><a href='{resetLink}'>Reset Password</a><br><br>This link will expire in 24 hours.",
                     NotificationType = "security",
@@ -321,7 +320,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                     return BaseResponse<bool>.Failure($"Failed to reset password: {errors}");
                 }
 
-                var profile = await _context.ClientPortalProfiles.FirstOrDefaultAsync(p => p.CustomerId == (user.CustomerId ?? Guid.Empty));
+                var profile = await _context.ClientPortalProfiles.FirstOrDefaultAsync(p => p.CustomerId == (user.CustomerId ?? string.Empty));
                 if (profile != null && profile.IsLocked)
                 {
                     profile.IsLocked = false;
@@ -330,7 +329,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 }
 
                 // Invalidate all existing sessions for the user
-                var sessions = await _context.ClientSessions.Where(s => s.ClientPortalProfile.CustomerId == (user.CustomerId ?? Guid.Empty)).ToListAsync();
+                var sessions = await _context.ClientSessions.Where(s => s.ClientPortalProfile.CustomerId == (user.CustomerId ?? string.Empty)).ToListAsync();
                 if (sessions.Any())
                 {
                     _context.ClientSessions.RemoveRange(sessions);
@@ -340,7 +339,7 @@ namespace FinTech.Core.Application.Services.ClientPortal
 
                 await _notificationService.CreateNotificationAsync(new ClientPortalDtos.CreateNotificationDto
                 {
-                    CustomerId = user.CustomerId ?? Guid.Empty,
+                    CustomerId = user.CustomerId ?? string.Empty,
                     Title = "Password Reset Successful",
                     Message = "Your password has been successfully reset. If you did not make this change, please contact customer support immediately.",
                     NotificationType = "security",
@@ -355,9 +354,10 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 return BaseResponse<bool>.Failure("An error occurred while resetting password.");
             }
         }
-        public async Task<BaseResponse<bool>> VerifyTwoFactorCodeAsync(Guid customerId, string code)
+
+        public async Task<BaseResponse<bool>> VerifyTwoFactorCodeAsync(string customerId, string code)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.CustomerId == customerId); // u.Id is Guid
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.CustomerId == customerId);
             if (user == null)
             {
                 return BaseResponse<bool>.Failure("User not found.");
@@ -379,9 +379,9 @@ namespace FinTech.Core.Application.Services.ClientPortal
             return BaseResponse<bool>.Failure("Invalid two-factor code.");
         }
 
-        public async Task<BaseResponse<bool>> SendTwoFactorCodeAsync(Guid customerId, string method)
+        public async Task<BaseResponse<bool>> SendTwoFactorCodeAsync(string customerId, string method)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.CustomerId == customerId); // u.Id is Guid
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.CustomerId == customerId);
             if (user == null)
             {
                 return BaseResponse<bool>.Failure("User not found.");
@@ -393,10 +393,9 @@ namespace FinTech.Core.Application.Services.ClientPortal
                 return BaseResponse<bool>.Failure("Two-factor authentication is not enabled for this account.");
             }
 
-            // Ensure the requested method is valid for the user
             if (string.IsNullOrEmpty(method) || !profile.TwoFactorMethod.Equals(method, StringComparison.OrdinalIgnoreCase))
             {
-                method = profile.TwoFactorMethod; // Default to the user's preferred method
+                method = profile.TwoFactorMethod;
             }
 
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, method);

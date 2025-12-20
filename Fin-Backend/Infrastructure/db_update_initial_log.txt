@@ -1,0 +1,52 @@
+Build started...
+Build succeeded.
+Applying migration '20251219121044_InitialCreate'.
+Failed executing DbCommand (192ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+CREATE TABLE [loans].[LoanFees] (
+    [Id] nvarchar(450) NOT NULL,
+    [LoanId] nvarchar(100) NULL,
+    [LoanProductId] nvarchar(100) NULL,
+    [FeeType] nvarchar(100) NOT NULL,
+    [Name] nvarchar(150) NOT NULL,
+    [Description] nvarchar(500) NOT NULL,
+    [Amount] decimal(18,2) NOT NULL,
+    [Percentage] decimal(18,4) NULL,
+    [CalculationMethod] int NOT NULL,
+    [IsOneTime] bit NOT NULL,
+    [IsRequired] bit NOT NULL,
+    [DueDate] datetime2 NULL,
+    [IsPaid] bit NOT NULL,
+    [PaidDate] datetime2 NULL,
+    [AppliedAt] nvarchar(50) NOT NULL,
+    [Reference] nvarchar(max) NOT NULL,
+    [LoanId1] nvarchar(100) NOT NULL,
+    [CreatedDate] datetime2 NOT NULL,
+    [CreatedBy] nvarchar(max) NULL,
+    [LastModifiedDate] datetime2 NULL,
+    [LastModifiedBy] nvarchar(max) NULL,
+    CONSTRAINT [PK_LoanFees] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_LoanFees_LoanProducts_LoanProductId] FOREIGN KEY ([LoanProductId]) REFERENCES [loans].[LoanProducts] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LoanFees_Loans_LoanId] FOREIGN KEY ([LoanId]) REFERENCES [loans].[Loans] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_LoanFees_Loans_LoanId1] FOREIGN KEY ([LoanId1]) REFERENCES [loans].[Loans] ([Id]) ON DELETE CASCADE
+);
+Microsoft.Data.SqlClient.SqlException (0x80131904): Column 'loans.LoanProducts.Id' is not the same length or scale as referencing column 'LoanFees.LoanProductId' in foreign key 'FK_LoanFees_LoanProducts_LoanProductId'. Columns participating in a foreign key relationship must be defined with the same length and scale.
+Could not create constraint or index. See previous errors.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteNonQueryTds(String methodName, Boolean isAsync, Int32 timeout, Boolean asyncWrite)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String methodName)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteNonQuery(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Migrations.MigrationCommand.ExecuteNonQuery(IRelationalConnection connection, IReadOnlyDictionary`2 parameterValues)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationCommandExecutor.ExecuteNonQuery(IEnumerable`1 migrationCommands, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Migrations.Internal.Migrator.Migrate(String targetMigration)
+   at Microsoft.EntityFrameworkCore.Design.Internal.MigrationsOperations.UpdateDatabase(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabaseImpl(String targetMigration, String connectionString, String contextType)
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.UpdateDatabase.<>c__DisplayClass0_0.<.ctor>b__0()
+   at Microsoft.EntityFrameworkCore.Design.OperationExecutor.OperationBase.Execute(Action action)
+ClientConnectionId:154fb677-fc85-42cf-83ae-d3b0626854cd
+Error Number:1753,State:0,Class:16
+Column 'loans.LoanProducts.Id' is not the same length or scale as referencing column 'LoanFees.LoanProductId' in foreign key 'FK_LoanFees_LoanProducts_LoanProductId'. Columns participating in a foreign key relationship must be defined with the same length and scale.
+Could not create constraint or index. See previous errors.

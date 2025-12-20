@@ -63,7 +63,7 @@ namespace FinTech.Core.Application.Features.Loans.Commands.CreateLoan
             {
                 LoanNumber = loanNumber,
                 CustomerId = customer.Id,
-                LoanProductId = Guid.Parse(loanProduct.Id),
+                LoanProductId = loanProduct.Id,
                 PrincipalAmount = request.LoanAmount,
                 InterestRate = interestRate,
                 TenureMonths = request.TenorInMonths,

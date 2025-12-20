@@ -9,15 +9,15 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     public class NotificationDto
     {
         public Guid Id { get; set; }
-        public string NotificationType { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string Action { get; set; }
-        public string ActionData { get; set; }
+        public string NotificationType { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public string Action { get; set; } = string.Empty;
+        public string ActionData { get; set; } = string.Empty;
         public bool IsRead { get; set; }
         public DateTime? ReadAt { get; set; }
-        public string[] DeliveryChannels { get; set; }
-        public string DeliveryStatus { get; set; }
+        public string[] DeliveryChannels { get; set; } = Array.Empty<string>();
+        public string DeliveryStatus { get; set; } = string.Empty;
         public DateTime? ExpiryDate { get; set; }
         public bool IsActionable { get; set; }
         public bool IsDismissed { get; set; }
@@ -29,7 +29,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     {
         public int TotalCount { get; set; }
         public int UnreadCount { get; set; }
-        public Dictionary<string, int> CountByType { get; set; }
+        public Dictionary<string, int> CountByType { get; set; } = new Dictionary<string, int>();
     }
 
     public class MarkNotificationReadDto
@@ -39,7 +39,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
 
     public class MarkAllNotificationsReadDto
     {
-        public string NotificationType { get; set; }
+        public string NotificationType { get; set; } = string.Empty;
     }
 
     public class DismissNotificationDto
@@ -49,7 +49,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
 
     public class NotificationFilterDto
     {
-        public string NotificationType { get; set; }
+        public string? NotificationType { get; set; }
         public bool? IsRead { get; set; }
         public bool? IsActionable { get; set; }
         public bool? IsDismissed { get; set; }
@@ -61,21 +61,21 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     public class CreateNotificationDto
     {
         [Required]
-        public string NotificationType { get; set; }
+        public string NotificationType { get; set; } = string.Empty;
         
         [Required]
         [StringLength(100)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         
         [Required]
         [StringLength(500)]
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
         
-        public string Action { get; set; }
+        public string Action { get; set; } = string.Empty;
         
-        public string ActionData { get; set; }
+        public string ActionData { get; set; } = string.Empty;
         
-        public NotificationChannel[] DeliveryChannels { get; set; }
+        public NotificationChannel[] DeliveryChannels { get; set; } = Array.Empty<NotificationChannel>();
         
         public DateTime? ExpiryDate { get; set; }
         
@@ -84,17 +84,17 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
         public int Priority { get; set; }
         
         [Required]
-        public Guid CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
     }
 
     public class NotificationTemplateDto
     {
         public Guid Id { get; set; }
-        public string TemplateCode { get; set; }
-        public string NotificationType { get; set; }
-        public string Title { get; set; }
-        public string MessageTemplate { get; set; }
-        public string DefaultAction { get; set; }
+        public string TemplateCode { get; set; } = string.Empty;
+        public string NotificationType { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string MessageTemplate { get; set; } = string.Empty;
+        public string DefaultAction { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public bool RequiresSms { get; set; }
         public bool RequiresEmail { get; set; }
@@ -107,21 +107,21 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
     public class SendTemplatedNotificationDto
     {
         [Required]
-        public string TemplateCode { get; set; }
+        public string TemplateCode { get; set; } = string.Empty;
         
         [Required]
-        public Guid CustomerId { get; set; }
+        public string CustomerId { get; set; } = string.Empty;
         
-        public Dictionary<string, string> TemplateData { get; set; }
+        public Dictionary<string, string> TemplateData { get; set; } = new Dictionary<string, string>();
         
-        public NotificationChannel[] OverrideChannels { get; set; }
+        public NotificationChannel[] OverrideChannels { get; set; } = Array.Empty<NotificationChannel>();
     }
 
     // Mapping classes for domain entities to DTOs
     public class NotificationMappingProfile
     {
         // Maps ClientNotification -> NotificationDto
-        public static NotificationDto MapToDto(FinTech.Core.Domain.Entities.ClientPortal.ClientNotification notification)
+        public static NotificationDto? MapToDto(FinTech.Core.Domain.Entities.ClientPortal.ClientNotification notification)
         {
             if (notification == null)
                 return null;
@@ -136,7 +136,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
                 ActionData = notification.ActionData,
                 IsRead = notification.IsRead,
                 ReadAt = notification.ReadAt,
-                DeliveryChannels = notification.DeliveryChannels?.Split(',', StringSplitOptions.RemoveEmptyEntries),
+                DeliveryChannels = notification.DeliveryChannels?.Split(',', StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>(),
                 DeliveryStatus = notification.DeliveryStatus,
                 ExpiryDate = notification.ExpiryDate,
                 IsActionable = notification.IsActionable,
@@ -147,7 +147,7 @@ namespace FinTech.Core.Application.DTOs.ClientPortal
         }
 
         // Maps NotificationTemplate -> NotificationTemplateDto
-        public static NotificationTemplateDto MapToDto(FinTech.Core.Domain.Entities.ClientPortal.NotificationTemplate template)
+        public static NotificationTemplateDto? MapToDto(FinTech.Core.Domain.Entities.ClientPortal.NotificationTemplate template)
         {
             if (template == null)
                 return null;

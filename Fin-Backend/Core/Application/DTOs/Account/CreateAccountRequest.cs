@@ -13,7 +13,7 @@ namespace FinTech.Core.Application.DTOs.Account
         /// <example>My Savings Account</example>
         [Required]
         [StringLength(100, MinimumLength = 3)]
-        public string AccountName { get; set; }
+        public string AccountName { get; set; } = string.Empty;
 
         /// <summary>
         /// Type of account
@@ -21,7 +21,7 @@ namespace FinTech.Core.Application.DTOs.Account
         /// <example>Savings</example>
         [Required]
         [StringLength(50)]
-        public string AccountType { get; set; }
+        public string AccountType { get; set; } = string.Empty;
 
         /// <summary>
         /// Currency code
@@ -29,6 +29,6 @@ namespace FinTech.Core.Application.DTOs.Account
         /// <example>NGN</example>
         [Required]
         [StringLength(3, MinimumLength = 3)]
-        public string Currency { get; set; }
+        public string Currency { get; set; } = string.Empty;
     }
 }

@@ -9,20 +9,20 @@ namespace FinTech.Core.Application.Interfaces
 {
     public interface IClientPaymentService
     {
-        Task<PaymentResult> ProcessBillPaymentAsync(Guid customerId, Guid fromAccountId, Guid billerId, decimal amount, string reference, bool isRecurring = false);
-        Task<PaymentResult> ProcessTransferAsync(Guid customerId, Guid fromAccountId, Guid toAccountId, decimal amount, string reference, bool isRecurring = false);
-        Task<PaymentResult> ProcessExternalTransferAsync(Guid customerId, Guid fromAccountId, Guid beneficiaryId, decimal amount, string reference, bool isRecurring = false);
-        Task<BaseResponse<List<BillPaymentDto>>> GetRecentBillPaymentsAsync(Guid customerId, int count = 5);
-        Task<BaseResponse<List<TransferDto>>> GetRecentTransfersAsync(Guid customerId, int count = 5);
-        Task<BaseResponse<List<RecurringPaymentDto>>> GetRecurringPaymentsAsync(Guid customerId);
-        Task<BaseResponse<RecurringPaymentDto>> GetRecurringPaymentDetailsAsync(Guid customerId, Guid paymentId);
-        Task<BaseResponse<RecurringPaymentDto>> CreateRecurringPaymentAsync(Guid customerId, RecurringPaymentCreateDto paymentDto);
-        Task<BaseResponse<RecurringPaymentDto>> UpdateRecurringPaymentAsync(Guid customerId, Guid paymentId, RecurringPaymentUpdateDto paymentDto);
-        Task<BaseResponse<bool>> CancelRecurringPaymentAsync(Guid customerId, Guid paymentId);
+        Task<PaymentResult> ProcessBillPaymentAsync(string customerId, string fromAccountId, string billerId, decimal amount, string reference, bool isRecurring = false);
+        Task<PaymentResult> ProcessTransferAsync(string customerId, string fromAccountId, string toAccountId, decimal amount, string reference, bool isRecurring = false);
+        Task<PaymentResult> ProcessExternalTransferAsync(string customerId, string fromAccountId, string beneficiaryId, decimal amount, string reference, bool isRecurring = false);
+        Task<BaseResponse<List<BillPaymentDto>>> GetRecentBillPaymentsAsync(string customerId, int count = 5);
+        Task<BaseResponse<List<TransferDto>>> GetRecentTransfersAsync(string customerId, int count = 5);
+        Task<BaseResponse<List<RecurringPaymentDto>>> GetRecurringPaymentsAsync(string customerId);
+        Task<BaseResponse<RecurringPaymentDto>> GetRecurringPaymentDetailsAsync(string customerId, string paymentId);
+        Task<BaseResponse<RecurringPaymentDto>> CreateRecurringPaymentAsync(string customerId, RecurringPaymentCreateDto paymentDto);
+        Task<BaseResponse<RecurringPaymentDto>> UpdateRecurringPaymentAsync(string customerId, string paymentId, RecurringPaymentUpdateDto paymentDto);
+        Task<BaseResponse<bool>> CancelRecurringPaymentAsync(string customerId, string paymentId);
         Task<BaseResponse<List<BillerDto>>> GetAvailableBillersAsync();
-        Task<BaseResponse<List<SavedPayeeDto>>> GetSavedPayeesAsync(Guid customerId);
-        Task<BaseResponse<SavedPayeeDto>> CreateSavedPayeeAsync(Guid customerId, SavedPayeeCreateDto payeeDto);
-        Task<BaseResponse<SavedPayeeDto>> UpdateSavedPayeeAsync(Guid customerId, Guid payeeId, SavedPayeeUpdateDto payeeDto);
-        Task<BaseResponse<bool>> DeleteSavedPayeeAsync(Guid customerId, Guid payeeId);
+        Task<BaseResponse<List<SavedPayeeDto>>> GetSavedPayeesAsync(string customerId);
+        Task<BaseResponse<SavedPayeeDto>> CreateSavedPayeeAsync(string customerId, SavedPayeeCreateDto payeeDto);
+        Task<BaseResponse<SavedPayeeDto>> UpdateSavedPayeeAsync(string customerId, string payeeId, SavedPayeeUpdateDto payeeDto);
+        Task<BaseResponse<bool>> DeleteSavedPayeeAsync(string customerId, string payeeId);
     }
 }

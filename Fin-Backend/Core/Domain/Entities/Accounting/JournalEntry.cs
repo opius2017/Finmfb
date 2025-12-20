@@ -63,7 +63,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
         public bool IsSystemGenerated => EntryType == JournalEntryType.SystemGenerated;
         public string? OriginalJournalEntryId { get; private set; }
         
-        public Guid TenantId { get; private set; }
+        public string TenantId { get; private set; }
         public decimal TotalDebit { get; private set; }
         public decimal TotalCredit { get; private set; }
         
@@ -85,7 +85,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
             bool isRecurring = false,
             string? recurrencePattern = null,
             string? notes = null,
-            Guid tenantId = default,
+            string? tenantId = null,
             string? preparedBy = null,
             DateTime? preparedDate = null)
         {
@@ -101,7 +101,7 @@ namespace FinTech.Core.Domain.Entities.Accounting
             IsRecurring = isRecurring;
             RecurrencePattern = recurrencePattern;
             Notes = notes;
-            TenantId = tenantId;
+            TenantId = tenantId ?? string.Empty;
             PreparedBy = preparedBy;
             PreparedDate = preparedDate ?? DateTime.UtcNow;
             

@@ -154,7 +154,7 @@ namespace FinTech.Core.Application.DTOs.Accounting
     
     public class AssetCategoryReportDto
     {
-        public string CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
         public int AssetCount { get; set; }
         public decimal TotalPurchaseCost { get; set; }
         public decimal TotalAccumulatedDepreciation { get; set; }

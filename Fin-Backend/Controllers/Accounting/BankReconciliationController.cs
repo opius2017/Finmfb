@@ -90,9 +90,9 @@ public class BankReconciliationController : ControllerBase
     [HttpPost("import-statement")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> ImportBankStatement([FromForm] IFormFile file, [FromForm] string bankAccountId)
+    public async Task<IActionResult> ImportBankStatement([FromForm] ImportStatementDto dto)
     {
-        if (file == null || file.Length == 0)
+        if (dto.File == null || dto.File.Length == 0)
         {
             return BadRequest("File is required");
         }
@@ -100,20 +100,20 @@ public class BankReconciliationController : ControllerBase
         try
         {
             _logger.LogInformation("Importing bank statement for account {BankAccountId}, File: {FileName}", 
-                bankAccountId, file.FileName);
+                dto.BankAccountId, dto.File.FileName);
 
             // Read file content
-            using var stream = file.OpenReadStream();
+            using var stream = dto.File.OpenReadStream();
             using var reader = new StreamReader(stream);
             var fileContent = await reader.ReadToEndAsync();
 
             // Create import command
             var command = new ImportBankStatementCommand
             {
-                BankAccountId = bankAccountId,
-                FileName = file.FileName,
+                BankAccountId = dto.BankAccountId,
+                FileName = dto.File.FileName,
                 FileContent = fileContent,
-                FileType = Path.GetExtension(file.FileName).ToLowerInvariant()
+                FileType = Path.GetExtension(dto.File.FileName).ToLowerInvariant()
             };
 
             var result = await _mediator.Send(command);
@@ -132,7 +132,7 @@ public class BankReconciliationController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error importing bank statement for account {BankAccountId}", bankAccountId);
+            _logger.LogError(ex, "Error importing bank statement for account {BankAccountId}", dto.BankAccountId);
             return StatusCode(500, "An error occurred while importing the bank statement");
         }
     }
@@ -175,5 +175,11 @@ public class BankReconciliationController : ControllerBase
 
         return Ok(new { message = "Reconciliation approved successfully" });
     }
+}
+
+public class ImportStatementDto
+{
+    public IFormFile File { get; set; }
+    public string BankAccountId { get; set; }
 }
 

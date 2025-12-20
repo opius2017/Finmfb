@@ -1,0 +1,3 @@
+Build started...
+Build succeeded.
+Unable to create a 'DbContext' of type 'ApplicationDbContext'. The exception 'The relationship from 'RegulatoryReportSection.ParentSection' to 'RegulatoryReportSection.ChildSections' with foreign key properties {'ParentSectionId' : int?} cannot target the primary key {'Id' : string} because it is not compatible. Configure a principal key or a set of foreign key properties with compatible types for this relationship.' was thrown while attempting to create an instance. For the different patterns supported at design time, see https://go.microsoft.com/fwlink/?linkid=851728

@@ -15,8 +15,7 @@ namespace FinTech.Infrastructure.Persistence.Configurations
             builder.Property(lf => lf.LoanId)
                 .HasMaxLength(100);
                 
-            builder.Property(lf => lf.LoanProductId)
-                .HasMaxLength(100);
+            builder.Property(lf => lf.LoanProductId);
                 
             builder.Property(lf => lf.FeeType)
                 .IsRequired()

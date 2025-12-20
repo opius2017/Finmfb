@@ -12,20 +12,20 @@ namespace FinTech.Core.Application.Services.Customers;
 public interface ICustomerService
 {
     Task<CustomerInquiry> CreateInquiryAsync(CreateInquiryRequest request);
-    Task<CustomerInquiry> GetInquiryByIdAsync(Guid inquiryId, Guid tenantId);
-    Task<List<CustomerInquiry>> GetCustomerInquiriesAsync(Guid customerId, Guid tenantId);
-    Task<List<CustomerInquiry>> GetPendingInquiriesAsync(Guid tenantId);
+    Task<CustomerInquiry> GetInquiryByIdAsync(Guid inquiryId, string tenantId);
+    Task<List<CustomerInquiry>> GetCustomerInquiriesAsync(string customerId, string tenantId);
+    Task<List<CustomerInquiry>> GetPendingInquiriesAsync(string tenantId);
     Task<bool> RespondToInquiryAsync(Guid inquiryId, string response, string respondedBy);
     
     Task<CustomerComplaint> CreateComplaintAsync(CreateComplaintRequest request);
-    Task<CustomerComplaint> GetComplaintByIdAsync(Guid complaintId, Guid tenantId);
-    Task<List<CustomerComplaint>> GetCustomerComplaintsAsync(Guid customerId, Guid tenantId);
-    Task<List<CustomerComplaint>> GetPendingComplaintsAsync(Guid tenantId);
+    Task<CustomerComplaint> GetComplaintByIdAsync(Guid complaintId, string tenantId);
+    Task<List<CustomerComplaint>> GetCustomerComplaintsAsync(string customerId, string tenantId);
+    Task<List<CustomerComplaint>> GetPendingComplaintsAsync(string tenantId);
     Task<bool> UpdateComplaintStatusAsync(Guid complaintId, ComplaintStatus status, string resolution, string updatedBy);
     
     Task<CustomerCommunicationLog> LogCommunicationAsync(CreateCommunicationLogRequest request);
-    Task<List<CustomerCommunicationLog>> GetCustomerCommunicationLogsAsync(Guid customerId, Guid tenantId);
-    Task<CustomerSnapshot> GetCustomerSnapshotAsync(Guid customerId, Guid tenantId);
+    Task<List<CustomerCommunicationLog>> GetCustomerCommunicationLogsAsync(string customerId, string tenantId);
+    Task<CustomerSnapshot> GetCustomerSnapshotAsync(string customerId, string tenantId);
 }
 
 public class CustomerService : ICustomerService
@@ -73,14 +73,14 @@ public class CustomerService : ICustomerService
         return inquiry;
     }
 
-    public async Task<CustomerInquiry> GetInquiryByIdAsync(Guid inquiryId, Guid tenantId)
+    public async Task<CustomerInquiry> GetInquiryByIdAsync(Guid inquiryId, string tenantId)
     {
         return await _context.CustomerInquiries
             .Include(i => i.Customer)
             .FirstOrDefaultAsync(i => i.Id == inquiryId.ToString() && i.TenantId == tenantId);
     }
 
-    public async Task<List<CustomerInquiry>> GetCustomerInquiriesAsync(Guid customerId, Guid tenantId)
+    public async Task<List<CustomerInquiry>> GetCustomerInquiriesAsync(string customerId, string tenantId)
     {
         return await _context.CustomerInquiries
             .Where(i => i.CustomerId == customerId && i.TenantId == tenantId)
@@ -88,7 +88,7 @@ public class CustomerService : ICustomerService
             .ToListAsync();
     }
 
-    public async Task<List<CustomerInquiry>> GetPendingInquiriesAsync(Guid tenantId)
+    public async Task<List<CustomerInquiry>> GetPendingInquiriesAsync(string tenantId)
     {
         return await _context.CustomerInquiries
             .Include(i => i.Customer)
@@ -165,14 +165,14 @@ public class CustomerService : ICustomerService
         return complaint;
     }
 
-    public async Task<CustomerComplaint> GetComplaintByIdAsync(Guid complaintId, Guid tenantId)
+    public async Task<CustomerComplaint> GetComplaintByIdAsync(Guid complaintId, string tenantId)
     {
         return await _context.CustomerComplaints
             .Include(c => c.Customer)
             .FirstOrDefaultAsync(c => c.Id == complaintId.ToString() && c.TenantId == tenantId);
     }
 
-    public async Task<List<CustomerComplaint>> GetCustomerComplaintsAsync(Guid customerId, Guid tenantId)
+    public async Task<List<CustomerComplaint>> GetCustomerComplaintsAsync(string customerId, string tenantId)
     {
         return await _context.CustomerComplaints
             .Where(c => c.CustomerId == customerId && c.TenantId == tenantId)
@@ -180,7 +180,7 @@ public class CustomerService : ICustomerService
             .ToListAsync();
     }
 
-    public async Task<List<CustomerComplaint>> GetPendingComplaintsAsync(Guid tenantId)
+    public async Task<List<CustomerComplaint>> GetPendingComplaintsAsync(string tenantId)
     {
         return await _context.CustomerComplaints
             .Include(c => c.Customer)
@@ -263,7 +263,7 @@ public class CustomerService : ICustomerService
         return log;
     }
 
-    public async Task<List<CustomerCommunicationLog>> GetCustomerCommunicationLogsAsync(Guid customerId, Guid tenantId)
+    public async Task<List<CustomerCommunicationLog>> GetCustomerCommunicationLogsAsync(string customerId, string tenantId)
     {
         return await _context.CustomerCommunicationLogs
             .Where(c => c.CustomerId == customerId && c.TenantId == tenantId)
@@ -275,18 +275,17 @@ public class CustomerService : ICustomerService
 
     #region Customer Snapshot
 
-    public async Task<CustomerSnapshot> GetCustomerSnapshotAsync(Guid customerId, Guid tenantId)
+    public async Task<CustomerSnapshot> GetCustomerSnapshotAsync(string customerId, string tenantId)
     {
         var customer = await _context.Customers
             .Include(c => c.Documents)
-            .FirstOrDefaultAsync(c => c.Id == customerId.ToString() && c.TenantId == tenantId);
+            .FirstOrDefaultAsync(c => c.Id == customerId && c.TenantId == tenantId);
         
         if (customer == null) return null;
 
         var snapshot = new CustomerSnapshot
         {
-            // FinTech Best Practice: Convert string Id to Guid for CustomerId
-            CustomerId = Guid.Parse(customer.Id),
+            CustomerId = customer.Id,
             CustomerNumber = customer.CustomerNumber,
             CustomerName = customer.GetFullName(),
             CustomerType = customer.CustomerType,
@@ -310,7 +309,7 @@ public class CustomerService : ICustomerService
         return snapshot;
     }
 
-    private async Task<decimal> GetTotalDepositsAsync(Guid customerId, Guid tenantId)
+    private async Task<decimal> GetTotalDepositsAsync(string customerId, string tenantId)
     {
         return await _context.DepositAccounts
             .Where(a => a.CustomerId == customerId && 
@@ -319,12 +318,12 @@ public class CustomerService : ICustomerService
             .SumAsync(a => a.CurrentBalance);
     }
 
-    private async Task<decimal> GetTotalLoansAsync(Guid customerId, Guid tenantId)
+    private async Task<decimal> GetTotalLoansAsync(string customerId, string tenantId)
     {
-        // FinTech Best Practice: Convert Guid to string for CustomerId comparison, convert Guid tenantId to string
+        // CustomerId is now string in LoanAccount
         return await _context.LoanAccounts
-            .Where(a => a.CustomerId.ToString() == customerId.ToString() && 
-                       a.TenantId == tenantId.ToString() && 
+            .Where(a => a.CustomerId == customerId && 
+                       a.TenantId == tenantId && 
                        (a.Status == LoanStatus.Active.ToString() || a.Status == LoanStatus.Disbursed.ToString()))
             // FinTech Best Practice: LoanAccount properties not available, returning 0
             // .SumAsync(a => a.PrincipalAmount - a.TotalRepaid);
@@ -332,13 +331,13 @@ public class CustomerService : ICustomerService
         return 0; // TODO: Calculate from actual loan data
     }
 
-    private async Task<List<DepositAccountSummary>> GetActiveDepositAccountsAsync(Guid customerId, Guid tenantId)
+    private async Task<List<DepositAccountSummary>> GetActiveDepositAccountsAsync(string customerId, string tenantId)
     {
-        // FinTech Best Practice: Convert Guid to string for CustomerId comparison, convert enum to string
+        // CustomerId is now string in DepositAccount
         return await _context.DepositAccounts
             .Include(a => a.Product)
-            .Where(a => a.CustomerId.ToString() == customerId.ToString() && 
-                       a.TenantId.ToString() == tenantId.ToString() && 
+            .Where(a => a.CustomerId == customerId && 
+                       a.TenantId == tenantId && 
                        a.Status.ToString() == AccountStatus.Active.ToString())
             .Select(a => new DepositAccountSummary
             {
@@ -352,46 +351,34 @@ public class CustomerService : ICustomerService
             .ToListAsync();
     }
 
-    private async Task<List<LoanAccountSummary>> GetActiveLoanAccountsAsync(Guid customerId, Guid tenantId)
+    private async Task<List<LoanAccountSummary>> GetActiveLoanAccountsAsync(string customerId, string tenantId)
     {
-        // FinTech Best Practice: Convert Guid to string for CustomerId comparison, enum to string for Status
+        // CustomerId is now string in LoanAccount
         return await _context.LoanAccounts
             .Include(a => a.LoanProduct)
-            .Where(a => a.CustomerId.ToString() == customerId.ToString() && // FinTech Best Practice: Convert Guid to string 
-                       a.TenantId == tenantId.ToString() && 
+            .Where(a => a.CustomerId == customerId && 
+                       a.TenantId == tenantId && 
                        (a.Status == LoanStatus.Active.ToString() || a.Status == LoanStatus.Disbursed.ToString()))
             .Select(a => new LoanAccountSummary
             {
                 AccountId = Guid.Parse(a.Id), // Convert string Id to Guid
                 AccountNumber = a.AccountNumber,
                 ProductName = a.LoanProduct != null ? a.LoanProduct.ProductName : "Unknown", // Handle null LoanProduct
-                // FinTech Best Practice: LoanAccount properties not available
-                // PrincipalAmount = a.PrincipalAmount,
-                // OutstandingPrincipal = a.OutstandingPrincipal,
-                // OutstandingInterest = a.OutstandingInterest,
-                // NextPaymentDate = a.RepaymentSchedule
-                //     .Where(s => s.Status == RepaymentStatus.Pending)
-                //     .OrderBy(s => s.DueDate)
-                //     .Select(s => s.DueDate)
-                //     .FirstOrDefault(),
                 PrincipalAmount = 0, // TODO: Get from actual loan data
                 OutstandingPrincipal = 0,
                 OutstandingInterest = 0,
                 NextPaymentDate = null,
-                // NextPaymentAmount = a.RepaymentSchedule
-                //     .Where(s => s.Status == RepaymentStatus.Pending)
-                //     .OrderBy(s => s.DueDate)
                 NextPaymentAmount = 0 // TODO: Get from actual repayment schedule
             })
             .ToListAsync();
     }
 
-    private async Task<List<TransactionSummary>> GetRecentTransactionsAsync(Guid customerId, Guid tenantId)
+    private async Task<List<TransactionSummary>> GetRecentTransactionsAsync(string customerId, string tenantId)
     {
         var depositTransactions = await _context.DepositTransactions
             .Include(t => t.Account)
-            .Where(t => t.Account.CustomerId.ToString() == customerId.ToString() && // FinTech Best Practice: Convert Guid to string 
-                       t.TenantId.ToString() == tenantId.ToString())
+            .Where(t => t.Account.CustomerId == customerId && 
+                       t.TenantId == tenantId)
             .OrderByDescending(t => t.TransactionDate)
             .Take(5)
             .Select(t => new TransactionSummary
@@ -409,8 +396,8 @@ public class CustomerService : ICustomerService
 
         var loanTransactions = await _context.LoanTransactions
             .Include(t => t.LoanAccount)
-            .Where(t => t.LoanAccount.CustomerId.ToString() == customerId.ToString() && // FinTech Best Practice: Convert Guid to string 
-                       t.TenantId.ToString() == tenantId.ToString())
+            .Where(t => t.LoanAccount.CustomerId == customerId && 
+                       t.TenantId == tenantId)
             .OrderByDescending(t => t.TransactionDate)
             .Take(5)
             .Select(t => new TransactionSummary
@@ -435,15 +422,14 @@ public class CustomerService : ICustomerService
         return allTransactions;
     }
 
-    private async Task<List<CommunicationSummary>> GetRecentCommunicationsAsync(Guid customerId, Guid tenantId)
+    private async Task<List<CommunicationSummary>> GetRecentCommunicationsAsync(string customerId, string tenantId)
     {
         return await _context.CustomerCommunicationLogs
-            .Where(c => c.CustomerId.ToString() == customerId.ToString() && c.TenantId.ToString() == tenantId.ToString())
+            .Where(c => c.CustomerId == customerId && c.TenantId == tenantId)
             .OrderByDescending(c => c.CommunicationDate)
             .Take(5)
             .Select(c => new CommunicationSummary
             {
-                // FinTech Best Practice: Convert string Id to Guid for CommunicationId
                 CommunicationId = Guid.Parse(c.Id),
                 CommunicationDate = c.CommunicationDate,
                 CommunicationType = c.CommunicationType.ToString(),
@@ -454,7 +440,7 @@ public class CustomerService : ICustomerService
             .ToListAsync();
     }
 
-    private async Task<int> GetOpenInquiriesCountAsync(Guid customerId, Guid tenantId)
+    private async Task<int> GetOpenInquiriesCountAsync(string customerId, string tenantId)
     {
         return await _context.CustomerInquiries
             .CountAsync(i => i.CustomerId == customerId && 
@@ -462,7 +448,7 @@ public class CustomerService : ICustomerService
                            i.Status == InquiryStatus.Pending);
     }
 
-    private async Task<int> GetOpenComplaintsCountAsync(Guid customerId, Guid tenantId)
+    private async Task<int> GetOpenComplaintsCountAsync(string customerId, string tenantId)
     {
         return await _context.CustomerComplaints
             .CountAsync(c => c.CustomerId == customerId && 
@@ -478,42 +464,42 @@ public class CustomerService : ICustomerService
 
 public class CreateInquiryRequest
 {
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public CommunicationChannel Channel { get; set; }
     public string Category { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public Priority Priority { get; set; } = Priority.Medium;
     public string CreatedBy { get; set; } = string.Empty;
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }
 
 public class CreateComplaintRequest
 {
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public CommunicationChannel Channel { get; set; }
     public string Category { get; set; } = string.Empty;
     public string Subject { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public Priority Priority { get; set; } = Priority.Medium;
     public string CreatedBy { get; set; } = string.Empty;
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }
 
 public class CreateCommunicationLogRequest
 {
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public CommunicationType CommunicationType { get; set; }
     public CommunicationChannel Channel { get; set; }
     public string Subject { get; set; } = string.Empty;
     public string Details { get; set; } = string.Empty;
     public string ContactedBy { get; set; } = string.Empty;
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }
 
 public class CustomerSnapshot
 {
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; } = string.Empty;
     public string CustomerNumber { get; set; } = string.Empty;
     public string CustomerName { get; set; } = string.Empty;
     public CustomerType CustomerType { get; set; }
@@ -531,7 +517,7 @@ public class CustomerSnapshot
     public List<CommunicationSummary> RecentCommunications { get; set; } = new();
     public int OpenInquiries { get; set; }
     public int OpenComplaints { get; set; }
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }
 
 public class DepositAccountSummary

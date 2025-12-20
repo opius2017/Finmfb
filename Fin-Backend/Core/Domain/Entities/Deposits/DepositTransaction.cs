@@ -8,7 +8,7 @@ namespace FinTech.Core.Domain.Entities.Deposits;
 public class DepositTransaction : BaseEntity
 {
     [Required]
-    public Guid AccountId { get; set; }
+    public string AccountId { get; set; } = string.Empty;
     public virtual DepositAccount Account { get; set; } = null!;
     
     [StringLength(50)]
@@ -60,7 +60,7 @@ public class DepositTransaction : BaseEntity
     public DateTime? AuthorizedDate { get; set; }
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 
     [StringLength(50)]
     public string? BeneficiaryAccountNumber { get; set; }

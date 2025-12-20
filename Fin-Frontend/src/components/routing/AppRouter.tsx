@@ -23,6 +23,14 @@ import InventoryPage from '../inventory/InventoryPage';
 import PayrollPage from '../payroll/PayrollPage';
 import { useGetUserPermissionsQuery } from '../../services/roleApi';
 import DepositDashboard from '../dashboard/DepositDashboard';
+import {
+  DelinquencyList,
+  PortfolioReportView,
+  NewLoanWizard,
+  ApplicationKanban,
+  DisbursementPage,
+  LoanDetailsPage
+} from '../../features/loans';
 
 const AppRouter: React.FC = () => {
   const dispatch = useDispatch();
@@ -37,15 +45,15 @@ const AppRouter: React.FC = () => {
 
   const getDefaultRoute = () => {
     if (!userPermissions?.data) return '/dashboard';
-    
+
     const { defaultModule } = userPermissions.data;
-    
+
     if (defaultModule === 'executive') return '/dashboard/executive';
     if (defaultModule === 'loans') return '/dashboard/loans';
     if (defaultModule === 'deposits') return '/dashboard/deposits';
     if (defaultModule === 'inventory') return '/dashboard/inventory';
     if (defaultModule === 'payroll') return '/dashboard/payroll';
-    
+
     return '/dashboard';
   };
 
@@ -57,7 +65,7 @@ const AppRouter: React.FC = () => {
           isAuthenticated ? <Navigate to={getDefaultRoute()} replace /> : <LoginPage />
         }
       />
-      
+
       <Route
         path="/dashboard"
         element={
@@ -70,7 +78,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/dashboard/executive"
         element={
@@ -83,7 +91,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/dashboard/loans"
         element={
@@ -96,7 +104,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/dashboard/deposits"
         element={
@@ -109,7 +117,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/customers"
         element={
@@ -122,7 +130,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/customers/:id"
         element={
@@ -135,7 +143,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/loans/management"
         element={
@@ -161,7 +169,72 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
+      <Route
+        path="/loans/delinquency"
+        element={
+          isAuthenticated ? (
+            <DashboardLayout>
+              <DelinquencyList />
+            </DashboardLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/loans/applications"
+        element={
+          isAuthenticated ? (
+            <DashboardLayout>
+              <ApplicationKanban />
+            </DashboardLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/loans/new"
+        element={
+          isAuthenticated ? (
+            <DashboardLayout>
+              <NewLoanWizard />
+            </DashboardLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/loans/disbursement"
+        element={
+          isAuthenticated ? (
+            <DashboardLayout>
+              <DisbursementPage />
+            </DashboardLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
+      <Route
+        path="/loans/portfolio"
+        element={
+          isAuthenticated ? (
+            <DashboardLayout>
+              <PortfolioReportView />
+            </DashboardLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
       <Route
         path="/maker-checker"
         element={
@@ -174,7 +247,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/financial-reports"
         element={
@@ -187,7 +260,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/accounts-payable"
         element={
@@ -200,7 +273,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/accounts-receivable"
         element={
@@ -213,7 +286,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/inventory/management"
         element={
@@ -226,7 +299,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/loans"
         element={
@@ -239,7 +312,20 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
+      <Route
+        path="/loans/:id"
+        element={
+          isAuthenticated ? (
+            <DashboardLayout>
+              <LoanDetailsPage />
+            </DashboardLayout>
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+
       <Route
         path="/inventory"
         element={
@@ -252,7 +338,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/payroll/management"
         element={
@@ -265,7 +351,7 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/payroll"
         element={
@@ -278,12 +364,12 @@ const AppRouter: React.FC = () => {
           )
         }
       />
-      
+
       <Route
         path="/"
         element={<Navigate to={isAuthenticated ? getDefaultRoute() : "/login"} replace />}
       />
-      
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

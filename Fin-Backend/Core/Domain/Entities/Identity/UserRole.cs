@@ -10,7 +10,7 @@ public class UserRole : BaseEntity
     public virtual ApplicationUser? User { get; set; }
     
     [Required]
-    public Guid RoleId { get; set; }
+    public string RoleId { get; set; } = string.Empty;
     public virtual Role? Role { get; set; }
     
     [Required]
@@ -21,5 +21,5 @@ public class UserRole : BaseEntity
     public string? AssignedBy { get; set; }
     
     [Required]
-    public Guid TenantId { get; set; }
+    public string TenantId { get; set; } = string.Empty;
 }

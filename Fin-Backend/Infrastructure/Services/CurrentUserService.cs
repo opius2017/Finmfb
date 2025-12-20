@@ -24,12 +24,11 @@ namespace FinTech.Infrastructure.Services
             }
         }
 
-        public Guid? TenantId
+        public string? TenantId
         {
             get
             {
-                var tenantId = _httpContextAccessor.HttpContext?.User?.FindFirstValue("tenant_id");
-                return !string.IsNullOrEmpty(tenantId) ? Guid.Parse(tenantId) : null;
+                return _httpContextAccessor.HttpContext?.User?.FindFirstValue("tenant_id");
             }
         }
 
